@@ -5,7 +5,6 @@ package ernest;
  * when trying to enact that schema. Concretely, an act associates a schema 
  * with a binary feedback status: succeed (S) or fail (F).  This class 
  * represents a default implementation for an Act. 
- *  
  * @author mcohen
  */
 public class Act implements IAct
