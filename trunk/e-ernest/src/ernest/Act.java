@@ -43,7 +43,7 @@ public class Act implements IAct
 	
 	public String toString()
 	{
-		String s = String.format("[ID:%s, S/F:%s SAT:%s]", 
+		String s = String.format("<%s, %s (%s)>", 
 				getSchema().getId() , isSuccess() ? "S" : "F", getSat());  
 		return s;
 	}
@@ -51,20 +51,29 @@ public class Act implements IAct
 	public boolean equals(Object o)
 	{
 		boolean ret = false;
-		if (o instanceof IAct)
+		
+		if (o == this)
+			ret = true;
+		else if (o == null)
+			ret = false;
+		else if (!o.getClass().equals(this.getClass()))
+			ret = false;
+		else
 		{
 			IAct other = (IAct)o;
 			ret = (other.getSat() == getSat() &&
-				   other.getSchema() == this.getSchema() &&
+				   other.getSchema() == getSchema() &&
 				   other.isSuccess() == isSuccess());
-		}
-		else 
-		{
-			ret = false;
 		}
 		
 		return ret;
 	}
+	
+	public int hashCode()
+    {
+		int ret = (getSchema().hashCode() * 10) + (isSuccess() == true ? 0 : 1);
+		return ret;
+    }	
 	
 	private Act(ISchema s, boolean success, int satisfaction)
 	{
