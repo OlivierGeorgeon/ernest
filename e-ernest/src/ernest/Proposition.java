@@ -33,22 +33,32 @@ package ernest;
 	public boolean equals(Object o)
 	{
 		boolean ret = false;
-		if (o instanceof Proposition)
-		{
+		
+		if (o == this)
+			ret = true;
+		else if (o == null)
+			ret = false;
+		else if (!o.getClass().equals(this.getClass()))
+			ret = false;
+		else
+		{		
 			Proposition other = (Proposition)o;
 			ret = other.m_act == m_act;
-		}
-		else 
-		{
-			ret = false;
 		}
 		
 		return ret;
 	}
 
+	public int hashCode()
+    {
+		int ret = m_act.hashCode();
+		return ret;
+    }	
+	
+	
 	public String toString()
 	{
-		String s = String.format("[A:%s, WP:%s]", m_act , m_weightedProp);  
+		String s = String.format("[%s, %s]", m_act , m_weightedProp);  
 		return s;
 	}
 	

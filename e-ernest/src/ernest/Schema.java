@@ -1,5 +1,7 @@
 package ernest;
 
+import java.io.ObjectInputStream.GetField;
+
 /**
  * A Schema is a pattern of interaction between the agent and its environment. 
  * Specifically, schemas can either succeed of fail when the agent tries to enact 
@@ -82,23 +84,33 @@ public class Schema implements ISchema
 	public boolean equals(Object o)
 	{
 		boolean ret = false;
-		if (o instanceof ISchema)
-		{
+		
+		if (o == this)
+			ret = true;
+		else if (o == null)
+			ret = false;
+		else if (!o.getClass().equals(this.getClass()))
+			ret = false;
+		else
+		{		
 			ISchema other = (ISchema)o;
 			ret = (other.getContextAct() == getContextAct() &&
 				   other.getIntentionAct() == getIntentionAct());
-		}
-		else 
-		{
-			ret = false;
 		}
 		
 		return ret;
 	}
 
+	public int hashCode()
+    {
+		int ret = (getContextAct().hashCode() * 10) + getIntentionAct().hashCode();
+		return ret;
+    }	
+	
 	public String toString()
 	{
-		String s = String.format("[ID:%s, W:%s, C:%s, I:%s]", getId() , getWeight(), getContextAct(), getIntentionAct());  
+		String s = String.format("[%s, %s, (S:%s F:%s) (C:%s, I:%s)]", 
+				getId(), getWeight(), getSuccessAct(), getFailureAct(), getContextAct(), getIntentionAct());  
 		return s;
 	}
 
