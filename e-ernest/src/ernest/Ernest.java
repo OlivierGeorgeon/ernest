@@ -4,7 +4,7 @@ package ernest;
  * The main earnest program.  Run this class to execute earnest.  Importantly,
  * this class defines the concrete factory used by the entire codebase.  This
  * factory detemines the types of objects used by ernest.   
- * @author mcohen
+ * @author mcohen 
  *
  */
 public class Ernest 
