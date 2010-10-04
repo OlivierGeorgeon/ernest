@@ -22,5 +22,7 @@ public interface IFactory
 	
 	public ISchema createPrimitiveSchema(String id, int successSat, int failureSat);
 	
-	public IProposition createProposition(IAct act);
+	public IProposition createProposition(ISchema schema, int w);
+
+	public IActivation createActivation(ISchema schema);
 }

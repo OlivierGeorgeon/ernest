@@ -1,33 +1,38 @@
 package ernest;
 
 /**
- * Represents a proposal that ernest enacts and Act.  A proposal consists of 
- * the proposed act and a weight that determines the strength of the proposal.
+ * Represents a proposal that Ernest enacts a Schema.  A proposal consists of 
+ * the proposed schema and a weight that determines the strength of the proposal.
  * Proposals with higher weight are given priority.  This class represents a
  * default implementation for a Proposition.
  * @author mcohen
  *
  */public class Proposition implements IProposition
 {
-	private IAct m_act = null;
-	private Integer m_weightedProp = null;
+	private ISchema m_schema = null;
+	private Integer m_weight = null;
 	
-	public static IProposition createProposition(IAct a)
-	{ return new Proposition(a); }
+	public static IProposition createProposition(ISchema s, int w)
+	{ return new Proposition(s,w); }
 	
-	public int getWP()
+	public int getWeight()
 	{
-		return m_weightedProp.intValue();
+		return m_weight.intValue();
 	}
 
-	public IAct getAct()
+	public void addWeight(int w)
 	{
-		return m_act;
+		m_weight += w;
+	}
+
+	public ISchema getSchema()
+	{
+		return m_schema;
 	}
 	
 	public int compareTo(IProposition o) 
 	{
-		return new Integer(o.getWP()).compareTo(m_weightedProp);
+		return new Integer(o.getWeight()).compareTo(m_weight);
 	}
 
 	public boolean equals(Object o)
@@ -43,7 +48,7 @@ package ernest;
 		else
 		{		
 			Proposition other = (Proposition)o;
-			ret = other.m_act == m_act;
+			ret = other.m_schema == m_schema;
 		}
 		
 		return ret;
@@ -51,31 +56,19 @@ package ernest;
 
 	public int hashCode()
     {
-		int ret = m_act.hashCode();
+		int ret = m_schema.hashCode();
 		return ret;
     }	
-	
-	
+		
 	public String toString()
 	{
-		String s = String.format("[%s, %s]", m_act , m_weightedProp);  
+		String s = String.format("[%s (%s)]", m_schema , m_weight);  
 		return s;
 	}
 	
-	private void calculate()
+	private Proposition(ISchema s, int w)
 	{
-		ISchema s = m_act.getSchema();
-		int w = s.getWeight();
-		
-		if (s.isPrimitive())
-			m_weightedProp = new Integer(0);
-		else
-			m_weightedProp = new Integer(w * s.getIntentionAct().getSat());
-	}
-
-	private Proposition(IAct a)
-	{
-		m_act = a;
-		calculate();
+		m_schema = s;
+		m_weight = w;
 	}
 }
