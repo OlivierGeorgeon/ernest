@@ -8,7 +8,7 @@ import java.util.Collections;
 /**
  * Defines a default algorithm that determines ernest behavior. 
  * @author mcohen
- *
+ * @author ogeorgeon
  */
 public class Algorithm implements IAlgorithm 
 {
@@ -29,11 +29,19 @@ public class Algorithm implements IAlgorithm
 	
 	/**
 	 *  a list of the current proposed acts...
+	 *  TODO: needs a list of proposed schemas
 	 */
 	private List<IProposition> m_proposals = new ArrayList<IProposition>();	
 	
 	/**
+	 *  a list of the activated schemas
+	 * @author ogeorgeon
+	 */
+	private List<IActivation> m_activations = new ArrayList<IActivation>();	
+	
+	/**
 	 *  the current context, which is the most recently enacted act...
+	 *  TODO: Should be a set of acts
 	 */
 	private IAct m_context = null;
 	
@@ -49,7 +57,9 @@ public class Algorithm implements IAlgorithm
 	{ return new Algorithm(); }
 	
 	/**
-	 * Starts the algorithm and sets earnest in motion...
+	 * Starts the algorithm and sets Ernest in motion...
+	 * @author mcohen
+	 * @author ogeorgeon
 	 */
 	public void run()
 	{
@@ -64,12 +74,18 @@ public class Algorithm implements IAlgorithm
 			for (ISchema s : m_schemas)
 				System.out.println(s);
 			
-			// select the next act to enact...
-			IAct a = selectAct();
+			// activate the schemas that match the current context
+			activate();			
+			// create a proposition list of possible intention schemas
+			propose();
+			
+			// select the nest schema to enact...
+			ISchema s = selectSchema();
 			
 			// enact the selected act...
+			// TODO the selected act should be anticipated
 			m_actualIntention = null;
-			boolean bSuccess = enactAct(a);
+			boolean bSuccess = enactAct(s.getSuccessAct());
 			
 			// learn from experience...
 			learn(bSuccess);
@@ -80,19 +96,6 @@ public class Algorithm implements IAlgorithm
 		}
 	}
 	
-	/**
-	 * @return the next act that should be enacted
-	 */
-	protected IAct selectAct()
-	{
-		// propose any acts that apply given the current context...
-		propose();
-		
-		// return the act witht he highest weighted proposition
-		// in case of a tie, it will be selected randomly...
-		return pickBestIntention();	
-	}
-
 	/**
 	 * This method is called recursively as it performs a depth first search, following
 	 * the context branch first and then the intention branch.  As it encounters
@@ -200,31 +203,36 @@ public class Algorithm implements IAlgorithm
 	}
 
 	/**
-	 * @return the act that has the highest weighed proposition  
+	 * Selects the intention schema with the highest proposition
+	 * @return the next schema that should be enacted
+	 * @author ogeorgeon
 	 */
-	protected IAct pickBestIntention()
+//	protected IAct pickBestIntention()
+	protected ISchema selectSchema()
 	{
 		// sort by weighted proposition...
 		Collections.sort(m_proposals);
 		
 		// count how many are tied with the  highest weighted proposition
 		int count = 0;
-		int wp = m_proposals.get(0).getWP();
+		int wp = m_proposals.get(0).getWeight();
 		for (IProposition p : m_proposals)
 		{
-			if (p.getWP() != wp)
+			if (p.getWeight() != wp)
 				break;
 			count++;
 		}
 
 		// pick one at random from the top the proposal list
 		// count is equal to the number of proposals that are tied...
-		return m_proposals.get(m_rand.nextInt(count)).getAct();
+		return m_proposals.get(m_rand.nextInt(count)).getSchema();
 	}
 
 	/**
 	 * Determines what acts should be proposed and the weight of these
 	 * proposals.  
+	 * @author ogeorgeon
+	 * @author mcohen
 	 */
 	protected void propose()
 	{
@@ -236,11 +244,43 @@ public class Algorithm implements IAlgorithm
 		{
 			if (s.getWeight() > Schema.REG_SENS_THRESH)
 			{
-				m_proposals.add(Ernest.factory().createProposition(s.getSuccessAct()));
+				m_proposals.add(Ernest.factory().createProposition(s, 1));
 			}
 		}
 		
-		// next, propose all schema that match the context and have not yet been 
+		// next, propose all schema that are proposed by the activated schemas
+		for (IActivation a : m_activations)
+		{
+			ISchema s = a.getIntention().getSchema();
+			int w = a.getWeight();
+			IProposition p = Ernest.factory().createProposition(s, w);
+			int i = m_proposals.indexOf(p);
+			if (i == -1)
+			{
+				m_proposals.add(p);
+			}
+			else
+			{
+				m_proposals.get(i).addWeight(w);
+			}
+		}
+		
+		System.out.println("Proposals:");
+		for (IProposition p : m_proposals)
+			System.out.println(p);
+	}
+
+	/**
+	 * Generates the list of activated schemas
+	 * Activated schemas are schemas whose context act belongs to the current context
+	 * @author ogeorgeon
+	 */
+	protected void activate()
+	{
+		// clear the list of activations before we start adding more...
+		m_activations.clear();
+		
+		// Add all schema that match the context and have not yet been 
 		// proposed...
 		for (ISchema s : m_schemas)
 		{
@@ -249,15 +289,15 @@ public class Algorithm implements IAlgorithm
 			// learning is enabled... 
 			if (!s.isPrimitive() && m_context != null && s.getContextAct().equals(m_context))
 			{
-				IProposition p = Ernest.factory().createProposition(s.getSuccessAct());
-				if (!m_proposals.contains(p))
-					m_proposals.add(p);
+				IActivation a = Ernest.factory().createActivation(s);
+				if (!m_activations.contains(a))
+					m_activations.add(a);
 			}
 		}
 		
-		System.out.println("Proposals:");
-		for (IProposition p : m_proposals)
-			System.out.println(p);
+		System.out.println("Activations:");
+		for (IActivation a : m_activations)
+			System.out.println(a);
 	}
 
 	/**
@@ -278,7 +318,7 @@ public class Algorithm implements IAlgorithm
 	/**
 	 * Prevents this class from being created explicitly.  Instead, the createAlgorithm method
 	 * must be called.  This makes it possible to derive new algorithms from this class
-	 * and earnest will use the new algorithm without any code breaking.
+	 * and Ernest will use the new algorithm without any code breaking.
 	 */
 	private Algorithm()
 	{
