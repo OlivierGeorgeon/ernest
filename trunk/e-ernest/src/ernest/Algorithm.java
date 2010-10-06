@@ -40,10 +40,14 @@ public class Algorithm implements IAlgorithm
 	private List<IActivation> m_activations = new ArrayList<IActivation>();	
 	
 	/**
-	 *  the current context, which is the most recently enacted act...
-	 *  TODO: Should be a set of acts
+	 *  the current context, which is a list of some of the most recently enacted acts...
 	 */
-	private IAct m_context = null;
+	private List<IAct> m_context = new ArrayList<IAct>();
+	
+	/**
+	 *  the base context, which is the context of the previous decision cycle
+	 */
+	private List<IAct> m_baseContext = new ArrayList<IAct>();
 	
 	/**
 	 *  the act that was most recently enacted...
@@ -79,13 +83,16 @@ public class Algorithm implements IAlgorithm
 			// create a proposition list of possible intention schemas
 			propose();
 			
-			// select the nest schema to enact...
+			// select the next schema to enact...
 			ISchema s = selectSchema();
 			
 			// enact the selected act...
 			// TODO the selected act should be anticipated
 			m_actualIntention = null;
 			boolean bSuccess = enactAct(s.getSuccessAct());
+			
+			// The previous current context becomes the base context
+			swapContext();
 			
 			// learn from experience...
 			learn(bSuccess);
@@ -163,6 +170,18 @@ public class Algorithm implements IAlgorithm
 	}
 
 	/**
+	 * The current context is passed to the base context 
+	 * The previous base context is lost
+	 * The current context is cleared
+	 * @author ogeorgeon
+	 */
+	protected void swapContext()
+	{
+		m_baseContext = new ArrayList<IAct>(m_context);
+		m_context.clear();
+	}
+	
+	/**
 	 * Ernest learns from experience.
 	 * @param b a flag specifying if the previous act succeeded or failed.
 	 */
@@ -172,14 +191,14 @@ public class Algorithm implements IAlgorithm
 		if (b)
 			m_actualIntention.getSchema().incWeight();
 		
-		// if there is a context, then we need to build a new, higher level
+		// if there is a base context, then we need to build a new, higher level
 		// schema...
-		if (m_context != null)
+		if (!m_baseContext.isEmpty())
 		{
 			// build a new schema with the current context 
 			// and the most recently enacted intention...
 			ISchema newS = Ernest.factory().createSchema();
-			newS.setContextAct(m_context);
+			newS.setContextAct(m_baseContext.get(0));
 			newS.setIntentionAct(m_actualIntention);
 			newS.updateSuccessSatisfaction();			
 			
@@ -196,36 +215,46 @@ public class Algorithm implements IAlgorithm
 				System.out.println("Adding new schema: " + newS);
 			}
 		}
-		
+		else
+		{
+			System.out.println("Base context is empty");
+		}
 		// the context for the next decision cycle is set equal to 
 		// the act that was recently enacted... 
-		m_context = m_actualIntention;
+		// TODO: Include more acts in the context
+		m_context.add(m_actualIntention);
+		
 	}
 
 	/**
-	 * Selects the intention schema with the highest proposition
-	 * @return the next schema that should be enacted
+	 * Generates the list of activated schemas
+	 * Activated schemas are schemas whose context act belongs to the current context
 	 * @author ogeorgeon
 	 */
-//	protected IAct pickBestIntention()
-	protected ISchema selectSchema()
+	protected void activate()
 	{
-		// sort by weighted proposition...
-		Collections.sort(m_proposals);
+		// clear the list of activations before we start adding more...
+		m_activations.clear();
 		
-		// count how many are tied with the  highest weighted proposition
-		int count = 0;
-		int wp = m_proposals.get(0).getWeight();
-		for (IProposition p : m_proposals)
+		// Add all schema that match the context and have not yet been 
+		// proposed...
+		for (ISchema s : m_schemas)
 		{
-			if (p.getWeight() != wp)
-				break;
-			count++;
+			// TODO: this works only if acts have an accurately defined equals method, 
+			// the equals method should be reviewed especially when higher level
+			// learning is enabled... 
+			// TODO: compare to more elements of context
+			if (!s.isPrimitive() && !m_context.isEmpty() && s.getContextAct().equals(m_context.get(0)))
+			{
+				IActivation a = Ernest.factory().createActivation(s);
+				if (!m_activations.contains(a))
+					m_activations.add(a);
+			}
 		}
-
-		// pick one at random from the top the proposal list
-		// count is equal to the number of proposals that are tied...
-		return m_proposals.get(m_rand.nextInt(count)).getSchema();
+		
+		System.out.println("Activations:");
+		for (IActivation a : m_activations)
+			System.out.println(a);
 	}
 
 	/**
@@ -271,33 +300,35 @@ public class Algorithm implements IAlgorithm
 	}
 
 	/**
-	 * Generates the list of activated schemas
-	 * Activated schemas are schemas whose context act belongs to the current context
+	 * Selects the intention schema with the highest proposition
+	 * @return the next schema that should be enacted
 	 * @author ogeorgeon
 	 */
-	protected void activate()
+//	protected IAct pickBestIntention()
+	protected ISchema selectSchema()
 	{
-		// clear the list of activations before we start adding more...
-		m_activations.clear();
+		// sort by weighted proposition...
+		Collections.sort(m_proposals);
 		
-		// Add all schema that match the context and have not yet been 
-		// proposed...
-		for (ISchema s : m_schemas)
+		// count how many are tied with the  highest weighted proposition
+		int count = 0;
+		int wp = m_proposals.get(0).getWeight();
+		for (IProposition p : m_proposals)
 		{
-			// TODO: this works only if acts have an accurately defined equals method, 
-			// the equals method should be reviewed especially when higher level
-			// learning is enabled... 
-			if (!s.isPrimitive() && m_context != null && s.getContextAct().equals(m_context))
-			{
-				IActivation a = Ernest.factory().createActivation(s);
-				if (!m_activations.contains(a))
-					m_activations.add(a);
-			}
+			if (p.getWeight() != wp)
+				break;
+			count++;
 		}
+
+		// pick one at random from the top the proposal list
+		// count is equal to the number of proposals that are tied...
+
+		ISchema s = m_proposals.get(m_rand.nextInt(count)).getSchema();
 		
-		System.out.println("Activations:");
-		for (IActivation a : m_activations)
-			System.out.println(a);
+		System.out.println("Select:");
+		System.out.println(s);
+
+		return s ;
 	}
 
 	/**
