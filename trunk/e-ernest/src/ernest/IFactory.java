@@ -18,9 +18,9 @@ public interface IFactory
 	
 	public IAct createAct(ISchema s, boolean success, int satisfaction);
 	
-	public ISchema createSchema();
+	public ISchema createSchema(int id);
 	
-	public ISchema createPrimitiveSchema(String id, int successSat, int failureSat);
+	public ISchema createPrimitiveSchema(int id, String tag, int successSat, int failureSat);
 	
 	public IProposition createProposition(ISchema schema, int w);
 

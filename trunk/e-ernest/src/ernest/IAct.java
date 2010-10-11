@@ -13,6 +13,7 @@ public interface IAct
 	 * @return if the act was successful or not
 	 */
 	public boolean isSuccess();
+	public String getTag();
 	public int getSat();
 	public void setSat(int s);
 	public ISchema getSchema();

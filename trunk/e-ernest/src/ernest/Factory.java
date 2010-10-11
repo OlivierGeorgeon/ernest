@@ -35,14 +35,14 @@ public class Factory implements IFactory
 		return Act.createAct(s, success, satisfaction);
 	}
 	
-	public ISchema createSchema()
+	public ISchema createSchema(int id)
 	{
-		return Schema.createSchema();
+		return Schema.createSchema(id);
 	}
 
-	public ISchema createPrimitiveSchema(String id, int successSat, int failureSat)
+	public ISchema createPrimitiveSchema(int id, String tag, int successSat, int failureSat)
 	{
-		return Schema.createSchema(id, successSat, failureSat);
+		return Schema.createSchema(id, tag, successSat, failureSat);
 	}
 	
 	public IProposition createProposition(ISchema schema, int w)

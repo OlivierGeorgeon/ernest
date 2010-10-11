@@ -18,6 +18,11 @@ public class Algorithm implements IAlgorithm
 	private static Random m_rand = new Random(); 
 	
 	/**
+	 *  used to count the schemas and generate their id
+	 */
+	private static int m_schemaCount = 0; 
+	
+	/**
 	 * the environment that ernest is operating in...
 	 */
 	private IEnvironment m_env = Ernest.factory().getEnvironment();
@@ -94,8 +99,8 @@ public class Algorithm implements IAlgorithm
 			// The previous current context becomes the base context
 			swapContext();
 			
-			// learn from experience...
-			learn(bSuccess);
+			// First learning mechanism...
+			learn1(bSuccess);
 			
 			// determine the scope to be considered in the next 
 			// cycle...
@@ -182,23 +187,27 @@ public class Algorithm implements IAlgorithm
 	}
 	
 	/**
-	 * Ernest learns from experience.
+	 * First learning mechanism:
+	 * Aggregate the base context with the enacted act
 	 * @param b a flag specifying if the previous act succeeded or failed.
+	 * @author mcohen
+	 * @author ogeorgeon
 	 */
-	protected void learn(boolean b)
+	protected void learn1(boolean b)
 	{
-		// reinforce the successfully enacted intention... 
-		if (b)
-			m_actualIntention.getSchema().incWeight();
+		// reinforce the successfully enacted schema... 
+		//if (b)
+		//	m_actualIntention.getSchema().incWeight();
 		
-		// if there is a base context, then we need to build a new, higher level
-		// schema...
-		if (!m_baseContext.isEmpty())
+		// For each act of the base context...
+		//if (!m_baseContext.isEmpty())
+		for (IAct a : m_baseContext)
 		{
-			// build a new schema with the current context 
-			// and the most recently enacted intention...
-			ISchema newS = Ernest.factory().createSchema();
-			newS.setContextAct(m_baseContext.get(0));
+			// build a new schema with the base context 
+			// and the enacted act to compare to the schema list
+			// The schemaCount won't be incremented if this schema already exists
+			ISchema newS = Ernest.factory().createSchema(m_schemaCount + 1);
+			newS.setContextAct(a);
 			newS.setIntentionAct(m_actualIntention);
 			newS.updateSuccessSatisfaction();			
 			
@@ -209,20 +218,37 @@ public class Algorithm implements IAlgorithm
 			// the current equals method works for single level
 			// schema, but it should be re-evaluated when higher level
 			// learning is enabled...
-			if (!m_schemas.contains(newS))
+			int i = m_schemas.indexOf(newS);
+			if (i != -1)
+			{
+				// newS now points to the existing schema
+				newS = m_schemas.get(i);
+				newS.incWeight();
+				System.out.println("Reinforcing existing schema: " + newS);
+			}
+			else
 			{
 				m_schemas.add(newS);
 				System.out.println("Adding new schema: " + newS);
+				m_schemaCount++;
+			}
+			// add the created act to the context
+			if (newS.getWeight() > Schema.REG_SENS_THRESH)
+			{
+				m_context.add(newS.getSuccessAct());
 			}
 		}
-		else
-		{
+		if (m_baseContext.isEmpty())
 			System.out.println("Base context is empty");
-		}
+
 		// the context for the next decision cycle is set equal to 
 		// the act that was recently enacted... 
-		// TODO: Include more acts in the context
 		m_context.add(m_actualIntention);
+		// if the actual intention has a sub-intention, it also belongs to the context
+		if (m_actualIntention.getSchema().getIntentionAct() != null)
+		{
+			m_context.add(m_actualIntention.getSchema().getIntentionAct());			
+		}
 		
 	}
 
@@ -355,6 +381,7 @@ public class Algorithm implements IAlgorithm
 	{
 		// start off with all primitive schema supported
 		// by the environment...
+		m_schemaCount = m_schemaCount + 4;
 		m_schemas.addAll(m_env.getPrimitiveSchema());
 	}
 }

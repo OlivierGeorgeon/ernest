@@ -19,8 +19,7 @@ public class SimpleMaze implements IEnvironment
 		 {'x', 'x', 'x', 'x'},
 		 {'x', ' ', ' ', 'x'},
 		 {'x', ' ', ' ', 'x'},
-		 {'x', ' ', ' ', 'x'},
-		 {'x', ' ', ' ', 'x'},
+		 {'x', 'x', 'x', 'x'},
 		 {'x', 'x', 'x', 'x'}
 		};
 	
@@ -32,13 +31,13 @@ public class SimpleMaze implements IEnvironment
 		boolean bRet = false;
 		int x = m_x;
 		int y = m_y;
-		if (s.getId().equals("NORTH"))
+		if (s.getTag().equals("NORTH"))
 			y--;
-		else if (s.getId().equals("SOUTH"))
+		else if (s.getTag().equals("SOUTH"))
 			y++;
-		else if (s.getId().equals("EAST"))
-			x++;		
-		else if (s.getId().equals("WEST"))
+		else if (s.getTag().equals("EAST"))
+			x++;	
+		else if (s.getTag().equals("WEST"))
 			x--;
 		
 		if (x < 0 || x > 3)
@@ -54,11 +53,11 @@ public class SimpleMaze implements IEnvironment
 			bRet = true;
 		}
 		
-		System.out.println("Moving " + s.getId());
+		System.out.println("Moving " + s.getTag());
 		if (bRet == false)
 			System.out.println("Ouch");
 		
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			for (int j = 0; j < 4; j++)
 			{
@@ -77,16 +76,16 @@ public class SimpleMaze implements IEnvironment
 	{
 		List<ISchema> l = new ArrayList<ISchema>();
 		
-		ISchema s = Ernest.factory().createPrimitiveSchema("NORTH", 1, -1);
+		ISchema s = Ernest.factory().createPrimitiveSchema(1, "NORTH", 1, -1);
 		l.add(s);
 
-		s = Ernest.factory().createPrimitiveSchema("SOUTH", 1, -1);
+		s = Ernest.factory().createPrimitiveSchema(2, "SOUTH", 1, -1);
 		l.add(s);
 
-		s = Ernest.factory().createPrimitiveSchema("EAST", 1, -1);
+		s = Ernest.factory().createPrimitiveSchema(3, "EAST", 1, -1);
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema("WEST", 1, -1);
+		s = Ernest.factory().createPrimitiveSchema(4, "WEST", 1, -1);
 		l.add(s);
 		
 		return l;

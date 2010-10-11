@@ -19,9 +19,9 @@ public interface ISchema
 	public void setContextAct(IAct a);
 	public void setIntentionAct(IAct a);
 	
+	public String getTag(); 
 	public int getWeight();
 	public boolean isPrimitive();
-	public String getId();
 	public void updateSuccessSatisfaction();
 	public void incWeight();
 }

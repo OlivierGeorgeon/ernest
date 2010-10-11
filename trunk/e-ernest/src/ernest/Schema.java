@@ -8,27 +8,26 @@ import java.io.ObjectInputStream.GetField;
  * them in the environment.  This class represents a default implementation for
  * a Schema.
  * @author mcohen
- *
+ * @author ogeorgeon
  */
 public class Schema implements ISchema 
 {
 	public static final int REG_SENS_THRESH = 4;	
-	
-	private static int m_nextId_s = 1;
 	
 	private int m_weight = Integer.MIN_VALUE; 
 	private IAct m_successAct = null;
 	private IAct m_failureAct = null;
 	private IAct m_contextAct = null;
 	private IAct m_intentionAct = null;	
-	private String m_id = null;
+	private int m_id;
+	private String m_tag = null; 
 	private boolean m_isPrimitive = true;
 
-	public static ISchema createSchema()
-	{ return new Schema(); }
+	public static ISchema createSchema(int id)
+	{ return new Schema(id); }
 
-	public static ISchema createSchema(String id, int successSat, int failureSat)
-	{ return new Schema(id, successSat, failureSat); }
+	public static ISchema createSchema(int id, String tag, int successSat, int failureSat)
+	{ return new Schema(id, tag, successSat, failureSat); }
 	
 	public IAct getSuccessAct() 
 	{	return m_successAct; }
@@ -60,9 +59,6 @@ public class Schema implements ISchema
 	public boolean isPrimitive() 
 	{ return m_isPrimitive;	}
 
-	public String getId() 
-	{ return m_id; }
-	
 	public void incWeight()
 	{ m_weight++; }
 	
@@ -70,6 +66,7 @@ public class Schema implements ISchema
 	{
 		if (!isPrimitive())
 		{
+			m_tag = m_contextAct.getTag() + "-" + m_intentionAct.getTag(); 
 			m_contextAct.getSchema().updateSuccessSatisfaction();
 			m_intentionAct.getSchema().updateSuccessSatisfaction();
 			if (m_successAct == null)
@@ -81,6 +78,10 @@ public class Schema implements ISchema
 		}
 	}
 	
+	/**
+	 * Schemas are equal if they have the same context act and intention act 
+	 * @author mcohen
+	 */
 	public boolean equals(Object o)
 	{
 		boolean ret = false;
@@ -101,30 +102,43 @@ public class Schema implements ISchema
 		return ret;
 	}
 
+	/**
+	 * Returns an identifier of the schema 
+	 * @author ogeorgeon
+	 */
 	public int hashCode()
     {
-		int ret = (getContextAct().hashCode() * 10) + getIntentionAct().hashCode();
-		return ret;
+		//int ret = (getContextAct().hashCode() * 10) + getIntentionAct().hashCode();
+		return m_id;
+    }	
+	
+	/**
+	 * Returns the schema's tag 
+	 * @author ogeorgeon
+	 */
+	public String getTag()
+    {
+		return m_tag;
     }	
 	
 	public String toString()
 	{
-		String s = String.format("[%s, %s, (S:%s F:%s) (C:%s, I:%s)]", 
-				getId(), getWeight(), getSuccessAct(), getFailureAct(), getContextAct(), getIntentionAct());  
+		String s = String.format("[S%s, %s, %s, (S:%s F:%s) (C:%s, I:%s)]", 
+				hashCode(), getTag(), getWeight(), getSuccessAct(), getFailureAct(), getContextAct(), getIntentionAct());  
 		return s;
 	}
 
-	private Schema()
+	private Schema(int id)
 	{
-		m_id = "S" + m_nextId_s++;
+		m_id = id;
 		m_isPrimitive = false;
 		m_weight = 1;
 	}
 	
-	private Schema(String id, int successSat, int failureSat)
+	private Schema(int id, String tag, int successSat, int failureSat)
 	{
-		m_nextId_s++;
 		m_id = id;
+		m_tag = tag;
 		m_isPrimitive = true;
 		m_weight = REG_SENS_THRESH + 1;
 		m_successAct = Ernest.factory().createAct(this, true, successSat);
