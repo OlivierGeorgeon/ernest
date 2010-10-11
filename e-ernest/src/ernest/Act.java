@@ -59,6 +59,10 @@ public class Act implements IAct
 		return s;
 	}
 	
+	/**
+	 * Acts are equals if they have the same schema and status 
+	 * @author mcohen
+	 */
 	public boolean equals(Object o)
 	{
 		boolean ret = false;
