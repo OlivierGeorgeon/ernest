@@ -41,10 +41,21 @@ public class Act implements IAct
 		m_schema = s;
 	}
 	
+	/**
+	 * The act's litteral label 
+	 * @author ogeorgeon
+	 */
+	public String getTag()
+	{
+		String s = String.format("%s/%s", 
+				getSchema().getTag() , isSuccess() ? "S" : "F");  
+		return s;
+	}
+	
 	public String toString()
 	{
-		String s = String.format("<%s, %s (%s)>", 
-				getSchema().getId() , isSuccess() ? "S" : "F", getSat());  
+		String s = String.format("<S%s, %s (%s)>", 
+				getSchema().hashCode() , isSuccess() ? "S" : "F", getSat());  
 		return s;
 	}
 	
