@@ -34,7 +34,6 @@ public class Algorithm implements IAlgorithm
 	
 	/**
 	 *  a list of the current proposed acts...
-	 *  TODO: needs a list of proposed schemas
 	 */
 	private List<IProposition> m_proposals = new ArrayList<IProposition>();	
 	
@@ -149,7 +148,7 @@ public class Algorithm implements IAlgorithm
 		}
 
 		// TODO: we only do this for primitive acts right now, 
-		// this prevents us from leaning higher level schema that consist of 
+		// this prevents us from learning higher level schema that consist of 
 		// more than one primitive context and one primitive intention
 		// this code need to be upgraded to support more complex 
 		// schema learning...
@@ -195,15 +194,10 @@ public class Algorithm implements IAlgorithm
 	 */
 	protected void learn1(boolean b)
 	{
-		// reinforce the successfully enacted schema... 
-		//if (b)
-		//	m_actualIntention.getSchema().incWeight();
-		
 		// For each act of the base context...
-		//if (!m_baseContext.isEmpty())
 		for (IAct a : m_baseContext)
 		{
-			// build a new schema with the base context 
+			// Build a new schema with the base context 
 			// and the enacted act to compare to the schema list
 			// The schemaCount won't be incremented if this schema already exists
 			ISchema newS = Ernest.factory().createSchema(m_schemaCount + 1);
@@ -211,13 +205,8 @@ public class Algorithm implements IAlgorithm
 			newS.setIntentionAct(m_actualIntention);
 			newS.updateSuccessSatisfaction();			
 			
-			// add the new schema to the list of all schemas,
+			// Add the new schema to the list of all schemas,
 			// if the schema already exists, it will not be added
-			// TODO: the contains method relies on the schema class 
-			// to have implemented an accurate valid equals method,
-			// the current equals method works for single level
-			// schema, but it should be re-evaluated when higher level
-			// learning is enabled...
 			int i = m_schemas.indexOf(newS);
 			if (i != -1)
 			{
@@ -241,10 +230,9 @@ public class Algorithm implements IAlgorithm
 		if (m_baseContext.isEmpty())
 			System.out.println("Base context is empty");
 
-		// the context for the next decision cycle is set equal to 
-		// the act that was recently enacted... 
+		// Add the actually enacted act to the context
 		m_context.add(m_actualIntention);
-		// if the actual intention has a sub-intention, it also belongs to the context
+		// if the actually enacted act has a sub-intention, it also belongs to the context
 		if (m_actualIntention.getSchema().getIntentionAct() != null)
 		{
 			m_context.add(m_actualIntention.getSchema().getIntentionAct());			
@@ -259,6 +247,9 @@ public class Algorithm implements IAlgorithm
 	 */
 	protected void activate()
 	{
+
+		System.out.println("Activations:");
+
 		// clear the list of activations before we start adding more...
 		m_activations.clear();
 		
@@ -266,21 +257,20 @@ public class Algorithm implements IAlgorithm
 		// proposed...
 		for (ISchema s : m_schemas)
 		{
-			// TODO: this works only if acts have an accurately defined equals method, 
-			// the equals method should be reviewed especially when higher level
-			// learning is enabled... 
-			// TODO: compare to more elements of context
-			if (!s.isPrimitive() && !m_context.isEmpty() && s.getContextAct().equals(m_context.get(0)))
+			if (!s.isPrimitive())
 			{
-				IActivation a = Ernest.factory().createActivation(s);
-				if (!m_activations.contains(a))
-					m_activations.add(a);
+				for (IAct c : m_context)
+				{
+					if (s.getContextAct().equals(c))
+					{
+						IActivation a = Ernest.factory().createActivation(s);
+						if (!m_activations.contains(a))
+							m_activations.add(a);
+							System.out.println(a);
+					}
+				}
 			}
 		}
-		
-		System.out.println("Activations:");
-		for (IActivation a : m_activations)
-			System.out.println(a);
 	}
 
 	/**
