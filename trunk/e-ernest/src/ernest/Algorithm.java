@@ -18,7 +18,7 @@ public class Algorithm implements IAlgorithm
 	private static Random m_rand = new Random(); 
 	
 	/**
-	 * the environment that ernest is operating in...
+	 * the environment that Ernest is operating in...
 	 */
 	private IEnvironment m_env = Ernest.factory().getEnvironment();
 	
