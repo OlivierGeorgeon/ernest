@@ -132,7 +132,7 @@ public class Schema implements ISchema
 	{
 		m_id = id;
 		m_isPrimitive = false;
-		m_weight = 1;
+		m_weight = 0;
 	}
 	
 	private Schema(int id, String tag, int successSat, int failureSat)

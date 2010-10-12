@@ -1,5 +1,7 @@
 package ernest;
 
+import java.util.List;
+
 /**
  * Factory classes are solely responsible for creating the objects that 
  * determine how ernest behaves.  This makes then entire ernest codebase
@@ -17,6 +19,8 @@ public interface IFactory
 	public IAlgorithm getAlgorithm();
 	
 	public IAct createAct(ISchema s, boolean success, int satisfaction);
+	
+	public ISchema addSchema(List<ISchema> l, IAct context, IAct intention);
 	
 	public ISchema createSchema(int id);
 	
