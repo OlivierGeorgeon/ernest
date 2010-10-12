@@ -7,22 +7,35 @@ import java.util.ArrayList;
  * A very simple, not graphical, maze environment used to test the 
  * ernest algorithm. 
  * @author mcohen
- *
+ * @author ogeorgeon
  */
 public class SimpleMaze implements IEnvironment 
 {
 
+	private static final int WIDTH = 5;	
+	private static final int HEIGHT = 5;	
+
+	private static final int ORIENTATION_UP    = 0;
+	private static final int ORIENTATION_RIGHT = 1;
+	private static final int ORIENTATION_DOWN  = 2;
+	private static final int ORIENTATION_LEFT  = 3;
+
 	private int m_x = 1;
 	private int m_y = 1;
+	private int m_o = 0;
+	
 	private char[][] m_board = 
 		{
-		 {'x', 'x', 'x', 'x'},
-		 {'x', ' ', ' ', 'x'},
-		 {'x', ' ', ' ', 'x'},
-		 {'x', 'x', 'x', 'x'},
-		 {'x', 'x', 'x', 'x'}
+		 {'x', 'x', 'x', 'x', 'x'},
+		 {'x', ' ', ' ', ' ', 'x'},
+		 {'x', ' ', 'x', ' ', 'x'},
+		 {'x', ' ', ' ', ' ', 'x'},
+		 {'x', 'x', 'x', 'x', 'x'}
 		};
 	
+	private char[] m_agent = 
+	{ '^', '>', 'v', '<' };
+
 	public static IEnvironment createEnvironment()
 	{ return new SimpleMaze(); }
 	
@@ -40,9 +53,10 @@ public class SimpleMaze implements IEnvironment
 		else if (s.getTag().equals("WEST"))
 			x--;
 		
-		if (x < 0 || x > 3)
+		// the feedback
+		if (x < 0 || x >= WIDTH)
 			bRet = false;
-		else if (y < 0 || y > 3)
+		else if (y < 0 || y >= HEIGHT)
 			bRet = false;
 		else if (m_board[y][x] == 'x')
 			bRet = false;
@@ -52,17 +66,27 @@ public class SimpleMaze implements IEnvironment
 			m_y = y;
 			bRet = true;
 		}
+		//System.out.println("Moving " + s.getTag());
+		//if (bRet == false)
+		//	System.out.println("Ouch");
 		
-		System.out.println("Moving " + s.getTag());
-		if (bRet == false)
-			System.out.println("Ouch");
 		
-		for (int i = 0; i < 4; i++)
+		if (s.getTag().equals("MOVE"))
+			bRet = move();
+		else if (s.getTag().equals("LEFT"))
+			bRet = left();
+		else if (s.getTag().equals("RIGHT"))
+			bRet = right();
+		else if (s.getTag().equals("TOUCH"))
+			bRet = Touch();
+		
+		// print the maze
+		for (int i = 0; i < WIDTH; i++)
 		{
-			for (int j = 0; j < 4; j++)
+			for (int j = 0; j < HEIGHT; j++)
 			{
 				if (i == m_y && j== m_x)
-					System.out.print("*");
+					System.out.print(m_agent[m_o]);
 				else
 					System.out.print(m_board[i][j]);	
 			}
@@ -76,16 +100,16 @@ public class SimpleMaze implements IEnvironment
 	{
 		List<ISchema> l = new ArrayList<ISchema>();
 		
-		ISchema s = Ernest.factory().createPrimitiveSchema(1, "NORTH", 1, -1);
+		ISchema s = Ernest.factory().createPrimitiveSchema(1, "MOVE", 10, -10);
 		l.add(s);
 
-		s = Ernest.factory().createPrimitiveSchema(2, "SOUTH", 1, -1);
+		s = Ernest.factory().createPrimitiveSchema(2, "LEFT", 0, -5);
 		l.add(s);
 
-		s = Ernest.factory().createPrimitiveSchema(3, "EAST", 1, -1);
+		s = Ernest.factory().createPrimitiveSchema(3, "RIGHT", 0, -5);
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(4, "WEST", 1, -1);
+		s = Ernest.factory().createPrimitiveSchema(4, "TOUCH", -1, 0);
 		l.add(s);
 		
 		return l;
@@ -93,5 +117,178 @@ public class SimpleMaze implements IEnvironment
 
 	private SimpleMaze()
 	{}
+	
+	/**
+	 * turn right 
+	 * @author ogeorgeon
+	 */
+	public boolean right()
+	{
+		m_o++;
+		
+		if (m_o > ORIENTATION_LEFT)
+			m_o = ORIENTATION_UP;
+
+		boolean status =  true  ;
+
+		if (m_o == ORIENTATION_UP)
+		{
+			if (m_y > 0){
+				if (m_board[m_x][m_y - 1] == 'x'){
+					status = false;}}
+			else
+				status = false;
+		}
+		if (m_o == ORIENTATION_DOWN)
+		{
+			if (m_y < HEIGHT){
+				if (m_board[m_x][m_y + 1] == 'x'){
+					status = false;}}
+			else
+				status = false;
+		}
+		if (m_o == ORIENTATION_RIGHT)
+		{
+			if (m_x < WIDTH){
+				if (m_board[m_x + 1][m_y] == 'x'){
+					status = false;}}
+			else
+				status = false;
+		}
+		if (m_o == ORIENTATION_LEFT)
+		{
+			if (m_x > 0){
+				if (m_board[m_x - 1][m_y] == 'x'){
+					status = false;}}
+			else
+				status = false;
+		}
+
+		return status;
+	}
+	/**
+	 * turn left 
+	 * @author ogeorgeon
+	 */
+	public boolean left()
+	{
+		m_o--;
+		
+		if (m_o < 0)
+			m_o = ORIENTATION_LEFT;
+
+		boolean status =  true  ;
+
+		if (m_o == ORIENTATION_UP)
+		{
+			if (m_y > 0){
+				if (m_board[m_x][m_y - 1] == 'x'){
+					status = false;}}
+			else
+				status = false;
+		}
+		if (m_o == ORIENTATION_DOWN)
+		{
+			if (m_y < HEIGHT){
+				if (m_board[m_x][m_y + 1] == 'x'){
+					status = false;}}
+			else
+				status = false;
+		}
+		if (m_o == ORIENTATION_RIGHT)
+		{
+			if (m_x < WIDTH){
+				if (m_board[m_x + 1][m_y] == 'x'){
+					status = false;}}
+			else
+				status = false;
+		}
+		if (m_o == ORIENTATION_LEFT)
+		{
+			if (m_x > 0){
+				if (m_board[m_x - 1][m_y] == 'x'){
+					status = false;}}
+			else
+				status = false;
+		}
+
+		return status;
+	}
+	/**
+	 * Move forward to the direction of the current orientation
+	 * @author ogeorgeon
+	 */
+	public boolean move()
+	{
+
+		boolean status = false;
+
+		if (m_o == ORIENTATION_UP)
+		{
+			if (m_y > 0) {
+				if  (m_board[m_x][m_y - 1] == ' ' )
+					{m_y--; status = true; }
+			} 
+		}
+		if (m_o == ORIENTATION_DOWN)
+		{
+			if (m_y < HEIGHT) {
+				if  (m_board[m_x][m_y + 1] == ' ' )
+					{m_y++; status = true; }
+			}
+		}
+		if (m_o == ORIENTATION_RIGHT)
+		{
+			if ( m_x < WIDTH ) {
+				if  (m_board[m_x + 1][m_y] == ' ' )
+					{m_x++; status = true; }
+			} 
+		}
+		if (m_o == ORIENTATION_LEFT)
+		{
+			if ( m_x > 0 ) {
+				if  (m_board[m_x - 1][m_y] == ' ' )
+					{m_x--; status = true; }
+			} 
+		}
+
+		if (!status)
+			System.out.println("Ouch");
+
+		return status;
+	}
+	/**
+	 * Touch the square forward
+	 * Succeeds if there is a wall, fails otherwise 
+	 * @author ogeorgeon
+	 */
+	public boolean Touch()
+	{
+
+		boolean status = true;
+
+		if (m_o == ORIENTATION_UP)
+		{
+		    if ((m_y > 0) && m_board[m_x][m_y - 1] == ' ')
+		    	status = false;
+		}
+		if (m_o == ORIENTATION_DOWN)
+		{
+			if ((m_y < HEIGHT) && m_board[m_x][m_y + 1] == ' ')
+				status = false;
+		}
+		if (m_o == ORIENTATION_RIGHT)
+		{
+		    if ((m_x < WIDTH) && m_board[m_x + 1][m_y] == ' ')
+		    	status = false;
+		}
+		if (m_o == ORIENTATION_LEFT)
+		{
+		    if ((m_x > 0) && m_board[m_x - 1][m_y] == ' ')
+		    	status = false;
+		}
+
+		return status;
+	}
 	
 }
