@@ -1,5 +1,7 @@
 package ernest;
 
+import java.util.List;
+
 /**
  * This factory class populates earnest with a set of concrete 
  * classes that represent a default implementation of ernest.  If you 
@@ -35,6 +37,32 @@ public class Factory implements IFactory
 		return Act.createAct(s, success, satisfaction);
 	}
 	
+	/**
+	 * Add a new schema to the listif it does not exist
+	 * If it exists, increments its weight
+	 * @author ogeorgeon
+	 * @return the new or existing schema
+	 */
+	public ISchema addSchema(List<ISchema> m_schemas, IAct context, IAct intention) 
+	{
+		ISchema newS = createSchema(m_schemas.size() + 1);
+		newS.setContextAct(context);
+		newS.setIntentionAct(intention);
+		newS.updateSuccessSatisfaction();		
+
+		int i = m_schemas.indexOf(newS);
+		if (i == -1)
+		{
+			m_schemas.add(newS);
+			System.out.println("Adding new schema: " + newS);
+			return newS;
+		}
+		else
+		{
+			return m_schemas.get(i);
+		}
+	}
+
 	public ISchema createSchema(int id)
 	{
 		return Schema.createSchema(id);

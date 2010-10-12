@@ -18,11 +18,6 @@ public class Algorithm implements IAlgorithm
 	private static Random m_rand = new Random(); 
 	
 	/**
-	 *  used to count the schemas and generate their id
-	 */
-	private static int m_schemaCount = 0; 
-	
-	/**
 	 * the environment that ernest is operating in...
 	 */
 	private IEnvironment m_env = Ernest.factory().getEnvironment();
@@ -54,9 +49,14 @@ public class Algorithm implements IAlgorithm
 	private List<IAct> m_baseContext = new ArrayList<IAct>();
 	
 	/**
-	 *  the act that was most recently enacted...
+	 *  the penultimate context, which is the context of the second previous decision cycle
 	 */
-	private IAct m_actualIntention = null;
+	private List<IAct> m_penultimateContext = new ArrayList<IAct>();
+	
+	/**
+	 *  the act that was actually enacted by the enactAct function
+	 */
+	private IAct m_enactedAct = null;
 
 	/**
 	 * Creates a new instance of this algorithm...
@@ -92,14 +92,15 @@ public class Algorithm implements IAlgorithm
 			
 			// enact the selected act...
 			// TODO the selected act should be anticipated
-			m_actualIntention = null;
-			boolean bSuccess = enactAct(s.getSuccessAct());
+			m_enactedAct = enactAct(s.getSuccessAct());
 			
 			// The previous current context becomes the base context
 			swapContext();
 			
 			// First learning mechanism...
-			learn1(bSuccess);
+			learn1();
+			// TODO learn from an incorrectly enacted secondary schema
+
 			
 			// determine the scope to be considered in the next 
 			// cycle...
@@ -107,139 +108,6 @@ public class Algorithm implements IAlgorithm
 		}
 	}
 	
-	/**
-	 * This method is called recursively as it performs a depth first search, following
-	 * the context branch first and then the intention branch.  As it encounters
-	 * primitive schema it enacts them.
-	 * @param a the act to be enacted
-	 * @return the success status of the enactment
-	 */
-	protected boolean enactAct(IAct a)
-	{
-		boolean bRet = true;
-		System.out.println("Enacting " + a);
-
-		// get the schema associated with the act that we need
-		// to enact...
-		ISchema s = a.getSchema();
-		
-		// if the schema is not primitive, then we need to search for
-		// a primitive schema to enact, so we search the context branch
-		// first, then the intention branch... 
-		if (!s.isPrimitive())
-		{
-			// first search the left branch (context)...
-			if (s.getContextAct() != null);
-				bRet = bRet && enactAct(s.getContextAct());
-				
-			// then search the right branch (intention)...
-			if (s.getIntentionAct() != null);
-				bRet = bRet && enactAct(s.getIntentionAct());
-		}
-		else
-		{
-			// we found a primitve shcema so enact it in the environment
-			// note: if a schema ever fails when enacted in the environment, 
-			// the return value will cause the recursively loop to halt because
-			// all recursive calls are predicated by bRet being equal to true,
-			// so a failure here will cause the entire method to unwind without
-			// enacting any further schema and then return false...
-			bRet = bRet && (a.isSuccess() == m_env.enactSchema(s));
-		}
-
-		// TODO: we only do this for primitive acts right now, 
-		// this prevents us from learning higher level schema that consist of 
-		// more than one primitive context and one primitive intention
-		// this code need to be upgraded to support more complex 
-		// schema learning...
-		if (a.getSchema().isPrimitive())
-		{
-			// set actualIntention equal to most recently enacted act
-			// if the act failed, we swap from success to failure or 
-			// failure to success...
-			if (bRet)
-			{
-				m_actualIntention = a;	
-			}
-			else
-			{
-				m_actualIntention = 
-					a.isSuccess() ? 
-							a.getSchema().getFailureAct() : 
-							a.getSchema().getSuccessAct();
-			}
-		}
-		
-		return bRet;
-	}
-
-	/**
-	 * The current context is passed to the base context 
-	 * The previous base context is lost
-	 * The current context is cleared
-	 * @author ogeorgeon
-	 */
-	protected void swapContext()
-	{
-		m_baseContext = new ArrayList<IAct>(m_context);
-		m_context.clear();
-	}
-	
-	/**
-	 * First learning mechanism:
-	 * Aggregate the base context with the enacted act
-	 * @param b a flag specifying if the previous act succeeded or failed.
-	 * @author mcohen
-	 * @author ogeorgeon
-	 */
-	protected void learn1(boolean b)
-	{
-		// For each act of the base context...
-		for (IAct a : m_baseContext)
-		{
-			// Build a new schema with the base context 
-			// and the enacted act to compare to the schema list
-			// The schemaCount won't be incremented if this schema already exists
-			ISchema newS = Ernest.factory().createSchema(m_schemaCount + 1);
-			newS.setContextAct(a);
-			newS.setIntentionAct(m_actualIntention);
-			newS.updateSuccessSatisfaction();			
-			
-			// Add the new schema to the list of all schemas,
-			// if the schema already exists, it will not be added
-			int i = m_schemas.indexOf(newS);
-			if (i != -1)
-			{
-				// newS now points to the existing schema
-				newS = m_schemas.get(i);
-				newS.incWeight();
-				System.out.println("Reinforcing existing schema: " + newS);
-			}
-			else
-			{
-				m_schemas.add(newS);
-				System.out.println("Adding new schema: " + newS);
-				m_schemaCount++;
-			}
-			// add the created act to the context
-			if (newS.getWeight() > Schema.REG_SENS_THRESH)
-			{
-				m_context.add(newS.getSuccessAct());
-			}
-		}
-		if (m_baseContext.isEmpty())
-			System.out.println("Base context is empty");
-
-		// Add the actually enacted act to the context
-		m_context.add(m_actualIntention);
-		// if the actually enacted act has a sub-intention, it also belongs to the context
-		if (m_actualIntention.getSchema().getIntentionAct() != null)
-		{
-			m_context.add(m_actualIntention.getSchema().getIntentionAct());			
-		}
-		
-	}
-
 	/**
 	 * Generates the list of activated schemas
 	 * Activated schemas are schemas whose context act belongs to the current context
@@ -253,8 +121,7 @@ public class Algorithm implements IAlgorithm
 		// clear the list of activations before we start adding more...
 		m_activations.clear();
 		
-		// Add all schema that match the context and have not yet been 
-		// proposed...
+		// Add all the schemas that match the context 
 		for (ISchema s : m_schemas)
 		{
 			if (!s.isPrimitive())
@@ -264,9 +131,10 @@ public class Algorithm implements IAlgorithm
 					if (s.getContextAct().equals(c))
 					{
 						IActivation a = Ernest.factory().createActivation(s);
+						// if not already in the list then add it (this verification is superfluous)
 						if (!m_activations.contains(a))
 							m_activations.add(a);
-							System.out.println(a);
+						System.out.println(a);
 					}
 				}
 			}
@@ -320,7 +188,6 @@ public class Algorithm implements IAlgorithm
 	 * @return the next schema that should be enacted
 	 * @author ogeorgeon
 	 */
-//	protected IAct pickBestIntention()
 	protected ISchema selectSchema()
 	{
 		// sort by weighted proposition...
@@ -348,7 +215,145 @@ public class Algorithm implements IAlgorithm
 	}
 
 	/**
-	 * Determines that schema will be considered in the next decision
+	 * This method is called recursively as it performs a depth first search, following
+	 * the context branch first and then the intention branch.  As it encounters
+	 * primitive schema it enacts them.
+	 * @author mcohen
+	 * @author ogeorgeon
+	 * @param a the act to be enacted
+	 * @return the act that was actually enacted
+	 */
+	protected IAct enactAct(IAct a)
+	{
+		System.out.println("Enacting " + a);
+
+		// get the schema associated with the act that we need
+		// to enact...
+		ISchema s = a.getSchema();
+		
+		// if the schema is not primitive, then we need to search for
+		// a primitive schema to enact, so we search the context branch
+		// first, then the intention branch... 
+		if (!s.isPrimitive())
+		{
+			// first search the left branch (context)...
+			// TODO debug the construction of the actually enacted act
+			IAct c = enactAct(s.getContextAct()) ;
+			if (c == s.getContextAct())
+			{
+				// then the right branch (intention)...
+				IAct i = enactAct(s.getIntentionAct()); 
+				if ( i == s.getIntentionAct())
+				{
+					// the enacted act is the intended act
+					return a;
+				}
+				else
+				{
+					// the enacted schema is the previously enacted context with the actually enacted intention
+					ISchema newS = Ernest.factory().addSchema(m_schemas, c, i);
+					return 	newS.getSuccessAct(); 					
+				}
+			}
+			else
+			{
+				// The enacted act is the actually enacted context
+				return 	c; 
+			}
+		}
+		else
+		{
+			// We found a primitive schema so enact it in the environment
+			// Return the actually enacted primitive act (may be that intended or not)
+			if (m_env.enactSchema(s))
+			{
+				return a.getSchema().getSuccessAct();
+			}
+			else
+			{
+				return 	a.getSchema().getFailureAct();
+			}
+		}
+	}
+
+	/**
+	 * The current base context is passed to the penultimate context 
+	 * The current context is passed to the base context
+	 * The previous penultimate context is lost
+	 * The current context is replaced by the actually enacted act
+	 * @author ogeorgeon
+	 */
+	protected void swapContext()
+	{
+		m_penultimateContext = new ArrayList<IAct>(m_baseContext);
+		
+		m_baseContext = new ArrayList<IAct>(m_context);
+		if (m_baseContext.isEmpty())
+			System.out.println("Base context is empty");
+
+		m_context.clear();
+
+		// Add the actually enacted act to the context
+		m_context.add(m_enactedAct);
+		// if the actually enacted act is not primitive, its intention also belongs to the context
+		if (!m_enactedAct.getSchema().isPrimitive())
+		{
+			m_context.add(m_enactedAct.getSchema().getIntentionAct());			
+		}
+		
+	}
+	
+	/**
+	 * First learning mechanism:
+	 * Aggregate the base context with the enacted act
+	 * @author mcohen
+	 * @author ogeorgeon
+	 */
+	protected void learn1()
+	{
+		// For each act of the base context...
+		for (IAct a : m_baseContext)
+		{
+			// Build a new schema with the base context 
+			// and the enacted act to compare to the schema list
+			ISchema newS = Ernest.factory().addSchema(m_schemas, a, m_enactedAct);
+			newS.incWeight();
+			System.out.println("Reinfocing schema " + newS);
+			
+			// add the created act to the context
+			if (newS.getWeight() > Schema.REG_SENS_THRESH)
+			{
+				m_context.add(newS.getSuccessAct());
+			}
+		}
+	}
+
+	/**
+	 * Second learning mechanism:
+	 * Aggregate the penultimate context with the activated schemas that are successfully enacted
+	 * @author ogeorgeon
+	 */
+	protected void learn2()
+	{
+		// For each act of the penultimate context...
+		for (IAct a : m_penultimateContext)
+		{
+			// Build a new schema with the penultimate context 
+			// and the succeeding activated schemas
+			ISchema newS = Ernest.factory().addSchema(m_schemas, a, m_enactedAct);
+			newS.incWeight();
+			System.out.println("Reinfocing schema " + newS);
+			
+			// add the created act to the context
+			if (newS.getWeight() > Schema.REG_SENS_THRESH)
+			{
+				m_context.add(newS.getSuccessAct());
+			}
+		}
+	}
+
+	/**
+	 * Determines what schema will be considered in the next decision
 	 * cycle.
 	 */
 	protected void assessScope()
@@ -371,7 +376,6 @@ public class Algorithm implements IAlgorithm
 	{
 		// start off with all primitive schema supported
 		// by the environment...
-		m_schemaCount = m_schemaCount + 4;
 		m_schemas.addAll(m_env.getPrimitiveSchema());
 	}
 }
