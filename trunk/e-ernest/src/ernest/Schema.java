@@ -15,8 +15,8 @@ public class Schema implements ISchema
 	public static final int REG_SENS_THRESH = 4;	
 	
 	private int m_weight = Integer.MIN_VALUE; 
-	private IAct m_successAct = null;
-	private IAct m_failureAct = null;
+	private IAct m_succeedingAct = null;
+	private IAct m_failingAct = null;
 	private IAct m_contextAct = null;
 	private IAct m_intentionAct = null;	
 	private int m_id;
@@ -29,17 +29,17 @@ public class Schema implements ISchema
 	public static ISchema createSchema(int id, String tag, int successSat, int failureSat)
 	{ return new Schema(id, tag, successSat, failureSat); }
 	
-	public IAct getSuccessAct() 
-	{	return m_successAct; }
+	public IAct getSucceedingAct() 
+	{	return m_succeedingAct; }
 
-	public IAct getFailureAct() 
-	{	return m_failureAct; }
+	public IAct getFailingAct() 
+	{	return m_failingAct; }
 
-	public void setSuccessAct(IAct a)
-	{ m_successAct = a;	}
+	public void setSucceedingAct(IAct a)
+	{ m_succeedingAct = a;	}
 
-	public void setFailureAct(IAct a)
-	{ m_failureAct = a;	}
+	public void setFailingAct(IAct a)
+	{ m_failingAct = a;	}
 		
 	public IAct getContextAct() 
 	{ return m_contextAct; }
@@ -62,20 +62,42 @@ public class Schema implements ISchema
 	public void incWeight()
 	{ m_weight++; }
 	
-	public void updateSuccessSatisfaction() 
+	/**
+	 * Initialize or reinitialize the schema's succeeding act 
+	 * @author mcohen
+	 * @author ogeorgeon
+	 */
+	public void initSucceedingAct() 
 	{
 		if (!isPrimitive())
 		{
-			m_tag = m_contextAct.getTag() + "-" + m_intentionAct.getTag(); 
-			m_contextAct.getSchema().updateSuccessSatisfaction();
-			m_intentionAct.getSchema().updateSuccessSatisfaction();
-			if (m_successAct == null)
-				m_successAct = Ernest.factory().createAct(this,true, (m_contextAct.getSat() + 
+			m_tag = "(" + m_contextAct.getTag() + "-" + m_intentionAct.getTag() + ")"; 
+			if (m_succeedingAct == null)
+				m_succeedingAct = Ernest.factory().createAct(this,true, (m_contextAct.getSat() + 
 											       		  m_intentionAct.getSat()));
 			else
-				m_successAct.setSat(m_contextAct.getSat() + 
+				m_succeedingAct.setSat(m_contextAct.getSat() + 
 											 m_intentionAct.getSat());
 		}
+	}
+	
+	/**
+	 * Initialize or reinitialize the schema's failing act
+	 * @return the failing act 
+	 * @author ogeorgeon
+	 */
+	public IAct initFailingAct(int satisfaction) 
+	{
+		if (!isPrimitive())
+		{
+			if (m_failingAct == null)
+				m_failingAct = Ernest.factory().createAct(this,false, satisfaction);
+			else
+				// If the failing act already exists then 
+				//  its satisfaction is averaged with the previous value
+				m_failingAct.setSat((m_failingAct.getSat() + satisfaction)/2);
+		}
+		return m_failingAct;
 	}
 	
 	/**
@@ -124,7 +146,7 @@ public class Schema implements ISchema
 	public String toString()
 	{
 		String s = String.format("[S%s, %s, %s, (S:%s F:%s) (C:%s, I:%s)]", 
-				hashCode(), getTag(), getWeight(), getSuccessAct(), getFailureAct(), getContextAct(), getIntentionAct());  
+				hashCode(), getTag(), getWeight(), getSucceedingAct(), getFailingAct(), getContextAct(), getIntentionAct());  
 		return s;
 	}
 
@@ -141,7 +163,7 @@ public class Schema implements ISchema
 		m_tag = tag;
 		m_isPrimitive = true;
 		m_weight = REG_SENS_THRESH + 1;
-		m_successAct = Ernest.factory().createAct(this, true, successSat);
-		m_failureAct = Ernest.factory().createAct(this, false, failureSat);
+		m_succeedingAct = Ernest.factory().createAct(this, true, successSat);
+		m_failingAct = Ernest.factory().createAct(this, false, failureSat);
 	}
 }
