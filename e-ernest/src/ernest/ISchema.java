@@ -9,10 +9,13 @@ package ernest;
  */
 public interface ISchema 
 {
-	public IAct getSuccessAct();
-	public IAct getFailureAct();
-	public void setSuccessAct(IAct a);
-	public void setFailureAct(IAct a);
+	public IAct getSucceedingAct();
+	public IAct getFailingAct();
+	public void setSucceedingAct(IAct a);
+	public void setFailingAct(IAct a);
+	
+	public void initSucceedingAct();
+	public IAct initFailingAct(int Satisfaction);
 	
 	public IAct getContextAct();
 	public IAct getIntentionAct();
@@ -22,6 +25,5 @@ public interface ISchema
 	public String getTag(); 
 	public int getWeight();
 	public boolean isPrimitive();
-	public void updateSuccessSatisfaction();
 	public void incWeight();
 }

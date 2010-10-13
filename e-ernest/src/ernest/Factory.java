@@ -48,7 +48,7 @@ public class Factory implements IFactory
 		ISchema newS = createSchema(m_schemas.size() + 1);
 		newS.setContextAct(context);
 		newS.setIntentionAct(intention);
-		newS.updateSuccessSatisfaction();		
+		newS.initSucceedingAct();		
 
 		int i = m_schemas.indexOf(newS);
 		if (i == -1)

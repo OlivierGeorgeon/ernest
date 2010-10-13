@@ -54,6 +54,11 @@ public class Algorithm implements IAlgorithm
 	private List<IAct> m_penultimateContext = new ArrayList<IAct>();
 	
 	/**
+	 *  the act that is intended to be enacted
+	 */
+	private IAct m_intentionAct = null;
+
+	/**
 	 *  the act that was actually enacted by the enactAct function
 	 */
 	private IAct m_enactedAct = null;
@@ -90,15 +95,20 @@ public class Algorithm implements IAlgorithm
 			// select the next schema to enact...
 			ISchema s = selectSchema();
 			
-			// enact the selected act...
+			// predict the intention act
 			// TODO the selected act should be anticipated
-			m_enactedAct = enactAct(s.getSuccessAct());
+			m_intentionAct = s.getSucceedingAct();
+			
+			// enact the selected act...
+			m_enactedAct = enactAct(m_intentionAct);
 			
 			// The previous current context becomes the base context
 			swapContext();
 			
-			// First learning mechanism...
+			// Learning mechanism...
 			learn1();
+			learnFromIncorrectEnaction();
+			
 			// TODO learn from an incorrectly enacted secondary schema
 
 			
@@ -161,7 +171,7 @@ public class Algorithm implements IAlgorithm
 			}
 		}
 		
-		// next, propose all schema that are proposed by the activated schemas
+		// next, propose all the schemas that are proposed by the activated schemas
 		for (IActivation a : m_activations)
 		{
 			ISchema s = a.getIntention().getSchema();
@@ -252,7 +262,7 @@ public class Algorithm implements IAlgorithm
 				{
 					// the enacted schema is the previously enacted context with the actually enacted intention
 					ISchema newS = Ernest.factory().addSchema(m_schemas, c, i);
-					return 	newS.getSuccessAct(); 					
+					return 	newS.getSucceedingAct(); 					
 				}
 			}
 			else
@@ -267,11 +277,11 @@ public class Algorithm implements IAlgorithm
 			// Return the actually enacted primitive act (may be that intended or not)
 			if (m_env.enactSchema(s))
 			{
-				return a.getSchema().getSuccessAct();
+				return a.getSchema().getSucceedingAct();
 			}
 			else
 			{
-				return 	a.getSchema().getFailureAct();
+				return 	a.getSchema().getFailingAct();
 			}
 		}
 	}
@@ -295,6 +305,7 @@ public class Algorithm implements IAlgorithm
 
 		// Add the actually enacted act to the context
 		m_context.add(m_enactedAct);
+		
 		// if the actually enacted act is not primitive, its intention also belongs to the context
 		if (!m_enactedAct.getSchema().isPrimitive())
 		{
@@ -303,6 +314,42 @@ public class Algorithm implements IAlgorithm
 		
 	}
 	
+	/**
+	 * Learning from incorrect enaction
+	 * The intention's failing act is updated and becomes part of the next context
+	 * The intention's failing act is added to the context when needed
+	 * @author ogeorgeon
+	 */
+	protected void learnFromIncorrectEnaction()
+	{
+		// for non primitive intentions
+		if (!m_intentionAct.getSchema().isPrimitive())
+		{
+			// if the enacted act is not that intended
+			if (m_enactedAct != m_intentionAct)
+			{
+				// if intended to succeed
+				if (m_intentionAct.isSuccess())
+				{
+					// Initialize or update the intention's failing act from the actually enacted act's satisfaction
+					IAct a = m_intentionAct.getSchema().initFailingAct(m_enactedAct.getSat());
+					// add the filing act to the context
+					m_context.add(a);
+					System.out.println("failing act  " + m_intentionAct.getSchema().getFailingAct());					
+				}
+				// if intended to fail
+				else
+				{
+					// if failed indeed then add the intention to the context
+					if (m_enactedAct.getSchema() != m_intentionAct.getSchema())
+						m_context.add(m_intentionAct);
+					// if accidentally succeeded then nothing more to do
+				}
+			}
+		}
+		// nothing to do for primitive intentions
+	}
+
 	/**
 	 * First learning mechanism:
 	 * Aggregate the base context with the enacted act
@@ -323,7 +370,7 @@ public class Algorithm implements IAlgorithm
 			// add the created act to the context
 			if (newS.getWeight() > Schema.REG_SENS_THRESH)
 			{
-				m_context.add(newS.getSuccessAct());
+				m_context.add(newS.getSucceedingAct());
 			}
 		}
 	}
@@ -347,7 +394,7 @@ public class Algorithm implements IAlgorithm
 			// add the created act to the context
 			if (newS.getWeight() > Schema.REG_SENS_THRESH)
 			{
-				m_context.add(newS.getSuccessAct());
+				m_context.add(newS.getSucceedingAct());
 			}
 		}
 	}
