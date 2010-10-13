@@ -99,15 +99,17 @@ public class Algorithm implements IAlgorithm
 			// TODO the selected act should be anticipated
 			m_intentionAct = s.getSucceedingAct();
 			
+			// the previous current context becomes the base context
+			swapContext();
+			
 			// enact the selected act...
 			m_enactedAct = enactAct(m_intentionAct);
 			
-			// The previous current context becomes the base context
-			swapContext();
+			setEnactedContext();
 			
-			// Learning mechanism...
+			// learning mechanism...
+			learnFromIncorrectEnaction(m_intentionAct, m_enactedAct);
 			learn1();
-			learnFromIncorrectEnaction();
 			
 			// TODO learn from an incorrectly enacted secondary schema
 
@@ -247,7 +249,7 @@ public class Algorithm implements IAlgorithm
 		if (!s.isPrimitive())
 		{
 			// first search the left branch (context)...
-			// TODO debug the construction of the actually enacted act
+			// TODO check the construction of the actually enacted act
 			IAct c = enactAct(s.getContextAct()) ;
 			if (c == s.getContextAct())
 			{
@@ -255,20 +257,55 @@ public class Algorithm implements IAlgorithm
 				IAct i = enactAct(s.getIntentionAct()); 
 				if ( i == s.getIntentionAct())
 				{
-					// the enacted act is the intended act
-					return a;
+					// If intended to succeed then the enaction is correct
+					if (a.isSuccess())
+						// returns the intended act
+						return a;
+					// If intended to fail then the enaction is incorrect					
+					else
+						// the enacted schema is the previously enacted context with the actually enacted intention
+						{
+							ISchema newS = Ernest.factory().addSchema(m_schemas, c, i);
+							// m_context.add(newS.getSucceedingAct());
+							System.out.println("incorrectly enacted act  " + a);					
+							System.out.println("enacted context " + newS.getSucceedingAct());					
+							return 	newS.getSucceedingAct();
+						}
 				}
+				// the intention is incorrectly enacted
 				else
 				{
-					// the enacted schema is the previously enacted context with the actually enacted intention
-					ISchema newS = Ernest.factory().addSchema(m_schemas, c, i);
-					return 	newS.getSucceedingAct(); 					
+					// if intended to succeed then the enaction is incorrect
+					if (a.isSuccess())
+					{
+						// the enacted schema is the previously enacted context with the actually enacted intention
+						ISchema newS = Ernest.factory().addSchema(m_schemas, c, i);
+						// m_context.add(newS.getSucceedingAct());
+						System.out.println("incorrectly enacted act  " + a);					
+						System.out.println("enacted context " + newS.getSucceedingAct());					
+						return 	newS.getSucceedingAct();
+					}
+					// if intended to fail then the enaction is correct
+					else
+						return a;
 				}
 			}
+			// the context is incorrectly enacted
 			else
 			{
-				// The enacted act is the actually enacted context
-				return 	c; 
+				// If intended to succeed then the enaction is incorrect
+				if (a.isSuccess())
+				{
+					// returns the enacted context 
+					// m_context.add(c);
+					System.out.println("incorrectly enacted act  " + a);					
+					System.out.println("enacted context " + c);					
+					return 	c;
+				}
+				// If intended to fail then the enaction is correct
+				else
+					// returns the intended failing act
+					return a;
 			}
 		}
 		else
@@ -290,7 +327,6 @@ public class Algorithm implements IAlgorithm
 	 * The current base context is passed to the penultimate context 
 	 * The current context is passed to the base context
 	 * The previous penultimate context is lost
-	 * The current context is replaced by the actually enacted act
 	 * @author ogeorgeon
 	 */
 	protected void swapContext()
@@ -302,7 +338,15 @@ public class Algorithm implements IAlgorithm
 			System.out.println("Base context is empty");
 
 		m_context.clear();
+	}
 
+	/**
+	 * The actually enacted act is added to the context
+	 * as well as its possible intention
+	 * @author ogeorgeon
+	 */
+	protected void setEnactedContext()
+	{
 		// Add the actually enacted act to the context
 		m_context.add(m_enactedAct);
 		
@@ -310,8 +354,7 @@ public class Algorithm implements IAlgorithm
 		if (!m_enactedAct.getSchema().isPrimitive())
 		{
 			m_context.add(m_enactedAct.getSchema().getIntentionAct());			
-		}
-		
+		}		
 	}
 	
 	/**
@@ -320,29 +363,29 @@ public class Algorithm implements IAlgorithm
 	 * The intention's failing act is added to the context when needed
 	 * @author ogeorgeon
 	 */
-	protected void learnFromIncorrectEnaction()
+	protected void learnFromIncorrectEnaction(IAct intention, IAct enacted)
 	{
 		// for non primitive intentions
-		if (!m_intentionAct.getSchema().isPrimitive())
+		if (!intention.getSchema().isPrimitive())
 		{
 			// if the enacted act is not that intended
-			if (m_enactedAct != m_intentionAct)
+			if (enacted != intention)
 			{
 				// if intended to succeed
-				if (m_intentionAct.isSuccess())
+				if (intention.isSuccess())
 				{
 					// Initialize or update the intention's failing act from the actually enacted act's satisfaction
-					IAct a = m_intentionAct.getSchema().initFailingAct(m_enactedAct.getSat());
+					IAct a = intention.getSchema().initFailingAct(enacted.getSat());
 					// add the filing act to the context
 					m_context.add(a);
-					System.out.println("failing act  " + m_intentionAct.getSchema().getFailingAct());					
+					System.out.println("failing act  " + intention.getSchema().getFailingAct());					
 				}
 				// if intended to fail
 				else
 				{
 					// if failed indeed then add the intention to the context
-					if (m_enactedAct.getSchema() != m_intentionAct.getSchema())
-						m_context.add(m_intentionAct);
+					if (enacted.getSchema() != intention.getSchema())
+						m_context.add(intention);
 					// if accidentally succeeded then nothing more to do
 				}
 			}
@@ -353,6 +396,7 @@ public class Algorithm implements IAlgorithm
 	/**
 	 * First learning mechanism:
 	 * Aggregate the base context with the enacted act
+	 * TODO learn from failing act
 	 * @author mcohen
 	 * @author ogeorgeon
 	 */
