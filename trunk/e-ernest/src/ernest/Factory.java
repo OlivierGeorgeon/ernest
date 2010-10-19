@@ -73,14 +73,9 @@ public class Factory implements IFactory
 		return Schema.createSchema(id, tag, successSat, failureSat);
 	}
 	
-	public IProposition createProposition(ISchema schema, int w)
+	public IProposition createProposition(ISchema schema, int weight, int expectation)
 	{
-		return Proposition.createProposition(schema, w);
-	}
-
-	public IActivation createActivation(ISchema schema)
-	{
-		return Activation.createActivation(schema);
+		return Proposition.createProposition(schema, weight, expectation);
 	}
 
 }

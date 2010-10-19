@@ -11,18 +11,25 @@ package ernest;
 {
 	private ISchema m_schema = null;
 	private Integer m_weight = null;
+	private Integer m_expectation = null;
 	
-	public static IProposition createProposition(ISchema s, int w)
-	{ return new Proposition(s,w); }
+	public static IProposition createProposition(ISchema s, int w, int e)
+	{ return new Proposition(s,w,e); }
 	
+	public void update(int w, int e)
+	{
+		m_weight += w;
+		m_expectation += e;
+	}
+
 	public int getWeight()
 	{
 		return m_weight.intValue();
 	}
 
-	public void addWeight(int w)
+	public int getExpectation()
 	{
-		m_weight += w;
+		return m_expectation.intValue();
 	}
 
 	public ISchema getSchema()
@@ -66,9 +73,10 @@ package ernest;
 		return s;
 	}
 	
-	private Proposition(ISchema s, int w)
+	private Proposition(ISchema s, int w, int e)
 	{
 		m_schema = s;
 		m_weight = w;
+		m_expectation = e;
 	}
 }

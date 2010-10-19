@@ -26,4 +26,7 @@ public interface ISchema
 	public int getWeight();
 	public boolean isPrimitive();
 	public void incWeight();
+	
+	public boolean isActivated();
+	public void setActivated(boolean b);
 }

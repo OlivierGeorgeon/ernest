@@ -33,12 +33,6 @@ public class Algorithm implements IAlgorithm
 	private List<IProposition> m_proposals = new ArrayList<IProposition>();	
 	
 	/**
-	 *  a list of the activated schemas
-	 * @author ogeorgeon
-	 */
-	private List<IActivation> m_activations = new ArrayList<IActivation>();	
-	
-	/**
 	 *  the current context, which is a list of some of the most recently enacted acts...
 	 */
 	private List<IAct> m_context = new ArrayList<IAct>();
@@ -87,23 +81,19 @@ public class Algorithm implements IAlgorithm
 			for (ISchema s : m_schemas)
 				System.out.println(s);
 			
-			// activate the schemas that match the current context
-			activate();			
 			// create a proposition list of possible intention schemas
 			propose();
 			
-			// select the next schema to enact...
-			ISchema s = selectSchema();
-			
-			// predict the intention act
-			// TODO the selected act should be anticipated
-			m_intentionAct = s.getSucceedingAct();
+			// Determines the next act to enact...
+			m_intentionAct = selectAct();
 			
 			// the previous current context becomes the base context
 			swapContext();
 			
 			// enact the selected act...
 			m_enactedAct = enactAct(m_intentionAct);
+			System.out.println("Enacted " + m_enactedAct );
+
 			
 			setEnactedContext();
 			
@@ -121,86 +111,71 @@ public class Algorithm implements IAlgorithm
 	}
 	
 	/**
-	 * Generates the list of activated schemas
-	 * Activated schemas are schemas whose context act belongs to the current context
+	 * Generates the list of proposed schemas
+	 * Activate the schemas whose context act belongs to the current context
 	 * @author ogeorgeon
 	 */
-	protected void activate()
+	protected void propose()
 	{
 
-		System.out.println("Activations:");
-
-		// clear the list of activations before we start adding more...
-		m_activations.clear();
+		// Clear the previous proposal list
+		m_proposals.clear();
 		
-		// Add all the schemas that match the context 
+		// Browse all the schemas 
 		for (ISchema s : m_schemas)
 		{
 			if (!s.isPrimitive())
 			{
+				// Activate the schemas that match the context 
+				s.setActivated(false);
 				for (IAct c : m_context)
 				{
 					if (s.getContextAct().equals(c))
 					{
-						IActivation a = Ernest.factory().createActivation(s);
-						// if not already in the list then add it (this verification is superfluous)
-						if (!m_activations.contains(a))
-							m_activations.add(a);
-						System.out.println(a);
+						s.setActivated(true);
+						System.out.println("Activating " + s);
+					}
+				}
+				
+				// Activated schemas propose their intention
+				if (s.isActivated());
+				{
+					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
+					int w = s.getWeight() * s.getIntentionAct().getSat();
+					// The expectation is the proposing schema's weight signed with the proposed act's status  
+					int e = s.getWeight() * (s.getIntentionAct().isSuccess() ? 1 : -1);
+					
+					IProposition p = Ernest.factory().createProposition(s.getIntentionAct().getSchema(), w, e);
+					int i = m_proposals.indexOf(p);
+					if (i == -1)
+						m_proposals.add(p);
+					else
+					{
+						m_proposals.get(i).update(w, e);
 					}
 				}
 			}
-		}
-	}
 
-	/**
-	 * Determines what acts should be proposed and the weight of these
-	 * proposals.  
-	 * @author ogeorgeon
-	 * @author mcohen
-	 */
-	protected void propose()
-	{
-		// clear the list of proposals before we start adding more...
-		m_proposals.clear();
-		
-		// first, propose all schema that meet the threshold...
-		for (ISchema s : m_schemas)
-		{
+			// Schemas that pass the threshold also receive a default proposition for themselves
 			if (s.getWeight() > Schema.REG_SENS_THRESH)
 			{
-				m_proposals.add(Ernest.factory().createProposition(s, 1));
+				IProposition p = Ernest.factory().createProposition(s, 0, 0);
+				if (!m_proposals.contains(p))
+					m_proposals.add(p);
 			}
 		}
-		
-		// next, propose all the schemas that are proposed by the activated schemas
-		for (IActivation a : m_activations)
-		{
-			ISchema s = a.getIntention().getSchema();
-			int w = a.getWeight();
-			IProposition p = Ernest.factory().createProposition(s, w);
-			int i = m_proposals.indexOf(p);
-			if (i == -1)
-			{
-				m_proposals.add(p);
-			}
-			else
-			{
-				m_proposals.get(i).addWeight(w);
-			}
-		}
-		
+
 		System.out.println("Proposals:");
 		for (IProposition p : m_proposals)
 			System.out.println(p);
 	}
 
 	/**
-	 * Selects the intention schema with the highest proposition
-	 * @return the next schema that should be enacted
+	 * Select the intention schema with the highest proposition
+	 * @return the next act that should be enacted
 	 * @author ogeorgeon
 	 */
-	protected ISchema selectSchema()
+	protected IAct selectAct()
 	{
 		// sort by weighted proposition...
 		Collections.sort(m_proposals);
@@ -218,12 +193,15 @@ public class Algorithm implements IAlgorithm
 		// pick one at random from the top the proposal list
 		// count is equal to the number of proposals that are tied...
 
-		ISchema s = m_proposals.get(m_rand.nextInt(count)).getSchema();
+		IProposition p = m_proposals.get(m_rand.nextInt(count));
 		
-		System.out.println("Select:");
-		System.out.println(s);
+		ISchema s = p.getSchema();
+		
+		IAct a = (p.getExpectation() >= 0 ? s.getSucceedingAct() : s.getFailingAct());
+		
+		System.out.println("Select:" + a);
 
-		return s ;
+		return a ;
 	}
 
 	/**
@@ -237,7 +215,7 @@ public class Algorithm implements IAlgorithm
 	 */
 	protected IAct enactAct(IAct a)
 	{
-		System.out.println("Enacting " + a);
+		// System.out.println("Enacting " + a);
 
 		// get the schema associated with the act that we need
 		// to enact...
