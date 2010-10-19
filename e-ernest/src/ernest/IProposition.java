@@ -12,7 +12,9 @@ public interface IProposition extends Comparable<IProposition>
 {
 	public int getWeight();
 	
-	public void addWeight(int w);
+	public void update(int w, int e);
+
+	public int getExpectation();
 	
 	public ISchema getSchema();
 		

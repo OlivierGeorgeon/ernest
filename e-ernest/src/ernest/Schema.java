@@ -22,6 +22,8 @@ public class Schema implements ISchema
 	private int m_id;
 	private String m_tag = null; 
 	private boolean m_isPrimitive = true;
+	
+	private boolean m_isActivated = false;
 
 	public static ISchema createSchema(int id)
 	{ return new Schema(id); }
@@ -166,4 +168,15 @@ public class Schema implements ISchema
 		m_succeedingAct = Ernest.factory().createAct(this, true, successSat);
 		m_failingAct = Ernest.factory().createAct(this, false, failureSat);
 	}
+
+	public boolean isActivated() 
+	{
+		return m_isActivated;
+	}
+
+	public void setActivated(boolean b) 
+	{
+		m_isActivated = b;
+	}
+
 }
