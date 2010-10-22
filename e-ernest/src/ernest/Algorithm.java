@@ -54,8 +54,25 @@ public class Algorithm implements IAlgorithm
 
 	/**
 	 *  the act that was actually enacted by the enactAct function
+	 *  may be a succeeding lower-level act if the enaction was incorrect 
 	 */
 	private IAct m_enactedAct = null;
+
+	/**
+	 *  the current-level act that was enacted 
+	 *  either the succeeding or failing intended act 
+	 */
+	private IAct m_performedAct = null;
+
+	/**
+	 *  the previous performed act 
+	 */
+	private IAct m_basePerformedAct = null;
+
+	/**
+	 *  the act made from the two previously performed acts 
+	 */
+	private IAct m_streamAct = null;
 
 	/**
 	 * Creates a new instance of this algorithm...
@@ -93,20 +110,20 @@ public class Algorithm implements IAlgorithm
 			// enact the selected act...
 			m_enactedAct = enactAct(m_intentionAct);
 			System.out.println("Enacted " + m_enactedAct );
-
 			
-			setEnactedContext();
+			// Determine the performed act
+			m_performedAct = setPerformedAct(m_intentionAct, m_enactedAct);
+			System.out.println("Performed " + m_performedAct );
 			
-			// learning mechanism...
-			learnFromIncorrectEnaction(m_intentionAct, m_enactedAct);
-			learn1();
+			updateContext();
 			
-			// TODO learn from an incorrectly enacted secondary schema
-
+			// learn from the performed act
+			m_streamAct = learn(m_baseContext, m_performedAct);
+			System.out.println("Streaming " + m_streamAct );
 			
-			// determine the scope to be considered in the next 
-			// cycle...
-			assessScope();
+			// learn from the stream act
+			learn(m_penultimateContext, m_streamAct);
+			
 		}
 	}
 	
@@ -133,12 +150,12 @@ public class Algorithm implements IAlgorithm
 					if (s.getContextAct().equals(c))
 					{
 						s.setActivated(true);
-						System.out.println("Activating " + s);
+						System.out.println("Activate " + s);
 					}
 				}
 				
 				// Activated schemas propose their intention
-				if (s.isActivated());
+				if (s.isActivated())
 				{
 					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
 					int w = s.getWeight() * s.getIntentionAct().getSat();
@@ -146,6 +163,7 @@ public class Algorithm implements IAlgorithm
 					int e = s.getWeight() * (s.getIntentionAct().isSuccess() ? 1 : -1);
 					
 					IProposition p = Ernest.factory().createProposition(s.getIntentionAct().getSchema(), w, e);
+
 					int i = m_proposals.indexOf(p);
 					if (i == -1)
 						m_proposals.add(p);
@@ -165,7 +183,7 @@ public class Algorithm implements IAlgorithm
 			}
 		}
 
-		System.out.println("Proposals:");
+		System.out.println("Propose: ");
 		for (IProposition p : m_proposals)
 			System.out.println(p);
 	}
@@ -314,6 +332,8 @@ public class Algorithm implements IAlgorithm
 		m_baseContext = new ArrayList<IAct>(m_context);
 		if (m_baseContext.isEmpty())
 			System.out.println("Base context is empty");
+		
+		m_basePerformedAct = m_performedAct;
 
 		m_context.clear();
 	}
@@ -323,10 +343,12 @@ public class Algorithm implements IAlgorithm
 	 * as well as its possible intention
 	 * @author ogeorgeon
 	 */
-	protected void setEnactedContext()
+	protected void updateContext()
 	{
 		// Add the actually enacted act to the context
 		m_context.add(m_enactedAct);
+		if (m_enactedAct != m_performedAct)
+			m_context.add(m_performedAct);
 		
 		// if the actually enacted act is not primitive, its intention also belongs to the context
 		if (!m_enactedAct.getSchema().isPrimitive())
@@ -340,8 +362,9 @@ public class Algorithm implements IAlgorithm
 	 * The intention's failing act is updated and becomes part of the next context
 	 * The intention's failing act is added to the context when needed
 	 * @author ogeorgeon
+	 * @return the current act is the enacted at at the level of the initial intention
 	 */
-	protected void learnFromIncorrectEnaction(IAct intention, IAct enacted)
+	protected IAct setPerformedAct(IAct intention, IAct enacted)
 	{
 		// for non primitive intentions
 		if (!intention.getSchema().isPrimitive())
@@ -352,90 +375,58 @@ public class Algorithm implements IAlgorithm
 				// if intended to succeed
 				if (intention.isSuccess())
 				{
-					// Initialize or update the intention's failing act from the actually enacted act's satisfaction
+					// Initialize or update the intention's failing act using the actually enacted act's satisfaction
 					IAct a = intention.getSchema().initFailingAct(enacted.getSat());
-					// add the filing act to the context
-					m_context.add(a);
+					// returns the filing act
 					System.out.println("failing act  " + intention.getSchema().getFailingAct());					
+					return a;
 				}
 				// if intended to fail
 				else
 				{
-					// if failed indeed then add the intention to the context
+					// if failed indeed then returns the intention
 					if (enacted.getSchema() != intention.getSchema())
-						m_context.add(intention);
+						return intention;
 					// if accidentally succeeded then nothing more to do
 				}
 			}
 		}
-		// nothing to do for primitive intentions
+		// other cases, the current act equals the enacted act 
+		return enacted;
 	}
 
 	/**
-	 * First learning mechanism:
-	 * Aggregate the base context with the enacted act
+	 * Learn from an enacted act after the base context
 	 * TODO learn from failing act
 	 * @author mcohen
 	 * @author ogeorgeon
 	 */
-	protected void learn1()
+	protected IAct learn(List<IAct> context, IAct enacted)
 	{
+		IAct r = null;
+		
 		// For each act of the base context...
-		for (IAct a : m_baseContext)
+		for (IAct a : context)
 		{
 			// Build a new schema with the base context 
 			// and the enacted act to compare to the schema list
-			ISchema newS = Ernest.factory().addSchema(m_schemas, a, m_enactedAct);
+			ISchema newS = Ernest.factory().addSchema(m_schemas, a, enacted);
 			newS.incWeight();
 			System.out.println("Reinfocing schema " + newS);
+			
+			// returns the act made from the previously performed act
+			if (a == m_basePerformedAct)
+				r = newS.getSucceedingAct();
 			
 			// add the created act to the context
 			if (newS.getWeight() > Schema.REG_SENS_THRESH)
 			{
-				m_context.add(newS.getSucceedingAct());
+				context.add(newS.getSucceedingAct());
 			}
 		}
+		return r; 
 	}
 
-	/**
-	 * Second learning mechanism:
-	 * Aggregate the penultimate context with the activated schemas that are successfully enacted
-	 * @author ogeorgeon
-	 */
-	protected void learn2()
-	{
-		// For each act of the penultimate context...
-		for (IAct a : m_penultimateContext)
-		{
-			// Build a new schema with the penultimate context 
-			// and the succeeding activated schemas
-			ISchema newS = Ernest.factory().addSchema(m_schemas, a, m_enactedAct);
-			newS.incWeight();
-			System.out.println("Reinfocing schema " + newS);
-			
-			// add the created act to the context
-			if (newS.getWeight() > Schema.REG_SENS_THRESH)
-			{
-				m_context.add(newS.getSucceedingAct());
-			}
-		}
-	}
-
-	/**
-	 * Determines what schema will be considered in the next decision
-	 * cycle.
-	 */
-	protected void assessScope()
-	{
-		// for now, assume infinite scope
-		
-		// TODO: eventually we want to create a bounded scope, however,
-		// until higher-level schema learning is implemented, there
-		// number of schema that can be learned is bounded by the number
-		// of primitive schema, so this won't get out of hand until
-		// higher-level learning is implemented...
-	}
-	
 	/**
 	 * Prevents this class from being created explicitly.  Instead, the createAlgorithm method
 	 * must be called.  This makes it possible to derive new algorithms from this class

@@ -69,7 +69,7 @@ package ernest;
 		
 	public String toString()
 	{
-		String s = String.format("[%s (%s)]", m_schema , m_weight);  
+		String s = String.format("%s w=%s e=%s", m_schema , m_weight, m_expectation);  
 		return s;
 	}
 	
