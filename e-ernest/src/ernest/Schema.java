@@ -12,7 +12,7 @@ import java.io.ObjectInputStream.GetField;
  */
 public class Schema implements ISchema 
 {
-	public static final int REG_SENS_THRESH = 4;	
+	public static final int REG_SENS_THRESH = 7;	
 	
 	private int m_weight = Integer.MIN_VALUE; 
 	private IAct m_succeedingAct = null;

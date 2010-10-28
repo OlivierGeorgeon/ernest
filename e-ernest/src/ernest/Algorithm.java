@@ -73,6 +73,7 @@ public class Algorithm implements IAlgorithm
 	 *  the act made from the two previously performed acts 
 	 */
 	private IAct m_streamAct = null;
+	private IAct m_streamAct2 = null;
 
 	/**
 	 * Creates a new instance of this algorithm...
@@ -99,10 +100,10 @@ public class Algorithm implements IAlgorithm
 				System.out.println(s);
 			
 			// create a proposition list of possible intention schemas
-			propose();
+			m_proposals = propose();
 			
-			// Determines the next act to enact...
-			m_intentionAct = selectAct();
+			// Determines the next act to enact among the proposition list 
+			m_intentionAct = selectAct(m_proposals);
 			
 			// the previous current context becomes the base context
 			swapContext();
@@ -118,12 +119,19 @@ public class Algorithm implements IAlgorithm
 			updateContext();
 			
 			// learn from the performed act
-			m_streamAct = learn(m_baseContext, m_performedAct);
+			m_streamAct = learn(m_baseContext, m_basePerformedAct, m_performedAct);
 			System.out.println("Streaming " + m_streamAct );
 			
 			// learn from the stream act
-			learn(m_penultimateContext, m_streamAct);
-			
+			learn(m_penultimateContext, null, m_streamAct);
+
+			// learn from the actually enacted act
+			if (m_enactedAct != m_performedAct)
+			{
+				m_streamAct2 = learn(m_baseContext, m_basePerformedAct, m_enactedAct);
+				System.out.println("Streaming2 " + m_streamAct2 );
+				learn(m_penultimateContext, null, m_streamAct2);
+			}			
 		}
 	}
 	
@@ -132,11 +140,11 @@ public class Algorithm implements IAlgorithm
 	 * Activate the schemas whose context act belongs to the current context
 	 * @author ogeorgeon
 	 */
-	protected void propose()
+	protected List<IProposition> propose()
 	{
 
 		// Clear the previous proposal list
-		m_proposals.clear();
+		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
 		// Browse all the schemas 
 		for (ISchema s : m_schemas)
@@ -144,33 +152,54 @@ public class Algorithm implements IAlgorithm
 			if (!s.isPrimitive())
 			{
 				// Activate the schemas that match the context 
-				s.setActivated(false);
+				boolean activated = false;
 				for (IAct c : m_context)
 				{
 					if (s.getContextAct().equals(c))
 					{
-						s.setActivated(true);
+						activated = true;
 						System.out.println("Activate " + s);
 					}
 				}
 				
 				// Activated schemas propose their intention
-				if (s.isActivated())
+				if (activated)
 				{
 					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
 					int w = s.getWeight() * s.getIntentionAct().getSat();
 					// The expectation is the proposing schema's weight signed with the proposed act's status  
 					int e = s.getWeight() * (s.getIntentionAct().isSuccess() ? 1 : -1);
 					
-					IProposition p = Ernest.factory().createProposition(s.getIntentionAct().getSchema(), w, e);
-
-					int i = m_proposals.indexOf(p);
-					if (i == -1)
-						m_proposals.add(p);
+					// If the intention's schemas has passed the threshold
+					if (s.getIntentionAct().getSchema().getWeight() > Schema.REG_SENS_THRESH)
+					{
+						IProposition p = Ernest.factory().createProposition(s.getIntentionAct().getSchema(), w, e);
+	
+						int i = proposals.indexOf(p);
+						if (i == -1)
+							proposals.add(p);
+						else
+							proposals.get(i).update(w, e);
+					}
+					// if the intention's schema has not passed the threshold then  
+					// the activation is propagated to the intention's schema's context
 					else
 					{
-						m_proposals.get(i).update(w, e);
+						if (!s.getIntentionAct().getSchema().isPrimitive())
+						{
+							// only if the intention's intention is positive (this is some form of positive anticipation)
+							if (s.getIntentionAct().getSchema().getIntentionAct().getSat() > 0)
+							{
+								IProposition p = Ernest.factory().createProposition(s.getIntentionAct().getSchema().getContextAct().getSchema(), w, e);
+								int i = proposals.indexOf(p);
+								if (i == -1)
+									proposals.add(p);
+								else
+									proposals.get(i).update(w, e);
+							}
+						}
 					}
+					
 				}
 			}
 
@@ -178,30 +207,31 @@ public class Algorithm implements IAlgorithm
 			if (s.getWeight() > Schema.REG_SENS_THRESH)
 			{
 				IProposition p = Ernest.factory().createProposition(s, 0, 0);
-				if (!m_proposals.contains(p))
-					m_proposals.add(p);
+				if (!proposals.contains(p))
+					proposals.add(p);
 			}
 		}
 
 		System.out.println("Propose: ");
-		for (IProposition p : m_proposals)
+		for (IProposition p : proposals)
 			System.out.println(p);
+		return proposals;
 	}
 
 	/**
 	 * Select the intention schema with the highest proposition
-	 * @return the next act that should be enacted
+	 * @return the act that wins the selection contest
 	 * @author ogeorgeon
 	 */
-	protected IAct selectAct()
+	protected IAct selectAct(List<IProposition> proposals)
 	{
 		// sort by weighted proposition...
-		Collections.sort(m_proposals);
+		Collections.sort(proposals);
 		
 		// count how many are tied with the  highest weighted proposition
 		int count = 0;
-		int wp = m_proposals.get(0).getWeight();
-		for (IProposition p : m_proposals)
+		int wp = proposals.get(0).getWeight();
+		for (IProposition p : proposals)
 		{
 			if (p.getWeight() != wp)
 				break;
@@ -211,7 +241,7 @@ public class Algorithm implements IAlgorithm
 		// pick one at random from the top the proposal list
 		// count is equal to the number of proposals that are tied...
 
-		IProposition p = m_proposals.get(m_rand.nextInt(count));
+		IProposition p = proposals.get(m_rand.nextInt(count));
 		
 		ISchema s = p.getSchema();
 		
@@ -246,12 +276,28 @@ public class Algorithm implements IAlgorithm
 		{
 			// first search the left branch (context)...
 			// TODO check the construction of the actually enacted act
-			IAct c = enactAct(s.getContextAct()) ;
-			if (c == s.getContextAct())
+			IAct intendedContext = s.getContextAct();
+			IAct enactedContext = enactAct(intendedContext) ;
+
+			boolean contextCorrect = (enactedContext == intendedContext);
+			
+			// if unexpectedly succeeded then the context incorrect enacted
+			if (!intendedContext.isSuccess() && enactedContext == intendedContext.getSchema().getSucceedingAct())  
+				contextCorrect = false;
+			
+			if (contextCorrect)
 			{
 				// then the right branch (intention)...
-				IAct i = enactAct(s.getIntentionAct()); 
-				if ( i == s.getIntentionAct())
+				IAct intendedIntention = s.getIntentionAct();
+				IAct enactedIntention = enactAct(intendedIntention); 
+				
+				boolean intentionCorrect = (enactedIntention == intendedIntention);
+				
+				// if unexpectedly succeeded then the intention is incorrecty enacted
+				if (!intendedIntention.isSuccess() && enactedIntention == intendedIntention.getSchema().getSucceedingAct())
+						intentionCorrect = false;
+				
+				if (intentionCorrect)
 				{
 					// If intended to succeed then the enaction is correct
 					if (a.isSuccess())
@@ -261,10 +307,9 @@ public class Algorithm implements IAlgorithm
 					else
 						// the enacted schema is the previously enacted context with the actually enacted intention
 						{
-							ISchema newS = Ernest.factory().addSchema(m_schemas, c, i);
-							// m_context.add(newS.getSucceedingAct());
+							ISchema newS = Ernest.factory().addSchema(m_schemas, enactedContext, enactedIntention);
 							System.out.println("incorrectly enacted act  " + a);					
-							System.out.println("enacted context " + newS.getSucceedingAct());					
+							System.out.println("enacted " + newS.getSucceedingAct());					
 							return 	newS.getSucceedingAct();
 						}
 				}
@@ -275,10 +320,10 @@ public class Algorithm implements IAlgorithm
 					if (a.isSuccess())
 					{
 						// the enacted schema is the previously enacted context with the actually enacted intention
-						ISchema newS = Ernest.factory().addSchema(m_schemas, c, i);
+						ISchema newS = Ernest.factory().addSchema(m_schemas, enactedContext, enactedIntention);
 						// m_context.add(newS.getSucceedingAct());
 						System.out.println("incorrectly enacted act  " + a);					
-						System.out.println("enacted context " + newS.getSucceedingAct());					
+						System.out.println("enacted " + newS.getSucceedingAct());					
 						return 	newS.getSucceedingAct();
 					}
 					// if intended to fail then the enaction is correct
@@ -289,19 +334,10 @@ public class Algorithm implements IAlgorithm
 			// the context is incorrectly enacted
 			else
 			{
-				// If intended to succeed then the enaction is incorrect
-				if (a.isSuccess())
-				{
-					// returns the enacted context 
-					// m_context.add(c);
-					System.out.println("incorrectly enacted act  " + a);					
-					System.out.println("enacted context " + c);					
-					return 	c;
-				}
-				// If intended to fail then the enaction is correct
-				else
-					// returns the intended failing act
-					return a;
+				// then the current enaction is interrupted
+				System.out.println("Context incorrectly enacted: " + enactedContext);					
+				System.out.println("Act interrupted: " + a);					
+				return 	enactedContext;
 			}
 		}
 		else
@@ -358,14 +394,18 @@ public class Algorithm implements IAlgorithm
 	}
 	
 	/**
-	 * Learning from incorrect enaction
-	 * The intention's failing act is updated and becomes part of the next context
-	 * The intention's failing act is added to the context when needed
+	 * Compute the performed act
+	 * The performed act is at the same hierarchical level as the intended act
+	 * If the intention was correctly enacted then the performed act equals the intention act
+	 * If the intention was incorrectly enacted then the performed act is complementary to the intention act 
+	 *  (failure if expected success and success if expected failure)
 	 * @author ogeorgeon
-	 * @return the current act is the enacted at at the level of the initial intention
+	 * @return the performed act 
 	 */
 	protected IAct setPerformedAct(IAct intention, IAct enacted)
 	{
+		IAct performedAct = enacted;
+		
 		// for non primitive intentions
 		if (!intention.getSchema().isPrimitive())
 		{
@@ -376,55 +416,56 @@ public class Algorithm implements IAlgorithm
 				if (intention.isSuccess())
 				{
 					// Initialize or update the intention's failing act using the actually enacted act's satisfaction
-					IAct a = intention.getSchema().initFailingAct(enacted.getSat());
-					// returns the filing act
-					System.out.println("failing act  " + intention.getSchema().getFailingAct());					
-					return a;
+					// the performed act is the filing act
+					performedAct = intention.getSchema().initFailingAct(enacted.getSat());
 				}
 				// if intended to fail
 				else
 				{
-					// if failed indeed then returns the intention
+					// if failed indeed then the performed act is the intention
 					if (enacted.getSchema() != intention.getSchema())
-						return intention;
-					// if accidentally succeeded then nothing more to do
+						performedAct = intention;
+					// if accidentally succeeded then the performed act is the enacted act
 				}
 			}
+			// if the enacted act is that intended then the performed act equals the enacted act
 		}
-		// other cases, the current act equals the enacted act 
-		return enacted;
+		// for primitive intended acts, the performed act is the enacted act
+		
+		return performedAct;
 	}
 
 	/**
-	 * Learn from an enacted act after the base context
-	 * TODO learn from failing act
+	 * Learn from an enacted intention after a given context
+	 * TODO: do not use the global variable m_context, that is not clean!
 	 * @author mcohen
 	 * @author ogeorgeon
+	 * @return the stream act based on the basePerformedAct
 	 */
-	protected IAct learn(List<IAct> context, IAct enacted)
+	protected IAct learn(List<IAct> contextList, IAct basePerformedAct, IAct intentionAct)
 	{
-		IAct r = null;
+		IAct streamAct = null;
 		
-		// For each act of the base context...
-		for (IAct a : context)
+		// For each act in the context...
+		for (IAct a : contextList)
 		{
-			// Build a new schema with the base context 
-			// and the enacted act to compare to the schema list
-			ISchema newS = Ernest.factory().addSchema(m_schemas, a, enacted);
+			// Build a new schema with the context act 
+			// and the intention act 
+			ISchema newS = Ernest.factory().addSchema(m_schemas, a, intentionAct);
 			newS.incWeight();
 			System.out.println("Reinfocing schema " + newS);
 			
 			// returns the act made from the previously performed act
-			if (a == m_basePerformedAct)
-				r = newS.getSucceedingAct();
+			if (a == basePerformedAct)
+				streamAct = newS.getSucceedingAct();
 			
 			// add the created act to the context
 			if (newS.getWeight() > Schema.REG_SENS_THRESH)
 			{
-				context.add(newS.getSucceedingAct());
+				m_context.add(newS.getSucceedingAct());
 			}
 		}
-		return r; 
+		return streamAct; 
 	}
 
 	/**
