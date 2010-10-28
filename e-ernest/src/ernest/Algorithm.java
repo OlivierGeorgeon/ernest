@@ -62,6 +62,7 @@ public class Algorithm implements IAlgorithm
 	 *  the current-level act that was enacted 
 	 *  either the succeeding or failing intended act 
 	 */
+	private IAct m_newPerformedAct = null;
 	private IAct m_performedAct = null;
 
 	/**
@@ -104,18 +105,18 @@ public class Algorithm implements IAlgorithm
 			
 			// Determines the next act to enact among the proposition list 
 			m_intentionAct = selectAct(m_proposals);
-			
-			// the previous current context becomes the base context
-			swapContext();
-			
+						
+
 			// enact the selected act...
 			m_enactedAct = enactAct(m_intentionAct);
 			System.out.println("Enacted " + m_enactedAct );
 			
 			// Determine the performed act
-			m_performedAct = setPerformedAct(m_intentionAct, m_enactedAct);
-			System.out.println("Performed " + m_performedAct );
+			m_newPerformedAct = setPerformedAct(m_intentionAct, m_enactedAct);
+			System.out.println("Performed " + m_newPerformedAct );
 			
+			// the previous current context becomes the base context
+			swapContext();
 			updateContext();
 			
 			// learn from the performed act
@@ -132,7 +133,15 @@ public class Algorithm implements IAlgorithm
 				System.out.println("Streaming2 " + m_streamAct2 );
 				learn(m_penultimateContext, null, m_streamAct2);
 			}			
-		}
+
+			// boredeome
+			boredome(m_enactedAct);
+			
+			// print the context
+			System.out.println("Context: ");
+			for (IAct a : m_context)
+				System.out.println(a);
+			}
 	}
 	
 	/**
@@ -204,7 +213,9 @@ public class Algorithm implements IAlgorithm
 			}
 
 			// Schemas that pass the threshold also receive a default proposition for themselves
-			if (s.getWeight() > Schema.REG_SENS_THRESH)
+			//if (s.getWeight() > Schema.REG_SENS_THRESH)
+			// Primitive schemas also receive a default proposition for themselves
+			if (s.isPrimitive())
 			{
 				IProposition p = Ernest.factory().createProposition(s, 0, 0);
 				if (!proposals.contains(p))
@@ -370,6 +381,7 @@ public class Algorithm implements IAlgorithm
 			System.out.println("Base context is empty");
 		
 		m_basePerformedAct = m_performedAct;
+		m_performedAct = m_newPerformedAct;
 
 		m_context.clear();
 	}
@@ -388,9 +400,7 @@ public class Algorithm implements IAlgorithm
 		
 		// if the actually enacted act is not primitive, its intention also belongs to the context
 		if (!m_enactedAct.getSchema().isPrimitive())
-		{
 			m_context.add(m_enactedAct.getSchema().getIntentionAct());			
-		}		
 	}
 	
 	/**
@@ -466,6 +476,22 @@ public class Algorithm implements IAlgorithm
 			}
 		}
 		return streamAct; 
+	}
+
+	/**
+	 * When bored, clear the context
+	 * Bored when the enacted act is a repetition and secondary
+	 */
+	private void boredome(IAct enacted)
+	{
+		ISchema enactedSchema = enacted.getSchema();
+		if (!enactedSchema.isPrimitive())
+			if (!enactedSchema.getContextAct().getSchema().isPrimitive())
+				if (enactedSchema.getContextAct() == enactedSchema.getIntentionAct())
+				{
+					m_context.clear();
+					System.out.println("Bored");				
+				}
 	}
 
 	/**
