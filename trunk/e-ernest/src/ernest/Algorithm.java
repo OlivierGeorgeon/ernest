@@ -28,54 +28,11 @@ public class Algorithm implements IAlgorithm
 	private List<ISchema> m_schemas = new ArrayList<ISchema>();
 	
 	/**
-	 *  a list of the current proposed acts...
+	 *  the base, current, and new contexts
 	 */
-	private List<IProposition> m_proposals = new ArrayList<IProposition>();	
+	private IContext m_baseContext = Ernest.factory().createContext();
+	private IContext m_currentContext = Ernest.factory().createContext();
 	
-	/**
-	 *  the current context, which is a list of some of the most recently enacted acts...
-	 */
-	private List<IAct> m_context = new ArrayList<IAct>();
-	
-	/**
-	 *  the base context, which is the context of the previous decision cycle
-	 */
-	private List<IAct> m_baseContext = new ArrayList<IAct>();
-	
-	/**
-	 *  the penultimate context, which is the context of the second previous decision cycle
-	 */
-	private List<IAct> m_penultimateContext = new ArrayList<IAct>();
-	
-	/**
-	 *  the act that is intended to be enacted
-	 */
-	private IAct m_intentionAct = null;
-
-	/**
-	 *  the act that was actually enacted by the enactAct function
-	 *  may be a succeeding lower-level act if the enaction was incorrect 
-	 */
-	private IAct m_enactedAct = null;
-
-	/**
-	 *  the current-level act that was enacted 
-	 *  either the succeeding or failing intended act 
-	 */
-	private IAct m_newPerformedAct = null;
-	private IAct m_performedAct = null;
-
-	/**
-	 *  the previous performed act 
-	 */
-	private IAct m_basePerformedAct = null;
-
-	/**
-	 *  the act made from the two previously performed acts 
-	 */
-	private IAct m_streamAct = null;
-	private IAct m_streamAct2 = null;
-
 	/**
 	 * Creates a new instance of this algorithm...
 	 */ 
@@ -101,47 +58,61 @@ public class Algorithm implements IAlgorithm
 				System.out.println(s);
 			
 			// create a proposition list of possible intention schemas
-			m_proposals = propose();
+			List<IProposition>  propositions = propose(m_currentContext);
 			
-			// Determines the next act to enact among the proposition list 
-			m_intentionAct = selectAct(m_proposals);
-						
+			// Select an act to enact among the proposition list 
+			IAct intentionAct = selectAct(propositions);
 
 			// enact the selected act...
-			m_enactedAct = enactAct(m_intentionAct);
-			System.out.println("Enacted " + m_enactedAct );
+			IAct enactedAct = enactAct(intentionAct);
+			System.out.println("Enacted " + enactedAct );
 			
 			// Determine the performed act
-			m_newPerformedAct = setPerformedAct(m_intentionAct, m_enactedAct);
-			System.out.println("Performed " + m_newPerformedAct );
+			IAct performedAct = setPerformedAct(intentionAct, enactedAct);
+			System.out.println("Performed " + performedAct );
 			
-			// the previous current context becomes the base context
-			swapContext();
-			updateContext();
-			
-			// learn from the performed act
-			m_streamAct = learn(m_baseContext, m_basePerformedAct, m_performedAct);
-			System.out.println("Streaming " + m_streamAct );
-			
-			// learn from the stream act
-			learn(m_penultimateContext, null, m_streamAct);
+			// learn from the current context and the performed act
+			IContext streamContext = learn(m_currentContext, performedAct);
 
-			// learn from the actually enacted act
-			if (m_enactedAct != m_performedAct)
+			// learn from the base context and the stream act
+			IAct streamAct = streamContext.getCoreAct();
+			System.out.println("Streaming " + streamAct);
+			learn(m_baseContext, streamAct);
+
+			// learn from the current context and the actually enacted act
+			IAct streamAct2 = null;
+			if (enactedAct != performedAct)
 			{
-				m_streamAct2 = learn(m_baseContext, m_basePerformedAct, m_enactedAct);
-				System.out.println("Streaming2 " + m_streamAct2 );
-				learn(m_penultimateContext, null, m_streamAct2);
+				System.out.println("Learn from enacted: " );
+				IContext streamContext2 = learn(m_baseContext, enactedAct);
+				// learn from the base context and the streamAct2
+				streamAct2 = streamContext2.getCoreAct();
+				System.out.println("Streaming2 " + streamAct2 );
+				learn(m_baseContext, streamAct2);
 			}			
 
-			// boredeome
-			boredome(m_enactedAct);
+			// Assess new context
+			m_baseContext = m_currentContext;
 			
-			// print the context
+			m_currentContext = Ernest.factory().createContext();
+			m_currentContext.setCoreAct(performedAct);
+			if (enactedAct != performedAct)
+				m_currentContext.addFocusAct(enactedAct);
+			// if the actually enacted act is not primitive, its intention also belongs to the context
+			if (!enactedAct.getSchema().isPrimitive())
+				m_currentContext.addFocusAct(enactedAct.getSchema().getIntentionAct());			
+			m_currentContext.addContextAct(streamAct);
+			m_currentContext.addContextAct(streamAct2);
+			
+			// print the new current context
 			System.out.println("Context: ");
-			for (IAct a : m_context)
+			for (IAct a : m_currentContext.getContextList())
 				System.out.println(a);
 			}
+
+			// boredeome
+			// boredome(enactedAct);
+		
 	}
 	
 	/**
@@ -149,7 +120,7 @@ public class Algorithm implements IAlgorithm
 	 * Activate the schemas whose context act belongs to the current context
 	 * @author ogeorgeon
 	 */
-	protected List<IProposition> propose()
+	protected List<IProposition> propose(IContext context)
 	{
 
 		// Clear the previous proposal list
@@ -162,9 +133,9 @@ public class Algorithm implements IAlgorithm
 			{
 				// Activate the schemas that match the context 
 				boolean activated = false;
-				for (IAct c : m_context)
+				for (IAct contextAct : context.getFocusList())
 				{
-					if (s.getContextAct().equals(c))
+					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
 						System.out.println("Activate " + s);
@@ -367,43 +338,6 @@ public class Algorithm implements IAlgorithm
 	}
 
 	/**
-	 * The current base context is passed to the penultimate context 
-	 * The current context is passed to the base context
-	 * The previous penultimate context is lost
-	 * @author ogeorgeon
-	 */
-	protected void swapContext()
-	{
-		m_penultimateContext = new ArrayList<IAct>(m_baseContext);
-		
-		m_baseContext = new ArrayList<IAct>(m_context);
-		if (m_baseContext.isEmpty())
-			System.out.println("Base context is empty");
-		
-		m_basePerformedAct = m_performedAct;
-		m_performedAct = m_newPerformedAct;
-
-		m_context.clear();
-	}
-
-	/**
-	 * The actually enacted act is added to the context
-	 * as well as its possible intention
-	 * @author ogeorgeon
-	 */
-	protected void updateContext()
-	{
-		// Add the actually enacted act to the context
-		m_context.add(m_enactedAct);
-		if (m_enactedAct != m_performedAct)
-			m_context.add(m_performedAct);
-		
-		// if the actually enacted act is not primitive, its intention also belongs to the context
-		if (!m_enactedAct.getSchema().isPrimitive())
-			m_context.add(m_enactedAct.getSchema().getIntentionAct());			
-	}
-	
-	/**
 	 * Compute the performed act
 	 * The performed act is at the same hierarchical level as the intended act
 	 * If the intention was correctly enacted then the performed act equals the intention act
@@ -450,32 +384,32 @@ public class Algorithm implements IAlgorithm
 	 * TODO: do not use the global variable m_context, that is not clean!
 	 * @author mcohen
 	 * @author ogeorgeon
-	 * @return the stream act based on the basePerformedAct
+	 * @return a partial new context created from the learning
 	 */
-	protected IAct learn(List<IAct> contextList, IAct basePerformedAct, IAct intentionAct)
+	protected IContext learn(IContext context, IAct intentionAct)
 	{
-		IAct streamAct = null;
+		IContext newContext = Ernest.factory().createContext();
 		
-		// For each act in the context...
-		for (IAct a : contextList)
+		// For each act in the context's focus...
+		for (IAct contextAct : context.getFocusList())
 		{
 			// Build a new schema with the context act 
 			// and the intention act 
-			ISchema newS = Ernest.factory().addSchema(m_schemas, a, intentionAct);
-			newS.incWeight();
-			System.out.println("Reinfocing schema " + newS);
+			ISchema newSchema = Ernest.factory().addSchema(m_schemas, contextAct, intentionAct);
+			newSchema.incWeight();
+			System.out.println("Reinfocing schema " + newSchema);
 			
-			// returns the act made from the previously performed act
-			if (a == basePerformedAct)
-				streamAct = newS.getSucceedingAct();
+			// the returned core act is the act made from the previous core act
+			if (contextAct == context.getCoreAct())
+				newContext.setCoreAct(newSchema.getSucceedingAct());
 			
-			// add the created act to the context
-			if (newS.getWeight() > Schema.REG_SENS_THRESH)
+			// other created acts are part of the context if they have passed the regularity
+			else if (newSchema.getWeight() > Schema.REG_SENS_THRESH)
 			{
-				m_context.add(newS.getSucceedingAct());
+				newContext.addContextAct(newSchema.getSucceedingAct());
 			}
 		}
-		return streamAct; 
+		return newContext; 
 	}
 
 	/**
@@ -489,7 +423,7 @@ public class Algorithm implements IAlgorithm
 			if (!enactedSchema.getContextAct().getSchema().isPrimitive())
 				if (enactedSchema.getContextAct() == enactedSchema.getIntentionAct())
 				{
-					m_context.clear();
+					// m_context.clear();
 					System.out.println("Bored");				
 				}
 	}

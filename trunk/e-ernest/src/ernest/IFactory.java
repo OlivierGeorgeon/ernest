@@ -27,4 +27,6 @@ public interface IFactory
 	public ISchema createPrimitiveSchema(int id, String tag, int successSat, int failureSat);
 	
 	public IProposition createProposition(ISchema schema, int w, int e);
+	
+	public IContext createContext();
 }
