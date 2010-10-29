@@ -78,4 +78,8 @@ public class Factory implements IFactory
 		return Proposition.createProposition(schema, weight, expectation);
 	}
 
+	public IContext createContext()
+	{
+		return Context.createContext();
+	}
 }

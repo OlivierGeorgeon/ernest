@@ -116,13 +116,13 @@ public class SimpleMaze implements IEnvironment
 		s = Ernest.factory().createPrimitiveSchema(3, "RIGHT", 0, -5);
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(4, "TOUCH", -1, 0);
+		s = Ernest.factory().createPrimitiveSchema(4, "TOUCH", -1, -1);
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(5, "TOUCH_RIGHT", -1, 0);
+		s = Ernest.factory().createPrimitiveSchema(5, "TOUCH_RIGHT", -1, -1);
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(6, "TOUCH_LEFT", -1, 0);
+		s = Ernest.factory().createPrimitiveSchema(6, "TOUCH_LEFT", -1, -1);
 		l.add(s);
 
 		return l;
