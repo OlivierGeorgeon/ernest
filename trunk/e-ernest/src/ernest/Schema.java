@@ -12,7 +12,7 @@ import java.io.ObjectInputStream.GetField;
  */
 public class Schema implements ISchema 
 {
-	public static final int REG_SENS_THRESH = 5;	
+	//public static final int REG_SENS_THRESH = 10;	
 	
 	private int m_weight = Integer.MIN_VALUE; 
 	private IAct m_succeedingAct = null;
@@ -147,8 +147,13 @@ public class Schema implements ISchema
 	
 	public String toString()
 	{
-		String s = String.format("[S%s, %s, %s, (S:%s F:%s) (C:%s, I:%s)]", 
-				hashCode(), getTag(), getWeight(), getSucceedingAct(), getFailingAct(), getContextAct(), getIntentionAct());  
+		String s;
+		if (isPrimitive())
+			s = String.format("[%s %s w=%s]", 
+				getSucceedingAct(), getFailingAct(), getWeight());
+		else
+			s = String.format("[%s %s <C:S%s, I:S%s> w=%s]", 
+					getSucceedingAct(), getFailingAct(), getContextAct().getSchema().hashCode(), getIntentionAct().getSchema().hashCode(), getWeight());
 		return s;
 	}
 
@@ -164,7 +169,7 @@ public class Schema implements ISchema
 		m_id = id;
 		m_tag = tag;
 		m_isPrimitive = true;
-		m_weight = REG_SENS_THRESH + 1;
+		m_weight = Algorithm.REG_SENS_THRESH + 1;
 		m_succeedingAct = Ernest.factory().createAct(this, true, successSat);
 		m_failingAct = Ernest.factory().createAct(this, false, failureSat);
 	}

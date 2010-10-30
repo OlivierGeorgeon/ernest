@@ -12,6 +12,9 @@ import java.util.Collections;
  */
 public class Algorithm implements IAlgorithm 
 {
+	public static final int ACTIVATION_THRESH = 1;
+	public static final int REG_SENS_THRESH = 5;
+	
 	/**
 	 *  used to break a tie when selecting schema...
 	 */
@@ -33,6 +36,8 @@ public class Algorithm implements IAlgorithm
 	private IContext m_baseContext = Ernest.factory().createContext();
 	private IContext m_currentContext = Ernest.factory().createContext();
 	
+	private boolean m_bored = false;
+	
 	/**
 	 * Creates a new instance of this algorithm...
 	 */ 
@@ -48,14 +53,14 @@ public class Algorithm implements IAlgorithm
 	{
 		// a loop of decision cycles...
 		int iCycle = 0;
-		while (true)
+		while (!m_bored)
 		{
 			System.out.println("Decision cycle #" + iCycle++);
 			
 			// print all of the existing schemas..
 			System.out.println("Schemas: ");
-			for (ISchema s : m_schemas)
-				System.out.println(s);
+			//for (ISchema s : m_schemas)
+				//System.out.println(s);
 			
 			// create a proposition list of possible intention schemas
 			List<IProposition>  propositions = propose(m_currentContext);
@@ -68,7 +73,7 @@ public class Algorithm implements IAlgorithm
 			System.out.println("Enacted " + enactedAct );
 			
 			// Determine the performed act
-			IAct performedAct = setPerformedAct(intentionAct, enactedAct);
+			IAct performedAct = performedAct(intentionAct, enactedAct);
 			System.out.println("Performed " + performedAct );
 			
 			// learn from the current context and the performed act
@@ -77,7 +82,8 @@ public class Algorithm implements IAlgorithm
 			// learn from the base context and the stream act
 			IAct streamAct = streamContext.getCoreAct();
 			System.out.println("Streaming " + streamAct);
-			learn(m_baseContext, streamAct);
+			if (streamAct != null && streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
+				learn(m_baseContext, streamAct);
 
 			// learn from the current context and the actually enacted act
 			IAct streamAct2 = null;
@@ -88,30 +94,33 @@ public class Algorithm implements IAlgorithm
 				// learn from the base context and the streamAct2
 				streamAct2 = streamContext2.getCoreAct();
 				System.out.println("Streaming2 " + streamAct2 );
-				learn(m_baseContext, streamAct2);
+				if (streamAct2 != null && streamAct2.getSchema().getWeight() > ACTIVATION_THRESH)
+					learn(m_baseContext, streamAct2);
 			}			
 
-			// Assess new context
+			// Assess the new context
 			m_baseContext = m_currentContext;
 			
 			m_currentContext = Ernest.factory().createContext();
-			m_currentContext.setCoreAct(performedAct);
+			m_currentContext.setCoreAct(enactedAct); // rather than performedAct to avoid too many schemas including failing subschemas
 			if (enactedAct != performedAct)
-				m_currentContext.addFocusAct(enactedAct);
+				m_currentContext.addFocusAct(performedAct);
 			// if the actually enacted act is not primitive, its intention also belongs to the context
 			if (!enactedAct.getSchema().isPrimitive())
-				m_currentContext.addFocusAct(enactedAct.getSchema().getIntentionAct());			
-			m_currentContext.addContextAct(streamAct);
-			m_currentContext.addContextAct(streamAct2);
+				m_currentContext.addFocusAct(enactedAct.getSchema().getIntentionAct());	
+			
+			// add the streamcontext to the context list
+			m_currentContext.addContext(streamContext);
+			// m_currentContext.addContext(streamContext2);
 			
 			// print the new current context
 			System.out.println("Context: ");
 			for (IAct a : m_currentContext.getContextList())
 				System.out.println(a);
-			}
-
+			
 			// boredeome
-			// boredome(enactedAct);
+			m_bored = boredome(enactedAct);
+		}
 		
 	}
 	
@@ -151,7 +160,7 @@ public class Algorithm implements IAlgorithm
 					int e = s.getWeight() * (s.getIntentionAct().isSuccess() ? 1 : -1);
 					
 					// If the intention's schemas has passed the threshold
-					if (s.getIntentionAct().getSchema().getWeight() > Schema.REG_SENS_THRESH)
+					if (s.getIntentionAct().getSchema().getWeight() > REG_SENS_THRESH)
 					{
 						IProposition p = Ernest.factory().createProposition(s.getIntentionAct().getSchema(), w, e);
 	
@@ -346,7 +355,7 @@ public class Algorithm implements IAlgorithm
 	 * @author ogeorgeon
 	 * @return the performed act 
 	 */
-	protected IAct setPerformedAct(IAct intention, IAct enacted)
+	protected IAct performedAct(IAct intention, IAct enacted)
 	{
 		IAct performedAct = enacted;
 		
@@ -390,8 +399,8 @@ public class Algorithm implements IAlgorithm
 	{
 		IContext newContext = Ernest.factory().createContext();
 		
-		// For each act in the context's focus...
-		for (IAct contextAct : context.getFocusList())
+		// For each act in the context ...
+		for (IAct contextAct : context.getContextList())
 		{
 			// Build a new schema with the context act 
 			// and the intention act 
@@ -399,12 +408,17 @@ public class Algorithm implements IAlgorithm
 			newSchema.incWeight();
 			System.out.println("Reinfocing schema " + newSchema);
 			
+			boolean reg = (newSchema.getContextAct().getSchema().getWeight() > REG_SENS_THRESH) &&
+			  (newSchema.getIntentionAct().getSchema().getWeight() > REG_SENS_THRESH);
+
 			// the returned core act is the act made from the previous core act
 			if (contextAct == context.getCoreAct())
 				newContext.setCoreAct(newSchema.getSucceedingAct());
 			
-			// other created acts are part of the context if they have passed the regularity
-			else if (newSchema.getWeight() > Schema.REG_SENS_THRESH)
+			// other created acts are part of the context if 
+			// their context and intention have passed the regularity
+			//else if (newSchema.getWeight() > Schema.REG_SENS_THRESH)
+			else if (reg)
 			{
 				newContext.addContextAct(newSchema.getSucceedingAct());
 			}
@@ -416,16 +430,20 @@ public class Algorithm implements IAlgorithm
 	 * When bored, clear the context
 	 * Bored when the enacted act is a repetition and secondary
 	 */
-	private void boredome(IAct enacted)
+	private boolean boredome(IAct enacted)
 	{
+		boolean bored = false;
+		
 		ISchema enactedSchema = enacted.getSchema();
 		if (!enactedSchema.isPrimitive())
 			if (!enactedSchema.getContextAct().getSchema().isPrimitive())
 				if (enactedSchema.getContextAct() == enactedSchema.getIntentionAct())
 				{
 					// m_context.clear();
+					bored = true;
 					System.out.println("Bored");				
 				}
+		return bored;
 	}
 
 	/**

@@ -9,19 +9,13 @@ import java.util.List;
  */
 public class Context implements IContext {
 
-	/**
-	 *  The list of acts in the context
-	 */
+	// The list of acts in the context
 	private List<IAct> m_contextList = new ArrayList<IAct>();
 	
-	/**
-	 *  The list of acts in the focus
-	 */
+	// The list of acts in the focus
 	private List<IAct> m_focusList = new ArrayList<IAct>();
 
-	/**
-	 *  The core act
-	 */
+	// The core act
 	private IAct m_coreAct = null;
 
 	public static IContext createContext()
@@ -30,6 +24,15 @@ public class Context implements IContext {
 	public void addContextAct(IAct act) 
 	{
 		if (act != null)
+		{
+			if (!m_contextList.contains(act))
+				m_contextList.add(act);
+		}
+	}
+
+	public void addContext(IContext context) 
+	{
+		for (IAct act : context.getContextList())
 		{
 			if (!m_contextList.contains(act))
 				m_contextList.add(act);
