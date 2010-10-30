@@ -54,8 +54,8 @@ public class Act implements IAct
 	
 	public String toString()
 	{
-		String s = String.format("<S%s, %s (%s)>", 
-				getSchema().hashCode() , isSuccess() ? "S" : "F", getSat());  
+		String s = String.format("(S%s %s/%s s=%s)", 
+				getSchema().hashCode() , getSchema().getTag(), isSuccess() ? "S" : "F", getSat());  
 		return s;
 	}
 	

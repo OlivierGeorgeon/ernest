@@ -17,4 +17,5 @@ public interface IContext
 	public void setCoreAct(IAct act);
 	public void addFocusAct(IAct act);
 	public void addContextAct(IAct act);
+	public void addContext(IContext context);
 }
