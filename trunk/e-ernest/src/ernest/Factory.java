@@ -38,7 +38,7 @@ public class Factory implements IFactory
 	}
 	
 	/**
-	 * Add a new schema to the listif it does not exist
+	 * Add a new schema to the list if it does not exist
 	 * If it exists, increments its weight
 	 * @author ogeorgeon
 	 * @return the new or existing schema
@@ -81,5 +81,9 @@ public class Factory implements IFactory
 	public IContext createContext()
 	{
 		return Context.createContext();
+	}
+	public ILogger createLogger(String fileName, boolean logging)
+	{
+		return Logger.createLogger(fileName, logging);
 	}
 }

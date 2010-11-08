@@ -39,6 +39,11 @@ public class Algorithm implements IAlgorithm
 	private boolean m_bored = false;
 	
 	/**
+	 *  the logger
+	 */
+	private ILogger m_logger = Ernest.factory().createLogger("trace.txt", true);
+	
+	/**
 	 * Creates a new instance of this algorithm...
 	 */ 
 	public static IAlgorithm createAlgorithm()
@@ -56,6 +61,7 @@ public class Algorithm implements IAlgorithm
 		while (!m_bored)
 		{
 			System.out.println("Decision cycle #" + iCycle++);
+			m_logger.writeLine("Decision cycle #" + iCycle);
 			
 			// print all of the existing schemas..
 			System.out.println("Schemas: ");
