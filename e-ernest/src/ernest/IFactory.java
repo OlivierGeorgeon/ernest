@@ -29,4 +29,6 @@ public interface IFactory
 	public IProposition createProposition(ISchema schema, int w, int e);
 	
 	public IContext createContext();
+	
+	public ILogger createLogger(String LogFileName, boolean l);
 }
