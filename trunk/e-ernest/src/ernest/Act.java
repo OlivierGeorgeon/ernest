@@ -47,15 +47,15 @@ public class Act implements IAct
 	 */
 	public String getTag()
 	{
-		String s = String.format("%s/%s", 
-				getSchema().getTag() , isSuccess() ? "S" : "F");  
+		String s = String.format("%s%s%s", 
+				isSuccess() ? "(" : "[", getSchema().getTag() , isSuccess() ? ")" : "]");  
 		return s;
 	}
 	
 	public String toString()
 	{
-		String s = String.format("(S%s %s/%s s=%s)", 
-				getSchema().hashCode() , getSchema().getTag(), isSuccess() ? "S" : "F", getSat());  
+		String s = String.format("(S%s %s s=%s)", 
+				getSchema().hashCode() , getTag(), getSat());  
 		return s;
 	}
 	

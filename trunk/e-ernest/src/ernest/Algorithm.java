@@ -61,7 +61,7 @@ public class Algorithm implements IAlgorithm
 		while (!m_bored)
 		{
 			System.out.println("Decision cycle #" + iCycle++);
-			m_logger.writeLine("Decision cycle #" + iCycle);
+			m_logger.writeLine(" " + iCycle );
 			
 			// print all of the existing schemas..
 			System.out.println("Schemas: ");
@@ -81,6 +81,11 @@ public class Algorithm implements IAlgorithm
 			// Determine the performed act
 			IAct performedAct = performedAct(intentionAct, enactedAct);
 			System.out.println("Performed " + performedAct );
+			
+			// Log the trace
+			m_logger.writeLine(enactedAct.getTag());
+			if (intentionAct != enactedAct)
+				m_logger.writeLine("!");
 			
 			// learn from the current context and the performed act
 			IContext streamContext = learn(m_currentContext, performedAct);
@@ -121,11 +126,11 @@ public class Algorithm implements IAlgorithm
 			
 			// print the new current context
 			System.out.println("Context: ");
-			for (IAct a : m_currentContext.getContextList())
-				System.out.println(a);
+			// for (IAct a : m_currentContext.getContextList())
+				// System.out.println(a);
 			
 			// boredeome
-			m_bored = boredome(enactedAct);
+			// m_bored = boredome(enactedAct);
 		}
 		
 	}
@@ -153,7 +158,7 @@ public class Algorithm implements IAlgorithm
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						System.out.println("Activate " + s);
+						// System.out.println("Activate " + s);
 					}
 				}
 				
@@ -412,7 +417,7 @@ public class Algorithm implements IAlgorithm
 			// and the intention act 
 			ISchema newSchema = Ernest.factory().addSchema(m_schemas, contextAct, intentionAct);
 			newSchema.incWeight();
-			System.out.println("Reinfocing schema " + newSchema);
+			// System.out.println("Reinfocing schema " + newSchema);
 			
 			boolean reg = (newSchema.getContextAct().getSchema().getWeight() > REG_SENS_THRESH) &&
 			  (newSchema.getIntentionAct().getSchema().getWeight() > REG_SENS_THRESH);
