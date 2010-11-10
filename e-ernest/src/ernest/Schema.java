@@ -73,7 +73,7 @@ public class Schema implements ISchema
 	{
 		if (!isPrimitive())
 		{
-			m_tag = "(" + m_contextAct.getTag() + "-" + m_intentionAct.getTag() + ")"; 
+			m_tag = m_contextAct.getTag() +  m_intentionAct.getTag(); 
 			if (m_succeedingAct == null)
 				m_succeedingAct = Ernest.factory().createAct(this,true, (m_contextAct.getSat() + 
 											       		  m_intentionAct.getSat()));

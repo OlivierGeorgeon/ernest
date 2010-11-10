@@ -74,17 +74,17 @@ public class SimpleMaze implements IEnvironment
 		//	System.out.println("Ouch");
 		
 		
-		if (s.getTag().equals("MOVE"))
+		if (s.getTag().equals(">"))
 			bRet = move();
-		else if (s.getTag().equals("LEFT"))
+		else if (s.getTag().equals("^"))
 			bRet = left();
-		else if (s.getTag().equals("RIGHT"))
+		else if (s.getTag().equals("v"))
 			bRet = right();
-		else if (s.getTag().equals("TOUCH"))
+		else if (s.getTag().equals("-"))
 			bRet = Touch();
-		else if (s.getTag().equals("TOUCH_RIGHT"))
+		else if (s.getTag().equals("\\"))
 			bRet = TouchRight();
-		else if (s.getTag().equals("TOUCH_LEFT"))
+		else if (s.getTag().equals("/"))
 			bRet = TouchLeft();
 		
 		// print the maze
@@ -107,22 +107,22 @@ public class SimpleMaze implements IEnvironment
 	{
 		List<ISchema> l = new ArrayList<ISchema>();
 		
-		ISchema s = Ernest.factory().createPrimitiveSchema(1, "MOVE", 10, -10);
+		ISchema s = Ernest.factory().createPrimitiveSchema(1, ">", 10, -10); // Move
 		l.add(s);
 
-		s = Ernest.factory().createPrimitiveSchema(2, "LEFT", 0, -5);
+		s = Ernest.factory().createPrimitiveSchema(2, "^", 0, -5); // Left
 		l.add(s);
 
-		s = Ernest.factory().createPrimitiveSchema(3, "RIGHT", 0, -5);
+		s = Ernest.factory().createPrimitiveSchema(3, "v", 0, -5); // Right
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(4, "TOUCH", -1, 0);
+		s = Ernest.factory().createPrimitiveSchema(4, "-", -1, 0); // Touch
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(5, "TOUCH_RIGHT", -1, 0);
+		s = Ernest.factory().createPrimitiveSchema(5, "\\", -1, 0); // Touch right
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(6, "TOUCH_LEFT", -1, 0);
+		s = Ernest.factory().createPrimitiveSchema(6, "/", -1, 0); // Touch left
 		l.add(s);
 
 		return l;

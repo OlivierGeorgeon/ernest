@@ -54,7 +54,7 @@ public class Factory implements IFactory
 		if (i == -1)
 		{
 			m_schemas.add(newS);
-			System.out.println("Adding new schema: " + newS);
+			// System.out.println("Adding new schema: " + newS);
 			return newS;
 		}
 		else

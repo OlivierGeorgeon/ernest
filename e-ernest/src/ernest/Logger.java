@@ -37,9 +37,9 @@ public class Logger implements ILogger
 					logFile.delete();
 					logFile.createNewFile();
 				}
-				writeLine("<?xml version='1.0'?>");
-				writeLine("<?xml-stylesheet href='trace.xsl' type='text/xsl'?>");
-				writeLine("<xml>");
+				writeLine("<?xml version='1.0'?>\n");
+				writeLine("<?xml-stylesheet href='trace.xsl' type='text/xsl'?>\n");
+				writeLine("<xml>\n");
 			}
 			catch (IOException e) {
 				e.printStackTrace();
@@ -59,7 +59,8 @@ public class Logger implements ILogger
 			try 
 			{
 				FileWriter writer = new FileWriter(logFile, true);
-				writer.write(Line + "\n");
+				// writer.write(Line + "\n");
+				writer.write(Line );
 				writer.close();
 				r = true;
 			} 
