@@ -75,7 +75,7 @@ public class Schema implements ISchema
 		{
 			m_tag = m_contextAct.getTag() +  m_intentionAct.getTag(); 
 			if (m_succeedingAct == null)
-				m_succeedingAct = Ernest.factory().createAct(this,true, (m_contextAct.getSat() + 
+				m_succeedingAct = Main.factory().createAct(this,true, (m_contextAct.getSat() + 
 											       		  m_intentionAct.getSat()));
 			else
 				m_succeedingAct.setSat(m_contextAct.getSat() + 
@@ -93,7 +93,7 @@ public class Schema implements ISchema
 		if (!isPrimitive())
 		{
 			if (m_failingAct == null)
-				m_failingAct = Ernest.factory().createAct(this,false, satisfaction);
+				m_failingAct = Main.factory().createAct(this,false, satisfaction);
 			else
 				// If the failing act already exists then 
 				//  its satisfaction is averaged with the previous value
@@ -170,8 +170,8 @@ public class Schema implements ISchema
 		m_tag = tag;
 		m_isPrimitive = true;
 		m_weight = Algorithm.REG_SENS_THRESH + 1;
-		m_succeedingAct = Ernest.factory().createAct(this, true, successSat);
-		m_failingAct = Ernest.factory().createAct(this, false, failureSat);
+		m_succeedingAct = Main.factory().createAct(this, true, successSat);
+		m_failingAct = Main.factory().createAct(this, false, failureSat);
 	}
 
 	public boolean isActivated() 

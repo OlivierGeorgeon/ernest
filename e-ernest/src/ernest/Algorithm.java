@@ -23,7 +23,7 @@ public class Algorithm implements IAlgorithm
 	/**
 	 * the environment that Ernest is operating in...
 	 */
-	private IEnvironment m_env = Ernest.factory().getEnvironment();
+	private IEnvironment m_env = Main.factory().getEnvironment();
 	
 	/**
 	 *  a list of all of the schemas ever created ...
@@ -33,15 +33,15 @@ public class Algorithm implements IAlgorithm
 	/**
 	 *  the base, current, and new contexts
 	 */
-	private IContext m_baseContext = Ernest.factory().createContext();
-	private IContext m_currentContext = Ernest.factory().createContext();
+	private IContext m_baseContext = Main.factory().createContext();
+	private IContext m_currentContext = Main.factory().createContext();
 	
 	private boolean m_bored = false;
 	
 	/**
 	 *  the logger
 	 */
-	private ILogger m_logger = Ernest.factory().createLogger("trace.txt", true);
+	private ILogger m_logger = Main.factory().createLogger("trace.txt", true);
 	
 	/**
 	 * Creates a new instance of this algorithm...
@@ -112,7 +112,7 @@ public class Algorithm implements IAlgorithm
 			// Assess the new context
 			m_baseContext = m_currentContext;
 			
-			m_currentContext = Ernest.factory().createContext();
+			m_currentContext = Main.factory().createContext();
 			m_currentContext.setCoreAct(enactedAct); // rather than performedAct to avoid too many schemas including failing subschemas
 			if (enactedAct != performedAct)
 				m_currentContext.addFocusAct(performedAct);
@@ -173,7 +173,7 @@ public class Algorithm implements IAlgorithm
 					// If the intention's schemas has passed the threshold
 					if (s.getIntentionAct().getSchema().getWeight() > REG_SENS_THRESH)
 					{
-						IProposition p = Ernest.factory().createProposition(s.getIntentionAct().getSchema(), w, e);
+						IProposition p = Main.factory().createProposition(s.getIntentionAct().getSchema(), w, e);
 	
 						int i = proposals.indexOf(p);
 						if (i == -1)
@@ -190,7 +190,7 @@ public class Algorithm implements IAlgorithm
 							// only if the intention's intention is positive (this is some form of positive anticipation)
 							if (s.getIntentionAct().getSchema().getIntentionAct().getSat() > 0)
 							{
-								IProposition p = Ernest.factory().createProposition(s.getIntentionAct().getSchema().getContextAct().getSchema(), w, e);
+								IProposition p = Main.factory().createProposition(s.getIntentionAct().getSchema().getContextAct().getSchema(), w, e);
 								int i = proposals.indexOf(p);
 								if (i == -1)
 									proposals.add(p);
@@ -208,7 +208,7 @@ public class Algorithm implements IAlgorithm
 			// Primitive schemas also receive a default proposition for themselves
 			if (s.isPrimitive())
 			{
-				IProposition p = Ernest.factory().createProposition(s, 0, 0);
+				IProposition p = Main.factory().createProposition(s, 0, 0);
 				if (!proposals.contains(p))
 					proposals.add(p);
 			}
@@ -309,7 +309,7 @@ public class Algorithm implements IAlgorithm
 					else
 						// the enacted schema is the previously enacted context with the actually enacted intention
 						{
-							ISchema newS = Ernest.factory().addSchema(m_schemas, enactedContext, enactedIntention);
+							ISchema newS = Main.factory().addSchema(m_schemas, enactedContext, enactedIntention);
 							System.out.println("incorrectly enacted act  " + a);					
 							System.out.println("enacted " + newS.getSucceedingAct());					
 							return 	newS.getSucceedingAct();
@@ -322,7 +322,7 @@ public class Algorithm implements IAlgorithm
 					if (a.isSuccess())
 					{
 						// the enacted schema is the previously enacted context with the actually enacted intention
-						ISchema newS = Ernest.factory().addSchema(m_schemas, enactedContext, enactedIntention);
+						ISchema newS = Main.factory().addSchema(m_schemas, enactedContext, enactedIntention);
 						// m_context.add(newS.getSucceedingAct());
 						System.out.println("incorrectly enacted act  " + a);					
 						System.out.println("enacted " + newS.getSucceedingAct());					
@@ -408,14 +408,14 @@ public class Algorithm implements IAlgorithm
 	 */
 	protected IContext learn(IContext context, IAct intentionAct)
 	{
-		IContext newContext = Ernest.factory().createContext();
+		IContext newContext = Main.factory().createContext();
 		
 		// For each act in the context ...
 		for (IAct contextAct : context.getContextList())
 		{
 			// Build a new schema with the context act 
 			// and the intention act 
-			ISchema newSchema = Ernest.factory().addSchema(m_schemas, contextAct, intentionAct);
+			ISchema newSchema = Main.factory().addSchema(m_schemas, contextAct, intentionAct);
 			newSchema.incWeight();
 			// System.out.println("Reinfocing schema " + newSchema);
 			

@@ -107,22 +107,22 @@ public class SimpleMaze implements IEnvironment
 	{
 		List<ISchema> l = new ArrayList<ISchema>();
 		
-		ISchema s = Ernest.factory().createPrimitiveSchema(1, ">", 10, -10); // Move
+		ISchema s = Main.factory().createPrimitiveSchema(1, ">", 10, -10); // Move
 		l.add(s);
 
-		s = Ernest.factory().createPrimitiveSchema(2, "^", 0, -5); // Left
+		s = Main.factory().createPrimitiveSchema(2, "^", 0, -5); // Left
 		l.add(s);
 
-		s = Ernest.factory().createPrimitiveSchema(3, "v", 0, -5); // Right
+		s = Main.factory().createPrimitiveSchema(3, "v", 0, -5); // Right
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(4, "-", -1, 0); // Touch
+		s = Main.factory().createPrimitiveSchema(4, "-", -1, 0); // Touch
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(5, "\\", -1, 0); // Touch right
+		s = Main.factory().createPrimitiveSchema(5, "\\", -1, 0); // Touch right
 		l.add(s);
 		
-		s = Ernest.factory().createPrimitiveSchema(6, "/", -1, 0); // Touch left
+		s = Main.factory().createPrimitiveSchema(6, "/", -1, 0); // Touch left
 		l.add(s);
 
 		return l;
