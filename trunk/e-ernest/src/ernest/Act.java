@@ -13,6 +13,8 @@ public class Act implements IAct
 	private int m_satisfaction = 0;
 	private ISchema m_schema = null;
 	
+	private ISchema m_prescriberSchema = null;
+	
 	public static IAct createAct(ISchema s, boolean success, int satisfaction)
 	{ return new Act(s, success, satisfaction); }
 	
@@ -96,4 +98,15 @@ public class Act implements IAct
 		m_satisfaction = satisfaction;
 		m_schema = s;
 	}
+	
+	public void setPrescriberSchema(ISchema s)
+	{
+		m_prescriberSchema = s;
+	}
+	public ISchema getPrescriberSchema()
+	{
+		return m_prescriberSchema;
+	}
+	
+
 }

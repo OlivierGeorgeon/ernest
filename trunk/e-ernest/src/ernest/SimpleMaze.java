@@ -42,18 +42,18 @@ public class SimpleMaze implements IEnvironment
 	public static IEnvironment createEnvironment()
 	{ return new SimpleMaze(); }
 	
-	public boolean enactSchema(ISchema s) 
+	public boolean enact(String s) 
 	{
 		boolean bRet = false;
-		int x = m_x;
+/*		int x = m_x;
 		int y = m_y;
-		if (s.getTag().equals("NORTH"))
+		if (s.equals("NORTH"))
 			y--;
-		else if (s.getTag().equals("SOUTH"))
+		else if (s == "SOUTH")
 			y++;
-		else if (s.getTag().equals("EAST"))
+		else if (s == "EAST")
 			x++;	
-		else if (s.getTag().equals("WEST"))
+		else if (s == "WEST")
 			x--;
 		
 		// the feedback
@@ -68,23 +68,24 @@ public class SimpleMaze implements IEnvironment
 			m_x = x;
 			m_y = y;
 			bRet = true;
-		}
+		}*/
+		
 		//System.out.println("Moving " + s.getTag());
 		//if (bRet == false)
 		//	System.out.println("Ouch");
 		
 		
-		if (s.getTag().equals(">"))
+		if (s.equals(">"))
 			bRet = move();
-		else if (s.getTag().equals("^"))
+		else if (s.equals("^"))
 			bRet = left();
-		else if (s.getTag().equals("v"))
+		else if (s.equals("v"))
 			bRet = right();
-		else if (s.getTag().equals("-"))
+		else if (s.equals("-"))
 			bRet = Touch();
-		else if (s.getTag().equals("\\"))
+		else if (s.equals("\\"))
 			bRet = TouchRight();
-		else if (s.getTag().equals("/"))
+		else if (s.equals("/"))
 			bRet = TouchLeft();
 		
 		// print the maze

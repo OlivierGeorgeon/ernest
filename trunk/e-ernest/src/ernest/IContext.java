@@ -13,9 +13,13 @@ public interface IContext
 	public  List<IAct> getContextList();
 	public  List<IAct> getFocusList();
 	public  IAct getCoreAct();
-
-	public void setCoreAct(IAct act);
-	public void addFocusAct(IAct act);
-	public void addContextAct(IAct act);
+	public  IAct getPrimitiveIntention();
+	public  IAct getIntentionAct();
+	
+	public void setCoreAct(IAct a);
+	public void setPrimitiveIntention(IAct a);
+	public void setIntentionAct(IAct a);
+	public void addFocusAct(IAct a);
+	public void addContextAct(IAct a);
 	public void addContext(IContext context);
 }

@@ -15,8 +15,10 @@ public class Context implements IContext {
 	// The list of acts in the focus
 	private List<IAct> m_focusList = new ArrayList<IAct>();
 
-	// The core act
+	// Acts of interest
 	private IAct m_coreAct = null;
+	private IAct m_intentionAct = null;
+	private IAct m_primitiveIntention = null;
 
 	public static IContext createContext()
 	{ return new Context(); }
@@ -75,4 +77,25 @@ public class Context implements IContext {
 	{
 		return m_coreAct;
 	}
+	
+	public void setIntentionAct(IAct a)
+	{
+		m_intentionAct = a;
+	}
+
+	public IAct getIntentionAct()
+	{
+		return m_intentionAct;
+	}
+
+	public IAct getPrimitiveIntention() 
+	{
+		return m_primitiveIntention;
+	}
+
+	public void setPrimitiveIntention(IAct a) 
+	{
+		m_primitiveIntention = a;	
+	}
+
 }

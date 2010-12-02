@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface IEnvironment 
 {
-	public boolean enactSchema(ISchema s);
+	public boolean enact(String s);
 	public List<ISchema> getPrimitiveSchema();
 }

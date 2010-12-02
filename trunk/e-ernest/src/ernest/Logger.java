@@ -24,7 +24,7 @@ public class Logger implements ILogger
 	{
 		return new Logger(logFileName, l);
 	}
-	private Logger(String logFileName, boolean l)
+	public Logger(String logFileName, boolean l)
 	{ 	
 		isLogging = l;
 		if (isLogging)
