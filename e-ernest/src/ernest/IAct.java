@@ -16,5 +16,9 @@ public interface IAct
 	public String getTag();
 	public int getSat();
 	public void setSat(int s);
+	
+	public void setPrescriberSchema(ISchema s);
+	public ISchema getPrescriberSchema();
+	
 	public ISchema getSchema();
 }

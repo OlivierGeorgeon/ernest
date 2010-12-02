@@ -19,7 +19,10 @@ public class Schema implements ISchema
 	private IAct m_failingAct = null;
 	private IAct m_contextAct = null;
 	private IAct m_intentionAct = null;	
+	private IAct m_prescriberAct = null;
+	private ISchema m_prescriberSchema = null;
 	private int m_id;
+	private int m_pointer = 0;
 	private String m_tag = null; 
 	private boolean m_isPrimitive = true;
 	
@@ -36,6 +39,14 @@ public class Schema implements ISchema
 
 	public IAct getFailingAct() 
 	{	return m_failingAct; }
+
+	public IAct getResultingAct(boolean status) 
+	{	
+		if (status)
+			return m_succeedingAct;
+		else
+			return m_failingAct; 
+	}
 
 	public void setSucceedingAct(IAct a)
 	{ m_succeedingAct = a;	}
@@ -182,6 +193,36 @@ public class Schema implements ISchema
 	public void setActivated(boolean b) 
 	{
 		m_isActivated = b;
+	}
+	
+	public void setPrescriberAct(IAct a)
+	{
+		m_prescriberAct = a;
+	}
+	
+	public IAct getPrescriberAct()
+	{
+		return m_prescriberAct;
+	}
+
+	public void setPrescriberSchema(ISchema s)
+	{
+		m_prescriberSchema = s;
+	}
+	
+	public ISchema getPrescriberSchema()
+	{
+		return m_prescriberSchema;
+	}
+
+	public void setPointer(int p)
+	{
+		m_pointer = p;
+	}
+	
+	public int getPointer()
+	{
+		return m_pointer;
 	}
 
 }

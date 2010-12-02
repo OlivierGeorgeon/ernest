@@ -346,7 +346,7 @@ public class Algorithm implements IAlgorithm
 		{
 			// We found a primitive schema so enact it in the environment
 			// Return the actually enacted primitive act (may be that intended or not)
-			if (m_env.enactSchema(s))
+			if (m_env.enact(s.getTag()))
 			{
 				return a.getSchema().getSucceedingAct();
 			}
