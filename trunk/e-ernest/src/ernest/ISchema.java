@@ -15,8 +15,8 @@ public interface ISchema
 	public void setSucceedingAct(IAct a);
 	public void setFailingAct(IAct a);
 	
-	public void initSucceedingAct();
-	public IAct initFailingAct(int Satisfaction);
+//	public void initSucceedingAct();
+//	public IAct initFailingAct(int Satisfaction);
 	
 	public IAct getContextAct();
 	public IAct getIntentionAct();

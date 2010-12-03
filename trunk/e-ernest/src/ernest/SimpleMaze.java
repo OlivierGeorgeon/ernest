@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * A very simple, not graphical, maze environment used to test the 
- * ernest algorithm. 
+ * A very simple maze environment used to test Ernest 
  * @author mcohen
  * @author ogeorgeon
  */
@@ -39,41 +38,16 @@ public class SimpleMaze implements IEnvironment
 	private char[] m_agent = 
 	{ '^', '>', 'v', '<' };
 
-	public static IEnvironment createEnvironment()
-	{ return new SimpleMaze(); }
-	
+	/**
+	 * Process a primitive schema and return a boolean status
+	 * @author mcohen
+	 * @author ogeorgeon
+	 * @return the boolean feedback resulting from the primitive schema enaction
+	 */
+
 	public boolean enact(String s) 
 	{
 		boolean bRet = false;
-/*		int x = m_x;
-		int y = m_y;
-		if (s.equals("NORTH"))
-			y--;
-		else if (s == "SOUTH")
-			y++;
-		else if (s == "EAST")
-			x++;	
-		else if (s == "WEST")
-			x--;
-		
-		// the feedback
-		if (x < 0 || x >= WIDTH)
-			bRet = false;
-		else if (y < 0 || y >= HEIGHT)
-			bRet = false;
-		else if (m_board[y][x] == 'x')
-			bRet = false;
-		else
-		{
-			m_x = x;
-			m_y = y;
-			bRet = true;
-		}*/
-		
-		//System.out.println("Moving " + s.getTag());
-		//if (bRet == false)
-		//	System.out.println("Ouch");
-		
 		
 		if (s.equals(">"))
 			bRet = move();
@@ -104,82 +78,34 @@ public class SimpleMaze implements IEnvironment
 		return bRet;
 	}
 
-	public List<ISchema> getPrimitiveSchema() 
-	{
-		List<ISchema> l = new ArrayList<ISchema>();
-		
-		ISchema s = Main.factory().createPrimitiveSchema(1, ">", 10, -10); // Move
-		l.add(s);
-
-		s = Main.factory().createPrimitiveSchema(2, "^", 0, -5); // Left
-		l.add(s);
-
-		s = Main.factory().createPrimitiveSchema(3, "v", 0, -5); // Right
-		l.add(s);
-		
-		s = Main.factory().createPrimitiveSchema(4, "-", -1, 0); // Touch
-		l.add(s);
-		
-		s = Main.factory().createPrimitiveSchema(5, "\\", -1, 0); // Touch right
-		l.add(s);
-		
-		s = Main.factory().createPrimitiveSchema(6, "/", -1, 0); // Touch left
-		l.add(s);
-
-		return l;
-	}
-
-	private SimpleMaze()
-	{}
-	
 	/**
 	 * turn right 
 	 * @author ogeorgeon
 	 */
-	public boolean right()
+	private boolean right()
 	{
 		m_o++;
 		
 		if (m_o > ORIENTATION_LEFT)
 			m_o = ORIENTATION_UP;
 
-		boolean status =  true  ;
+		boolean status =  false  ;
 
-		if (m_o == ORIENTATION_UP)
-		{
-			if (m_y > 0){
-				if (m_board[m_y - 1][m_x] == 'x'){
-					status = false;}}
-			else
-				status = false;
-		}
-		if (m_o == ORIENTATION_DOWN)
-		{
-			if (m_y < HEIGHT){
-				if (m_board[m_y + 1][m_x] == 'x'){
-					status = false;}}
-			else
-				status = false;
-		}
-		if (m_o == ORIENTATION_RIGHT)
-		{
-			if (m_x < WIDTH){
-				if (m_board[m_y][m_x + 1] == 'x'){
-					status = false;}}
-			else
-				status = false;
-		}
-		if (m_o == ORIENTATION_LEFT)
-		{
-			if (m_x > 0){
-				if (m_board[m_y][m_x - 1] == 'x'){
-					status = false;}}
-			else
-				status = false;
-		}
+		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
+			status = true;
+
+		if ((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
+			status = true;
+
+		if ((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' '))
+			status = true;
+
+		if ((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' '))
+			status = true;
 
 		return status;
 	}
+	
 	/**
 	 * turn left 
 	 * @author ogeorgeon
@@ -191,186 +117,122 @@ public class SimpleMaze implements IEnvironment
 		if (m_o < 0)
 			m_o = ORIENTATION_LEFT;
 
-		boolean status =  true  ;
+		boolean status =  false  ;
 
-		if (m_o == ORIENTATION_UP)
-		{
-			if (m_y > 0){
-				if (m_board[m_y - 1][m_x] == 'x'){
-					status = false;}}
-			else
-				status = false;
-		}
-		if (m_o == ORIENTATION_DOWN)
-		{
-			if (m_y < HEIGHT){
-				if (m_board[m_y + 1][m_x] == 'x'){
-					status = false;}}
-			else
-				status = false;
-		}
-		if (m_o == ORIENTATION_RIGHT)
-		{
-			if (m_x < WIDTH){
-				if (m_board[m_y][m_x + 1] == 'x'){
-					status = false;}}
-			else
-				status = false;
-		}
-		if (m_o == ORIENTATION_LEFT)
-		{
-			if (m_x > 0){
-				if (m_board[m_y][m_x - 1] == 'x'){
-					status = false;}}
-			else
-				status = false;
-		}
+		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
+			status = true;
+
+		if ((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
+			status = true;
+
+		if ((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' '))
+			status = true;
+
+		if ((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' '))
+			status = true;
 
 		return status;
 	}
+	
 	/**
 	 * Move forward to the direction of the current orientation
 	 * @author ogeorgeon
 	 */
-	public boolean move()
+	private boolean move()
 	{
 
 		boolean status = false;
 
-		if (m_o == ORIENTATION_UP)
-		{
-			if (m_y > 0) {
-				if  (m_board[m_y - 1][m_x] == ' ' )
+		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ' ))
 					{m_y--; status = true; }
-			} 
-		}
-		if (m_o == ORIENTATION_DOWN)
-		{
-			if (m_y < HEIGHT) {
-				if  (m_board[m_y + 1][m_x] == ' ' )
+
+		if ((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' ' ))
 					{m_y++; status = true; }
-			}
-		}
-		if (m_o == ORIENTATION_RIGHT)
-		{
-			if ( m_x < WIDTH ) {
-				if  (m_board[m_y][m_x + 1] == ' ' )
+
+		if ((m_o == ORIENTATION_RIGHT) && ( m_x < WIDTH ) && (m_board[m_y][m_x + 1] == ' ' ))
 					{m_x++; status = true; }
-			} 
-		}
-		if (m_o == ORIENTATION_LEFT)
-		{
-			if ( m_x > 0 ) {
-				if  (m_board[m_y][m_x - 1] == ' ' )
+
+		if ((m_o == ORIENTATION_LEFT) && ( m_x > 0 ) && (m_board[m_y][m_x - 1] == ' ' ))
 					{m_x--; status = true; }
-			} 
-		}
 
 		if (!status)
 			System.out.println("Ouch");
 
 		return status;
 	}
+	
 	/**
 	 * Touch the square forward
 	 * Succeeds if there is a wall, fails otherwise 
 	 * @author ogeorgeon
 	 */
-	public boolean Touch()
+	private boolean Touch()
 	{
 
 		boolean status = true;
 
-		if (m_o == ORIENTATION_UP)
-		{
-		    if ((m_y > 0) && m_board[m_y - 1][m_x] == ' ')
+		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
 		    	status = false;
-		}
-		if (m_o == ORIENTATION_DOWN)
-		{
-			if ((m_y < HEIGHT) && m_board[m_y + 1][m_x] == ' ')
+
+		if ((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
 				status = false;
-		}
-		if (m_o == ORIENTATION_RIGHT)
-		{
-		    if ((m_x < WIDTH) && m_board[m_y][m_x + 1] == ' ')
+
+		if ((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' '))
 		    	status = false;
-		}
-		if (m_o == ORIENTATION_LEFT)
-		{
-		    if ((m_x > 0) && m_board[m_y][m_x - 1] == ' ')
+
+		if ((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' '))
 		    	status = false;
-		}
 
 		return status;
 	}
 	
-/**
- * Touch the square to the right
- * Succeeds if there is a wall, fails otherwise 
- * @author ogeorgeon
- */
-public boolean TouchRight()
+	/**
+	 * Touch the square to the right
+	 * Succeeds if there is a wall, fails otherwise 
+	 * @author ogeorgeon
+	 */
+	private boolean TouchRight()
 	{
 
 		boolean status = true;
 	
-		if (m_o == ORIENTATION_UP)
-		{
-		    if ((m_x > 0) && m_board[m_y][m_x + 1] == ' ')
+		if ((m_o == ORIENTATION_UP) && (m_x > 0) && (m_board[m_y][m_x + 1] == ' '))
 		    	status = false;
-		}
-		if (m_o == ORIENTATION_DOWN)
-		{
-			if ((m_x < WIDTH) && m_board[m_y][m_x - 1] == ' ')
+
+		if ((m_o == ORIENTATION_DOWN) && (m_x < WIDTH) && (m_board[m_y][m_x - 1] == ' '))
 				status = false;
-		}
-		if (m_o == ORIENTATION_RIGHT)
-		{
-		    if ((m_y < HEIGHT) && m_board[m_y + 1][m_x] == ' ')
+
+		if ((m_o == ORIENTATION_RIGHT) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
 		    	status = false;
-		}
-		if (m_o == ORIENTATION_LEFT)
-		{
-		    if ((m_y > 0) && m_board[m_y - 1][m_x] == ' ')
+
+		if ((m_o == ORIENTATION_LEFT) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
 		    	status = false;
-		}
 	
 		return status;
 	}
 
-/**
- * Touch the square forward
- * Succeeds if there is a wall, fails otherwise 
- * @author ogeorgeon
- */
-public boolean TouchLeft()
+	/**
+	 * Touch the square forward
+	 * Succeeds if there is a wall, fails otherwise 
+	 * @author ogeorgeon
+	 */
+	private boolean TouchLeft()
 	{
 
 		boolean status = true;
 	
-		if (m_o == ORIENTATION_UP)
-		{
-		    if ((m_x > 0) && m_board[m_y][m_x - 1] == ' ')
+		if ((m_o == ORIENTATION_UP) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' '))
 		    	status = false;
-		}
-		if (m_o == ORIENTATION_DOWN)
-		{
-			if ((m_x < WIDTH) && m_board[m_y][m_x + 1] == ' ')
+
+		if ((m_o == ORIENTATION_DOWN) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' '))
 				status = false;
-		}
-		if (m_o == ORIENTATION_RIGHT)
-		{
-		    if ((m_y > 0) && m_board[m_y - 1][m_x] == ' ')
+
+		if ((m_o == ORIENTATION_RIGHT) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
 		    	status = false;
-		}
-		if (m_o == ORIENTATION_LEFT)
-		{
-		    if ((m_y < HEIGHT) && m_board[m_y + 1][m_x] == ' ')
+
+		if ((m_o == ORIENTATION_LEFT) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
 		    	status = false;
-		}
 	
 		return status;
 	}
-
 }

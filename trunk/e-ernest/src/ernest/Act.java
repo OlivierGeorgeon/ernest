@@ -15,8 +15,16 @@ public class Act implements IAct
 	
 	private ISchema m_prescriberSchema = null;
 	
-	public static IAct createAct(ISchema s, boolean success, int satisfaction)
-	{ return new Act(s, success, satisfaction); }
+	/**
+	 * Constructor 
+	 * @author ogeorgeon
+	 */
+	public Act(ISchema s, boolean success, int satisfaction)
+	{
+		m_schema = s;
+		m_success = success;
+		m_satisfaction = satisfaction;
+	}
 	
 	public boolean isSuccess() 
 	{
@@ -91,13 +99,6 @@ public class Act implements IAct
 		int ret = (getSchema().hashCode() * 10) + (isSuccess() == true ? 0 : 1);
 		return ret;
     }	
-	
-	private Act(ISchema s, boolean success, int satisfaction)
-	{
-		m_success = success;
-		m_satisfaction = satisfaction;
-		m_schema = s;
-	}
 	
 	public void setPrescriberSchema(ISchema s)
 	{
