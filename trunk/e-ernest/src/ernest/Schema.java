@@ -43,6 +43,7 @@ public class Schema implements ISchema
 		m_id = id;
 		m_tag = label;
 		m_isPrimitive = true;
+        m_weight = Ernest.REG_SENS_THRESH + 1;
 	}
 
 	/**
