@@ -27,32 +27,39 @@ public class Ernest implements IErnest
 	/**
 	 *  the base and current contexts
 	 */
-	private IContext m_baseContext = Main.factory().createContext();
-	private IContext m_currentContext = Main.factory().createContext();
+	private IContext m_baseContext = new Context();
+	private IContext m_currentContext = new Context();
 	
 	private boolean m_bored = false;
 	
 	/**
 	 *  the logger
 	 */
-	private ILogger m_logger = Main.factory().createLogger("trace.txt", true);
+	private ITracer m_logger = null;
 	
 	
 	/**
-	 * Adds a primitive schema and its succeeding and failing acts for intialization
+	 * Add a primitive possibility of interaction between Ernest and its environment
+	 * Add the primitive schema, its succeeding act, and its failing act to Ernest's schema memory 
+	 * @author ogeorgeon
 	 */
-	public void addPrimitiveSchema(String tag, int valSucceed, int valFail) 
+	public void addPrimitiveInteraction(String label, int successSatisfaction, int failureSatisfaction) 
 	{
-		ISchema s = Main.factory().createPrimitiveSchema(m_schemas.size() + 1, tag, valSucceed, valFail); 
+		ISchema s =  Schema.createPrimitiveSchema(m_schemas.size() + 1, label);
+		s.setSucceedingAct( new Act(s, true,  successSatisfaction));
+		s.setFailingAct(new Act(s, false, failureSatisfaction));
+
 		m_schemas.add(s);	
+		
+		System.out.println("Primitive schema " + s);
 	}
 
-	/**
+    /**
 	 * Initialize the logger that generates the trace file
 	 */
-	public void setLogger(ILogger logger) 
+	public void setTracer(ITracer tracer) 
 	{
-		m_logger = logger;
+		m_logger = tracer;
 	}
 
 	/**
@@ -72,52 +79,63 @@ public class Ernest implements IErnest
 	public String step(boolean status) 
 	{
 		
-		// Compute the current actually enacted act
-		
 		IAct intendedPrimitiveAct = m_currentContext.getPrimitiveIntention();
 		IAct enactedPrimitiveAct = null;
 		IAct enactedAct = null;
 		IAct intentionAct = null;
+		IAct performedAct = null;
 		
 		if (intendedPrimitiveAct == null)
-			// Context is empty. Intialization.
-			m_logger.writeLine("Context empty");
+			// Context is empty. Initialization.
+			System.out.println("Context empty");
 		else
 		{
+			// Compute the actually enacted act
+			
 			ISchema enactedPrimitiveSchema = intendedPrimitiveAct.getSchema();
 			enactedPrimitiveAct = 	enactedPrimitiveSchema.getResultingAct(status);
 			enactedAct = enactedAct(enactedPrimitiveSchema, enactedPrimitiveAct);
 			
 			System.out.println("Enacted " + enactedAct );
+			
 			// Proceed the ongoing schema's enaction to the next act to enact
 			
 			intentionAct = nextAct(intendedPrimitiveAct, status);
+			
+			// Decision cycle
 
 			if (intentionAct == null)
 			{
-				// No ongoing schema to enact
+				// No ongoing schema to enact. The decision cycle is over.  
 				
-				// Determine the performed act
-				IAct performedAct = performedAct(m_currentContext.getIntentionAct(), enactedAct);
-				System.out.println("Performed " + performedAct );
-				
-				// Log the trace
+				// Log the previous decision cycle's trace
+
 				m_logger.writeLine(enactedAct.getTag());
 				if (m_currentContext.getIntentionAct() != enactedAct)
 					m_logger.writeLine("!");
 				
-				// Learn ====
-			
-				// learn from the current context and the performed act
+				// Determine the performed act
+				
+				ISchema intendedSchema = m_currentContext.getIntentionAct().getSchema();
+				if (intendedSchema == enactedAct.getSchema())
+					performedAct = enactedAct;
+				else
+					performedAct = addFailingInteraction(intendedSchema,enactedAct.getSat());
+				System.out.println("Performed " + performedAct );
+				
+				// learn from the  context and the performed act
+				
 				IContext streamContext = learn(m_currentContext, performedAct);
 		
 				// learn from the base context and the stream act
+				
 				IAct streamAct = streamContext.getCoreAct();
 				System.out.println("Streaming " + streamAct);
 				if (streamAct != null && streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
 					learn(m_baseContext, streamAct);
 		
 				// learn from the current context and the actually enacted act
+				
 				IAct streamAct2 = null;
 				if (enactedAct != performedAct)
 				{
@@ -134,7 +152,7 @@ public class Ernest implements IErnest
 				
 				m_baseContext = m_currentContext;
 				
-				m_currentContext = Main.factory().createContext();
+				m_currentContext = new Context();
 				m_currentContext.setCoreAct(enactedAct); // rather than performedAct to avoid too many schemas including failing subschemas
 				if (enactedAct != performedAct)
 					m_currentContext.addFocusAct(performedAct);
@@ -148,20 +166,23 @@ public class Ernest implements IErnest
 				// m_currentContext.addContext(streamContext2);
 				
 				// print the new current context
-				System.out.println("Context: ");
+				// System.out.println("Context: ");
 			}
 		}	
 
-		// Select next =====
-	
-		// create a proposition list of possible intention schemas
-		List<IProposition>  propositions = propose(m_currentContext);
+		if (intentionAct == null)
+		{
+			// Select next =====
 		
-		// Select an act to enact among the proposition list 
-		intentionAct = selectAct(propositions);
-
+			// create a proposition list of possible intention schemas
+			List<IProposition>  propositions = propose(m_currentContext);
+			
+			// Select an act to enact among the proposition list 
+			intentionAct = selectAct(propositions);
+			m_currentContext.setIntentionAct(intentionAct);
+		}
+		
 		// Prescribe subacts and subschemas		
-		m_currentContext.setIntentionAct(intentionAct);
 		IAct nextPrimitiveAct = prescribeSubacts(intentionAct);
 		m_currentContext.setPrimitiveIntention(nextPrimitiveAct);
 
@@ -171,7 +192,7 @@ public class Ernest implements IErnest
 	
 	/**
 	 * Recursively construct the current actually enacted act. 
-	 * WARNING: may construct extra intermediary acts
+	 *  (may construct extra intermediary schemas but that's ok because their weight is not incremented)
 	 * @return the actually enacted act
 	 * @author ogeorgeon
 	 */
@@ -194,7 +215,7 @@ public class Ernest implements IErnest
 			else
 			{
 				// enacted the prescriber's intention
-				ISchema enactedSchema = Main.factory().addSchema(m_schemas, prescriberSchema.getContextAct(), a);
+				ISchema enactedSchema = addCompositeInteraction(prescriberSchema.getContextAct(), a);
 				enactedAct = enactedAct(prescriberSchema, enactedSchema.getSucceedingAct());
 			}
 		}
@@ -211,6 +232,7 @@ public class Ernest implements IErnest
 	{
 		IAct nextAct = null;
 		ISchema prescriberSchema = a.getPrescriberSchema();
+		a.setPrescriberSchema(null); // (It might be the case that the same act will be prescribed again)
 		
 		if (prescriberSchema != null)
 		{
@@ -230,7 +252,7 @@ public class Ernest implements IErnest
 					IAct prescriberAct = prescriberSchema.getPrescriberAct();
 					nextAct = nextAct(prescriberAct, true);
 				}
-				a.setPrescriberSchema(null);						
+				// a.setPrescriberSchema(null);						
 			}
 			else
 			{
@@ -240,55 +262,9 @@ public class Ernest implements IErnest
 			}
 		}
 
-		a.setPrescriberSchema(null);
 		return nextAct;
 	}
 	
-	/**
-	 * Compute the performed act
-	 * The performed act is at the same hierarchical level as the intended act
-	 * If the intention was correctly enacted then the performed act equals the intention act
-	 * If the intention was incorrectly enacted then the performed act is complementary to the intention act 
-	 *  (failure if expected success and success if expected failure)
-	 * @author ogeorgeon
-	 * @return the performed act 
-	 */
-	protected IAct performedAct(IAct intention, IAct enacted)
-	{
-		IAct performedAct = null;
-		
-		if (intention != null)
-		{
-			performedAct = enacted;
-			// for non primitive intentions
-			if (!intention.getSchema().isPrimitive())
-			{
-				// if the enacted act is not that intended
-				if (enacted != intention)
-				{
-					// if intended to succeed
-					if (intention.isSuccess())
-					{
-						// Initialize or update the intention's failing act using the actually enacted act's satisfaction
-						// the performed act is the filing act
-						performedAct = intention.getSchema().initFailingAct(enacted.getSat());
-					}
-					// if intended to fail
-					else
-					{
-						// if failed indeed then the performed act is the intention
-						if (enacted.getSchema() != intention.getSchema())
-							performedAct = intention;
-						// if accidentally succeeded then the performed act is the enacted act
-					}
-				}
-				// if the enacted act is that intended then the performed act equals the enacted act
-			}
-			// for primitive intended acts, the performed act is the enacted act
-		}		
-		return performedAct;
-	}
-
 	/**
 	 * Learn from an enacted intention after a given context
 	 * TODO: do not use the global variable m_context, that is not clean!
@@ -298,14 +274,14 @@ public class Ernest implements IErnest
 	 */
 	protected IContext learn(IContext context, IAct intentionAct)
 	{
-		IContext newContext = Main.factory().createContext();
+		IContext newContext = new Context();
 		
 		// For each act in the context ...
 		for (IAct contextAct : context.getContextList())
 		{
 			// Build a new schema with the context act 
 			// and the intention act 
-			ISchema newSchema = Main.factory().addSchema(m_schemas, contextAct, intentionAct);
+			ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
 			newSchema.incWeight();
 			// System.out.println("Reinfocing schema " + newSchema);
 			
@@ -365,7 +341,7 @@ public class Ernest implements IErnest
 					// If the intention's schemas has passed the threshold
 					if (s.getIntentionAct().getSchema().getWeight() > REG_SENS_THRESH)
 					{
-						IProposition p = Main.factory().createProposition(s.getIntentionAct().getSchema(), w, e);
+						IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
 	
 						int i = proposals.indexOf(p);
 						if (i == -1)
@@ -382,7 +358,7 @@ public class Ernest implements IErnest
 							// only if the intention's intention is positive (this is some form of positive anticipation)
 							if (s.getIntentionAct().getSchema().getIntentionAct().getSat() > 0)
 							{
-								IProposition p = Main.factory().createProposition(s.getIntentionAct().getSchema().getContextAct().getSchema(), w, e);
+								IProposition p = new Proposition(s.getIntentionAct().getSchema().getContextAct().getSchema(), w, e);
 								int i = proposals.indexOf(p);
 								if (i == -1)
 									proposals.add(p);
@@ -395,12 +371,10 @@ public class Ernest implements IErnest
 				}
 			}
 
-			// Schemas that pass the threshold also receive a default proposition for themselves
-			//if (s.getWeight() > Schema.REG_SENS_THRESH)
 			// Primitive schemas also receive a default proposition for themselves
 			if (s.isPrimitive())
 			{
-				IProposition p = Main.factory().createProposition(s, 0, 0);
+				IProposition p = new Proposition(s, 0, 0);
 				if (!proposals.contains(p))
 					proposals.add(p);
 			}
@@ -469,6 +443,56 @@ public class Ernest implements IErnest
 		
 		return primitiveAct;
 	}
+
+	/**
+	 * Add a composite possibility of interaction between Ernest and its environment 
+	 * If the composite schema does not exist then add it and its succeeding act to Ernest's memory
+	 * @author ogeorgeon
+	 */
+    private ISchema addCompositeInteraction(IAct contextAct, IAct intentionAct)
+    {
+    	ISchema s = Schema.createCompositeSchema(m_schemas.size() + 1, contextAct, intentionAct);
+    	
+		int i = m_schemas.indexOf(s);
+		if (i == -1)
+		{
+			// The schema does not exist: create its succeeding act and add them to Ernest's memory
+	    	s.setSucceedingAct(new Act(s, true, contextAct.getSat() + intentionAct.getSat()));
+			m_schemas.add(s);
+		}
+		else
+			// The schema already exists: return a pointer it it.
+			s =  m_schemas.get(i);
+
+    	return s;
+    }
+
+	/**
+	 * Add or update a failing possibility of interaction between Ernest and its environment
+	 * Add a update schema's failing act to Ernest's memory 
+	 * If the failing act does not exist then create it 
+	 * If the failing act exists then update its satisfaction
+	 * @author ogeorgeon
+	 */
+    private IAct addFailingInteraction(ISchema schema, int satisfaction)
+    {
+    	IAct failingAct = schema.getFailingAct();
+    	
+		if (!schema.isPrimitive())
+		{
+			if (failingAct == null)
+			{
+				failingAct = new Act(schema, false, satisfaction);
+				schema.setFailingAct(failingAct);
+			}
+			else
+				// If the failing act already exists then 
+				//  its satisfaction is averaged with the previous value
+				failingAct.setSat((failingAct.getSat() + satisfaction)/2);
+		}
+		
+		return failingAct;
+    }
 
 	/**
 	 * When bored, clear the context

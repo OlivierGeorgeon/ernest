@@ -14,7 +14,7 @@ public class Schema implements ISchema
 {
 	//public static final int REG_SENS_THRESH = 10;	
 	
-	private int m_weight = Integer.MIN_VALUE; 
+	private int m_weight = 0; 
 	private IAct m_succeedingAct = null;
 	private IAct m_failingAct = null;
 	private IAct m_contextAct = null;
@@ -28,11 +28,41 @@ public class Schema implements ISchema
 	
 	private boolean m_isActivated = false;
 
-	public static ISchema createSchema(int id)
-	{ return new Schema(id); }
+	/**
+	 * Constructor for a primitive schema
+	 * Create a new primitive schema with a label that the environment can interpret 
+	 * @author ogeorgeon
+	 */
+	public static ISchema createPrimitiveSchema(int id, String label)
+	{ 
+		return new Schema(id, label);
+	}
+	
+	private Schema(int id, String label)
+	{
+		m_id = id;
+		m_tag = label;
+		m_isPrimitive = true;
+	}
 
-	public static ISchema createSchema(int id, String tag, int successSat, int failureSat)
-	{ return new Schema(id, tag, successSat, failureSat); }
+	/**
+	 * Constructor for a composite schema
+	 * Create a new composite schema with context act and an intention act 
+	 * @author ogeorgeon
+	 */
+	public static ISchema createCompositeSchema(int id, IAct contextAct, IAct intentionAct)
+	{ 
+		return new Schema(id, contextAct, intentionAct); 
+	}
+
+	private Schema(int id, IAct contextAct, IAct intentionAct)
+	{
+		m_id = id;
+		m_isPrimitive = false;
+		m_contextAct = contextAct;
+		m_intentionAct = intentionAct;
+		m_tag = contextAct.getTag() +  intentionAct.getTag(); 
+	}
 	
 	public IAct getSucceedingAct() 
 	{	return m_succeedingAct; }
@@ -74,44 +104,6 @@ public class Schema implements ISchema
 
 	public void incWeight()
 	{ m_weight++; }
-	
-	/**
-	 * Initialize or reinitialize the schema's succeeding act 
-	 * @author mcohen
-	 * @author ogeorgeon
-	 */
-	public void initSucceedingAct() 
-	{
-		if (!isPrimitive())
-		{
-			m_tag = m_contextAct.getTag() +  m_intentionAct.getTag(); 
-			if (m_succeedingAct == null)
-				m_succeedingAct = Main.factory().createAct(this,true, (m_contextAct.getSat() + 
-											       		  m_intentionAct.getSat()));
-			else
-				m_succeedingAct.setSat(m_contextAct.getSat() + 
-											 m_intentionAct.getSat());
-		}
-	}
-	
-	/**
-	 * Initialize or reinitialize the schema's failing act
-	 * @return the failing act 
-	 * @author ogeorgeon
-	 */
-	public IAct initFailingAct(int satisfaction) 
-	{
-		if (!isPrimitive())
-		{
-			if (m_failingAct == null)
-				m_failingAct = Main.factory().createAct(this,false, satisfaction);
-			else
-				// If the failing act already exists then 
-				//  its satisfaction is averaged with the previous value
-				m_failingAct.setSat((m_failingAct.getSat() + satisfaction)/2);
-		}
-		return m_failingAct;
-	}
 	
 	/**
 	 * Schemas are equal if they have the same context act and intention act 
@@ -166,23 +158,6 @@ public class Schema implements ISchema
 			s = String.format("[%s %s <C:S%s, I:S%s> w=%s]", 
 					getSucceedingAct(), getFailingAct(), getContextAct().getSchema().hashCode(), getIntentionAct().getSchema().hashCode(), getWeight());
 		return s;
-	}
-
-	private Schema(int id)
-	{
-		m_id = id;
-		m_isPrimitive = false;
-		m_weight = 0;
-	}
-	
-	private Schema(int id, String tag, int successSat, int failureSat)
-	{
-		m_id = id;
-		m_tag = tag;
-		m_isPrimitive = true;
-		m_weight = Algorithm.REG_SENS_THRESH + 1;
-		m_succeedingAct = Main.factory().createAct(this, true, successSat);
-		m_failingAct = Main.factory().createAct(this, false, failureSat);
 	}
 
 	public boolean isActivated() 

@@ -9,30 +9,15 @@ package ernest;
  */
 public class Main 
 {
-	private static IFactory m_factory = new Factory();
-	
-	public static IFactory factory()
-	{ return m_factory; }
-	
 	public static void main(String[] args) 
-	{
-		factory().getAlgorithm().run();
-		//run();
-	}
-
-	/**
-	 * Run a simulation of ernest in a simple environment
-	 * @author ogeorgeon
-	 */
-	protected static void run()
 	{
 		// Create the environment
 		
-		IEnvironment environment = SimpleMaze.createEnvironment(); 
+		IEnvironment environment = new SimpleMaze(); 
 		
-		// Create a logger 
+		// Create a tracer 
 		
-		ILogger logger = new Logger("trace.txt", true);
+		ITracer tracer = new Tracer("trace.txt", true);
 		
 		// Create an Ernest 
 		
@@ -40,14 +25,14 @@ public class Main
 		
 		// Initialize the Ernest 
 		
-		ernest.addPrimitiveSchema(">", 10, -10); // Move
-		ernest.addPrimitiveSchema("^", 0, -5);   // Left
-		ernest.addPrimitiveSchema("v", 0, -5);   // Right
-		ernest.addPrimitiveSchema("-", -1, 0);   // Touch
-		ernest.addPrimitiveSchema("\\", -1, 0);  // Touch right
-		ernest.addPrimitiveSchema("/", -1, 0);   // Touch left
+		ernest.addPrimitiveInteraction(">", 10,-10); // Move
+		ernest.addPrimitiveInteraction("^",  0, -5); // Left
+		ernest.addPrimitiveInteraction("v",  0, -5); // Right
+		ernest.addPrimitiveInteraction("-", -1,  0); // Touch
+		ernest.addPrimitiveInteraction("\\",-1,  0); // Touch right
+		ernest.addPrimitiveInteraction("/", -1,  0); // Touch left
 		
-		ernest.setLogger(logger);
+		ernest.setTracer(tracer);
 		
 		// Run in an infinite loop
 		
@@ -57,12 +42,13 @@ public class Main
 		
 		while (true)
 		{
-			System.out.println("Decision cycle #" + iCycle++);
-			logger.writeLine(" " + iCycle );
+			System.out.println("Step #" + iCycle);
+			tracer.writeLine(" " + iCycle++ );
 			
 			schema = ernest.step(status);
 			status = environment.enact(schema);
 		}
 
 	}
+
 }

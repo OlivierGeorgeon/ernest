@@ -5,23 +5,29 @@ import java.util.List;
 
 /**
  * A context is Ernest's internal representation of its situation at a given point in time 
+ * A context stores all the data that must be passed from one step to the next
+ * and from one decision cycle to the next
  * @author ogeorgeon
  */
+
 public class Context implements IContext {
 
-	// The list of acts in the context
+	/**
+	 *  The list of acts in the scope
+	 */
 	private List<IAct> m_contextList = new ArrayList<IAct>();
 	
-	// The list of acts in the focus
+	/**
+	 *  The list of acts in the focus
+	 */
 	private List<IAct> m_focusList = new ArrayList<IAct>();
 
-	// Acts of interest
+	/**
+	 *  Acts of interest
+	 */
 	private IAct m_coreAct = null;
 	private IAct m_intentionAct = null;
 	private IAct m_primitiveIntention = null;
-
-	public static IContext createContext()
-	{ return new Context(); }
 
 	public void addContextAct(IAct act) 
 	{

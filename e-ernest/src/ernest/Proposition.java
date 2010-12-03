@@ -1,21 +1,30 @@
 package ernest;
 
 /**
- * Represents a proposal that Ernest enacts a Schema.  A proposal consists of 
- * the proposed schema and a weight that determines the strength of the proposal.
- * Proposals with higher weight are given priority.  This class represents a
- * default implementation for a Proposition.
+ * Represents a proposal for enacting a Schema. 
+ * A proposal consists of the proposed schema, 
+ * a weight that determines the strength of the proposal,
+ * and an expectation that determines the prediction that the schema will succeed
  * @author mcohen
- *
- */public class Proposition implements IProposition
+ * @author ogeorgeon
+ */
+public class Proposition implements IProposition
 {
 	private ISchema m_schema = null;
 	private Integer m_weight = null;
 	private Integer m_expectation = null;
 	
-	public static IProposition createProposition(ISchema s, int w, int e)
-	{ return new Proposition(s,w,e); }
-	
+	/**
+	 * Constructor 
+	 * @author ogeorgeon
+	 */
+	public Proposition(ISchema s, int w, int e)
+	{
+		m_schema = s;
+		m_weight = w;
+		m_expectation = e;
+	}
+
 	public void update(int w, int e)
 	{
 		m_weight += w;
@@ -73,10 +82,4 @@ package ernest;
 		return s;
 	}
 	
-	private Proposition(ISchema s, int w, int e)
-	{
-		m_schema = s;
-		m_weight = w;
-		m_expectation = e;
-	}
 }

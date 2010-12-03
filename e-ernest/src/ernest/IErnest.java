@@ -9,8 +9,10 @@ import java.util.List;
  */
 public interface IErnest 
 {
-	public void addPrimitiveSchema(String tag, int valSucceed, int valFail);
-	public void setLogger(ILogger logger);
+
+	public void addPrimitiveInteraction(String tag, int valSucceed, int valFail);
+	public void setTracer(ITracer tracer);
 	public void clear();
 	public String step(boolean status);
+	
 }
