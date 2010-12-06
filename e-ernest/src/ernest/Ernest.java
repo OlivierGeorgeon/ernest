@@ -31,11 +31,13 @@ public class Ernest implements IErnest
 	private IContext m_currentContext = new Context();
 	
 	private boolean m_bored = false;
+	private String m_internalState = "";
 	
 	/**
 	 *  the logger
 	 */
 	private ITracer m_logger = null;
+	private int m_learnCount = 0;
 	
 	
 	/**
@@ -72,13 +74,23 @@ public class Ernest implements IErnest
 	}
 
 	/**
+	 * Returns information on Ernest's internal state
+	 * @author ogeorgeon
+	 */
+	public String getState() 
+	{
+		return m_internalState;
+	}
+
+	/**
 	 * Run Ernest one step
 	 * @return the next primitive schema to enact
 	 * @author ogeorgeon
 	 */
 	public String step(boolean status) 
 	{
-		
+		m_internalState= "";
+
 		IAct intendedPrimitiveAct = m_currentContext.getPrimitiveIntention();
 		IAct enactedPrimitiveAct = null;
 		IAct enactedAct = null;
@@ -110,10 +122,10 @@ public class Ernest implements IErnest
 				
 				// Log the previous decision cycle's trace
 
-				m_logger.writeLine(enactedAct.getTag());
 				if (m_currentContext.getIntentionAct() != enactedAct)
-					m_logger.writeLine("!");
-				
+					m_internalState= "!";
+				m_logger.writeLine(enactedAct.getTag() + m_internalState);
+
 				// Determine the performed act
 				
 				ISchema intendedSchema = m_currentContext.getIntentionAct().getSchema();
@@ -125,6 +137,7 @@ public class Ernest implements IErnest
 				
 				// learn from the  context and the performed act
 				
+				m_learnCount = 0;
 				IContext streamContext = learn(m_currentContext, performedAct);
 		
 				// learn from the base context and the stream act
@@ -166,7 +179,11 @@ public class Ernest implements IErnest
 				// m_currentContext.addContext(streamContext2);
 				
 				// print the new current context
-				// System.out.println("Context: ");
+				// System.out.println("Schemas: ");
+				// for (ISchema s : m_schemas)
+				// {	System.out.println(s);}
+				System.out.println("Learned : " + m_learnCount + " schemas.");
+					
 			}
 		}	
 
@@ -459,6 +476,7 @@ public class Ernest implements IErnest
 			// The schema does not exist: create its succeeding act and add them to Ernest's memory
 	    	s.setSucceedingAct(new Act(s, true, contextAct.getSat() + intentionAct.getSat()));
 			m_schemas.add(s);
+			m_learnCount++;
 		}
 		else
 			// The schema already exists: return a pointer it it.
