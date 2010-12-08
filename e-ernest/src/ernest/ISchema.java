@@ -29,6 +29,7 @@ public interface ISchema
 	public ISchema getPrescriberSchema();
 	public void setPointer(int p);
 	public int  getPointer();
+	public int getLength();
 	
 	public String getTag(); 
 	public int  getWeight();

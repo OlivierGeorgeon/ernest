@@ -1,10 +1,8 @@
 package ernest;
 
 /**
- * The main program.  Run this class to execute Ernest in a simulated environment.
- * Importantly, this class defines the concrete factory used by the entire codebase.  
- * This factory detemines the types of objects used by Ernest.   
- * @author mcohen
+ * The main program.  
+ * Constitutes an example code to run Ernest in a simulated environment.
  * @author ogeorgeon
  */
 public class Main 
@@ -25,12 +23,14 @@ public class Main
 		
 		// Initialize the Ernest 
 		
-		ernest.addPrimitiveInteraction(">", 10,-10); // Move
-		ernest.addPrimitiveInteraction("^",  0, -5); // Left
-		ernest.addPrimitiveInteraction("v",  0, -5); // Right
-		ernest.addPrimitiveInteraction("-", -1,  0); // Touch
-		ernest.addPrimitiveInteraction("\\",-1,  0); // Touch right
-		ernest.addPrimitiveInteraction("/", -1,  0); // Touch left
+		ernest.setParameters(6, 1, 6);
+		
+		ernest.addPrimitiveInteraction(">",  50, -80); // Move
+		ernest.addPrimitiveInteraction("^", -20, -50); // Left
+		ernest.addPrimitiveInteraction("v", -20, -50); // Right
+		ernest.addPrimitiveInteraction("-", -10, -10); // Touch
+		ernest.addPrimitiveInteraction("\\",-10, -10); // Touch right
+		ernest.addPrimitiveInteraction("/", -10, -10); // Touch left
 		
 		ernest.setTracer(tracer);
 		

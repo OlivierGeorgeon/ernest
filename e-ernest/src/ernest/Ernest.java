@@ -11,13 +11,19 @@ import java.util.Collections;
  */
 public class Ernest implements IErnest 
 {
-	public static final int ACTIVATION_THRESH = 1;
-	public static final int REG_SENS_THRESH = 5;
+	public static int REG_SENS_THRESH = 5;
+	public static int ACTIVATION_THRESH = 1;
+	public static int SCHEMA_MAX_LENGTH = 1000;
 	
 	/**
 	 *  used to break a tie when selecting schema...
 	 */
 	private static Random m_rand = new Random(); 
+	
+	/**
+	 *  Ernest's perception system
+	 */
+	private int m_perception = 1000;
 	
 	/**
 	 *  a list of all of the schemas ever created ...
@@ -40,6 +46,23 @@ public class Ernest implements IErnest
 	private int m_learnCount = 0;
 	
 	
+	/**
+	 * Set the fundamental parameters
+	 * Use null to let a value unchanged
+	 * @author ogeorgeon
+	 */
+	public void setParameters(Integer RegularityThreshold, Integer ActivationThreshold, Integer schemaMaxLength) 
+	{
+		if (RegularityThreshold != null)
+			REG_SENS_THRESH = RegularityThreshold.intValue();
+		
+		if (ActivationThreshold != null)
+			ACTIVATION_THRESH = ActivationThreshold.intValue();
+		
+		if (schemaMaxLength != null)
+			SCHEMA_MAX_LENGTH = schemaMaxLength.intValue();
+	}
+
 	/**
 	 * Add a primitive possibility of interaction between Ernest and its environment
 	 * Add the primitive schema, its succeeding act, and its failing act to Ernest's schema memory 
@@ -66,7 +89,6 @@ public class Ernest implements IErnest
 
 	/**
 	 * Clears Ernest's schema list
-	 * TODO Make sure the memory is actually cleared.
 	 */
 	public void clear() 
 	{
@@ -82,6 +104,15 @@ public class Ernest implements IErnest
 		return m_internalState;
 	}
 
+	/**
+	 * Set Ernest's perceptual matrix
+	 * @author ogeorgeon
+	 */
+	public void setSensor(String p) 
+	{
+		m_perception = Integer.parseInt(p);
+	}
+		
 	/**
 	 * Run Ernest one step
 	 * @return the next primitive schema to enact
@@ -356,7 +387,8 @@ public class Ernest implements IErnest
 					int e = s.getWeight() * (s.getIntentionAct().isSuccess() ? 1 : -1);
 					
 					// If the intention's schemas has passed the threshold
-					if (s.getIntentionAct().getSchema().getWeight() > REG_SENS_THRESH)
+					if ((s.getIntentionAct().getSchema().getWeight() > REG_SENS_THRESH ) &&						 
+						(s.getIntentionAct().getSchema().getLength() <= SCHEMA_MAX_LENGTH ))
 					{
 						IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
 	
@@ -479,7 +511,7 @@ public class Ernest implements IErnest
 			m_learnCount++;
 		}
 		else
-			// The schema already exists: return a pointer it it.
+			// The schema already exists: return a pointer to it.
 			s =  m_schemas.get(i);
 
     	return s;
@@ -513,8 +545,9 @@ public class Ernest implements IErnest
     }
 
 	/**
-	 * When bored, clear the context
-	 * Bored when the enacted act is a repetition and secondary
+	 * Detect boredom when the enacted act is a repetition and secondary
+	 * @author ogeorgeon
+	 * @return true if bored, false if not bored
 	 */
 	private boolean boredome(IAct enacted)
 	{
