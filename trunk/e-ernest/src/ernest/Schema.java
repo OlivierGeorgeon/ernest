@@ -25,6 +25,7 @@ public class Schema implements ISchema
 	private int m_pointer = 0;
 	private String m_tag = null; 
 	private boolean m_isPrimitive = true;
+	private int m_length = 1;
 	
 	private boolean m_isActivated = false;
 
@@ -43,7 +44,7 @@ public class Schema implements ISchema
 		m_id = id;
 		m_tag = label;
 		m_isPrimitive = true;
-        m_weight = Ernest.REG_SENS_THRESH + 1;
+        m_weight = 1000; // needs to be greater than the regularity threshold
 	}
 
 	/**
@@ -62,9 +63,14 @@ public class Schema implements ISchema
 		m_isPrimitive = false;
 		m_contextAct = contextAct;
 		m_intentionAct = intentionAct;
-		m_tag = contextAct.getTag() +  intentionAct.getTag(); 
+		m_tag = contextAct.getTag() +  intentionAct.getTag();
+		m_length = contextAct.getSchema().getLength() + intentionAct.getSchema().getLength();
 	}
 	
+	public int getLength()
+	{
+		return m_length;
+	}
 	public IAct getSucceedingAct() 
 	{	return m_succeedingAct; }
 
