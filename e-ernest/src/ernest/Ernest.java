@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Collections;
 
 /**
- * The main Ernest class. 
+ * The main Ernest class.
  * @author ogeorgeon
  */
 public class Ernest implements IErnest 
