@@ -11,9 +11,10 @@ import java.util.Collections;
  */
 public class Ernest implements IErnest 
 {
+	public static final int INFINITE = 1000;
 	public static int REG_SENS_THRESH = 5;
 	public static int ACTIVATION_THRESH = 1;
-	public static int SCHEMA_MAX_LENGTH = 1000;
+	public static int SCHEMA_MAX_LENGTH = INFINITE;
 	
 	/**
 	 *  used to break a tie when selecting schema...
@@ -21,14 +22,14 @@ public class Ernest implements IErnest
 	private static Random m_rand = new Random(); 
 	
 	/**
-	 *  Ernest's perception system
+	 *  Current sensory system state
 	 */
-	private int m_perception = 1000;
+	private IIcon m_icon = null;
 	
-	/**
-	 *  a list of all of the schemas ever created ...
-	 */
-	private List<ISchema> m_schemas = new ArrayList<ISchema>();
+	/** a list of all the schemas ever created ... */
+	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
+	/** a list of all the icons ever encountered */
+	private List<IIcon> m_icons = new ArrayList<IIcon>(1000);
 	
 	/**
 	 *  the base and current contexts
@@ -108,9 +109,19 @@ public class Ernest implements IErnest
 	 * Set Ernest's perceptual matrix
 	 * @author ogeorgeon
 	 */
-	public void setSensor(String p) 
+	public void setSensor(int[][] matrix) 
 	{
-		m_perception = Integer.parseInt(p);
+    	IIcon icon = new Icon(matrix);
+    	
+		int i = m_icons.indexOf(icon);
+		if (i == -1)
+			// The icon does not exist: add it to iconic memory
+			m_icons.add(icon);
+		else
+			// The icon already exists: return a pointer to it.
+			icon =  m_icons.get(i);
+
+		m_icon = icon;
 	}
 		
 	/**
@@ -233,6 +244,8 @@ public class Ernest implements IErnest
 		// Prescribe subacts and subschemas		
 		IAct nextPrimitiveAct = prescribeSubacts(intentionAct);
 		m_currentContext.setPrimitiveIntention(nextPrimitiveAct);
+		
+		m_currentContext.setIcon(m_icon);
 
 		return nextPrimitiveAct.getSchema().getTag();
 		
@@ -513,13 +526,12 @@ public class Ernest implements IErnest
 		else
 			// The schema already exists: return a pointer to it.
 			s =  m_schemas.get(i);
-
     	return s;
     }
 
 	/**
 	 * Add or update a failing possibility of interaction between Ernest and its environment
-	 * Add a update schema's failing act to Ernest's memory 
+	 * Add or update schema's failing act to Ernest's memory 
 	 * If the failing act does not exist then create it 
 	 * If the failing act exists then update its satisfaction
 	 * @author ogeorgeon
