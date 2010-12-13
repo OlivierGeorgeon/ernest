@@ -28,6 +28,9 @@ public class Context implements IContext {
 	private IAct m_coreAct = null;
 	private IAct m_intentionAct = null;
 	private IAct m_primitiveIntention = null;
+	
+	/* The icon in the context */
+	private IIcon m_icon = null;
 
 	public void addContextAct(IAct act) 
 	{
@@ -104,4 +107,13 @@ public class Context implements IContext {
 		m_primitiveIntention = a;	
 	}
 
+	public void setIcon(IIcon icon)
+	{
+		m_icon = icon;
+	}
+	
+	public IIcon getIcon()
+	{
+		return m_icon;
+	}
 }

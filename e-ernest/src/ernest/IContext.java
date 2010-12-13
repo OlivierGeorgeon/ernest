@@ -19,7 +19,11 @@ public interface IContext
 	public void setCoreAct(IAct a);
 	public void setPrimitiveIntention(IAct a);
 	public void setIntentionAct(IAct a);
+	
 	public void addFocusAct(IAct a);
 	public void addContextAct(IAct a);
 	public void addContext(IContext context);
+
+	public void setIcon(IIcon icon);
+	public IIcon getIcon();
 }

@@ -15,7 +15,7 @@ public interface IErnest
 	public void setParameters(Integer RegularityThreshold, Integer ActivationThreshold, Integer schemaMaxLength); 
 	public void clear();
 	public String getState();
-	public void setSensor(String p); 
+	public void setSensor(int[][] matrix); 
 	public String step(boolean status);
 	
 }
