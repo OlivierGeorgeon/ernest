@@ -10,7 +10,8 @@ import java.util.List;
 public interface IErnest 
 {
 
-	public void addPrimitiveInteraction(String tag, int valSucceed, int valFail);
+	public ISchema addPrimitiveInteraction(String tag, int valSucceed, int valFail);
+    public ISchema addCompositeInteraction(IAct contextAct, IAct intentionAct);
 	public void setTracer(ITracer tracer);
 	public void setParameters(Integer RegularityThreshold, Integer ActivationThreshold, Integer schemaMaxLength); 
 	public void clear();

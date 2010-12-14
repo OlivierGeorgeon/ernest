@@ -28,6 +28,8 @@ public class Ernest implements IErnest
 	
 	/** a list of all the schemas ever created ... */
 	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
+	/** a list of all the acts ever created ... */
+	private List<IAct> m_acts = new ArrayList<IAct>(2000);
 	/** a list of all the icons ever encountered */
 	private List<IIcon> m_icons = new ArrayList<IIcon>(1000);
 	
@@ -68,17 +70,48 @@ public class Ernest implements IErnest
 	 * Add a primitive possibility of interaction between Ernest and its environment
 	 * Add the primitive schema, its succeeding act, and its failing act to Ernest's schema memory 
 	 * @author ogeorgeon
+	 * @return the created schema
 	 */
-	public void addPrimitiveInteraction(String label, int successSatisfaction, int failureSatisfaction) 
+	public ISchema addPrimitiveInteraction(String label, int successSatisfaction, int failureSatisfaction) 
 	{
 		ISchema s =  Schema.createPrimitiveSchema(m_schemas.size() + 1, label);
-		s.setSucceedingAct( new Act(s, true,  successSatisfaction));
-		s.setFailingAct(new Act(s, false, failureSatisfaction));
+		IAct succeedingAct = new Act(s, true,  successSatisfaction);
+		IAct failingAct = new Act(s, false, failureSatisfaction);
+		
+		s.setSucceedingAct(succeedingAct);
+		s.setFailingAct(failingAct);
 
-		m_schemas.add(s);	
+		m_schemas.add(s);
+		m_acts.add(succeedingAct);
+		m_acts.add(failingAct);
 		
 		System.out.println("Primitive schema " + s);
+		return s;
 	}
+
+	/**
+	 * Add a composite possibility of interaction between Ernest and its environment 
+	 * If the composite schema does not exist then add it and its succeeding act to Ernest's memory
+	 * @author ogeorgeon
+	 * @return the created schema
+	 */
+    public ISchema addCompositeInteraction(IAct contextAct, IAct intentionAct)
+    {
+    	ISchema s = Schema.createCompositeSchema(m_schemas.size() + 1, contextAct, intentionAct);
+    	
+		int i = m_schemas.indexOf(s);
+		if (i == -1)
+		{
+			// The schema does not exist: create its succeeding act and add them to Ernest's memory
+	    	s.setSucceedingAct(new Act(s, true, contextAct.getSat() + intentionAct.getSat()));
+			m_schemas.add(s);
+			m_learnCount++;
+		}
+		else
+			// The schema already exists: return a pointer to it.
+			s =  m_schemas.get(i);
+    	return s;
+    }
 
     /**
 	 * Initialize the logger that generates the trace file
@@ -106,8 +139,11 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Set Ernest's perceptual matrix
+	 * Set the current state of Ernest's distal sensory system 
+	 * Convert the sensory state into an icon 
+	 * store the icon in Ernest's iconic memory
 	 * @author ogeorgeon
+	 * @return The icon detected by the distal sensory system
 	 */
 	public void setSensor(int[][] matrix) 
 	{
@@ -505,29 +541,6 @@ public class Ernest implements IErnest
 		
 		return primitiveAct;
 	}
-
-	/**
-	 * Add a composite possibility of interaction between Ernest and its environment 
-	 * If the composite schema does not exist then add it and its succeeding act to Ernest's memory
-	 * @author ogeorgeon
-	 */
-    private ISchema addCompositeInteraction(IAct contextAct, IAct intentionAct)
-    {
-    	ISchema s = Schema.createCompositeSchema(m_schemas.size() + 1, contextAct, intentionAct);
-    	
-		int i = m_schemas.indexOf(s);
-		if (i == -1)
-		{
-			// The schema does not exist: create its succeeding act and add them to Ernest's memory
-	    	s.setSucceedingAct(new Act(s, true, contextAct.getSat() + intentionAct.getSat()));
-			m_schemas.add(s);
-			m_learnCount++;
-		}
-		else
-			// The schema already exists: return a pointer to it.
-			s =  m_schemas.get(i);
-    	return s;
-    }
 
 	/**
 	 * Add or update a failing possibility of interaction between Ernest and its environment
