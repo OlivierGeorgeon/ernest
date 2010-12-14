@@ -112,6 +112,9 @@ public class Schema implements ISchema
 	public void incWeight()
 	{ m_weight++; }
 	
+	public void setWeight(int weight)
+	{ m_weight = weight; }
+
 	/**
 	 * Schemas are equal if they have the same context act and intention act 
 	 * @author mcohen
