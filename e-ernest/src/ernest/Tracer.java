@@ -9,17 +9,21 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * This tracer logs the trace into an xml file.
+ * @author ogeorgeon 
+ */
 public class Tracer implements ITracer
 {
-
-	/**
-	 * This tracer logs the trace into an xml file
-	 * @author ogeorgeon 
-	 */
 
 	private  File logFile = null;
 	private boolean isLogging = false;
 
+	/**
+	 * Initialize the tracer.
+	 * @param logFileName The name of the file where to log the trace.
+	 * @param l Switch for tracing. Trace if true, trace not if false.
+	 */
 	public Tracer(String logFileName, boolean l)
 	{ 	
 		isLogging = l;
@@ -41,10 +45,11 @@ public class Tracer implements ITracer
 	} 
 	
 	/**
-	 * Prints a line to the log file 
-	 * @author ogeorgeon 
+	 * Prints a line to the log file. 
+	 * @param line The line to print in the log file.
+	 * @return True if success, false if failure.
 	 */
-	public boolean writeLine(String Line) 
+	public boolean writeLine(String line) 
 	{
 		boolean r = false;
 		if (isLogging) 
@@ -52,7 +57,7 @@ public class Tracer implements ITracer
 			try 
 			{
 				FileWriter writer = new FileWriter(logFile, true);
-				writer.write(Line );
+				writer.write(line );
 				writer.close();
 				r = true;
 			} 
@@ -72,7 +77,7 @@ public class Tracer implements ITracer
 
 	/**
 	 * Print the the log file's header
-	 * @author ogeorgeon 
+	 * @return True if success, false if failure.
 	 */
 	public boolean writeHeader() 
 	{
@@ -103,7 +108,7 @@ public class Tracer implements ITracer
 
 	/**
 	 * Print the the log file's footer
-	 * @author ogeorgeon 
+	 * @return True if success, false if failure.
 	 */
 	public boolean writeFooter() 
 	{

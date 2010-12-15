@@ -3,9 +3,8 @@ package ernest;
 import java.util.List;
 
 /**
- * The interface that defines the Ernest class. 
+ * Defines the Ernest agent class. 
  * @author ogeorgeon
- *
  */
 public interface IErnest 
 {

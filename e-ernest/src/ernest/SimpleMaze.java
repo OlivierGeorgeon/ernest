@@ -39,10 +39,9 @@ public class SimpleMaze implements IEnvironment
 	{ '^', '>', 'v', '<' };
 
 	/**
-	 * Process a primitive schema and return a boolean status
-	 * @author mcohen
-	 * @author ogeorgeon
-	 * @return the boolean feedback resulting from the primitive schema enaction
+	 * Process a primitive schema and return its enaction status.
+	 * @param s The string code that represents the primitive schema to enact.
+	 * @return The boolean feedback resulting from the schema enaction.
 	 */
 
 	public boolean enact(String s) 
@@ -79,8 +78,7 @@ public class SimpleMaze implements IEnvironment
 	}
 
 	/**
-	 * turn right 
-	 * @author ogeorgeon
+	 * Turn to the right. 
 	 */
 	private boolean right()
 	{
@@ -107,10 +105,9 @@ public class SimpleMaze implements IEnvironment
 	}
 	
 	/**
-	 * turn left 
-	 * @author ogeorgeon
+	 * Turn to the left. 
 	 */
-	public boolean left()
+	private boolean left()
 	{
 		m_o--;
 		
@@ -135,8 +132,7 @@ public class SimpleMaze implements IEnvironment
 	}
 	
 	/**
-	 * Move forward to the direction of the current orientation
-	 * @author ogeorgeon
+	 * Move forward to the direction of the current orientation.
 	 */
 	private boolean move()
 	{
@@ -162,9 +158,8 @@ public class SimpleMaze implements IEnvironment
 	}
 	
 	/**
-	 * Touch the square forward
+	 * Touch the square forward.
 	 * Succeeds if there is a wall, fails otherwise 
-	 * @author ogeorgeon
 	 */
 	private boolean Touch()
 	{
@@ -187,9 +182,8 @@ public class SimpleMaze implements IEnvironment
 	}
 	
 	/**
-	 * Touch the square to the right
-	 * Succeeds if there is a wall, fails otherwise 
-	 * @author ogeorgeon
+	 * Touch the square to the right.
+	 * Succeeds if there is a wall, fails otherwise. 
 	 */
 	private boolean TouchRight()
 	{
@@ -212,9 +206,8 @@ public class SimpleMaze implements IEnvironment
 	}
 
 	/**
-	 * Touch the square forward
+	 * Touch the square forward.
 	 * Succeeds if there is a wall, fails otherwise 
-	 * @author ogeorgeon
 	 */
 	private boolean TouchLeft()
 	{

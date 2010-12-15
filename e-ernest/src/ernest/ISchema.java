@@ -1,7 +1,7 @@
 package ernest;
 
 /**
- * A Schema is a pattern of interaction between the agent and its environment. 
+ * A pattern of interaction between Ernest and its environment. 
  * Specifically, schemas can either succeed of fail when the agent tries to enact 
  * them in the environment.
  * @author mcohen

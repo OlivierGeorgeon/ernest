@@ -5,6 +5,7 @@ package ernest;
  * when trying to enact that schema. Concretely, an act associates a schema 
  * with a binary feedback status: succeed (S) or fail (F).  
  * @author mcohen
+ * @author ogeorgeon
  */
 public interface IAct 
 {

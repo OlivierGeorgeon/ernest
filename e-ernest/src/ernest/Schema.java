@@ -3,7 +3,7 @@ package ernest;
 import java.io.ObjectInputStream.GetField;
 
 /**
- * A Schema is a pattern of interaction between the agent and its environment. 
+ * A Schema is a pattern of interaction between Ernest and its environment. 
  * Specifically, schemas can either succeed of fail when the agent tries to enact 
  * them in the environment.  This class represents a default implementation for
  * a Schema.
@@ -32,7 +32,6 @@ public class Schema implements ISchema
 	/**
 	 * Constructor for a primitive schema
 	 * Create a new primitive schema with a label that the environment can interpret 
-	 * @author ogeorgeon
 	 */
 	public static ISchema createPrimitiveSchema(int id, String label)
 	{ 
@@ -44,13 +43,12 @@ public class Schema implements ISchema
 		m_id = id;
 		m_tag = label;
 		m_isPrimitive = true;
-        m_weight = 1000; // needs to be greater than the regularity threshold
+        m_weight = Ernest.INFINITE; // needs to be greater than the regularity threshold
 	}
 
 	/**
 	 * Constructor for a composite schema
 	 * Create a new composite schema with context act and an intention act 
-	 * @author ogeorgeon
 	 */
 	public static ISchema createCompositeSchema(int id, IAct contextAct, IAct intentionAct)
 	{ 
@@ -117,7 +115,6 @@ public class Schema implements ISchema
 
 	/**
 	 * Schemas are equal if they have the same context act and intention act 
-	 * @author mcohen
 	 */
 	public boolean equals(Object o)
 	{
@@ -141,7 +138,6 @@ public class Schema implements ISchema
 
 	/**
 	 * Returns an identifier of the schema 
-	 * @author ogeorgeon
 	 */
 	public int hashCode()
     {
@@ -151,7 +147,6 @@ public class Schema implements ISchema
 	
 	/**
 	 * Returns the schema's tag 
-	 * @author ogeorgeon
 	 */
 	public String getTag()
     {

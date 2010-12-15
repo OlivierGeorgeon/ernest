@@ -6,6 +6,7 @@ package ernest;
  * with a binary feedback status: succeed (S) or fail (F).  This class 
  * represents a default implementation for an Act. 
  * @author mcohen
+ * @author ogeorgeon
  */
 public class Act implements IAct
 {
@@ -17,7 +18,6 @@ public class Act implements IAct
 	
 	/**
 	 * Constructor 
-	 * @author ogeorgeon
 	 */
 	public Act(ISchema s, boolean success, int satisfaction)
 	{
@@ -52,8 +52,7 @@ public class Act implements IAct
 	}
 	
 	/**
-	 * The act's litteral label 
-	 * @author ogeorgeon
+	 * The act's literal label 
 	 */
 	public String getTag()
 	{
@@ -71,7 +70,6 @@ public class Act implements IAct
 	
 	/**
 	 * Acts are equals if they have the same schema and status 
-	 * @author mcohen
 	 */
 	public boolean equals(Object o)
 	{

@@ -6,5 +6,5 @@ package ernest;
  */
 public interface IIcon {
 
-	public int[][] getIcon();
+	public int[][] getMatrix();
 }

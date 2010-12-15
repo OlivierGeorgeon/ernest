@@ -11,66 +11,65 @@ import java.util.Collections;
  */
 public class Ernest implements IErnest 
 {
+	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
-	public static int REG_SENS_THRESH = 5;
-	public static int ACTIVATION_THRESH = 1;
-	public static int SCHEMA_MAX_LENGTH = INFINITE;
+
+	private static int REG_SENS_THRESH = 5;
+	private static int ACTIVATION_THRESH = 1;
+	private static int SCHEMA_MAX_LENGTH = INFINITE;
 	
-	/**
-	 *  used to break a tie when selecting schema...
-	 */
+	/** Used to break a tie when selecting schema... */
 	private static Random m_rand = new Random(); 
+	/** Counter of learned schemas for tracing */
+	private int m_learnCount = 0;
 	
-	/**
-	 *  Current sensory system state
-	 */
+	/** Current sensory system state. */
 	private IIcon m_icon = null;
-	
-	/** a list of all the schemas ever created ... */
-	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
-	/** a list of all the acts ever created ... */
-	private List<IAct> m_acts = new ArrayList<IAct>(2000);
-	/** a list of all the icons ever encountered */
-	private List<IIcon> m_icons = new ArrayList<IIcon>(1000);
-	
-	/**
-	 *  the base and current contexts
-	 */
-	private IContext m_baseContext = new Context();
-	private IContext m_currentContext = new Context();
-	
 	private boolean m_bored = false;
 	private String m_internalState = "";
 	
-	/**
-	 *  the logger
-	 */
+		/** A list of all the schemas ever created ... */
+	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
+	/** A list of all the acts ever created ... */
+	private List<IAct> m_acts = new ArrayList<IAct>(2000);
+	/** A list of all the icons ever encountered */
+	private List<IIcon> m_icons = new ArrayList<IIcon>(1000);
+
+	/** The base and context. */
+	private IContext m_baseContext = new Context();
+	/** The current and context. */
+	private IContext m_currentContext = new Context();
+	
+	/** The logger. */
 	private ITracer m_logger = null;
-	private int m_learnCount = 0;
 	
 	
 	/**
-	 * Set the fundamental parameters
-	 * Use null to let a value unchanged
-	 * @author ogeorgeon
+	 * Set Ernest's fundamental learning parameters.
+	 * Use null to leave a value unchanged.
+	 * @param regularityThreshold The Regularity Sensibility Threshold.
+	 * @param activationThreshold The Activation Threshold.
+	 * @param schemaMaxLength The Maximum Schema Length
 	 */
-	public void setParameters(Integer RegularityThreshold, Integer ActivationThreshold, Integer schemaMaxLength) 
+	public void setParameters(Integer regularityThreshold, Integer activationThreshold, Integer schemaMaxLength) 
 	{
-		if (RegularityThreshold != null)
-			REG_SENS_THRESH = RegularityThreshold.intValue();
+		if (regularityThreshold != null)
+			REG_SENS_THRESH = regularityThreshold.intValue();
 		
-		if (ActivationThreshold != null)
-			ACTIVATION_THRESH = ActivationThreshold.intValue();
+		if (activationThreshold != null)
+			ACTIVATION_THRESH = activationThreshold.intValue();
 		
 		if (schemaMaxLength != null)
 			SCHEMA_MAX_LENGTH = schemaMaxLength.intValue();
 	}
 
 	/**
-	 * Add a primitive possibility of interaction between Ernest and its environment
-	 * Add the primitive schema, its succeeding act, and its failing act to Ernest's schema memory 
-	 * @author ogeorgeon
-	 * @return the created schema
+	 * Add a schema and acts that represent a primitive possibility of interaction between 
+	 * Ernest and its environment.
+	 * @param label The schema's string identifier.
+	 * @param successSatisfaction The satisfaction in case of success.
+	 * @param failureSatisfaction The satisfaction in case of failure.
+	 * @return The created primitive schema.
 	 */
 	public ISchema addPrimitiveInteraction(String label, int successSatisfaction, int failureSatisfaction) 
 	{
@@ -90,10 +89,11 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Add a composite possibility of interaction between Ernest and its environment 
-	 * If the composite schema does not exist then add it and its succeeding act to Ernest's memory
-	 * @author ogeorgeon
-	 * @return the created schema
+	 * Add a schema and acts that represent a composite possibility of interaction between 
+	 * Ernest and its environment. 
+	 * @param contextAct The context Act.
+	 * @param intentionAct The intention Act.
+	 * @return The schema made of the two specified acts, whether it has been created or it already existed. 
 	 */
     public ISchema addCompositeInteraction(IAct contextAct, IAct intentionAct)
     {
@@ -114,7 +114,8 @@ public class Ernest implements IErnest
     }
 
     /**
-	 * Initialize the logger that generates the trace file
+	 * Initialize the tracer that generates Ernest's activity trace.
+	 * @param tracer The tracer.
 	 */
 	public void setTracer(ITracer tracer) 
 	{
@@ -122,16 +123,17 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Clears Ernest's schema list
+	 * Reset Ernest by clearing all its long-term memory.
 	 */
 	public void clear() 
 	{
 		m_schemas.clear();
+		m_icons.clear();
 	}
 
 	/**
-	 * Returns information on Ernest's internal state
-	 * @author ogeorgeon
+	 * Get a description of Ernest's internal state.
+	 * @return A representation of Ernest's internal state
 	 */
 	public String getState() 
 	{
@@ -139,11 +141,10 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Set the current state of Ernest's distal sensory system 
-	 * Convert the sensory state into an icon 
-	 * store the icon in Ernest's iconic memory
-	 * @author ogeorgeon
-	 * @return The icon detected by the distal sensory system
+	 * Set the current state of Ernest's distal sensory system. 
+	 * Convert the sensory state into an icon. 
+	 * Store the icon in Ernest's iconic memory
+	 * @param matrix The matrix that inform Ernest's distal sensory system.
 	 */
 	public void setSensor(int[][] matrix) 
 	{
@@ -161,9 +162,9 @@ public class Ernest implements IErnest
 	}
 		
 	/**
-	 * Run Ernest one step
-	 * @return the next primitive schema to enact
-	 * @author ogeorgeon
+	 * Run Ernest one step.
+	 * @param status The status received in return from the previous schema enaction.
+	 * @return The next primitive schema to enact.
 	 */
 	public String step(boolean status) 
 	{
@@ -290,8 +291,9 @@ public class Ernest implements IErnest
 	/**
 	 * Recursively construct the current actually enacted act. 
 	 *  (may construct extra intermediary schemas but that's ok because their weight is not incremented)
+	 * @param s The enacted schema.
+	 * @param a The intention act.
 	 * @return the actually enacted act
-	 * @author ogeorgeon
 	 */
 	protected IAct enactedAct(ISchema s, IAct a)
 	{
@@ -321,9 +323,10 @@ public class Ernest implements IErnest
 	}
 	
 	/**
-	 * Recursively finds the next act to enact in the hierarchy of prescribers
+	 * Recursively finds the next act to enact in the hierarchy of prescribers.
+	 * @param a The enacted act.
+	 * @param status The enaction status.
 	 * @return the next intention act to enact or null if failed or completed
-	 * @author ogeorgeon
 	 */
 	protected IAct nextAct(IAct a, boolean status)
 	{
@@ -363,11 +366,10 @@ public class Ernest implements IErnest
 	}
 	
 	/**
-	 * Learn from an enacted intention after a given context
-	 * TODO: do not use the global variable m_context, that is not clean!
-	 * @author mcohen
-	 * @author ogeorgeon
-	 * @return a partial new context created from the learning
+	 * Learn from an enacted intention after a given context.
+	 * @param The context in which the learning occurs.
+	 * @param The intention.
+	 * @return A partial new context created from the learning.
 	 */
 	protected IContext learn(IContext context, IAct intentionAct)
 	{
@@ -401,14 +403,13 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Generates the list of proposed schemas
-	 * Activate the schemas whose context act belongs to the current context
-	 * @author ogeorgeon
+	 * Generates the list of proposed schemas.
+	 * @param The context that generates the proposals.
+	 * @return A list of proposals.
 	 */
 	protected List<IProposition> propose(IContext context)
 	{
 
-		// Clear the previous proposal list
 		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
 		// Browse all the schemas 
@@ -485,9 +486,9 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Select the intention schema with the highest proposition
-	 * @return the act that wins the selection contest
-	 * @author ogeorgeon
+	 * Select the intention schema with the highest proposition.
+	 * @param The list of proposals that will generate the selection.
+	 * @return The act that wins the selection contest.
 	 */
 	protected IAct selectAct(List<IProposition> proposals)
 	{
@@ -519,9 +520,9 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Recursively prescribe an act's subacts and subschemas
-	 * @return the primitive prescribed act
-	 * @author ogeorgeon
+	 * Recursively prescribe an act's subacts and subschemas.
+	 * @param The prescriber act.
+	 * @return The prescribed act.
 	 */
 	protected IAct prescribeSubacts(IAct a)
 	{
@@ -543,11 +544,13 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Add or update a failing possibility of interaction between Ernest and its environment
-	 * Add or update schema's failing act to Ernest's memory 
-	 * If the failing act does not exist then create it 
-	 * If the failing act exists then update its satisfaction
-	 * @author ogeorgeon
+	 * Add or update a failing possibility of interaction between Ernest and its environment.
+	 * Add or update the schema's failing act to Ernest's memory. 
+	 * If the failing act does not exist then create it. 
+	 * If the failing act exists then update its satisfaction.
+	 * @param The schema that failed.
+	 * @param The satisfaction gained durig the failure.
+	 * @return The failing act.
 	 */
     private IAct addFailingInteraction(ISchema schema, int satisfaction)
     {
@@ -570,9 +573,9 @@ public class Ernest implements IErnest
     }
 
 	/**
-	 * Detect boredom when the enacted act is a repetition and secondary
-	 * @author ogeorgeon
-	 * @return true if bored, false if not bored
+	 * Detect boredom when the enacted act is a repetition and secondary.
+	 * @param The Act to test for boredom.
+	 * @return True if bored, false if not bored.
 	 */
 	private boolean boredome(IAct enacted)
 	{
