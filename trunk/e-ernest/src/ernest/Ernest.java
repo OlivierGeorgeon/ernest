@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Collections;
 
 /**
- * The main Ernest class.
+ * The main Ernest class used to create an Ernest agent.
  * @author ogeorgeon
  */
 public class Ernest implements IErnest 
@@ -18,26 +18,25 @@ public class Ernest implements IErnest
 	private static int ACTIVATION_THRESH = 1;
 	private static int SCHEMA_MAX_LENGTH = INFINITE;
 	
-	/** Used to break a tie when selecting schema... */
+	/** Used to break a tie when selecting a schema... */
 	private static Random m_rand = new Random(); 
 	/** Counter of learned schemas for tracing */
 	private int m_learnCount = 0;
 	
 	/** Current sensory system state. */
 	private IIcon m_icon = null;
+	
 	private boolean m_bored = false;
 	private String m_internalState = "";
 	
-		/** A list of all the schemas ever created ... */
+	/** A list of all the schemas ever created ... */
 	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
-	/** A list of all the acts ever created ... */
-	private List<IAct> m_acts = new ArrayList<IAct>(2000);
 	/** A list of all the icons ever encountered */
 	private List<IIcon> m_icons = new ArrayList<IIcon>(1000);
 
-	/** The base and context. */
+	/** The base context. */
 	private IContext m_baseContext = new Context();
-	/** The current and context. */
+	/** The current context. */
 	private IContext m_currentContext = new Context();
 	
 	/** The logger. */
@@ -64,8 +63,8 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Add a schema and acts that represent a primitive possibility of interaction between 
-	 * Ernest and its environment.
+	 * Add a primitive schema and its two resulting acts that represent a primitive possibility 
+	 * of interaction between Ernest and its environment.
 	 * @param label The schema's string identifier.
 	 * @param successSatisfaction The satisfaction in case of success.
 	 * @param failureSatisfaction The satisfaction in case of failure.
@@ -81,16 +80,13 @@ public class Ernest implements IErnest
 		s.setFailingAct(failingAct);
 
 		m_schemas.add(s);
-		m_acts.add(succeedingAct);
-		m_acts.add(failingAct);
-		
 		System.out.println("Primitive schema " + s);
 		return s;
 	}
 
 	/**
-	 * Add a schema and acts that represent a composite possibility of interaction between 
-	 * Ernest and its environment. 
+	 * Add a composite schema and its succeeding act that represent a composite possibility 
+	 * of interaction between Ernest and its environment. 
 	 * @param contextAct The context Act.
 	 * @param intentionAct The intention Act.
 	 * @return The schema made of the two specified acts, whether it has been created or it already existed. 
@@ -102,7 +98,7 @@ public class Ernest implements IErnest
 		int i = m_schemas.indexOf(s);
 		if (i == -1)
 		{
-			// The schema does not exist: create its succeeding act and add them to Ernest's memory
+			// The schema does not exist: create its succeeding act and add it to Ernest's memory
 	    	s.setSucceedingAct(new Act(s, true, contextAct.getSat() + intentionAct.getSat()));
 			m_schemas.add(s);
 			m_learnCount++;
@@ -143,10 +139,11 @@ public class Ernest implements IErnest
 	/**
 	 * Set the current state of Ernest's distal sensory system. 
 	 * Convert the sensory state into an icon. 
-	 * Store the icon in Ernest's iconic memory
+	 * Store the icon into Ernest's iconic memory.
 	 * @param matrix The matrix that inform Ernest's distal sensory system.
+	 * @return the sensed icon.
 	 */
-	public void setSensor(int[][] matrix) 
+	public IIcon setSensor(int[][] matrix) 
 	{
     	IIcon icon = new Icon(matrix);
     	
@@ -159,6 +156,7 @@ public class Ernest implements IErnest
 			icon =  m_icons.get(i);
 
 		m_icon = icon;
+		return icon;
 	}
 		
 	/**
@@ -505,7 +503,7 @@ public class Ernest implements IErnest
 			count++;
 		}
 
-		// pick one at random from the top the proposal list
+		// pick one at random from the top of the proposal list
 		// count is equal to the number of proposals that are tied...
 
 		IProposition p = proposals.get(m_rand.nextInt(count));
@@ -549,7 +547,7 @@ public class Ernest implements IErnest
 	 * If the failing act does not exist then create it. 
 	 * If the failing act exists then update its satisfaction.
 	 * @param The schema that failed.
-	 * @param The satisfaction gained durig the failure.
+	 * @param The satisfaction obtained during the failure.
 	 * @return The failing act.
 	 */
     private IAct addFailingInteraction(ISchema schema, int satisfaction)
@@ -574,7 +572,7 @@ public class Ernest implements IErnest
 
 	/**
 	 * Detect boredom when the enacted act is a repetition and secondary.
-	 * @param The Act to test for boredom.
+	 * @param enacted The enacted act to test for boredom.
 	 * @return True if bored, false if not bored.
 	 */
 	private boolean boredome(IAct enacted)
