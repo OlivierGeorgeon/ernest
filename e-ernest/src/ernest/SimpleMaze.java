@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * A very simple maze environment used to test Ernest 
+ * A very simple maze environment used to test Ernest.  
  * @author mcohen
  * @author ogeorgeon
  */

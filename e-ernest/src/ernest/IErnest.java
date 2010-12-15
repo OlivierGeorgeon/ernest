@@ -3,19 +3,21 @@ package ernest;
 import java.util.List;
 
 /**
- * Defines the Ernest agent class. 
+ * The interface for dealing with an Ernest agent. 
  * @author ogeorgeon
  */
 public interface IErnest 
 {
 
-	public ISchema addPrimitiveInteraction(String tag, int valSucceed, int valFail);
-    public ISchema addCompositeInteraction(IAct contextAct, IAct intentionAct);
+	public void clear();
 	public void setTracer(ITracer tracer);
 	public void setParameters(Integer RegularityThreshold, Integer ActivationThreshold, Integer schemaMaxLength); 
-	public void clear();
+	
+	public ISchema addPrimitiveInteraction(String tag, int valSucceed, int valFail);
+    public ISchema addCompositeInteraction(IAct contextAct, IAct intentionAct);
+    
 	public String getState();
-	public void setSensor(int[][] matrix); 
+	public IIcon setSensor(int[][] matrix); 
 	public String step(boolean status);
 	
 }

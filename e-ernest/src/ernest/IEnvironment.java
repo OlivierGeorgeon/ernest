@@ -3,8 +3,7 @@ package ernest;
 import java.util.List;
 
 /**
- * A test environment for Ernest to interact in.
- * The environment receives the schema to enact from Ernest and returns the enaction status
+ * Interface for an Environment suitable to Ernest.
  * @author mcohen
  * @author ogeorgeon
  */

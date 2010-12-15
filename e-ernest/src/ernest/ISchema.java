@@ -2,7 +2,7 @@ package ernest;
 
 /**
  * A pattern of interaction between Ernest and its environment. 
- * Specifically, schemas can either succeed of fail when the agent tries to enact 
+ * Specifically, schemas can either succeed of fail when Ernest tries to enact 
  * them in the environment.
  * @author mcohen
  *
@@ -22,8 +22,8 @@ public interface ISchema
 	
 	public void setPrescriberAct(IAct a);
 	public IAct getPrescriberAct();
-	public void setPrescriberSchema(ISchema s);
-	public ISchema getPrescriberSchema();
+	// public void setPrescriberSchema(ISchema s);
+	// public ISchema getPrescriberSchema();
 	public void setPointer(int p);
 	public int  getPointer();
 	public int getLength();
@@ -34,6 +34,6 @@ public interface ISchema
 	public void incWeight();
 	public void setWeight(int weight);
 	
-	public boolean isActivated();
-	public void setActivated(boolean b);
+	// public boolean isActivated();
+	// public void setActivated(boolean b);
 }
