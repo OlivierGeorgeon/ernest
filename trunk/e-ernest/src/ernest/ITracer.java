@@ -1,7 +1,7 @@
 package ernest;
 
 /**
- * A logger supports the writing of lines into a log file. 
+ * The generator of Ernest's activity traces. 
  * @author ogeorgeon
  */
 public interface ITracer {

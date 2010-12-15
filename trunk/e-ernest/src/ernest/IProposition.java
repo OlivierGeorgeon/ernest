@@ -1,9 +1,9 @@
 package ernest;
 
 /**
- * Represents a proposal that Ernest enacts a schema.  A proposal consists of 
+ * A proposal that Ernest enacts a schema.  A proposal consists of 
  * the proposed schema and a weight that determines the strength of the proposal.
- * Proposals with higher weight are given priority. 
+ * Schemas that receive the highest summarized proposal weight are selected for enaction. 
  * @author mcohen
  * @author ogeorgeon
  *

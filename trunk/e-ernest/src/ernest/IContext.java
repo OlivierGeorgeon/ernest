@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A context is Ernest's internal representation of its situation at a given point in time 
+ * A context is Ernest's internal representation of its situation at a given point in time. 
  * @author ogeorgeon
  */
 public interface IContext 
