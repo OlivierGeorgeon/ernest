@@ -8,7 +8,7 @@ package ernest;
  * @author mcohen
  * @author ogeorgeon
  */
-public interface IAct 
+public interface IAct
 {
 	/**
 	 * @return The act's enaction status. True for success, false for failure.

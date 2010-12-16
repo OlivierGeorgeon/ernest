@@ -169,7 +169,7 @@ public class Ernest implements IErnest
     	ISchema s = addSensorInteraction("Icon", matrix);
     	
     	m_sensorAct = s.getSucceedingAct();
-    	System.out.println("Icon schema: " + s);
+    	// System.out.println("Icon schema: " + s);
    	}
 		
 	/**
@@ -267,13 +267,15 @@ public class Ernest implements IErnest
 				// add the streamcontext to the context list
 				m_currentContext.addContext(streamContext);
 				
-				// add the sensory act to the focus list
-				// m_currentContext.addFocusAct(m_sensorAct);
+				// add greatblue sensory act to the focus list
+				if (m_sensorAct != null)
+					if (m_sensorAct.getSchema().toString().equals("[0,0]") )
+						m_currentContext.addFocusAct(m_sensorAct);
 								
 				// m_currentContext.addContext(streamContext2);
 				
 				// print the new current context
-				System.out.println("Schemas: ");
+				System.out.println("Context: ");
 				 for (IAct a : m_currentContext.getFocusList())
 				 {	System.out.println(a);}
 				System.out.println("Learned : " + m_learnCount + " schemas.");
@@ -437,7 +439,7 @@ public class Ernest implements IErnest
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						System.out.println("Activate " + s);
+						// System.out.println("Activate " + s);
 					}
 				}
 				
