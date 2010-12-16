@@ -93,8 +93,7 @@ public class Ernest implements IErnest
 	 * Add a primitive schema and its two resulting acts that represent a primitive possibility 
 	 * of interaction between Ernest and its environment.
 	 * @param label The schema's string identifier.
-	 * @param successSatisfaction The satisfaction in case of success.
-	 * @param failureSatisfaction The satisfaction in case of failure.
+	 * @param matrix The distal sensory state.
 	 * @return The created primitive schema.
 	 */
 	public ISchema addSensorInteraction(String label, int[][] matrix) 
@@ -170,6 +169,7 @@ public class Ernest implements IErnest
     	ISchema s = addSensorInteraction("Icon", matrix);
     	
     	m_sensorAct = s.getSucceedingAct();
+    	System.out.println("Icon schema: " + s);
    	}
 		
 	/**
@@ -268,14 +268,14 @@ public class Ernest implements IErnest
 				m_currentContext.addContext(streamContext);
 				
 				// add the sensory act to the focus list
-				m_currentContext.addFocusAct(m_sensorAct);
+				// m_currentContext.addFocusAct(m_sensorAct);
 								
 				// m_currentContext.addContext(streamContext2);
 				
 				// print the new current context
-				// System.out.println("Schemas: ");
-				// for (ISchema s : m_schemas)
-				// {	System.out.println(s);}
+				System.out.println("Schemas: ");
+				 for (IAct a : m_currentContext.getFocusList())
+				 {	System.out.println(a);}
 				System.out.println("Learned : " + m_learnCount + " schemas.");
 					
 			}
@@ -437,7 +437,7 @@ public class Ernest implements IErnest
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						// System.out.println("Activate " + s);
+						System.out.println("Activate " + s);
 					}
 				}
 				

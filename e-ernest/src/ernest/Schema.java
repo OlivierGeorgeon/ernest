@@ -49,7 +49,6 @@ public class Schema implements ISchema
 	public IAct getContextAct()          { return m_contextAct; }
 	public IAct getIntentionAct()        { return m_intentionAct; }
 	public int  getWeight()              { return m_weight; }
-	public String getTag()               { return m_tag; }	
 	public IAct getPrescriberAct()       { return m_prescriberAct; }
 	public int  getPointer()	         { return m_pointer; }
 	
@@ -146,12 +145,20 @@ public class Schema implements ISchema
 		else
 		{		
 			ISchema other = (ISchema)o;
-			ret = (toString().equals(other.toString()) &&
+			ret = (getTag().equals(other.getTag()) &&
 					getType() == other.getType() );
 		}
 		
 		return ret;
 	}
+
+	public String getTag()               
+	{ 
+		if (getType() == Ernest.SENSOR)
+			return("["+ m_matrix[0][0] + "," + m_matrix[1][0] + "]");	
+		else
+			return m_tag; 
+	}	
 
 	/**
 	 * Generate a textual representation of the  schema for debug.
