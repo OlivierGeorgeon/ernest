@@ -28,10 +28,12 @@ public class Context implements IContext {
 	private IAct m_coreAct = null;
 	private IAct m_intentionAct = null;
 	private IAct m_primitiveIntention = null;
+	private IAct m_sensorAct = null;
 	
-	/** The icon in the context */
-	private IIcon m_icon = null;
 
+//	public void setSensorAct(IAct a) { m_sensorAct = a; }
+	
+//	public IAct getSensorAct() { return m_sensorAct; }
 
 	/**
 	 * Add an act to the list of acts in the context (scope). 
@@ -159,21 +161,4 @@ public class Context implements IContext {
 		m_primitiveIntention = a;	
 	}
 
-	/**
-	 * Set the icon that represents the sensory system context. 
-	 * @param icon The icon that represents the sensory system context.
-	 */
-	public void setIcon(IIcon icon)
-	{
-		m_icon = icon;
-	}
-	
-	/**
-	 * Get the icon that represents the sensory system context. 
-	 * @return The icon that represents the sensory system context.
-	 */
-	public IIcon getIcon()
-	{
-		return m_icon;
-	}
 }

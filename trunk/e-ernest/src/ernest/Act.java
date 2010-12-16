@@ -10,61 +10,51 @@ package ernest;
  */
 public class Act implements IAct
 {
-	private boolean m_success = false;
+	/** The act's status. True = Success, False = Failure */
+	private boolean m_status = false;
+	/** The act's satisfaction value. Represents Ernest's satisfaction to enact the act */
 	private int m_satisfaction = 0;
+	/** The act's schema */
 	private ISchema m_schema = null;
-	
+		/** The schema that prescribes this act during enaction */
 	private ISchema m_prescriberSchema = null;
 	
+	
+	public void setSatisfaction(int s)         { m_satisfaction = s; }
+	public void setPrescriberSchema(ISchema s) { m_prescriberSchema = s; }
+	
+	public boolean getStatus()                 { return m_status; }
+	public int     getSatisfaction()           { return m_satisfaction; }
+	public ISchema getPrescriberSchema()       { return m_prescriberSchema; }
+	public ISchema getSchema()                 { return m_schema; }
+
 	/**
 	 * Constructor 
+	 * @param s The act's schema
+	 * @param success The act's status
+	 * @param satisfaction The act's satisfaction value
 	 */
 	public Act(ISchema s, boolean success, int satisfaction)
 	{
 		m_schema = s;
-		m_success = success;
+		m_status = success;
 		m_satisfaction = satisfaction;
 	}
 	
-	public boolean isSuccess() 
-	{
-		return m_success;
-	}
-
-	public int getSat() 
-	{
-		return m_satisfaction;
-	}
-
-	public void setSat(int s) 
-	{
-		m_satisfaction = s;
-	}
-
-	public ISchema getSchema() 
-	{
-		return m_schema;
-	}
-	
-	public void setSchema(ISchema s)
-	{
-		m_schema = s;
-	}
-	
 	/**
-	 * The act's literal label 
+	 * @return The act's string representation
 	 */
 	public String getTag()
 	{
 		String s = String.format("%s%s%s", 
-				isSuccess() ? "(" : "[", getSchema().getTag() , isSuccess() ? ")" : "]");  
+				getStatus() ? "(" : "[", getSchema().getTag() , getStatus() ? ")" : "]");  
 		return s;
 	}
 	
 	public String toString()
 	{
 		String s = String.format("(S%s %s s=%s)", 
-				getSchema().hashCode() , getTag(), getSat());  
+				getSchema().getId() , getTag(), getSatisfaction());  
 		return s;
 	}
 	
@@ -84,27 +74,11 @@ public class Act implements IAct
 		else
 		{
 			IAct other = (IAct)o;
-			ret = (other.getSat() == getSat() &&
-				   other.getSchema() == getSchema() &&
-				   other.isSuccess() == isSuccess());
+			ret = (other.getSchema() == getSchema() &&
+				   other.getStatus() == getStatus());
 		}
 		
 		return ret;
-	}
-	
-	public int hashCode()
-    {
-		int ret = (getSchema().hashCode() * 10) + (isSuccess() == true ? 0 : 1);
-		return ret;
-    }	
-	
-	public void setPrescriberSchema(ISchema s)
-	{
-		m_prescriberSchema = s;
-	}
-	public ISchema getPrescriberSchema()
-	{
-		return m_prescriberSchema;
 	}
 	
 

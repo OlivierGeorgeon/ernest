@@ -11,7 +11,7 @@ public class Icon implements IIcon
 	/** The icon's height (second coordinate: y) */
 	public static final int HEIGHT = 1;
 	
-	/** The icon matrix of pixels */
+	/** The icon's matrix of pixels */
 	private int[][] m_blue = new int[WIDTH][HEIGHT]; 
 
 	/**

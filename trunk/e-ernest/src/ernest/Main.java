@@ -25,12 +25,12 @@ public class Main
 		
 		ernest.setParameters(6, 1, 6);
 		
-		ernest.addPrimitiveInteraction(">",  50, -80); // Move
-		ernest.addPrimitiveInteraction("^", -20, -50); // Left
-		ernest.addPrimitiveInteraction("v", -20, -50); // Right
-		ernest.addPrimitiveInteraction("-", -10, -10); // Touch
-		ernest.addPrimitiveInteraction("\\",-10, -10); // Touch right
-		ernest.addPrimitiveInteraction("/", -10, -10); // Touch left
+		ernest.addMotorInteraction(">",  50, -80); // Move
+		ernest.addMotorInteraction("^", -20, -50); // Left
+		ernest.addMotorInteraction("v", -20, -50); // Right
+		ernest.addMotorInteraction("-", -10, -10); // Touch
+		ernest.addMotorInteraction("\\",-10, -10); // Touch right
+		ernest.addMotorInteraction("/", -10, -10); // Touch left
 		
 		ernest.setTracer(tracer);
 		

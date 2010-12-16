@@ -24,6 +24,12 @@ public interface IContext
 	public void addContextAct(IAct a);
 	public void addContext(IContext context);
 
-	public void setIcon(IIcon icon);
-	public IIcon getIcon();
+	/**
+	 * @param a The sensor act that represents the sensory system context.
+	 */
+//	public void setSensorAct(IAct a);
+	/**
+	 * @return The sensor act that represents the sensory system context.
+	 */
+// 	public IAct getSensorAct();
 }
