@@ -18,7 +18,7 @@ public interface IAct
 	/**
 	 * @return The act's string representation.
 	 */
-	public String getTag();
+	public String getLabel();
 	
 	/**
 	 * @return The act's satisfaction value.
@@ -44,4 +44,9 @@ public interface IAct
 	 * @return the act's schema.
 	 */
 	public ISchema getSchema();
+
+	/**
+	 * @return The type of that noème. So far, only SENSORYMOTOR or ICON.
+	 */
+	public int getType();
 }

@@ -16,18 +16,33 @@ public class Act implements IAct
 	private int m_satisfaction = 0;
 	/** The act's schema */
 	private ISchema m_schema = null;
-		/** The schema that prescribes this act during enaction */
+	/** The schema that prescribes this act during enaction */
 	private ISchema m_prescriberSchema = null;
 	
+	/** The noème's type */
+	private String m_label = "";
+	private int m_type = 0;
 	
 	public void setSatisfaction(int s)         { m_satisfaction = s; }
 	public void setPrescriberSchema(ISchema s) { m_prescriberSchema = s; }
 	
 	public boolean getStatus()                 { return m_status; }
 	public int     getSatisfaction()           { return m_satisfaction; }
+	public int     getType()           		   { return m_type; }
 	public ISchema getPrescriberSchema()       { return m_prescriberSchema; }
 	public ISchema getSchema()                 { return m_schema; }
 
+	/**
+	 * The abstract constructor for any kind of noème
+	 * @param label
+	 * @param type
+	 */
+	public Act(String label, int type)
+	{
+		m_label = label;
+		m_type = type;
+	}
+	
 	/**
 	 * Constructor 
 	 * @param s The act's schema
@@ -39,22 +54,23 @@ public class Act implements IAct
 		m_schema = s;
 		m_status = success;
 		m_satisfaction = satisfaction;
+		m_label = String.format("%s%s%s", 
+				getStatus() ? "(" : "[", getSchema().getTag() , getStatus() ? ")" : "]");  
+
 	}
 	
 	/**
 	 * @return The act's string representation
 	 */
-	public String getTag()
+	public String getLabel()
 	{
-		String s = String.format("%s%s%s", 
-				getStatus() ? "(" : "[", getSchema().getTag() , getStatus() ? ")" : "]");  
-		return s;
+		return m_label;
 	}
 	
 	public String toString()
 	{
 		String s = String.format("(S%s %s s=%s)", 
-				getSchema().getId() , getTag(), getSatisfaction());  
+				getSchema().getId() , getLabel(), getSatisfaction());  
 		return s;
 	}
 	

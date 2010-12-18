@@ -14,8 +14,8 @@ public class Ernest implements IErnest
 	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
 	/** Ernest's types of interaction. */
-	public static final int MOTOR = 1;
-	public static final int SENSOR = 2;
+	public static final int SENSORYMOTOR_NOEME = 1;
+	public static final int ICONIC_NOEME = 2;
 
 	/** Ernest's fundamental learning parameters. */
 	private static int REG_SENS_THRESH = 5;
@@ -33,8 +33,6 @@ public class Ernest implements IErnest
 	/** A representation of Ernest's internal state. */
 	private String m_internalState = "";
 	
-	private IAct m_sensorAct = null;
-	
 	/** A list of all the schemas ever created ... */
 	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
 
@@ -47,7 +45,9 @@ public class Ernest implements IErnest
 	private ITracer m_logger = null;
 	public void setTracer(ITracer tracer) { m_logger = tracer; }
 
-
+	/** Architectural mudules. */
+	private IIconicModule m_iconicModule = new IconicModule(); 
+	
 	/**
 	 * Set Ernest's fundamental learning parameters.
 	 * Use null to leave a value unchanged.
@@ -96,25 +96,9 @@ public class Ernest implements IErnest
 	 * @param matrix The distal sensory state.
 	 * @return The created primitive schema.
 	 */
-	public ISchema addSensorInteraction(String label, int[][] matrix) 
+	public IAct addSensorInteraction(String label, int[][] matrix) 
 	{
-		ISchema s =  Schema.createSensorSchema(m_schemas.size() + 1, label, matrix);
-
-		int i = m_schemas.indexOf(s);
-		if (i == -1)
-		{
-			// The schema does not exist: create its succeeding act and add it to Ernest's memory
-			IAct succeedingAct = new Act(s, true,  0);
-			IAct failingAct = new Act(s, false, 0);			
-			s.setSucceedingAct(succeedingAct);
-			s.setFailingAct(failingAct);
-	
-			m_schemas.add(s);
-		}
-		else 
-			// The schema already exists: return a pointer to it.
-			s =  m_schemas.get(i);
-		return s;
+		return m_iconicModule.addInteraction(label, matrix);
 	}
 
 	/**
@@ -166,10 +150,7 @@ public class Ernest implements IErnest
 	 */
 	public void setSensor(int[][] matrix) 
 	{
-    	ISchema s = addSensorInteraction("Icon", matrix);
-    	
-    	m_sensorAct = s.getSucceedingAct();
-    	// System.out.println("Icon schema: " + s);
+		m_iconicModule.addInteraction(matrix);
    	}
 		
 	/**
@@ -214,7 +195,7 @@ public class Ernest implements IErnest
 
 				if (m_currentContext.getIntentionAct() != enactedAct)
 					m_internalState= "!";
-				m_logger.writeLine(enactedAct.getTag() + m_internalState);
+				m_logger.writeLine(enactedAct.getLabel() + m_internalState);
 
 				// Determine the performed act
 				
@@ -267,10 +248,10 @@ public class Ernest implements IErnest
 				// add the streamcontext to the context list
 				m_currentContext.addContext(streamContext);
 				
-				// add greatblue sensory act to the focus list
-				if (m_sensorAct != null)
-					if (m_sensorAct.getSchema().toString().equals("[0,0]") )
-						m_currentContext.addFocusAct(m_sensorAct);
+				// add the sensed icon to the focus list if any
+				IAct sensedIcon = m_iconicModule.step();
+				if (sensedIcon != null)
+					m_currentContext.addFocusAct(sensedIcon);
 								
 				// m_currentContext.addContext(streamContext2);
 				
@@ -486,7 +467,7 @@ public class Ernest implements IErnest
 			}
 
 			// Primitive schemas also receive a default proposition for themselves
-			if (s.isPrimitive() && (s.getType() == MOTOR))
+			if (s.isPrimitive() && (s.getType() == SENSORYMOTOR_NOEME))
 			{
 				IProposition p = new Proposition(s, 0, 0);
 				if (!proposals.contains(p))
