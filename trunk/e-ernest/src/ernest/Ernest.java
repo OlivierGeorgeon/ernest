@@ -13,12 +13,16 @@ public class Ernest implements IErnest
 {
 	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
-	/** Ernest's types of interaction. */
+	/** Ernest's types of noèmes. */
 	public static final int SENSORYMOTOR_NOEME = 1;
 	public static final int ICONIC_NOEME = 2;
+	
+	/** Ernest's confidence in a noème. */
+	public static final int HYPOTHETICAL_NOEME = 1;
+	public static final int RELIABLE_NOEME = 2;
 
 	/** Ernest's fundamental learning parameters. */
-	private static int REG_SENS_THRESH = 5;
+	public static int REG_SENS_THRESH = 5;
 	private static int ACTIVATION_THRESH = 1;
 	private static int SCHEMA_MAX_LENGTH = INFINITE;
 	
@@ -380,16 +384,16 @@ public class Ernest implements IErnest
 			newSchema.incWeight();
 			// System.out.println("Reinfocing schema " + newSchema);
 			
-			boolean reg = (newSchema.getContextAct().getSchema().getWeight() > REG_SENS_THRESH) &&
-			  (newSchema.getIntentionAct().getSchema().getWeight() > REG_SENS_THRESH);
+			boolean reg = (newSchema.getContextAct().getConfidence() == RELIABLE_NOEME) &&
+			  (newSchema.getIntentionAct().getConfidence() == RELIABLE_NOEME);
 
 			// the returned core act is the act made from the previous core act
 			if (contextAct == context.getCoreAct())
 				newContext.setCoreAct(newSchema.getSucceedingAct());
 			
-			// other created acts are part of the context if 
-			// their context and intention have passed the regularity
-			//else if (newSchema.getWeight() > Schema.REG_SENS_THRESH)
+			// other created acts are part of the context 
+			// if their context and intention have passed the regularity
+			// if they are based on reliable noèmes
 			else if (reg)
 			{
 				newContext.addContextAct(newSchema.getSucceedingAct());
@@ -467,7 +471,7 @@ public class Ernest implements IErnest
 			}
 
 			// Primitive schemas also receive a default proposition for themselves
-			if (s.isPrimitive() && (s.getType() == SENSORYMOTOR_NOEME))
+			if (s.isPrimitive())
 			{
 				IProposition p = new Proposition(s, 0, 0);
 				if (!proposals.contains(p))

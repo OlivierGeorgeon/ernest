@@ -22,13 +22,16 @@ public class Act implements IAct
 	/** The noème's type */
 	private String m_label = "";
 	private int m_type = 0;
+	private int m_confidence = Ernest.HYPOTHETICAL_NOEME;
 	
 	public void setSatisfaction(int s)         { m_satisfaction = s; }
+	public void setConfidence(int c)           { m_confidence = c; }
 	public void setPrescriberSchema(ISchema s) { m_prescriberSchema = s; }
 	
 	public boolean getStatus()                 { return m_status; }
 	public int     getSatisfaction()           { return m_satisfaction; }
 	public int     getType()           		   { return m_type; }
+	public int     getConfidence()             { return m_confidence; }
 	public ISchema getPrescriberSchema()       { return m_prescriberSchema; }
 	public ISchema getSchema()                 { return m_schema; }
 
@@ -37,10 +40,11 @@ public class Act implements IAct
 	 * @param label
 	 * @param type
 	 */
-	public Act(String label, int type)
+	public Act(String label, int type, int confidence)
 	{
 		m_label = label;
 		m_type = type;
+		m_confidence = confidence;
 	}
 	
 	/**

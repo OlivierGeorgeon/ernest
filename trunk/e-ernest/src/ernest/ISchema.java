@@ -14,12 +14,7 @@ public interface ISchema
 	 * @return The schema's number (schema's serial unique identifier)
 	 */
 	public int getId();
-	
-	/**
-	 * @return The schema's type. MOTOR or SENSOR
-	 */
-	public int getType();
-	
+		
 	/**
 	 * Get the Schema's succeeding act.
 	 * @return The schema's succeeding act.
