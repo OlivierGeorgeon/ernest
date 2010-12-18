@@ -31,6 +31,11 @@ public interface IAct
 	public void setSatisfaction(int s);
 	
 	/**
+	 * @param c The act's confidence status.
+	 */
+	public void setConfidence(int c);
+	
+	/**
 	 * @param s The schema that prescribes this act during enaction.
 	 */
 	public void setPrescriberSchema(ISchema s);
@@ -49,4 +54,9 @@ public interface IAct
 	 * @return The type of that noème. So far, only SENSORYMOTOR or ICON.
 	 */
 	public int getType();
+
+	/**
+	 * @return The confidence status of that noème.
+	 */
+	public int getConfidence();
 }

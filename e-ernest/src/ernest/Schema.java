@@ -19,7 +19,6 @@ public class Schema implements ISchema
 
 	private int m_id = 0;
 	private String m_tag = null; 
-	private int m_type = 0;
 
 	private IAct m_succeedingAct = null;
 	private IAct m_failingAct = null;
@@ -37,12 +36,10 @@ public class Schema implements ISchema
 	public void setFailingAct(IAct a)    { m_failingAct = a; }
 	public void setContextAct(IAct a)    { m_contextAct = a; }
 	public void setIntentionAct(IAct a)	 { m_intentionAct = a; }
-	public void setWeight(int weight)    { m_weight = weight; }
 	public void setPrescriberAct(IAct a) { m_prescriberAct = a; }
 	public void setPointer(int p)        { m_pointer = p; }
 
 	public int  getId()                  { return m_id;}
-	public int  getType()                { return m_type;}
 	public int  getLength()              { return m_length;}
 	public IAct getSucceedingAct()       { return m_succeedingAct; }
 	public IAct getFailingAct()          { return m_failingAct; }
@@ -52,7 +49,27 @@ public class Schema implements ISchema
 	public IAct getPrescriberAct()       { return m_prescriberAct; }
 	public int  getPointer()	         { return m_pointer; }
 	
-	public void incWeight()              { m_weight++; }
+	public void setWeight(int weight)    
+	{ 
+		m_weight = weight; 
+		if (m_weight > Ernest.REG_SENS_THRESH)
+		{
+			getSucceedingAct().setConfidence(Ernest.RELIABLE_NOEME);
+			if (getFailingAct() != null)
+				getFailingAct().setConfidence(Ernest.RELIABLE_NOEME);
+		}
+	}
+	
+	public void incWeight()              
+	{ 
+		m_weight++;
+		if (m_weight > Ernest.REG_SENS_THRESH)
+		{
+			getSucceedingAct().setConfidence(Ernest.RELIABLE_NOEME);
+			if (getFailingAct() != null)
+				getFailingAct().setConfidence(Ernest.RELIABLE_NOEME);
+		}
+	}
 
 	public boolean isPrimitive()         { return m_isPrimitive; }
 
@@ -123,7 +140,9 @@ public class Schema implements ISchema
 		m_contextAct = contextAct;
 		m_intentionAct = intentionAct;
 		m_tag = contextAct.getLabel() + intentionAct.getLabel();
-		m_length = contextAct.getSchema().getLength() + intentionAct.getSchema().getLength();
+		if ((contextAct.getType() == Ernest.SENSORYMOTOR_NOEME) && 
+			(intentionAct.getType() == Ernest.SENSORYMOTOR_NOEME))
+			m_length = contextAct.getSchema().getLength() + intentionAct.getSchema().getLength();
 	}
 	
 	/**
@@ -143,8 +162,7 @@ public class Schema implements ISchema
 		else
 		{		
 			ISchema other = (ISchema)o;
-			ret = (getTag().equals(other.getTag()) &&
-					getType() == other.getType() );
+			ret = (getTag().equals(other.getTag()));
 		}
 		
 		return ret;
