@@ -1,35 +1,40 @@
 package ernest;
 
 /**
- * A state of Ernest's distal sensory system
+ * An iconic noème in Ernest's iconic module
  * @author ogeorgeon
  */
-public class Icon implements IIcon 
+public class Icon extends Act implements IIcon
 {	
-	/** The icon's width (first coordinate: x) */
-	public static final int WIDTH = 2;
-	/** The icon's height (second coordinate: y) */
-	public static final int HEIGHT = 1;
-	
 	/** The icon's matrix of pixels */
-	private int[][] m_blue = new int[WIDTH][HEIGHT]; 
+	private int[][] m_matrix = new int[IconicModule.ICON_WIDTH][IconicModule.ICON_HEIGHT]; 
 
 	/**
-	 * Constructor.
+	 * Constructor for an autonomously learned iconic noème.
 	 * @param matrix The matrix of pixels that constitutes the icon.
 	 */
 	public Icon(int[][] matrix)
 	{
-		m_blue = matrix;
+		super("["+ matrix[0][0] + "," + matrix[1][0] + "]", Ernest.ICONIC_NOEME);
+		m_matrix = matrix;
 	}
 	
+	/**
+	 * Constructor for an modeler-defined iconic noème.
+	 * @param matrix The matrix of pixels that constitutes the icon.
+	 */
+	public Icon(String label, int[][] matrix)
+	{
+		super(label, Ernest.ICONIC_NOEME);
+		m_matrix = matrix;
+	}
 	/**
 	 * Get the icon's matrix of pixels
 	 * @return The icon's matrix of pixels.
 	 */
 	public int[][] getMatrix() 
 	{
-		return m_blue;
+		return m_matrix;
 	}
 	
 	/**
@@ -38,7 +43,7 @@ public class Icon implements IIcon
 	 */
 	public String toString()
 	{
-		return("["+ m_blue[0][0] + "," + m_blue[1][0] + "]");	
+		return("["+ m_matrix[0][0] + "," + m_matrix[1][0] + "]");	
 	}
 
 	/**

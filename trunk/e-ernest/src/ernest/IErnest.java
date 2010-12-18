@@ -43,7 +43,7 @@ public interface IErnest
 	 * @param matrix The sensor matrix 
 	 * @return The created primitive schema
 	 */
-	public ISchema addSensorInteraction(String label, int[][] matrix); 
+	public IAct addSensorInteraction(String label, int[][] matrix); 
 
 	/**
 	 * Add a composite schema and its succeeding act that represent a composite possibility 

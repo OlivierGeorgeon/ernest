@@ -78,7 +78,6 @@ public class Schema implements ISchema
 	{
 		m_id = id;
 		m_tag = label;
-		m_type = Ernest.MOTOR;
 		m_isPrimitive = true;
         m_weight = Ernest.INFINITE; // needs to be greater than the regularity threshold to support enaction of higher level schemas
 	}
@@ -99,7 +98,6 @@ public class Schema implements ISchema
 	{
 		m_id = id;
 		m_tag = label;
-		m_type = Ernest.SENSOR;
 		m_matrix = matrix;
 		m_isPrimitive = true;
         m_weight = 0; 
@@ -124,7 +122,7 @@ public class Schema implements ISchema
 		m_isPrimitive = false;
 		m_contextAct = contextAct;
 		m_intentionAct = intentionAct;
-		m_tag = contextAct.getTag() + intentionAct.getTag();
+		m_tag = contextAct.getLabel() + intentionAct.getLabel();
 		m_length = contextAct.getSchema().getLength() + intentionAct.getSchema().getLength();
 	}
 	
@@ -154,10 +152,7 @@ public class Schema implements ISchema
 
 	public String getTag()               
 	{ 
-		if (getType() == Ernest.SENSOR)
-			return("["+ m_matrix[0][0] + "," + m_matrix[1][0] + "]");	
-		else
-			return m_tag; 
+		return m_tag; 
 	}	
 
 	/**
@@ -166,21 +161,14 @@ public class Schema implements ISchema
 	 */
 	public String toString()
 	{
-		if (getType() == Ernest.SENSOR)
-		{
-			return("["+ m_matrix[0][0] + "," + m_matrix[1][0] + "]");	
-		}
+		String s;
+		if (isPrimitive())
+			s = String.format("[%s %s w=%s]", 
+				getSucceedingAct(), getFailingAct(), getWeight());
 		else
-		{
-			String s;
-			if (isPrimitive())
-				s = String.format("[%s %s w=%s]", 
-					getSucceedingAct(), getFailingAct(), getWeight());
-			else
-				s = String.format("[%s %s <C:S%s, I:S%s> w=%s]", 
-						getSucceedingAct(), getFailingAct(), getContextAct().getSchema().getId(), getIntentionAct().getSchema().getId(), getWeight());
-			return s;
-		}
+			s = String.format("[%s %s <C:S%s, I:S%s> w=%s]", 
+					getSucceedingAct(), getFailingAct(), getContextAct().getSchema().getId(), getIntentionAct().getSchema().getId(), getWeight());
+		return s;
 	}
 
 }
