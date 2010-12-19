@@ -13,9 +13,10 @@ public class Ernest implements IErnest
 {
 	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
-	/** Ernest's types of noèmes. */
+	/** Ernest's types of noème. */
 	public static final int SENSORYMOTOR_NOEME = 1;
 	public static final int ICONIC_NOEME = 2;
+	public static final int HOMEOSTATIC_NOEME = 3;
 	
 	/** Ernest's confidence in a noème. */
 	public static final int HYPOTHETICAL_NOEME = 1;
@@ -49,8 +50,9 @@ public class Ernest implements IErnest
 	private ITracer m_logger = null;
 	public void setTracer(ITracer tracer) { m_logger = tracer; }
 
-	/** Architectural mudules. */
-	private IIconicModule m_iconicModule = new IconicModule(); 
+	/** Architectural modules. */
+	private IconicModule m_iconicModule = new IconicModule(); 
+	private HomeostaticModule m_homeostaticModule = new HomeostaticModule(); 
 	
 	/**
 	 * Set Ernest's fundamental learning parameters.
@@ -79,7 +81,7 @@ public class Ernest implements IErnest
 	 * @param failureSatisfaction The satisfaction in case of failure.
 	 * @return The created primitive schema.
 	 */
-	public ISchema addMotorInteraction(String label, int successSatisfaction, int failureSatisfaction) 
+	public ISchema addMotorPrimitive(String label, int successSatisfaction, int failureSatisfaction) 
 	{
 		ISchema s =  Schema.createMotorSchema(m_schemas.size() + 1, label);
 		IAct succeedingAct = new Act(s, true,  successSatisfaction);
@@ -94,15 +96,24 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Add a primitive schema and its two resulting acts that represent a primitive possibility 
-	 * of interaction between Ernest and its environment.
+	 * Add a primitive icon to Ernest's iconic module.
 	 * @param label The schema's string identifier.
 	 * @param matrix The distal sensory state.
-	 * @return The created primitive schema.
+	 * @return The created primitive iconic noème.
 	 */
-	public IAct addSensorInteraction(String label, int[][] matrix) 
+	public IAct addIconicPrimitive(String label, int[][] matrix) 
 	{
 		return m_iconicModule.addInteraction(label, matrix);
+	}
+
+	/**
+	 * Add a primitive homeostatic noème.
+	 * @param label The schema's string identifier.
+	 * @return The created primitive homeostatic noème.
+	 */
+	public IAct addHomeostaticPrimitive(String label, int satisfaction) 
+	{
+		return m_homeostaticModule.addInteraction(label, satisfaction);
 	}
 
 	/**

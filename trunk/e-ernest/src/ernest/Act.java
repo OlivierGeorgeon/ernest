@@ -40,9 +40,10 @@ public class Act implements IAct
 	 * @param label
 	 * @param type
 	 */
-	public Act(String label, int type, int confidence)
+	public Act(String label, int satisfaction, int type, int confidence)
 	{
 		m_label = label;
+		m_satisfaction = satisfaction;
 		m_type = type;
 		m_confidence = confidence;
 	}

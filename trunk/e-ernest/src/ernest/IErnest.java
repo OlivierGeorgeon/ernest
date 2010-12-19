@@ -35,7 +35,9 @@ public interface IErnest
 	 * @param failureSatisfaction The satisfaction in case of failure.
 	 * @return The created primitive schema.
 	 */
-	public ISchema addMotorInteraction(String label, int successSatisfaction, int failureSatisfaction);
+	public ISchema addMotorPrimitive(String label, int successSatisfaction, int failureSatisfaction);
+
+	public IAct addHomeostaticPrimitive(String label, int satisfaction);
 
 	/**
 	 * Add a primitive sensory schema
@@ -43,7 +45,7 @@ public interface IErnest
 	 * @param matrix The sensor matrix 
 	 * @return The created primitive schema
 	 */
-	public IAct addSensorInteraction(String label, int[][] matrix); 
+	public IAct addIconicPrimitive(String label, int[][] matrix); 
 
 	/**
 	 * Add a composite schema and its succeeding act that represent a composite possibility 
