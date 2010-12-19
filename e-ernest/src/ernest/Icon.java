@@ -15,7 +15,7 @@ public class Icon extends Act implements IIcon
 	 */
 	public Icon(int[][] matrix)
 	{
-		super("["+ matrix[0][0] + "," + matrix[1][0] + "]", Ernest.ICONIC_NOEME, Ernest.RELIABLE_NOEME);
+		super("["+ matrix[0][0] + "," + matrix[1][0] + "]", 0, Ernest.ICONIC_NOEME, Ernest.RELIABLE_NOEME);
 		m_matrix = matrix;
 	}
 	
@@ -25,7 +25,7 @@ public class Icon extends Act implements IIcon
 	 */
 	public Icon(String label, int[][] matrix)
 	{
-		super(label, Ernest.ICONIC_NOEME, Ernest.RELIABLE_NOEME);
+		super(label, 0, Ernest.ICONIC_NOEME, Ernest.RELIABLE_NOEME);
 		m_matrix = matrix;
 	}
 	/**
