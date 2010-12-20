@@ -35,9 +35,7 @@ public interface IErnest
 	 * @param failureSatisfaction The satisfaction in case of failure.
 	 * @return The created primitive schema.
 	 */
-	public ISchema addMotorPrimitive(String label, int successSatisfaction, int failureSatisfaction);
-
-	public IAct addHomeostaticPrimitive(String label, int satisfaction);
+	public ISchema addPrimitive(String label, int successSatisfaction, int failureSatisfaction, int module);
 
 	/**
 	 * Add a primitive sensory schema
@@ -64,18 +62,17 @@ public interface IErnest
 	public String internalState();
 	
 	/**
-	 * Set the current state of Ernest's distal sensory system. 
-	 * Convert the sensory state into an icon. 
-	 * Store the icon into Ernest's iconic memory.
-	 * @param matrix The matrix that inform Ernest's distal sensory system.
-	 */
-	public void setSensor(int[][] matrix); 
-
-	/**
 	 * Run Ernest one step.
 	 * @param status The status received in return from the previous schema enaction.
 	 * @return The next primitive schema to enact.
 	 */
 	public String step(boolean status);
 	
+	/**
+	 * Run Ernest one step. Exploit the matrix sensed in the environment.
+	 * @param status The status received in return from the previous schema enaction.
+	 * @param matrix The matrix sensed in the environment to inform the iconic module.
+	 * @return The next primitive schema to enact.
+	 */
+	public String step(boolean status, int[][] matrix);
 }

@@ -18,7 +18,7 @@ public class Schema implements ISchema
 	private int[][] m_matrix = new int[ICON_WIDTH][ICON_HEIGHT]; 
 
 	private int m_id = 0;
-	private String m_tag = null; 
+	private String m_label = null; 
 
 	private IAct m_succeedingAct = null;
 	private IAct m_failingAct = null;
@@ -94,7 +94,7 @@ public class Schema implements ISchema
 	private Schema(int id, String label)
 	{
 		m_id = id;
-		m_tag = label;
+		m_label = label;
 		m_isPrimitive = true;
         m_weight = Ernest.INFINITE; // needs to be greater than the regularity threshold to support enaction of higher level schemas
 	}
@@ -114,7 +114,7 @@ public class Schema implements ISchema
 	private Schema(int id, String label, int [][] matrix)
 	{
 		m_id = id;
-		m_tag = label;
+		m_label = label;
 		m_matrix = matrix;
 		m_isPrimitive = true;
         m_weight = 0; 
@@ -133,15 +133,18 @@ public class Schema implements ISchema
 		return new Schema(id, contextAct, intentionAct); 
 	}
 
+	/**
+	 * TODO manage length from iconic noèmes
+	 */
 	private Schema(int id, IAct contextAct, IAct intentionAct)
 	{
 		m_id = id;
 		m_isPrimitive = false;
 		m_contextAct = contextAct;
 		m_intentionAct = intentionAct;
-		m_tag = contextAct.getLabel() + intentionAct.getLabel();
-		if ((contextAct.getType() == Ernest.SENSORYMOTOR_NOEME) && 
-			(intentionAct.getType() == Ernest.SENSORYMOTOR_NOEME))
+		m_label = contextAct.getLabel() + intentionAct.getLabel();
+		if ((contextAct.getModule() == Ernest.SENSORYMOTOR) && 
+			(intentionAct.getModule() == Ernest.SENSORYMOTOR))
 			m_length = contextAct.getSchema().getLength() + intentionAct.getSchema().getLength();
 	}
 	
@@ -162,15 +165,15 @@ public class Schema implements ISchema
 		else
 		{		
 			ISchema other = (ISchema)o;
-			ret = (getTag().equals(other.getTag()));
+			ret = (getLabel().equals(other.getLabel()));
 		}
 		
 		return ret;
 	}
 
-	public String getTag()               
+	public String getLabel()               
 	{ 
-		return m_tag; 
+		return m_label; 
 	}	
 
 	/**
@@ -185,7 +188,7 @@ public class Schema implements ISchema
 				getSucceedingAct(), getFailingAct(), getWeight());
 		else
 			s = String.format("[%s %s <C:S%s, I:S%s> w=%s]", 
-					getSucceedingAct(), getFailingAct(), getContextAct().getSchema().getId(), getIntentionAct().getSchema().getId(), getWeight());
+					getSucceedingAct(), getFailingAct(), getContextAct().getLabel(), getIntentionAct().getLabel(), getWeight());
 		return s;
 	}
 

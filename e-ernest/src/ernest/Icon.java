@@ -7,7 +7,7 @@ package ernest;
 public class Icon extends Act implements IIcon
 {	
 	/** The icon's matrix of pixels */
-	private int[][] m_matrix = new int[IconicModule.ICON_WIDTH][IconicModule.ICON_HEIGHT]; 
+	private int[][] m_matrix; 
 
 	/**
 	 * Constructor for an autonomously learned iconic noème.
@@ -15,7 +15,7 @@ public class Icon extends Act implements IIcon
 	 */
 	public Icon(int[][] matrix)
 	{
-		super("["+ matrix[0][0] + "," + matrix[1][0] + "]", 0, Ernest.ICONIC_NOEME, Ernest.RELIABLE_NOEME);
+		super("["+ matrix[0][0] + "," + matrix[1][0] + "]", null, true, 0, Ernest.ICONIC, Ernest.RELIABLE_NOEME);
 		m_matrix = matrix;
 	}
 	
@@ -25,7 +25,7 @@ public class Icon extends Act implements IIcon
 	 */
 	public Icon(String label, int[][] matrix)
 	{
-		super(label, 0, Ernest.ICONIC_NOEME, Ernest.RELIABLE_NOEME);
+		super(label, null, true, 0, Ernest.ICONIC, Ernest.RELIABLE_NOEME);
 		m_matrix = matrix;
 	}
 	/**

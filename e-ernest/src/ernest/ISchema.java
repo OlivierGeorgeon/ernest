@@ -104,7 +104,7 @@ public interface ISchema
 	 * If the schema is a primitive schema then the tag can be interpreted by the environment.
 	 * @return The schema's tag.
 	 */
-	public String getTag(); 
+	public String getLabel(); 
 
 	/**
 	 * Get the Schema's weight.

@@ -53,7 +53,7 @@ public interface IAct
 	/**
 	 * @return The type of that noème. So far, only SENSORYMOTOR or ICON.
 	 */
-	public int getType();
+	public int getModule();
 
 	/**
 	 * @return The confidence status of that noème.
