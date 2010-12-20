@@ -21,7 +21,7 @@ public class Act implements IAct
 	
 	/** The noème's type */
 	private String m_label = "";
-	private int m_type = 0;
+	private int m_module = 0;
 	private int m_confidence = Ernest.HYPOTHETICAL_NOEME;
 	
 	public void setSatisfaction(int s)         { m_satisfaction = s; }
@@ -30,26 +30,31 @@ public class Act implements IAct
 	
 	public boolean getStatus()                 { return m_status; }
 	public int     getSatisfaction()           { return m_satisfaction; }
-	public int     getType()           		   { return m_type; }
+	public int     getModule()           	   { return m_module; }
 	public int     getConfidence()             { return m_confidence; }
 	public ISchema getPrescriberSchema()       { return m_prescriberSchema; }
 	public ISchema getSchema()                 { return m_schema; }
 
 	/**
 	 * The abstract constructor for any kind of noème
-	 * @param label
-	 * @param type
+	 * @param label The noème's label
+	 * @param s The noème's schema if any
+	 * @param status The noème's status if any: True for success, false for failure
+	 * @param type the module
+	 * @param confidence The degree of confidence Ernest has in this noème
 	 */
-	public Act(String label, int satisfaction, int type, int confidence)
+	public Act(String label, ISchema s, boolean status, int satisfaction, int type, int confidence)
 	{
 		m_label = label;
+		m_schema = s;
+		m_status = status;
 		m_satisfaction = satisfaction;
-		m_type = type;
+		m_module = type;
 		m_confidence = confidence;
 	}
 	
 	/**
-	 * Constructor 
+	 * Short constructor for sensorymotor acts 
 	 * @param s The act's schema
 	 * @param success The act's status
 	 * @param satisfaction The act's satisfaction value
@@ -60,7 +65,8 @@ public class Act implements IAct
 		m_status = success;
 		m_satisfaction = satisfaction;
 		m_label = String.format("%s%s%s", 
-				getStatus() ? "(" : "[", getSchema().getTag() , getStatus() ? ")" : "]");  
+				getStatus() ? "(" : "[", getSchema().getLabel() , getStatus() ? ")" : "]");
+		m_module = Ernest.SENSORYMOTOR;
 
 	}
 	
