@@ -177,6 +177,7 @@ public class Ernest implements IErnest
 		IAct intendedPrimitiveAct = m_currentContext.getPrimitiveIntention();
 		IAct intentionAct = null;
 		IAct enactedAct = null;
+		IAct ongoingIntentionAct = null;
 		
 		// Review the enaction if any.
 
@@ -190,16 +191,33 @@ public class Ernest implements IErnest
 			
 			System.out.println("Enacted " + enactedAct );
 			
-			// Propose to enact the next primitive act if we have an ongoing enaction
+			// The selected intention is it over?
 			
-			intentionAct = nextAct(intendedPrimitiveAct, status);
+			ongoingIntentionAct = nextAct(intendedPrimitiveAct, status);
+			
+			// If the selected intention is not over then select a next act based on 
+			// the ongoing context
+			
+			if (ongoingIntentionAct != null)
+			{
+				IContext ongoingContext = new Context();
+				ongoingContext.addFocusAct(enactedAct);
+				intentionAct = activateNoeme(ongoingContext, m_schemas);
+				//System.out.println("Ongoing intention: " + ongoingIntention );
+				if (!intentionAct.equals(ongoingIntentionAct))
+					System.out.println("No match ");
+					
+			}
+			
+			
 			
 		}	
 
 		// Swing decision cycle if no ongoing enaction
 
-		if (intentionAct == null && enactedAct != null)
+		if (ongoingIntentionAct == null && enactedAct != null)
 		{
+			System.out.println("Swing ===== ");
 			// No ongoing schema to enact. The decision cycle is over.  
 			// Swing to the next decision cycle
 			swing(enactedAct);
@@ -215,6 +233,9 @@ public class Ernest implements IErnest
 		}
 		
 		// Prescribe subacts and subschemas		
+		// TODO manage concurrent prescribing intentions.
+		// Necessary for the case when the selection mechanism selects a subschema that overlaps the
+		// current top level intention.
 		IAct nextPrimitiveAct = prescribeSubacts(intentionAct);
 		m_currentContext.setPrimitiveIntention(nextPrimitiveAct);
 		
@@ -428,8 +449,9 @@ public class Ernest implements IErnest
 
 	/**
 	 * Generates the list of proposed schemas.
-	 * @param The context that generates the proposals.
-	 * @return A list of proposals.
+	 * @param context The context that generates the proposals.
+	 * @param schemas The list of all existing schemas.
+	 * @return The selected noème.
 	 */
 	private IAct activateNoeme(IContext context, List<ISchema> schemas)
 	{
@@ -448,7 +470,7 @@ public class Ernest implements IErnest
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						System.out.println("Activate " + s);
+						// System.out.println("Activate " + s);
 					}
 				}
 				
@@ -491,7 +513,6 @@ public class Ernest implements IErnest
 							}
 						}
 					}
-					
 				}
 			}
 
@@ -504,9 +525,9 @@ public class Ernest implements IErnest
 			}
 		}
 
-		System.out.println("Propose sensorymotor: ");
-		for (IProposition p : proposals)
-			System.out.println(p);
+		// System.out.println("Propose sensorymotor: ");
+		// for (IProposition p : proposals)
+		//	System.out.println(p);
 
 		// sort by weighted proposition...
 		Collections.sort(proposals);
