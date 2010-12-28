@@ -11,7 +11,7 @@ public interface IContext
 {
 
 	public  List<IAct> getContextList();
-	public  List<IAct> getFocusList();
+	public  List<IAct> getActivationList();
 	public  IAct getCoreAct();
 	public  IAct getPrimitiveIntention();
 	public  IAct getIntentionAct();
@@ -20,16 +20,18 @@ public interface IContext
 	public void setPrimitiveIntention(IAct a);
 	public void setIntentionAct(IAct a);
 	
-	public void addFocusAct(IAct a);
+	public void addActivationAct(IAct a);
 	public void addContextAct(IAct a);
 	public void addContext(IContext context);
 
+	public void removeIcons();
+	
 	/**
 	 * @param a The sensor act that represents the sensory system context.
 	 */
-//	public void setSensorAct(IAct a);
+	public void setSensorAct(IAct a);
 	/**
 	 * @return The sensor act that represents the sensory system context.
 	 */
-// 	public IAct getSensorAct();
+ 	public IAct getSensorAct();
 }
