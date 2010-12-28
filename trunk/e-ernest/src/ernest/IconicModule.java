@@ -16,9 +16,8 @@ public class IconicModule
 	/** A list of all the icons in the iconic module. */
 	private List<IIcon> m_icons = new ArrayList<IIcon>(100);
 	
-	/** The icon currently sensed by Ernest. */
-	IIcon m_sensorIcon = null;
-
+	/** The iconic buffer. */
+	private IAct m_icon;
 	
 	/**
 	 * Reset the sensory module by clearing all of its long-term memory.
@@ -52,9 +51,8 @@ public class IconicModule
 	 * Create a primitive iconic noème if it does not yet exist. 
 	 * Set this icon in the visual system current state 
 	 * @param matrix The sensor matrix. 
-	 * @return The iconic noème that was created or retrieved
 	 */
-	public IAct addInteraction(int[][] matrix) 
+	public void processMatrix(int[][] matrix) 
 	{
 		IIcon icon =  new Icon(matrix);
 
@@ -66,20 +64,20 @@ public class IconicModule
 			// The schema already exists: return a pointer to it.
 			icon =  m_icons.get(i);
 		
-		m_sensorIcon = icon;
-		return icon;
+		m_icon = icon;
 	}
 
 	/**
-	 * Proposed iconic noème to push into Ernest's situation awareness.
-	 * @return The iconic noème to push to the central context.
+	 * Update the iconic elements of the context
+	 * TODO Determines when the percieved icon should not be sent to the central system.
+	 * @return the current icon in the iconic module.
 	 */
-	public IAct step() 
+	public IContext updateContext(IContext context) 
 	{
-		if ((m_sensorIcon != null) && (m_sensorIcon.toString().equals(BLUE_SQUARE_LABEL) ))
-			return m_sensorIcon;
-		else
-			return null;
+		context.removeIcons();
+		if (m_icon != null ) 
+			context.addActivationAct(m_icon);
+		return context; 
 	}
-
+	
 }

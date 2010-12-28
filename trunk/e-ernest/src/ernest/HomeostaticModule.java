@@ -32,7 +32,7 @@ public class HomeostaticModule
 			{
 				// Activate the schemas that match the context 
 				boolean activated = false;
-				for (IAct contextAct : context.getFocusList())
+				for (IAct contextAct : context.getActivationList())
 				{
 					if (s.getContextAct().equals(contextAct))
 					{
@@ -98,15 +98,6 @@ public class HomeostaticModule
 		else
 			return null;
 		
-	}
-
-	/**
-	 * Homeostatic process.
-	 * @return The homeostatic noème to enact if any.
-	 */
-	public IAct step(IContext context) 
-	{
-			return null;
 	}
 
 }

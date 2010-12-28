@@ -22,7 +22,7 @@ public class Context implements IContext {
 	 * The list of acts in the focus. 
 	 * These are used for learning new schemas in the next decision cycle
 	 */
-	private List<IAct> m_focusList = new ArrayList<IAct>();
+	private List<IAct> m_activationList = new ArrayList<IAct>();
 
 	/** Acts of interest */
 	private IAct m_coreAct = null;
@@ -31,9 +31,9 @@ public class Context implements IContext {
 	private IAct m_sensorAct = null;
 	
 
-//	public void setSensorAct(IAct a) { m_sensorAct = a; }
+	public void setSensorAct(IAct a) { m_sensorAct = a; }
 	
-//	public IAct getSensorAct() { return m_sensorAct; }
+	public IAct getSensorAct() { return m_sensorAct; }
 
 	/**
 	 * Add an act to the list of acts in the context (scope). 
@@ -68,14 +68,14 @@ public class Context implements IContext {
 	 * The focus list is used for learning new schemas in the next decision cycle.
 	 * @param act The act that will be added to the context list and to the focus list.
 	 */
-	public void addFocusAct(IAct act) 
+	public void addActivationAct(IAct act) 
 	{
 		if (act != null)
 		{
 			if (!m_contextList.contains(act))
 				m_contextList.add(act);
-			if (!m_focusList.contains(act))
-				m_focusList.add(act);
+			if (!m_activationList.contains(act))
+				m_activationList.add(act);
 		}
 	}
 
@@ -91,8 +91,8 @@ public class Context implements IContext {
 		{
 			if (!m_contextList.contains(act))
 				m_contextList.add(act);
-			if (!m_focusList.contains(act))
-				m_focusList.add(act);
+			if (!m_activationList.contains(act))
+				m_activationList.add(act);
 			m_coreAct = act;
 		}
 	}
@@ -112,9 +112,9 @@ public class Context implements IContext {
 	 * This list is used to learn new schemas in the next decision cycle.
 	 * @return The list of acts in the focus list.
 	 */
-	public List<IAct> getFocusList() 
+	public List<IAct> getActivationList() 
 	{
-		return m_focusList;
+		return m_activationList;
 	}
 
 	/**
@@ -161,4 +161,18 @@ public class Context implements IContext {
 		m_primitiveIntention = a;	
 	}
 
+	public void removeIcons()
+	{
+		for (int i = m_activationList.size() - 1 ; i>= 0; i--)
+		{
+			if (m_activationList.get(i).getModule() == Ernest.ICONIC)
+				m_activationList.remove(i);
+		}
+		for (int i = m_contextList.size() - 1 ; i>= 0; i--)
+		{
+			if (m_contextList.get(i).getModule() == Ernest.ICONIC)
+				m_contextList.remove(i);
+		}
+
+	}
 }

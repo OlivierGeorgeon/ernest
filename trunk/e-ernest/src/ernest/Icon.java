@@ -2,6 +2,7 @@ package ernest;
 
 /**
  * An iconic noème in Ernest's iconic module
+ * Icons are noèmes that have no schema but have a matrix.
  * @author ogeorgeon
  */
 public class Icon extends Act implements IIcon
@@ -20,7 +21,7 @@ public class Icon extends Act implements IIcon
 	}
 	
 	/**
-	 * Constructor for an modeler-defined iconic noème.
+	 * Constructor for a modeler-defined iconic noème.
 	 * @param matrix The matrix of pixels that constitutes the icon.
 	 */
 	public Icon(String label, int[][] matrix)

@@ -55,8 +55,7 @@ public class Schema implements ISchema
 		if (m_weight > Ernest.REG_SENS_THRESH)
 		{
 			getSucceedingAct().setConfidence(Ernest.RELIABLE_NOEME);
-			if (getFailingAct() != null)
-				getFailingAct().setConfidence(Ernest.RELIABLE_NOEME);
+			// (The failing act is created RELIABLE)
 		}
 	}
 	
@@ -64,11 +63,8 @@ public class Schema implements ISchema
 	{ 
 		m_weight++;
 		if (m_weight > Ernest.REG_SENS_THRESH)
-		{
 			getSucceedingAct().setConfidence(Ernest.RELIABLE_NOEME);
-			if (getFailingAct() != null)
-				getFailingAct().setConfidence(Ernest.RELIABLE_NOEME);
-		}
+			// (The failing act is created RELIABLE)
 	}
 
 	public boolean isPrimitive()         { return m_isPrimitive; }
@@ -134,7 +130,7 @@ public class Schema implements ISchema
 	}
 
 	/**
-	 * TODO manage length from iconic noèmes
+	 * TODO manage the length of schemas made from iconic noèmes
 	 */
 	private Schema(int id, IAct contextAct, IAct intentionAct)
 	{
@@ -143,9 +139,7 @@ public class Schema implements ISchema
 		m_contextAct = contextAct;
 		m_intentionAct = intentionAct;
 		m_label = contextAct.getLabel() + intentionAct.getLabel();
-		if ((contextAct.getModule() == Ernest.SENSORYMOTOR) && 
-			(intentionAct.getModule() == Ernest.SENSORYMOTOR))
-			m_length = contextAct.getSchema().getLength() + intentionAct.getSchema().getLength();
+		m_length = contextAct.getLength() + intentionAct.getLength();
 	}
 	
 	/**

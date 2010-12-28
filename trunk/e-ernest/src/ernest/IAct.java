@@ -8,7 +8,7 @@ package ernest;
  * @author mcohen
  * @author ogeorgeon
  */
-public interface IAct
+public interface IAct  extends Comparable<IAct>
 {
 	/**
 	 * @return The act's enaction status. True for success, false for failure.
@@ -41,6 +41,11 @@ public interface IAct
 	public void setPrescriberSchema(ISchema s);
 	
 	/**
+	 * @param a The act's activation value
+	 */
+	public void setActivation(int a);
+	
+	/**
 	 * @return The schema that prescribed this act during enaction.
 	 */
 	public ISchema getPrescriberSchema();
@@ -59,4 +64,14 @@ public interface IAct
 	 * @return The confidence status of that noème.
 	 */
 	public int getConfidence();
+
+	/**
+	 * @return The noème's activation value.
+	 */
+	public int getActivation();
+
+	/**
+	 * @return The noème's lenght (eigher its schema's length or 1 if the noème has no schema).
+	 */
+	public int getLength();
 }
