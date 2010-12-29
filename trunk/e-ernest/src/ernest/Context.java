@@ -28,12 +28,12 @@ public class Context implements IContext {
 	private IAct m_coreAct = null;
 	private IAct m_intentionAct = null;
 	private IAct m_primitiveIntention = null;
-	private IAct m_sensorAct = null;
+	private IAct m_sensedIcon = null;
+	private IAct m_animationNoeme = null;
 	
-
-	public void setSensorAct(IAct a) { m_sensorAct = a; }
+	public void setAnimationNoeme(IAct n) { m_animationNoeme = n;}
+	public IAct getAnimationNoeme()       { return m_animationNoeme;}
 	
-	public IAct getSensorAct() { return m_sensorAct; }
 
 	/**
 	 * Add an act to the list of acts in the context (scope). 
@@ -161,8 +161,30 @@ public class Context implements IContext {
 		m_primitiveIntention = a;	
 	}
 
+	/**
+	 * Set the sensed icon in the context
+	 * If the icon is not null, add it to the activation list and to the full context list. 
+	 * if the icon is not null
+	 * @param icon The icon to add.
+	 */
+	public void addSensedIcon(IAct icon)
+	{
+		m_sensedIcon = icon;
+		addActivationAct(icon);
+	}
+	
+	/**
+	 * @return The sensed icon
+	 */
+	public IAct getSensedIcon()
+	{
+		return m_sensedIcon;
+	}
+
 	public void removeIcons()
 	{
+		
+		m_sensedIcon = null;
 		for (int i = m_activationList.size() - 1 ; i>= 0; i--)
 		{
 			if (m_activationList.get(i).getModule() == Ernest.ICONIC)

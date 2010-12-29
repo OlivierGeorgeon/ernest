@@ -95,12 +95,6 @@ public class Proposition implements IProposition
 		return ret;
 	}
 
-//	public int hashCode()
-//    {
-//		int ret = m_schema.hashCode();
-//		return ret;
-//    }	
-		
 	/**
 	 * Generate a textual representation of the proposal for debug.
 	 * @return A string that represents the proposal. 

@@ -93,7 +93,7 @@ public class Ernest implements IErnest
 	 */
 	public ISchema addPrimitive(String label, int successSatisfaction, int failureSatisfaction, int module) 
 	{
-		ISchema s =  Schema.createMotorSchema(m_schemas.size() + 1, label);
+		ISchema s =  Schema.createMotorSchema(m_schemas.size() + 1, label, module);
 		IAct succeedingAct = Act.createAct("(" + s.getLabel() + ")", s, true,  successSatisfaction, module, Ernest.RELIABLE_NOEME);
 		IAct failingAct = Act.createAct("[" + s.getLabel() + "]", s, false, failureSatisfaction, module, Ernest.RELIABLE_NOEME);
 		
@@ -166,9 +166,8 @@ public class Ernest implements IErnest
 	 */
 	public String step(boolean status, int[][] matrix) 
 	{
-		// The iconic module processes the matrix sensed in the environment
-		m_iconicModule.processMatrix(matrix);
-		// m_currentContext.setSensorAct(sensedIcon);
+		// The iconic module senses the matrix provided by the environment
+		m_iconicModule.senseMatrix(matrix);
 		
 		// The central module processes the current enaction
 		return step(status);
@@ -185,6 +184,7 @@ public class Ernest implements IErnest
 		m_internalState= "";
 
 		IAct intendedPrimitiveAct = m_currentContext.getPrimitiveIntention();
+		IAct enactedPrimitiveAct = null;
 		IAct intentionAct = null;
 		IAct enactedAct = null;
 		
@@ -195,7 +195,7 @@ public class Ernest implements IErnest
 			// Compute the actually enacted act
 			
 			ISchema enactedPrimitiveSchema = intendedPrimitiveAct.getSchema();
-			IAct enactedPrimitiveAct = 	enactedPrimitiveSchema.resultingAct(status);
+			enactedPrimitiveAct = 	enactedPrimitiveSchema.resultingAct(status);
 			enactedAct = enactedAct(enactedPrimitiveSchema, enactedPrimitiveAct);
 			
 			System.out.println("Enacted " + enactedAct );
@@ -206,27 +206,49 @@ public class Ernest implements IErnest
 						
 		}	
 
-		// Swing decision cycle if no ongoing enaction
+		// Process the iconic animation noème every primitive step
+		
+		IAct animationNoeme = null;
+		if (m_currentContext.getSensedIcon() != null)
+		{
+			ISchema animationSchema = addCompositeInteraction(m_currentContext.getSensedIcon(), enactedPrimitiveAct );
+			animationSchema.incWeight();
+			animationNoeme = animationSchema.getSucceedingAct();
+			System.out.println ("Animation schema: " + animationSchema);
+		}
+
+		// Shift decision cycle if no ongoing enaction
 
 		if (intentionAct == null && enactedAct != null)
 		{
-			System.out.println("Swing ===== ");
+			System.out.println("Schift ================ ");
 			// No ongoing schema to enact. The decision cycle is over.  
-			// Swing to the next decision cycle
-			swing(enactedAct);
+			// Shift to the next decision cycle
+			shiftDecisionCycle(enactedAct);
 		}
 
 		// Update the iconic context every step
 		// (Only if the environment sends matrix)
+		m_currentContext.setAnimationNoeme(animationNoeme);
+		if (!m_iconicModule.checkIcon(m_currentContext, m_schemas))
+			m_internalState = "!";
 		m_currentContext = m_iconicModule.updateContext(m_currentContext);
 		
+		// learn the iconic evocation noème.
+		if (m_currentContext.getSensedIcon() != null && animationNoeme != null)
+		{
+			ISchema evocationSchema = addCompositeInteraction(animationNoeme, m_iconicModule.getSensedIcon());
+			evocationSchema.incWeight();
+			System.out.println ("Evocation schema: " + evocationSchema);
+		}
+
 		// print the new current context
 		System.out.println("Context: ");
 		 for (IAct a : m_currentContext.getActivationList())
 		 {	System.out.println(a);}
 		System.out.println("Learned : " + m_learnCount + " schemas.");
 			
-		// Activate a new central intention if the decision cycle has swung
+		// Activate a new central intention if the decision cycle has shifted
 		
 		if (intentionAct == null)
 		{
@@ -264,16 +286,18 @@ public class Ernest implements IErnest
 	
 	/**
 	 * Swing to the next decision cycle 
+	 * Learn from the ending decision cycle
+	 * swap 
 	 */
-	private void swing(IAct enactedAct)
+	private void shiftDecisionCycle(IAct enactedAct)
 	{
 
 		IAct performedAct = null;
 
 		// Log the previous decision cycle's trace
 
-		if (m_currentContext.getIntentionAct() != enactedAct)
-			m_internalState= "!";
+		// if (m_currentContext.getIntentionAct() != enactedAct)
+		//	 m_internalState= "!";
 		m_logger.writeLine(enactedAct.getLabel() + m_internalState);
 
 		// Determine the performed act
@@ -472,7 +496,7 @@ public class Ernest implements IErnest
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						 System.out.println("Activate " + s);
+						// System.out.println("Activate " + s);
 					}
 				}
 				
@@ -527,9 +551,9 @@ public class Ernest implements IErnest
 			}
 		}
 
-		 System.out.println("Propose central: ");
-		 for (IProposition p : proposals)
-			System.out.println(p);
+		// System.out.println("Propose central: ");
+		// for (IProposition p : proposals)
+		//	System.out.println(p);
 
 		// sort by weighted proposition...
 		Collections.sort(proposals);
