@@ -56,8 +56,9 @@ public class Act implements IAct
 		{
 			String label = "(" + s.getLabel() +")";
 			int satisfaction = s.getContextAct().getSatisfaction() + s.getIntentionAct().getSatisfaction();
+			int module = s.getModule();
 		
-			return new Act(label, s, true, satisfaction, Ernest.CENTRAL, Ernest.HYPOTHETICAL_NOEME);
+			return new Act(label, s, true, satisfaction, module, Ernest.HYPOTHETICAL_NOEME);
 		}
 	}
 	
@@ -77,9 +78,10 @@ public class Act implements IAct
 		else
 		{
 			String label = "[" + s.getLabel() +"]";
+			int module = s.getModule();
 			// The failing act is RELIABLE because its schema had to be reliable to be enacted and 
 			// making it possible to experience its failure.
-			return new Act(label, s, false, satisfaction, Ernest.CENTRAL, Ernest.RELIABLE_NOEME);
+			return new Act(label, s, false, satisfaction, module, Ernest.RELIABLE_NOEME);
 		}
 	}
 	
@@ -93,9 +95,9 @@ public class Act implements IAct
 	 * @param confidence The degree of confidence Ernest has in this noème
 	 * @return The craeted act.
 	 */
-	public static IAct createAct(String label, ISchema s, boolean status, int satisfaction, int type, int confidence)
+	public static IAct createAct(String label, ISchema s, boolean status, int satisfaction, int module, int confidence)
 	{
-		return new Act(label, s, status, satisfaction, type, confidence);
+		return new Act(label, s, status, satisfaction, module, confidence);
 	}
 	
 	/**
@@ -106,13 +108,13 @@ public class Act implements IAct
 	 * @param type the module
 	 * @param confidence The degree of confidence Ernest has in this noème
 	 */
-	protected Act(String label, ISchema s, boolean status, int satisfaction, int type, int confidence)
+	protected Act(String label, ISchema s, boolean status, int satisfaction, int module, int confidence)
 	{
 		m_label = label;
 		m_schema = s;
 		m_status = status;
 		m_satisfaction = satisfaction;
-		m_module = type;
+		m_module = module;
 		m_confidence = confidence;
 		if (s == null)
 			m_length = 1;

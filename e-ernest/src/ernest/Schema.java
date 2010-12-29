@@ -9,13 +9,6 @@ package ernest;
  */
 public class Schema implements ISchema 
 {
-	/** The icon's width (first coordinate: x) */
-	public static final int ICON_WIDTH = 2;
-	/** The icon's height (second coordinate: y) */
-	public static final int ICON_HEIGHT = 1;
-	
-	/** The icon's matrix of pixels */
-	private int[][] m_matrix = new int[ICON_WIDTH][ICON_HEIGHT]; 
 
 	private int m_id = 0;
 	private String m_label = null; 
@@ -27,6 +20,7 @@ public class Schema implements ISchema
 	private int m_weight = 0; 
 	private int m_length = 1;
 	private boolean m_isPrimitive = true;
+	private int m_module = 0;
 
 	private IAct m_prescriberAct = null;
 	private int m_pointer = 0;	
@@ -46,6 +40,7 @@ public class Schema implements ISchema
 	public IAct getContextAct()          { return m_contextAct; }
 	public IAct getIntentionAct()        { return m_intentionAct; }
 	public int  getWeight()              { return m_weight; }
+	public int  getModule()              { return m_module; }
 	public IAct getPrescriberAct()       { return m_prescriberAct; }
 	public int  getPointer()	         { return m_pointer; }
 	
@@ -82,38 +77,18 @@ public class Schema implements ISchema
 	 * @param label A string code that represents the schema.  
 	 * @return The created schema.
 	 */
-	public static ISchema createMotorSchema(int id, String label)
+	public static ISchema createMotorSchema(int id, String label, int module)
 	{ 
-		return new Schema(id, label);
+		return new Schema(id, label, module);
 	}
 	
-	private Schema(int id, String label)
+	private Schema(int id, String label, int module)
 	{
 		m_id = id;
 		m_label = label;
 		m_isPrimitive = true;
         m_weight = Ernest.INFINITE; // needs to be greater than the regularity threshold to support enaction of higher level schemas
-	}
-
-	/**
-	 * Constructor for a sensor schema.
-	 * Create a new sensor schema with a matrix icon.
-	 * @param id The schema's unique serial number.
-	 * @param label A label for debug.  
-	 * @return The created sensor schema.
-	 */
-	public static ISchema createSensorSchema(int id, String label, int [][] matrix)
-	{ 
-		return new Schema(id, label, matrix);
-	}
-	
-	private Schema(int id, String label, int [][] matrix)
-	{
-		m_id = id;
-		m_label = label;
-		m_matrix = matrix;
-		m_isPrimitive = true;
-        m_weight = 0; 
+        m_module = module;
 	}
 
 	/**
@@ -130,7 +105,7 @@ public class Schema implements ISchema
 	}
 
 	/**
-	 * TODO manage the length of schemas made from iconic noèmes
+	 * 
 	 */
 	private Schema(int id, IAct contextAct, IAct intentionAct)
 	{
@@ -140,6 +115,7 @@ public class Schema implements ISchema
 		m_intentionAct = intentionAct;
 		m_label = contextAct.getLabel() + intentionAct.getLabel();
 		m_length = contextAct.getLength() + intentionAct.getLength();
+		m_module = intentionAct.getModule();
 	}
 	
 	/**

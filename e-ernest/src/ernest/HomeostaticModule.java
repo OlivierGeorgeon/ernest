@@ -34,7 +34,7 @@ public class HomeostaticModule
 				boolean activated = false;
 				for (IAct contextAct : context.getActivationList())
 				{
-					if (s.getContextAct().equals(contextAct))
+					if ((s.getModule() == Ernest.HOMEOSTATIC) && (s.getContextAct().equals(contextAct)))
 					{
 						activated = true;
 						// System.out.println("Activate " + s);

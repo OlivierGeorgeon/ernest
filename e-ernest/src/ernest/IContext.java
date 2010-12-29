@@ -15,6 +15,8 @@ public interface IContext
 	public  IAct getCoreAct();
 	public  IAct getPrimitiveIntention();
 	public  IAct getIntentionAct();
+	public  IAct getSensedIcon();	
+
 	
 	public void setCoreAct(IAct a);
 	public void setPrimitiveIntention(IAct a);
@@ -23,15 +25,10 @@ public interface IContext
 	public void addActivationAct(IAct a);
 	public void addContextAct(IAct a);
 	public void addContext(IContext context);
+	public void addSensedIcon(IAct icon);
 
 	public void removeIcons();
 	
-	/**
-	 * @param a The sensor act that represents the sensory system context.
-	 */
-	public void setSensorAct(IAct a);
-	/**
-	 * @return The sensor act that represents the sensory system context.
-	 */
- 	public IAct getSensorAct();
+	public void setAnimationNoeme(IAct n);
+	public IAct getAnimationNoeme();
 }
