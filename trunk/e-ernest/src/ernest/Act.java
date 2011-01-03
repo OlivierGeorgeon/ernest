@@ -132,13 +132,14 @@ public class Act implements IAct
 	
 	public String toString()
 	{
-		String s = String.format("(S%s %s s=%s)", 
-				getSchema().getId() , getLabel(), getSatisfaction());  
+		String s= m_label;
+		//if (m_schema != null)
+		//	s = String.format("(S%s %s s=%s)", getSchema().getId() , getLabel(), getSatisfaction());  
 		return s;
 	}
 	
 	/**
-	 * Acts are equals if they have the same schema and status 
+	 * Acts are equals if they have the same label 
 	 */
 	public boolean equals(Object o)
 	{
@@ -153,8 +154,9 @@ public class Act implements IAct
 		else
 		{
 			IAct other = (IAct)o;
-			ret = (other.getSchema() == getSchema() &&
-				   other.getStatus() == getStatus());
+			ret = (//other.getSchema() == getSchema() &&
+				   //other.getStatus() == getStatus() &&
+				   other.getLabel().equals(getLabel()));
 		}
 		
 		return ret;

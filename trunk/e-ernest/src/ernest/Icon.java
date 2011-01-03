@@ -44,7 +44,8 @@ public class Icon extends Act implements IIcon
 	 */
 	public String toString()
 	{
-		return("["+ m_matrix[0][0] + "," + m_matrix[1][0] + "]");	
+		return("["+ m_matrix[0][0] + "," + m_matrix[1][0] + "]");
+		//return m_label;
 	}
 
 	/**
@@ -67,5 +68,16 @@ public class Icon extends Act implements IIcon
 		}
 		
 		return ret;
+	}
+	
+	/**
+	 * @return the icon's satisfaction value 
+	 */
+	public int getSatisfaction()
+	{
+		int satLeft = 10 - Math.min(m_matrix[0][0], 10);
+		int satRight = 10 - Math.min(m_matrix[1][0], 10);
+		
+		return (satLeft + satRight);
 	}
 }
