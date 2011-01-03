@@ -13,26 +13,39 @@ import java.util.List;
 public class Context implements IContext {
 
 	/**
-	 * The list of acts in the scope. 
-	 * These are used for activating schemas during the next decision cycle
+	 * The list of context acts. 
+	 * Used by the first learning mechanism to learn schemas from the enacted act
 	 */
 	private List<IAct> m_contextList = new ArrayList<IAct>();
 	
 	/**
-	 * The list of acts in the focus. 
-	 * These are used for learning new schemas in the next decision cycle
+	 * The list of acts in the base context. 
+	 * Used by the second learning mechanism to learn schemas from the stream act.
+	 */
+	private List<IAct> m_baseContextList = new ArrayList<IAct>();
+	
+	/**
+	 * The list of acts that can activate a new intention. 
+	 * These are used by the intention selection mechanism.
 	 */
 	private List<IAct> m_activationList = new ArrayList<IAct>();
 
 	/** Acts of interest */
-	private IAct m_coreAct = null;
 	private IAct m_intentionAct = null;
 	private IAct m_primitiveIntention = null;
+	private IAct m_primitiveEnaction = null;
+
+	private IAct m_homeostaticNoeme = null;
 	private IAct m_sensedIcon = null;
 	private IAct m_animationNoeme = null;
 	
-	public void setAnimationNoeme(IAct n) { m_animationNoeme = n;}
-	public IAct getAnimationNoeme()       { return m_animationNoeme;}
+	public void setPrimitiveEnaction(IAct n) {m_primitiveEnaction =n; }
+	public void setHomeostaticNoeme(IAct n)  {m_homeostaticNoeme =n; }
+	public void setAnimationNoeme(IAct n)    { m_animationNoeme = n;}
+
+	public IAct getPrimitiveEnaction()       { return m_primitiveEnaction; }
+	public IAct getHomeostaticNoeme()        { return m_homeostaticNoeme; }
+	public IAct getAnimationNoeme()          { return m_animationNoeme;}
 	
 
 	/**
@@ -64,6 +77,20 @@ public class Context implements IContext {
 	}
 
 	/**
+	 * Add the acts in another context to the list of acts in this context (scope). 
+	 * This list is used to learn new schemas in the next decision cycle.
+	 * @param context The context to append in this context.
+	 */
+	public void addContextList(List<IAct> actList) 
+	{
+		for (IAct act : actList)
+		{
+			if (!m_contextList.contains(act))
+				m_contextList.add(act);
+		}
+	}
+
+	/**
 	 * Add an act to the list of acts in the context and in the focus list. 
 	 * The focus list is used for learning new schemas in the next decision cycle.
 	 * @param act The act that will be added to the context list and to the focus list.
@@ -76,24 +103,6 @@ public class Context implements IContext {
 				m_contextList.add(act);
 			if (!m_activationList.contains(act))
 				m_activationList.add(act);
-		}
-	}
-
-	/**
-	 * Defines the context's core act. 
-	 * The core act is also added to the context list and to the focus list.
-	 * The core act is the central act in the context. The core act will be used to form the stream act.
-	 * @param act The act to become the core act.
-	 */
-	public void setCoreAct(IAct act) 
-	{
-		if (act != null)
-		{
-			if (!m_contextList.contains(act))
-				m_contextList.add(act);
-			if (!m_activationList.contains(act))
-				m_activationList.add(act);
-			m_coreAct = act;
 		}
 	}
 
@@ -117,13 +126,9 @@ public class Context implements IContext {
 		return m_activationList;
 	}
 
-	/**
-	 * Get the core act. 
-	 * @return The core act.
-	 */
-	public IAct getCoreAct() 
+	public List<IAct> getBaseContextList()
 	{
-		return m_coreAct;
+		return m_baseContextList;
 	}
 	
 	/**
@@ -173,9 +178,6 @@ public class Context implements IContext {
 		addActivationAct(icon);
 	}
 	
-	/**
-	 * @return The sensed icon
-	 */
 	public IAct getSensedIcon()
 	{
 		return m_sensedIcon;
@@ -195,6 +197,35 @@ public class Context implements IContext {
 			if (m_contextList.get(i).getModule() == Ernest.ICONIC)
 				m_contextList.remove(i);
 		}
+	}
+	
+	public void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList)
+	{
+		// The current context list becomes the base context list
+		m_baseContextList = m_contextList;
+		
+		m_contextList.clear();
+		m_activationList.clear();
+		
+		// The enacted act is added first to the activation list
+		addActivationAct(enactedAct); 
 
+		// Add the performed act if different
+		if (enactedAct != performedAct)
+			addActivationAct(performedAct);
+
+		// if the actually enacted act is not primitive, its intention also belongs to the context
+		if (!enactedAct.getSchema().isPrimitive())
+			addActivationAct(enactedAct.getSchema().getIntentionAct());	
+		
+		// add the streamcontext list to the context list
+		addContextList(contextList);
+	}
+	
+	public void shiftStep(IAct[] pixelMatrix)
+	{
+		removeIcons();
+		addActivationAct(pixelMatrix[0]);
+		addActivationAct(pixelMatrix[1]);
 	}
 }
