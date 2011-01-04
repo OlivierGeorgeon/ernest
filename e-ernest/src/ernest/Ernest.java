@@ -59,7 +59,6 @@ public class Ernest implements IErnest
 
 	/** Architectural modules. */
 	private IconicModule m_iconicModule = new IconicModule(); 
-	private HomeostaticModule m_homeostaticModule = new HomeostaticModule(); 
 	
 	/**
 	 * Set Ernest's fundamental learning parameters.
@@ -236,8 +235,8 @@ public class Ernest implements IErnest
 			
 			// The selected intention is it over?
 			
-			intentionAct = nextAct(intendedPrimitiveAct, enactedPrimitiveAct.getStatus());
-						
+			//intentionAct = nextAct(intendedPrimitiveAct, enactedPrimitiveAct.getStatus());
+			intentionAct = nextAct(intendedPrimitiveAct, enactedPrimitiveAct);
 		}	
 
 		// Shift decision cycle if no ongoing enaction
@@ -323,15 +322,15 @@ public class Ernest implements IErnest
 			
 			
 		}
-		else 
-			context.shiftStep(m_iconicModule.getPixelMatrix());
+		//else 
+		//	context.shiftStep(m_iconicModule.getPixelMatrix());
 		
 		
 		
 		// print the new current context
 		System.out.println("Context: ");
 		 for (IAct a : context.getActivationList())
-		 {	System.out.println(a + " " + a.hashCode());}
+		 {	System.out.println(a);}
 		System.out.println("Learned : " + m_learnCount + " schemas.");
 			
 		// Activate a new central intention if the decision cycle has shifted
@@ -353,93 +352,10 @@ public class Ernest implements IErnest
 		// Sensorymotor noèmes compete and Ernest selects that with the highest activation
 		IAct nextPrimitiveAct = selectAct(activeSensorymotorNoemes);		
 		context.setPrimitiveIntention(nextPrimitiveAct);
-
-		// The iconic context may activate a homeostatic noème.
-		// (so far, only iconic noèmes activate homeostatic noèmes through a composite schema)
-		
-		context.setHomeostaticNoeme( m_homeostaticModule.activateNoeme(context, m_schemas)); 
 				
 		// Return the new context
 		
 		return context;
-		
-	}
-	
-	
-	/**
-	 * Shift to the next decision cycle 
-	 * Learn from the ending decision cycle
-	 */
-	private void shiftDecisionCycle(IAct enactedAct)
-	{
-
-		IAct performedAct = null;
-
-		// Log the previous decision cycle's trace
-
-		// if (m_currentContext.getIntentionAct() != enactedAct)
-		//	 m_internalState= "!";
-		m_logger.writeLine(enactedAct.getLabel() + m_internalState);
-
-		// Determine the performed act
-		
-		ISchema intendedSchema = m_context.getIntentionAct().getSchema();
-		if (intendedSchema == enactedAct.getSchema())
-			performedAct = enactedAct;
-		else
-			performedAct = addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
-		System.out.println("Performed " + performedAct );
-		
-		// learn from the  context and the performed act
-		
-		m_learnCount = 0;
-		
-		List<IAct> streamContextList = learn(m_context.getContextList(), performedAct);
-		
-		// Learn evocation noèmes
-		//ISchema evocationSchema0 = addCompositeInteraction(performedAct, m_iconicModule.getPixelMatrix()[0]);
-		//evocationSchema0.incWeight();
-		//ISchema evocationSchema1 = addCompositeInteraction(performedAct, m_iconicModule.getPixelMatrix()[1]);
-		//evocationSchema1.incWeight();
-		
-		//System.out.println(" Evocation act " + evocationSchema.getSucceedingAct());
-		
-		//List<IAct> streamContextList = learn(m_context.getContextList(), evocationSchema.getSucceedingAct());
-		
-		
-		// learn from the base context and the stream act
-		
-		 if (streamContextList.size() > 1)
-		 {
-			 IAct streamAct = streamContextList.get(0); // The stream act is the first learned if there is at least two
-			 System.out.println("Streaming " + streamAct);
-			 if (streamAct != null && streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
-				 learn(m_context.getBaseContextList(), streamAct);
-		 }
-
-		// learn from the current context and the actually enacted act
-		
-		if (enactedAct != performedAct)
-		{
-			System.out.println("Learn from enacted: " );
-			List<IAct> streamContextList2 = learn(m_context.getBaseContextList(), enactedAct);
-			// learn from the base context and the streamAct2
-			if (streamContextList2.size() > 0)
-			{
-				IAct streamAct2 = streamContextList2.get(0);
-				System.out.println("Streaming2 " + streamAct2 );
-				if (streamAct2.getSchema().getWeight() > ACTIVATION_THRESH)
-					learn(m_context.getBaseContextList(), streamAct2);
-			}
-		}			
-
-		// Assess the new context ====
-		
-		// Shift the context and renitialize it with the new enactedAct 
-		// The enacted act needs to be the first of the context list to construct the stream act
-		m_context.shiftDecisionCycle(enactedAct, performedAct, streamContextList);
-		
-		// m_currentContext.addContext(streamContext2);
 		
 	}
 	
@@ -479,21 +395,21 @@ public class Ernest implements IErnest
 	
 	/**
 	 * Recursively finds the next act to enact in the hierarchy of prescribers.
-	 * @param a The enacted act.
-	 * @param status The enaction status.
+	 * @param prescribedAct The prescribed act.
+	 * @param prescribedAct The enacted act.
 	 * @return the next intention act to enact or null if failed or completed
 	 */
-	private IAct nextAct(IAct a, boolean status)
+	private IAct nextAct(IAct prescribedAct, IAct enactedAct)
 	{
 		IAct nextAct = null;
-		ISchema prescriberSchema = a.getPrescriberSchema();
-		int activation = a.getActivation();
-		a.setPrescriberSchema(null); 
-		a.setActivation(0); // (It might be the case that the same act will be prescribed again)
+		ISchema prescriberSchema = prescribedAct.getPrescriberSchema();
+		int activation = prescribedAct.getActivation();
+		prescribedAct.setPrescriberSchema(null); 
+		prescribedAct.setActivation(0); // (It might be the case that the same act will be prescribed again)
 		
 		if (prescriberSchema != null)
 		{
-			if (a.getStatus() == status)
+			if (prescribedAct == enactedAct)
 			{
 				// Correctly enacted
 				if (prescriberSchema.getPointer() == 0)
@@ -508,15 +424,14 @@ public class Ernest implements IErnest
 				{
 					// intention act correctly enacted, move to prescriber act with a success status
 					IAct prescriberAct = prescriberSchema.getPrescriberAct();
-					nextAct = nextAct(prescriberAct, true);
+					nextAct = nextAct(prescriberAct, prescriberSchema.getSucceedingAct());
 				}
-				// a.setPrescriberSchema(null);						
 			}
 			else
 			{
 				// move to prescriber act with a failure status
 				IAct prescriberAct = prescriberSchema.getPrescriberAct();
-				nextAct = nextAct(prescriberAct, false);				
+				nextAct = nextAct(prescriberAct, prescriberSchema.getFailingAct());				
 			}
 		}
 
@@ -542,7 +457,7 @@ public class Ernest implements IErnest
 				// Build a new schema with the context act and the intention act 
 				ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
 				newSchema.incWeight();
-				 System.out.println("learned " + newSchema);
+				// System.out.println("learned " + newSchema);
 				
 					// Created acts are part of the context 
 					// if their context and intention have passed the regularity
@@ -580,7 +495,7 @@ public class Ernest implements IErnest
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						 System.out.println("Activate " + s);
+						// System.out.println("Activate " + s);
 					}
 				}
 				
@@ -635,9 +550,9 @@ public class Ernest implements IErnest
 			}
 		}
 
-		 System.out.println("Propose: ");
-		for (IProposition p : proposals)
-			System.out.println(p);
+		// System.out.println("Propose: ");
+		//for (IProposition p : proposals)
+		//	System.out.println(p);
 
 		// sort by weighted proposition...
 		Collections.sort(proposals);
