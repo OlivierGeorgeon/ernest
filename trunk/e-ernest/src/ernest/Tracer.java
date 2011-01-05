@@ -17,7 +17,7 @@ public class Tracer implements ITracer
 {
 
 	private  File logFile = null;
-	private boolean isLogging = false;
+	private boolean isLogging = true;
 
 	/**
 	 * Initialize the tracer.

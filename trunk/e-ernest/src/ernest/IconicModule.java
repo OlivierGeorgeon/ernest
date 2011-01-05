@@ -29,11 +29,18 @@ public class IconicModule
 	private String[] m_labels = new String[2];
 	private int[] m_satisfactions = new int[2];
 	
-	public IAct enactedAct(ISchema schema)
+	public IAct enactedAct(ISchema schema, boolean status)
 	{
-		String label = "(" + schema.getLabel() + "|" + m_labels[0] + "|" + m_labels[1] + ")";
-		int satisfaction = m_satisfactions[0] + m_satisfactions[1];  
-		IAct enacted = Act.createAct(label, schema, true, satisfaction, Ernest.CENTRAL, Ernest.RELIABLE_NOEME);
+		String label = schema.getLabel();
+		if (!m_labels[0].equals(" ") || !m_labels[1].equals(" ") )
+			label = label + "" + m_labels[0] + "|" + m_labels[1];
+		if (status)
+			label = "(" + label + ")";
+		else 
+			label = "[" + label + "]";
+			
+		int satisfaction = m_satisfactions[0] + m_satisfactions[1] + schema.resultingAct(status).getSatisfaction();  
+		IAct enacted = Act.createAct(label, schema, status, satisfaction, Ernest.CENTRAL, Ernest.RELIABLE_NOEME);
 		
 		int i = m_pixelAnims.indexOf(enacted);
 		if (i == -1)
@@ -87,35 +94,35 @@ public class IconicModule
 	{
 		int previousPixel = m_previousIcon[index][0];
 		m_previousIcon[index][0] = nextPixel;
-		String label = "";
+		String label = " ";
 		int satisfaction = 0;
 		
 		// arrived
 		if (previousPixel > nextPixel && nextPixel == 0)
 		{
-			label = "arrived";
-			satisfaction = 1000;
+			label = "x";
+			satisfaction = 300;
 		}
 		
 		// closer
 		else if (previousPixel < Ernest.INFINITE && nextPixel < previousPixel)
 		{
-			label = "closer";
+			label = "+";
 			satisfaction = 100;
 		}
 
 		// appear
 		else if (previousPixel == Ernest.INFINITE && nextPixel < Ernest.INFINITE)
 		{
-			label = "appear";
-			satisfaction = 100;
+			label = "*";
+			satisfaction = 150;
 		}
 		
 		// disappear
 		else if (previousPixel < Ernest.INFINITE && nextPixel == Ernest.INFINITE)
 		{
-			label = "disappear";
-			satisfaction = -100;
+			label = "o";
+			satisfaction = -150;
 		}
 
 		System.out.println("Sensed " + label);
