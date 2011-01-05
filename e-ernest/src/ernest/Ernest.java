@@ -54,8 +54,8 @@ public class Ernest implements IErnest
 	private IContext m_context = new Context();
 	
 	/** The Tracer. */
-	private ITracer m_logger = null;
-	public void setTracer(ITracer tracer) { m_logger = tracer; }
+	private ITracer m_tracer = null; //new Tracer("trace.txt", true);
+	public void setTracer(ITracer tracer) { m_tracer = tracer; }
 
 	/** Architectural modules. */
 	private IconicModule m_iconicModule = new IconicModule(); 
@@ -184,15 +184,8 @@ public class Ernest implements IErnest
 		IAct intendedPrimitiveAct = m_context.getPrimitiveIntention();
 		
 		if (intendedPrimitiveAct != null)
-		{
-			if (!status)
-				enactedPrimitiveAct = intendedPrimitiveAct.getSchema().getFailingAct();
-			else 
-				enactedPrimitiveAct = m_iconicModule.enactedAct(intendedPrimitiveAct.getSchema());
-		}
+			enactedPrimitiveAct = m_iconicModule.enactedAct(intendedPrimitiveAct.getSchema(), status);
 		
-		//	enactedPrimitiveAct = intendedPrimitiveAct.getSchema().resultingAct(status);
-
 		m_context.setPrimitiveEnaction(enactedPrimitiveAct);
 
 		// Run Ernest one step
@@ -210,7 +203,7 @@ public class Ernest implements IErnest
 		
 	/**
 	 * Ernest's central process.
-	 * @param status The status received as a feedback from the previous primitive enaction.
+	 * @param context The context that determines Ernest's next action.
 	 * @return The next primitive schema to enact.
 	 */
 	public IContext stepCentral(IContext context) 
@@ -232,6 +225,7 @@ public class Ernest implements IErnest
 			enactedAct = enactedAct(enactedPrimitiveSchema, enactedPrimitiveAct);
 			
 			System.out.println("Enacted " + enactedAct );
+			//m_tracer.
 			
 			// The selected intention is it over?
 			
@@ -253,9 +247,10 @@ public class Ernest implements IErnest
 
 			// Log the previous decision cycle's trace
 
-			// if (m_currentContext.getIntentionAct() != enactedAct)
-			//	 m_internalState= "!";
-			m_logger.writeLine(enactedAct.getLabel() + m_internalState);
+			// TODO also compute surprise in the case of primitive intention acts.  
+			if (context.getIntentionAct() != enactedAct && !context.getIntentionAct().getStatus())
+				 m_internalState= "!";
+			m_tracer.writeLine(enactedAct.getLabel() + m_internalState);
 
 			// Determine the performed act
 			
