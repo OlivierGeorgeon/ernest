@@ -101,7 +101,7 @@ public class IconicModule
 		if (previousPixel > nextPixel && nextPixel == 0)
 		{
 			label = "x";
-			satisfaction = 300;
+			satisfaction = 100;
 		}
 		
 		// closer

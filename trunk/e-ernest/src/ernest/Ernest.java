@@ -267,24 +267,14 @@ public class Ernest implements IErnest
 			
 			List<IAct> streamContextList = learn(context.getContextList(), performedAct);
 			
-			// Learn evocation noèmes
-			//ISchema evocationSchema0 = addCompositeInteraction(performedAct, m_iconicModule.getPixelMatrix()[0]);
-			//evocationSchema0.incWeight();
-			//ISchema evocationSchema1 = addCompositeInteraction(performedAct, m_iconicModule.getPixelMatrix()[1]);
-			//evocationSchema1.incWeight();
-			
-			//System.out.println(" Evocation act " + evocationSchema.getSucceedingAct());
-			
-			//List<IAct> streamContextList = learn(m_context.getContextList(), evocationSchema.getSucceedingAct());
-			
 			
 			// learn from the base context and the stream act
 			
 			 if (streamContextList.size() > 1)
 			 {
-				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned if there is at least two
+				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
 				 System.out.println("Streaming " + streamAct);
-				 if (streamAct != null && streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
+				 if (streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
 					 learn(context.getBaseContextList(), streamAct);
 			 }
 
@@ -292,8 +282,8 @@ public class Ernest implements IErnest
 			
 			if (enactedAct != performedAct)
 			{
-				System.out.println("Learn from enacted: " );
-				List<IAct> streamContextList2 = learn(context.getBaseContextList(), enactedAct);
+				System.out.println("Learn from enacted");
+				List<IAct> streamContextList2 = learn(context.getContextList(), enactedAct);
 				// learn from the base context and the streamAct2
 				if (streamContextList2.size() > 0)
 				{
@@ -452,7 +442,7 @@ public class Ernest implements IErnest
 				// Build a new schema with the context act and the intention act 
 				ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
 				newSchema.incWeight();
-				// System.out.println("learned " + newSchema);
+				System.out.println("learned " + newSchema.getLabel());
 				
 					// Created acts are part of the context 
 					// if their context and intention have passed the regularity

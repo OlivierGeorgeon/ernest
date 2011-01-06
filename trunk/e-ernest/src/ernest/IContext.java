@@ -58,16 +58,6 @@ public interface IContext
 	 */
 	public void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList);
 
-	/**
-	 * Shift the context to terminate a step and begin a new one.
-	 * The context list is passed to the base context list.
-	 * The activation list is reinitialized from the enacted act and the performed act.
-	 * The context list is reinitialized from the activation list an the additional list provided as a parameter. 
-	 * @param icon The sensed icon.
-	 */
-	public void shiftStep(IAct[] pixelMatrix);
-
-	
 	public void setHomeostaticNoeme(IAct n);
 	public IAct getHomeostaticNoeme();
 
