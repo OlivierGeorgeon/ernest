@@ -202,7 +202,7 @@ public class Context implements IContext {
 	public void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList)
 	{
 		// The current context list becomes the base context list
-		m_baseContextList = m_contextList;
+		m_baseContextList = new ArrayList(m_contextList);
 		
 		m_contextList.clear();
 		m_activationList.clear();
@@ -222,10 +222,4 @@ public class Context implements IContext {
 		addContextList(contextList);
 	}
 	
-	public void shiftStep(IAct[] pixelMatrix)
-	{
-		removeIcons();
-		addActivationAct(pixelMatrix[0]);
-		addActivationAct(pixelMatrix[1]);
-	}
 }
