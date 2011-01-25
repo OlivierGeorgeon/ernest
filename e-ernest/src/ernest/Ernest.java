@@ -47,9 +47,6 @@ public class Ernest implements IErnest
 	/** A list of all the schemas ever created ... */
 	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
 
-	/** A list of all the noèmes ever created ... */
-	//private List<IAct> m_noemes = new ArrayList<IAct>(100);
-
 	/** The current context. */
 	private IContext m_context = new Context();
 	
@@ -58,7 +55,13 @@ public class Ernest implements IErnest
 	public void setTracer(ITracer tracer) { m_tracer = tracer; }
 
 	/** Architectural modules. */
-	private IconicModule m_iconicModule = new IconicModule(); 
+	private EpisodicMemory m_episodicMemory = new EpisodicMemory();
+	private ISensorymotorSystem m_sensorymotorSystem;
+	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
+	{
+		m_sensorymotorSystem = sensor;
+		m_sensorymotorSystem.setEpisodicMemory(m_episodicMemory);
+	};
 	
 	/**
 	 * Set Ernest's fundamental learning parameters.
@@ -88,30 +91,19 @@ public class Ernest implements IErnest
 	 * @param module The module that can handle this interaction.
 	 * @return The created primitive schema.
 	 */
-	public ISchema addPrimitive(String label, int successSatisfaction, int failureSatisfaction, int module) 
-	{
-		ISchema s =  Schema.createMotorSchema(m_schemas.size() + 1, label, module);
-		IAct succeedingAct = Act.createAct("(" + s.getLabel() + ")", s, true,  successSatisfaction, module, Ernest.RELIABLE_NOEME);
-		IAct failingAct = Act.createAct("[" + s.getLabel() + "]", s, false, failureSatisfaction, module, Ernest.RELIABLE_NOEME);
-		
-		s.setSucceedingAct(succeedingAct);
-		s.setFailingAct(failingAct);
-
-		m_schemas.add(s);
-		// System.out.println("Primitive schema " + s);
-		return s;
-	}
-
-	/**
-	 * Add a primitive icon to Ernest's iconic module.
-	 * @param label The icon's string identifier.
-	 * @param matrix The distal sensory state.
-	 * @return The created primitive iconic noème.
-	 */
-	public IAct addIconicPrimitive(String label, int[][] matrix) 
-	{
-		return m_iconicModule.addInteraction(label, matrix);
-	}
+	//public ISchema addPrimitive(String label, int successSatisfaction, int failureSatisfaction, int module) 
+	//{
+	//	ISchema s =  Schema.createMotorSchema(m_schemas.size() + 1, label, module);
+	//	IAct succeedingAct = Act.createAct("(" + s.getLabel() + ")", s, true,  successSatisfaction, module, Ernest.RELIABLE_NOEME);
+	//	IAct failingAct = Act.createAct("[" + s.getLabel() + "]", s, false, failureSatisfaction, module, Ernest.RELIABLE_NOEME);
+	//	
+	//	s.setSucceedingAct(succeedingAct);
+	//	s.setFailingAct(failingAct);
+	//
+	//	m_schemas.add(s);
+	//	// System.out.println("Primitive schema " + s);
+	//	return s;
+	//}
 
 	/**
 	 * Add a composite schema and its succeeding act that represent a composite possibility 
@@ -156,22 +148,6 @@ public class Ernest implements IErnest
 	}
 		
 	/**
-	 * Run Ernest one step. Exploit the matrix sensed in the environment.
-	 * @param status The status received as feedback from the intended sensorymotor enaction.
-	 * @param matrix A matrix sensed in the environment to inform the iconic module.
-	 * @return The next primitive schemas to enact.
-	 */
-	public String step(boolean status, int[][] matrix) 
-	{
-		// The iconic module senses the matrix provided by the environment
-		m_iconicModule.senseMatrix(matrix);
-		
-		// The central module processes the current enaction
-		return step(status);
-		
-	}
-
-	/**
 	 * Ernest's central process.
 	 * @param status The status received as a feedback from the previous primitive enaction.
 	 * @return The next primitive schema to enact.
@@ -184,7 +160,7 @@ public class Ernest implements IErnest
 		IAct intendedPrimitiveAct = m_context.getPrimitiveIntention();
 		
 		if (intendedPrimitiveAct != null)
-			enactedPrimitiveAct = m_iconicModule.enactedAct(intendedPrimitiveAct.getSchema(), status);
+			enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(intendedPrimitiveAct.getSchema(), status);
 		
 		m_context.setPrimitiveEnaction(enactedPrimitiveAct);
 
@@ -577,25 +553,25 @@ public class Ernest implements IErnest
 	 */
 	private IAct selectAct(List<IAct> acts)
 	{
-	// sort by weighted proposition...
-	Collections.sort(acts);
+		// sort by weighted proposition...
+		Collections.sort(acts);
+		
+		// count how many are tied with the  highest weighted proposition
+		int count = 0;
+		int wp = acts.get(0).getActivation();
+		for (IAct a : acts)
+		{
+			if (a.getActivation() != wp)
+				break;
+			count++;
+		}
 	
-	// count how many are tied with the  highest weighted proposition
-	int count = 0;
-	int wp = acts.get(0).getActivation();
-	for (IAct a : acts)
-	{
-		if (a.getActivation() != wp)
-			break;
-		count++;
-	}
-
-	// pick one at random from the top of the proposal list
-	// count is equal to the number of proposals that are tied...
-
-	IAct a = acts.get(m_rand.nextInt(count));
+		// pick one at random from the top of the proposal list
+		// count is equal to the number of proposals that are tied...
 	
-	return a ;
+		IAct a = acts.get(m_rand.nextInt(count));
+		
+		return a ;
 	}
 	
 	/**
@@ -673,5 +649,4 @@ public class Ernest implements IErnest
 				}
 		return bored;
 	}
-
 }

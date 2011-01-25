@@ -35,15 +35,7 @@ public interface IErnest
 	 * @param failureSatisfaction The satisfaction in case of failure.
 	 * @return The created primitive schema.
 	 */
-	public ISchema addPrimitive(String label, int successSatisfaction, int failureSatisfaction, int module);
-
-	/**
-	 * Add a primitive sensory schema
-	 * @param label The primitive schema's string description
-	 * @param matrix The sensor matrix 
-	 * @return The created primitive schema
-	 */
-	public IAct addIconicPrimitive(String label, int[][] matrix); 
+	// public ISchema addPrimitive(String label, int successSatisfaction, int failureSatisfaction, int module);
 
 	/**
 	 * Add a composite schema and its succeeding act that represent a composite possibility 
@@ -63,16 +55,15 @@ public interface IErnest
 	
 	/**
 	 * Run Ernest one step.
-	 * @param status The status received in return from the previous schema enaction.
+	 * @param status The status received as feedback from the previous schema enaction.
 	 * @return The next primitive schema to enact.
 	 */
 	public String step(boolean status);
 	
 	/**
-	 * Run Ernest one step. Exploit the matrix sensed in the environment.
-	 * @param status The status received in return from the previous schema enaction.
-	 * @param matrix The matrix sensed in the environment to inform the iconic module.
-	 * @return The next primitive schema to enact.
+	 * Set Ernest's sensorymotor system suitable to a given environment
+	 * @param sensorymotorSystem Ernest's sensory system
 	 */
-	public String step(boolean status, int[][] matrix);
+	public void setSensorymotorSystem(ISensorymotorSystem sensorymotorSystem);
+	
 }
