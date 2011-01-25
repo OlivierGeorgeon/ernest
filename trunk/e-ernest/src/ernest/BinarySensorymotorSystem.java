@@ -1,0 +1,61 @@
+package ernest;
+
+/**
+ * The binary sensorymotor system can only sense a binary feedback from the environment
+ * This sensorymotor system is provided as an example for the SimpleMaze environment
+ * and as a parent class for more complex sensorymotor systems
+ * @author Olivier
+ */
+public class BinarySensorymotorSystem implements ISensorymotorSystem 
+{
+	protected EpisodicMemory m_episodicMemory;
+
+	public void setEpisodicMemory(EpisodicMemory episodicMemory)
+	{
+		m_episodicMemory = episodicMemory;
+	}
+	
+	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction) 
+	{
+		IAct a = null;
+		ISchema s =  m_episodicMemory.addPrimitiveSchema(schemaLabel);
+		
+		if (status)
+		{
+			a = m_episodicMemory.addAct("(" + schemaLabel + ")", s, status,  satisfaction,  Ernest.HYPOTHETICAL_NOEME);
+			s.setSucceedingAct(a);
+		}
+		else 
+		{
+			a = m_episodicMemory.addAct("[" + schemaLabel + "]", s, status,  satisfaction,  Ernest.HYPOTHETICAL_NOEME);
+			s.setFailingAct(a);
+		}
+		
+		System.out.println("Primitive schema " + s);
+		return a;
+	}
+
+	/**
+	 * Determine the enacted act 
+	 * This implementation does not assume that the resulting act already exists
+	 * If the resulting act did not exist then it is created with a satisfaction value of 0.
+	 * @param schema The enacted primitive schema
+	 * @param status The status returned as a feedback from the enacted schema
+	 * @return The enacted act
+	 */
+	public IAct enactedAct(ISchema schema, boolean status) 
+	{
+		String label = schema.getLabel();
+		
+		if (status)
+			label = "(" + label + ")";
+		else 
+			label = "[" + label + "]";
+			
+		// Create the act in episodic memory if it does not exist.	
+		IAct enactedAct = m_episodicMemory.addAct(label, schema, status, 0, Ernest.HYPOTHETICAL_NOEME);
+		
+		return enactedAct;
+	}
+
+}
