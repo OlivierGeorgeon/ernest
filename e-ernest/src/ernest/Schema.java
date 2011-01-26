@@ -20,7 +20,6 @@ public class Schema implements ISchema
 	private int m_weight = 0; 
 	private int m_length = 1;
 	private boolean m_isPrimitive = true;
-	private int m_module = 0;
 
 	private IAct m_prescriberAct = null;
 	private int m_pointer = 0;	
@@ -40,7 +39,6 @@ public class Schema implements ISchema
 	public IAct getContextAct()          { return m_contextAct; }
 	public IAct getIntentionAct()        { return m_intentionAct; }
 	public int  getWeight()              { return m_weight; }
-	public int  getModule()              { return m_module; }
 	public IAct getPrescriberAct()       { return m_prescriberAct; }
 	public int  getPointer()	         { return m_pointer; }
 	
@@ -49,7 +47,7 @@ public class Schema implements ISchema
 		m_weight = weight; 
 		if (m_weight > Ernest.REG_SENS_THRESH)
 		{
-			getSucceedingAct().setConfidence(Ernest.RELIABLE_NOEME);
+			getSucceedingAct().setConfidence(Ernest.RELIABLE);
 			// (The failing act is created RELIABLE)
 		}
 	}
@@ -58,7 +56,7 @@ public class Schema implements ISchema
 	{ 
 		m_weight++;
 		if (m_weight > Ernest.REG_SENS_THRESH)
-			getSucceedingAct().setConfidence(Ernest.RELIABLE_NOEME);
+			getSucceedingAct().setConfidence(Ernest.RELIABLE);
 			// (The failing act is created RELIABLE)
 	}
 
@@ -77,18 +75,17 @@ public class Schema implements ISchema
 	 * @param label A string code that represents the schema.  
 	 * @return The created schema.
 	 */
-	public static ISchema createMotorSchema(int id, String label, int module)
+	public static ISchema createMotorSchema(int id, String label)
 	{ 
-		return new Schema(id, label, module);
+		return new Schema(id, label);
 	}
 	
-	private Schema(int id, String label, int module)
+	private Schema(int id, String label)
 	{
 		m_id = id;
 		m_label = label;
 		m_isPrimitive = true;
         m_weight = Ernest.INFINITE; // needs to be greater than the regularity threshold to support enaction of higher level schemas
-        m_module = module;
 	}
 
 	/**
@@ -115,7 +112,6 @@ public class Schema implements ISchema
 		m_intentionAct = intentionAct;
 		m_label = contextAct.getLabel() + intentionAct.getLabel();
 		m_length = contextAct.getLength() + intentionAct.getLength();
-		m_module = intentionAct.getModule();
 	}
 	
 	/**

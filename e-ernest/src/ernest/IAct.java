@@ -56,11 +56,6 @@ public interface IAct  extends Comparable<IAct>
 	public ISchema getSchema();
 
 	/**
-	 * @return The type of that noème. So far, only SENSORYMOTOR or ICON.
-	 */
-	public int getModule();
-
-	/**
 	 * @return The confidence status of that noème.
 	 */
 	public int getConfidence();

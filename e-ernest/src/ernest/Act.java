@@ -20,9 +20,7 @@ public class Act implements IAct
 	private ISchema m_prescriberSchema = null;
 	
 	private String m_label = "";
-	/** The noème's module */
-	private int m_module = 0;
-	private int m_confidence = Ernest.HYPOTHETICAL_NOEME;
+	private int m_confidence = Ernest.HYPOTHETICAL;
 	private int m_activation = 0;
 	private int m_length = 1;
 	
@@ -33,7 +31,6 @@ public class Act implements IAct
 	
 	public boolean getStatus()                 { return m_status; }
 	public int     getSatisfaction()           { return m_satisfaction; }
-	public int     getModule()           	   { return m_module; }
 	public int     getConfidence()             { return m_confidence; }
 	public ISchema getPrescriberSchema()       { return m_prescriberSchema; }
 	public ISchema getSchema()                 { return m_schema; }
@@ -56,9 +53,8 @@ public class Act implements IAct
 		{
 			String label = "(" + s.getLabel() +")";
 			int satisfaction = s.getContextAct().getSatisfaction() + s.getIntentionAct().getSatisfaction();
-			int module = s.getModule();
 		
-			return new Act(label, s, true, satisfaction, module, Ernest.HYPOTHETICAL_NOEME);
+			return new Act(label, s, true, satisfaction, Ernest.HYPOTHETICAL);
 		}
 	}
 	
@@ -78,10 +74,9 @@ public class Act implements IAct
 		else
 		{
 			String label = "[" + s.getLabel() +"]";
-			int module = s.getModule();
 			// The failing act is RELIABLE because its schema had to be reliable to be enacted and 
 			// making it possible to experience its failure.
-			return new Act(label, s, false, satisfaction, module, Ernest.RELIABLE_NOEME);
+			return new Act(label, s, false, satisfaction, Ernest.RELIABLE);
 		}
 	}
 	
@@ -91,13 +86,12 @@ public class Act implements IAct
 	 * @param s The noème's schema if any
 	 * @param status The noème's status if any: True for success, false for failure
 	 * @param satisfaction The act's satisfaction value.
-	 * @param type the module
 	 * @param confidence The degree of confidence Ernest has in this noème
-	 * @return The craeted act.
+	 * @return The created act.
 	 */
-	public static IAct createAct(String label, ISchema s, boolean status, int satisfaction, int module, int confidence)
+	public static IAct createAct(String label, ISchema s, boolean status, int satisfaction, int confidence)
 	{
-		return new Act(label, s, status, satisfaction, module, confidence);
+		return new Act(label, s, status, satisfaction, confidence);
 	}
 	
 	/**
@@ -108,13 +102,12 @@ public class Act implements IAct
 	 * @param type the module
 	 * @param confidence The degree of confidence Ernest has in this noème
 	 */
-	protected Act(String label, ISchema s, boolean status, int satisfaction, int module, int confidence)
+	protected Act(String label, ISchema s, boolean status, int satisfaction, int confidence)
 	{
 		m_label = label;
 		m_schema = s;
 		m_status = status;
 		m_satisfaction = satisfaction;
-		m_module = module;
 		m_confidence = confidence;
 		if (s == null)
 			m_length = 1;
@@ -163,7 +156,7 @@ public class Act implements IAct
 	}
 	
 	/**
-	 * The greatest noème is that that has the greatest activation. 
+	 * The greatest act is that that has the greatest activation. 
 	 */
 	public int compareTo(IAct a) 
 	{
