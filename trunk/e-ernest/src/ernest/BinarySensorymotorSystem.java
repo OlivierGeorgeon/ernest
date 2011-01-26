@@ -22,12 +22,12 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		
 		if (status)
 		{
-			a = m_episodicMemory.addAct("(" + schemaLabel + ")", s, status,  satisfaction,  Ernest.HYPOTHETICAL_NOEME);
+			a = m_episodicMemory.addAct("(" + schemaLabel + ")", s, status,  satisfaction,  Ernest.RELIABLE);
 			s.setSucceedingAct(a);
 		}
 		else 
 		{
-			a = m_episodicMemory.addAct("[" + schemaLabel + "]", s, status,  satisfaction,  Ernest.HYPOTHETICAL_NOEME);
+			a = m_episodicMemory.addAct("[" + schemaLabel + "]", s, status,  satisfaction,  Ernest.RELIABLE);
 			s.setFailingAct(a);
 		}
 		
@@ -53,7 +53,7 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 			label = "[" + label + "]";
 			
 		// Create the act in episodic memory if it does not exist.	
-		IAct enactedAct = m_episodicMemory.addAct(label, schema, status, 0, Ernest.HYPOTHETICAL_NOEME);
+		IAct enactedAct = m_episodicMemory.addAct(label, schema, status, 0, Ernest.RELIABLE);
 		
 		return enactedAct;
 	}

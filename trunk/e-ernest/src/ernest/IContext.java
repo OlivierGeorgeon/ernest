@@ -1,52 +1,82 @@
 package ernest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A context is Ernest's internal representation of its situation at a given point in time. 
+ * Give access to Ernest's Working Memory.
+ * Used to store and retrieve elements of Ernest's internal representation of its situation at a given point in time.
  * @author ogeorgeon
  */
 public interface IContext 
 {
 
+	/**
+	 * Give the context to learn new schemas with the first learning mechanism.
+	 * @return The list of acts in the context list.
+	 */
 	public  List<IAct> getContextList();
-	public List<IAct> getBaseContextList();
+
+	/**
+	 * Give the base context to learn new schemas with the second learning mechanism.
+	 * @return The list of acts in the base context list.
+	 */
+	public  List<IAct> getBaseContextList();
+
+	/**
+	 * Give the context to select the next schemas to enact in the next decision cycle.
+	 * @return The list of acts in the activation list.
+	 */
 	public  List<IAct> getActivationList();
+
+	/**
+	 * @return The primitive intended act in the current automatic loop.
+	 */
 	public  IAct getPrimitiveIntention();
+	
+	/**
+	 * @return The primitive actually enacted act
+	 */
 	public  IAct getPrimitiveEnaction();
+
+	/**
+	 * @return The intention act decided during the last decision cycle.
+	 */
 	public  IAct getIntentionAct();
+	
+	/**
+	 * @param act the primitive intended act. 
+	 */
+	public void setPrimitiveIntention(IAct act);
+	
+	/**
+	 * @param act The primitive actually enacted act.
+	 */
+	public void setPrimitiveEnaction(IAct act);
 
 	/**
-	 * Get the sensed icon that was set by the IconicModule.senseMatrix() method during the step's beginning
-	 * @return The sensed icon
+	 * @param act The intention act decided during the decision cycle.
 	 */
-	public  IAct getSensedIcon();	
+	public void setIntentionAct(IAct act);
+	
+	/**
+	 * Add an act to the context and to the activation list. 
+	 * @param act The act that will be added to the context list and to the focus list.
+	 */
+	public void addActivationAct(IAct act);
+	
+	/**
+	 * Add an act to the context list. 
+	 * @param act The act to add.
+	 */
+	public void addContextAct(IAct act);
 
-	
-	public void setPrimitiveIntention(IAct a);
-	public void setPrimitiveEnaction(IAct a);
-	public void setIntentionAct(IAct a);
-	
-	public void addActivationAct(IAct a);
-	public void addContextAct(IAct a);
-	public void addContext(IContext context);
+	/**
+	 * Add a list of acts to the context list (scope). 
+	 * This list is used to learn new schemas in the next decision cycle.
+	 * @param actList The context to append in this context.
+	 */
 	public void addContextList(List<IAct> actList);
-	public void addSensedIcon(IAct icon);
 
-	public void removeIcons();
-	
-	/**
-	 * Set the animation noème in the context.
-	 * @param n The animation noème. 
-	 */
-	public void setAnimationNoeme(IAct n);
-	
-	/**
-	 * @return the animation noème.
-	 */
-	public IAct getAnimationNoeme();
-	
 	/**
 	 * Shift the context when a decision cycle terminates and the next begins.
 	 * The context list is passed to the base context list.
@@ -57,10 +87,5 @@ public interface IContext
 	 * @param contextList The additional acts to add to the new context list
 	 */
 	public void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList);
-
-	public void setHomeostaticNoeme(IAct n);
-	public IAct getHomeostaticNoeme();
-
-
 
 }

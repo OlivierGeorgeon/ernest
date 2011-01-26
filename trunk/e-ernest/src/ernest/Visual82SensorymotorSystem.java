@@ -53,7 +53,7 @@ public class Visual82SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Create the act in episodic memory if it does not exist.
 		
-		IAct enactedAct = m_episodicMemory.addAct(label, schema, status, satisfaction, Ernest.RELIABLE_NOEME);
+		IAct enactedAct = m_episodicMemory.addAct(label, schema, status, satisfaction, Ernest.RELIABLE);
 		
 		return enactedAct;
 	}

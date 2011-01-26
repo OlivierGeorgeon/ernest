@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.Collections;
 
 /**
- * The main Ernest class used to create an Ernest agent.
+ * The main Ernest class used to create an Ernest agent in the environment.
  * @author ogeorgeon
  */
 public class Ernest implements IErnest 
@@ -14,55 +14,42 @@ public class Ernest implements IErnest
 	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
 
-	/** Central module. */
-	public static final int CENTRAL = 1;
-	/** Iconic module. */
-	public static final int ICONIC = 2;
-	/** Homeostatic module. */
-	public static final int HOMEOSTATIC = 3;
-	
-	/** Hypothetical noème (Can't be chosen as an intention nor support higher-level learning). */
-	public static final int HYPOTHETICAL_NOEME = 1;
-	/** Reliable noème (Can be chosen as an intention and support higher-level learning). */
-	public static final int RELIABLE_NOEME = 2;
+	/** Hypothetical act (Cannot be chosen as an intention. Cannot support higher-level learning). */
+	public static final int HYPOTHETICAL = 1;
 
-	/** Regularity sensibility threshold (The weight threshold for a noème to become reliable). */
+	/** Reliable act (Can be chosen as an intention and can support higher-level learning). */
+	public static final int RELIABLE = 2;
+
+	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
 	public static int REG_SENS_THRESH = 5;
+
 	/** Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
-	private static int ACTIVATION_THRESH = 1;
+	public static int ACTIVATION_THRESH = 1;
+
 	/** Maximum length of a schema (For the schema to be chosen as an intention)*/
-	private static int SCHEMA_MAX_LENGTH = INFINITE;
+	public static int SCHEMA_MAX_LENGTH = INFINITE;
 	
 	/** Random generator used to break a tie when selecting a schema... */
 	private static Random m_rand = new Random(); 
-	/** Counter of learned schemas for tracing */
-	private int m_learnCount = 0;
-	
+
 	/** Indication of Ernest's boredom. */
 	private boolean m_bored = false;
 
 	/** A representation of Ernest's internal state. */
 	private String m_internalState = "";
 	
-	/** A list of all the schemas ever created ... */
-	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
-
-	/** The current context. */
-	private IContext m_context = new Context();
-	
 	/** The Tracer. */
 	private ITracer m_tracer = null; //new Tracer("trace.txt", true);
-	public void setTracer(ITracer tracer) { m_tracer = tracer; }
 
-	/** Architectural modules. */
+	/** Ernest's episodic memory. */
 	private EpisodicMemory m_episodicMemory = new EpisodicMemory();
-	private ISensorymotorSystem m_sensorymotorSystem;
-	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
-	{
-		m_sensorymotorSystem = sensor;
-		m_sensorymotorSystem.setEpisodicMemory(m_episodicMemory);
-	};
+
+	/** Ernest's working memory. */
+	private IContext m_context = new Context();
 	
+	/** Ernest's sensorymotor system. */
+	private ISensorymotorSystem m_sensorymotorSystem;
+
 	/**
 	 * Set Ernest's fundamental learning parameters.
 	 * Use null to leave a value unchanged.
@@ -83,60 +70,33 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Add a primitive schema and its two resulting acts that represent a primitive possibility 
-	 * of interaction between Ernest and its environment.
-	 * @param label The schema's string identifier.
-	 * @param successSatisfaction The satisfaction in case of success.
-	 * @param failureSatisfaction The satisfaction in case of failure.
-	 * @param module The module that can handle this interaction.
-	 * @return The created primitive schema.
+	 * Let the environment set the sensorymotor system.
+	 * @param sensor The sensorymotor system.
 	 */
-	//public ISchema addPrimitive(String label, int successSatisfaction, int failureSatisfaction, int module) 
-	//{
-	//	ISchema s =  Schema.createMotorSchema(m_schemas.size() + 1, label, module);
-	//	IAct succeedingAct = Act.createAct("(" + s.getLabel() + ")", s, true,  successSatisfaction, module, Ernest.RELIABLE_NOEME);
-	//	IAct failingAct = Act.createAct("[" + s.getLabel() + "]", s, false, failureSatisfaction, module, Ernest.RELIABLE_NOEME);
-	//	
-	//	s.setSucceedingAct(succeedingAct);
-	//	s.setFailingAct(failingAct);
-	//
-	//	m_schemas.add(s);
-	//	// System.out.println("Primitive schema " + s);
-	//	return s;
-	//}
-
-	/**
-	 * Add a composite schema and its succeeding act that represent a composite possibility 
-	 * of interaction between Ernest and its environment. 
-	 * @param contextAct The context Act.
-	 * @param intentionAct The intention Act.
-	 * @return The schema made of the two specified acts, whether it has been created or it already existed. 
-	 */
-    public ISchema addCompositeInteraction(IAct contextAct, IAct intentionAct)
-    {
-    	ISchema s = Schema.createCompositeSchema(m_schemas.size() + 1, contextAct, intentionAct);
-    	
-		int i = m_schemas.indexOf(s);
-		if (i == -1)
-		{
-			// The schema does not exist: create its succeeding act and add it to Ernest's memory
-	    	s.setSucceedingAct( Act.createCompositeSucceedingAct(s) );
-			m_schemas.add(s);
-			m_learnCount++;
-		}
-		else
-			// The schema already exists: return a pointer to it.
-			s =  m_schemas.get(i);
-    	return s;
-    }
-
-	/**
-	 * Reset Ernest by clearing all its long-term memory.
-	 */
-	public void clear() 
+	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
 	{
-		m_schemas.clear();
+		m_sensorymotorSystem = sensor;
+		m_sensorymotorSystem.setEpisodicMemory(m_episodicMemory);
+	};
+	
+	/**
+	 * Let the environment set the tracer.
+	 * @param tracer The tracer.
+	 */
+	public void setTracer(ITracer tracer) 
+	{ 
+		m_tracer = tracer; 
 	}
+
+	/**
+	 * Provide access to Ernest's episodic memory
+	 * (The environment can populate episodic memory with inborn composite schemas) 
+	 * @return Ernest's episodic memory. 
+	 */
+    public EpisodicMemory getEpisodicMemory()
+    {
+    	return m_episodicMemory;
+    }
 
 	/**
 	 * Get a description of Ernest's internal state.
@@ -171,8 +131,6 @@ public class Ernest implements IErnest
 		// Return the schemas to enact in the environment
 		
 		String enact = m_context.getPrimitiveIntention().getSchema().getLabel();
-		if (m_context.getHomeostaticNoeme() != null)
-			enact = enact + "," + m_context.getHomeostaticNoeme().getSchema().getLabel();
 		
 		return enact;
 	}
@@ -180,7 +138,7 @@ public class Ernest implements IErnest
 	/**
 	 * Ernest's central process.
 	 * @param context The context that determines Ernest's next action.
-	 * @return The next primitive schema to enact.
+	 * @return The next context.
 	 */
 	public IContext stepCentral(IContext context) 
 	{
@@ -197,15 +155,12 @@ public class Ernest implements IErnest
 		{
 			// Compute the actually enacted act
 			
-			ISchema enactedPrimitiveSchema = intendedPrimitiveAct.getSchema();
-			enactedAct = enactedAct(enactedPrimitiveSchema, enactedPrimitiveAct);
+			enactedAct = enactedAct(intendedPrimitiveAct.getSchema(), enactedPrimitiveAct);
 			
 			System.out.println("Enacted " + enactedAct );
-			//m_tracer.
 			
 			// The selected intention is it over?
 			
-			//intentionAct = nextAct(intendedPrimitiveAct, enactedPrimitiveAct.getStatus());
 			intentionAct = nextAct(intendedPrimitiveAct, enactedPrimitiveAct);
 		}	
 
@@ -217,7 +172,6 @@ public class Ernest implements IErnest
 			// No ongoing schema to enact. The decision cycle is over.  
 			// Shift to the next decision cycle
 			//shiftDecisionCycle(enactedAct);
-			
 			
 			IAct performedAct = null;
 
@@ -231,22 +185,24 @@ public class Ernest implements IErnest
 			// Determine the performed act
 			
 			ISchema intendedSchema = context.getIntentionAct().getSchema();
+			
 			if (intendedSchema == enactedAct.getSchema())
 				performedAct = enactedAct;
 			else
-				performedAct = addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
+				performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
+			
 			System.out.println("Performed " + performedAct );
 			
 			// learn from the  context and the performed act
 			
-			m_learnCount = 0;
+			m_episodicMemory.resetLearnCount();
 			
 			List<IAct> streamContextList = learn(context.getContextList(), performedAct);
 			
 			
 			// learn from the base context and the stream act
 			
-			 if (streamContextList.size() > 1)
+			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of hte list
 			 {
 				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
 				 System.out.println("Streaming " + streamAct);
@@ -276,35 +232,24 @@ public class Ernest implements IErnest
 			// The enacted act needs to be the first of the context list to construct the stream act
 			context.shiftDecisionCycle(enactedAct, performedAct, streamContextList);
 			
-			// m_currentContext.addContext(streamContext2);
-
-			
-			
-			
-			
 		}
-		//else 
-		//	context.shiftStep(m_iconicModule.getPixelMatrix());
-		
-		
 		
 		// print the new current context
-		System.out.println("Context: ");
-		 for (IAct a : context.getActivationList())
-		 {	System.out.println(a);}
-		System.out.println("Learned : " + m_learnCount + " schemas.");
+		System.out.println("Activation context list: ");
+		for (IAct a : context.getActivationList())
+			{	System.out.println(a);}
+		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
 			
-		// Activate a new central intention if the decision cycle has shifted
+		// Select a new intention if the decision cycle has shifted
 		
 		if (intentionAct == null)
 		{
-			// Activate a new sensorymotor intention =====
-			intentionAct = activateNoeme(context, m_schemas);
+			intentionAct = m_episodicMemory.selectAct(context);
 			context.setIntentionAct(intentionAct);
 		}
 		
-		// Spread the central intention's activation to sensorymotor noèmes.
-		// (so far, only central intentions activate sensorymotor noèmes)
+		// Spread the selected intention's activation to primitive acts.
+		// (so far, only selected intentions activate primitive acts)
 		
 		IAct activeSensorymotorNoeme = spreadActivation(intentionAct);
 		List<IAct> activeSensorymotorNoemes = new ArrayList<IAct>(10);
@@ -346,7 +291,7 @@ public class Ernest implements IErnest
 			else
 			{
 				// enacted the prescriber's intention
-				ISchema enactedSchema = addCompositeInteraction(prescriberSchema.getContextAct(), a);
+				ISchema enactedSchema = m_episodicMemory.addCompositeInteraction(prescriberSchema.getContextAct(), a);
 				enactedAct = enactedAct(prescriberSchema, enactedSchema.getSucceedingAct());
 			}
 		}
@@ -416,133 +361,22 @@ public class Ernest implements IErnest
 			for (IAct contextAct : contextList)
 			{
 				// Build a new schema with the context act and the intention act 
-				ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
+				ISchema newSchema = m_episodicMemory.addCompositeInteraction(contextAct, intentionAct);
 				newSchema.incWeight();
 				System.out.println("learned " + newSchema.getLabel());
 				
 					// Created acts are part of the context 
 					// if their context and intention have passed the regularity
 					// if they are based on reliable noèmes
-				if ((contextAct.getConfidence() == RELIABLE_NOEME) &&
-  				   (intentionAct.getConfidence() == RELIABLE_NOEME))
+				if ((contextAct.getConfidence() == RELIABLE) &&
+  				   (intentionAct.getConfidence() == RELIABLE))
 				{
 					newContextList.add(newSchema.getSucceedingAct());
+					// System.out.println("Reliable schema " + newSchema);
 				}
 			}
 		}
 		return newContextList; 
-	}
-
-	/**
-	 * Activates a sensorymotor noème from the focus list of a context.
-	 * @param context The context that generates the proposals.
-	 * @param schemas The list of all existing schemas.
-	 * @return The selected noème.
-	 */
-	private IAct activateNoeme(IContext context, List<ISchema> schemas)
-	{
-
-		List<IProposition> proposals = new ArrayList<IProposition>();	
-		
-		// Browse all the schemas 
-		for (ISchema s : schemas)
-		{
-			if (!s.isPrimitive())
-			{
-				// Activate the schemas that match the context 
-				boolean activated = false;
-				for (IAct contextAct : context.getActivationList())
-				{
-					if (s.getContextAct().equals(contextAct))
-					{
-						activated = true;
-						// System.out.println("Activate " + s);
-					}
-				}
-				
-				// Activated schemas propose their intention
-				if (activated)
-				{
-					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
-					int w = s.getWeight() * s.getIntentionAct().getSatisfaction();
-					// The expectation is the proposing schema's weight signed with the proposed act's status  
-					int e = s.getWeight() * (s.getIntentionAct().getStatus() ? 1 : -1);
-					
-					// If the intention is reliable
-					if ((s.getIntentionAct().getModule() == CENTRAL) &&
-						(s.getIntentionAct().getConfidence() == RELIABLE_NOEME ) &&						 
-						(s.getIntentionAct().getSchema().getLength() <= SCHEMA_MAX_LENGTH ))
-					{
-						IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
-	
-						int i = proposals.indexOf(p);
-						if (i == -1)
-							proposals.add(p);
-						else
-							proposals.get(i).update(w, e);
-					}
-					// if the intention's schema has not passed the threshold then  
-					// the activation is propagated to the intention's schema's context
-					else
-					{
-						if (!s.getIntentionAct().getSchema().isPrimitive())
-						{
-							// only if the intention's intention is positive (this is some form of positive anticipation)
-							if (s.getIntentionAct().getSchema().getIntentionAct().getSatisfaction() > 0)
-							{
-								IProposition p = new Proposition(s.getIntentionAct().getSchema().getContextAct().getSchema(), w, e);
-								int i = proposals.indexOf(p);
-								if (i == -1)
-									proposals.add(p);
-								else
-									proposals.get(i).update(w, e);
-							}
-						}
-					}
-				}
-			}
-
-			// Primitive sensorymotor schemas also receive a default proposition for themselves
-			if (s.isPrimitive() && (s.getSucceedingAct().getModule() == Ernest.CENTRAL))
-			{
-				IProposition p = new Proposition(s, 0, 0);
-				if (!proposals.contains(p))
-					proposals.add(p);
-			}
-		}
-
-		// System.out.println("Propose: ");
-		//for (IProposition p : proposals)
-		//	System.out.println(p);
-
-		// sort by weighted proposition...
-		Collections.sort(proposals);
-		
-		// count how many are tied with the  highest weighted proposition
-		int count = 0;
-		int wp = proposals.get(0).getWeight();
-		for (IProposition p : proposals)
-		{
-			if (p.getWeight() != wp)
-				break;
-			count++;
-		}
-
-		// pick one at random from the top of the proposal list
-		// count is equal to the number of proposals that are tied...
-
-		IProposition p = proposals.get(m_rand.nextInt(count));
-		
-		ISchema s = p.getSchema();
-		
-		IAct a = (p.getExpectation() >= 0 ? s.getSucceedingAct() : s.getFailingAct());
-		
-		// The noème's activation is set equal to its proposition's weight
-		a.setActivation(p.getWeight());
-		
-		System.out.println("Select:" + a);
-
-		return a ;
 	}
 
 	/**
@@ -576,7 +410,7 @@ public class Ernest implements IErnest
 	
 	/**
 	 * Recursively prescribe an act's subacts and subschemas.
-	 * Set the subacts' activation equal to the prescribing act's actvation.
+	 * Set the subacts' activation equal to the prescribing act's activation.
 	 * @param The prescriber act.
 	 * @return The prescribed act.
 	 */
@@ -599,35 +433,6 @@ public class Ernest implements IErnest
 		
 		return primitiveAct;
 	}
-
-	/**
-	 * Add or update a failing possibility of interaction between Ernest and its environment.
-	 * Add or update the schema's failing act to Ernest's memory. 
-	 * If the failing act does not exist then create it. 
-	 * If the failing act exists then update its satisfaction.
-	 * @param The schema that failed.
-	 * @param The satisfaction obtained during the failure.
-	 * @return The failing act.
-	 */
-    private IAct addFailingInteraction(ISchema schema, int satisfaction)
-    {
-    	IAct failingAct = schema.getFailingAct();
-    	
-		if (!schema.isPrimitive())
-		{
-			if (failingAct == null)
-			{
-				failingAct = Act.createCompositeFailingAct(schema, satisfaction);
-				schema.setFailingAct(failingAct);
-			}
-			else
-				// If the failing act already exists then 
-				//  its satisfaction is averaged with the previous value
-				failingAct.setSatisfaction((failingAct.getSatisfaction() + satisfaction)/2);
-		}
-		
-		return failingAct;
-    }
 
 	/**
 	 * Detect boredom when the enacted act is a repetition and secondary.

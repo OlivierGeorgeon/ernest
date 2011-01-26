@@ -13,39 +13,44 @@ import java.util.List;
 public class Context implements IContext {
 
 	/**
-	 * The list of context acts. 
-	 * Used by the first learning mechanism to learn schemas from the enacted act
+	 * The context to learn new schemas with the first learning mechanism.
 	 */
 	private List<IAct> m_contextList = new ArrayList<IAct>();
 	
 	/**
-	 * The list of acts in the base context. 
-	 * Used by the second learning mechanism to learn schemas from the stream act.
+	 * The context to learn new schemas with the second learning mechanism.
 	 */
 	private List<IAct> m_baseContextList = new ArrayList<IAct>();
 	
 	/**
 	 * The list of acts that can activate a new intention. 
-	 * These are used by the intention selection mechanism.
 	 */
 	private List<IAct> m_activationList = new ArrayList<IAct>();
 
-	/** Acts of interest */
+	/** 
+	 * The decided intention
+	 */
 	private IAct m_intentionAct = null;
+
+	/**
+	 * The primitive intended act in the current automatic loop.
+	 */
 	private IAct m_primitiveIntention = null;
+
+	/**
+	 * The primitive actually enacted act
+	 */
 	private IAct m_primitiveEnaction = null;
 
-	private IAct m_homeostaticNoeme = null;
-	private IAct m_sensedIcon = null;
-	private IAct m_animationNoeme = null;
-	
-	public void setPrimitiveEnaction(IAct n) {m_primitiveEnaction =n; }
-	public void setHomeostaticNoeme(IAct n)  {m_homeostaticNoeme =n; }
-	public void setAnimationNoeme(IAct n)    { m_animationNoeme = n;}
+	public void setPrimitiveEnaction(IAct n) 
+	{
+		m_primitiveEnaction =n; 
+	}
 
-	public IAct getPrimitiveEnaction()       { return m_primitiveEnaction; }
-	public IAct getHomeostaticNoeme()        { return m_homeostaticNoeme; }
-	public IAct getAnimationNoeme()          { return m_animationNoeme;}
+	public IAct getPrimitiveEnaction()       
+	{ 
+		return m_primitiveEnaction; 
+	}
 	
 
 	/**
@@ -63,23 +68,9 @@ public class Context implements IContext {
 	}
 
 	/**
-	 * Add the acts in another context to the list of acts in this context (scope). 
+	 * Add a list of acts to the context list (scope). 
 	 * This list is used to learn new schemas in the next decision cycle.
-	 * @param context The context to append in this context.
-	 */
-	public void addContext(IContext context) 
-	{
-		for (IAct act : context.getContextList())
-		{
-			if (!m_contextList.contains(act))
-				m_contextList.add(act);
-		}
-	}
-
-	/**
-	 * Add the acts in another context to the list of acts in this context (scope). 
-	 * This list is used to learn new schemas in the next decision cycle.
-	 * @param context The context to append in this context.
+	 * @param actList The list of acts to append in the context list.
 	 */
 	public void addContextList(List<IAct> actList) 
 	{
@@ -117,7 +108,7 @@ public class Context implements IContext {
 	}
 
 	/**
-	 * Get the focus list. 
+	 * Get the activation list. 
 	 * This list is used to learn new schemas in the next decision cycle.
 	 * @return The list of acts in the focus list.
 	 */
@@ -141,7 +132,6 @@ public class Context implements IContext {
 	}
 
 	/**
-	 * Get the intention act. 
 	 * @return The intention act decided during the last decision cycle.
 	 */
 	public IAct getIntentionAct()
@@ -150,7 +140,6 @@ public class Context implements IContext {
 	}
 
 	/**
-	 * Get the primitive intention act. 
 	 * @return The primitive intention act in the current automatic loop.
 	 */
 	public IAct getPrimitiveIntention() 
@@ -159,50 +148,17 @@ public class Context implements IContext {
 	}
 
 	/**
-	 * Set the primitive intention act. 
+	 * @param act the primitive intention act. 
 	 */
-	public void setPrimitiveIntention(IAct a) 
+	public void setPrimitiveIntention(IAct act) 
 	{
-		m_primitiveIntention = a;	
+		m_primitiveIntention = act;	
 	}
 
-	/**
-	 * Set the sensed icon in the context
-	 * If the icon is not null, add it to the activation list and to the full context list. 
-	 * if the icon is not null
-	 * @param icon The icon to add.
-	 */
-	public void addSensedIcon(IAct icon)
-	{
-		m_sensedIcon = icon;
-		addActivationAct(icon);
-	}
-	
-	public IAct getSensedIcon()
-	{
-		return m_sensedIcon;
-	}
-
-	public void removeIcons()
-	{
-		
-		m_sensedIcon = null;
-		for (int i = m_activationList.size() - 1 ; i>= 0; i--)
-		{
-			if (m_activationList.get(i).getModule() == Ernest.ICONIC)
-				m_activationList.remove(i);
-		}
-		for (int i = m_contextList.size() - 1 ; i>= 0; i--)
-		{
-			if (m_contextList.get(i).getModule() == Ernest.ICONIC)
-				m_contextList.remove(i);
-		}
-	}
-	
 	public void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList)
 	{
 		// The current context list becomes the base context list
-		m_baseContextList = new ArrayList(m_contextList);
+		m_baseContextList = new ArrayList<IAct>(m_contextList);
 		
 		m_contextList.clear();
 		m_activationList.clear();

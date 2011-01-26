@@ -119,11 +119,6 @@ public interface ISchema
 	public boolean isPrimitive();
 
 	/**
-	 * @return The schema's module (equals its intention act's module).
-	 */
-	public int  getModule();
-
-	/**
 	 * Increment the schema's weight (add 1).
 	 */
 	public void incWeight();
