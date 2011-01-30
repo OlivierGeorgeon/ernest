@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Ernest's episodic memory contains all the schemas and acts ever created
+ * Ernest's episodic memory contains all the schemas and acts ever created.
+ * It offers methods to record new schemas and acts.
+ * Episodic memory can be queried with the method selectAct() that returns the next intention to enact. 
  * @author ogeorgeon
  */
 public class EpisodicMemory 
@@ -22,10 +24,12 @@ public class EpisodicMemory
 
 	/** Counter of learned schemas for tracing */
 	private int m_learnCount = 0;
+	
 	/**
 	 * @return the number of schema learned since the last reset
 	 */
 	public int getLearnCount() { return m_learnCount; };
+	
 	/**
 	 * Reset the count of schema learned
 	 */
@@ -139,11 +143,47 @@ public class EpisodicMemory
     }
 
 	/**
+	 * Learn from an enacted intention after a given context.
+	 * Returns the list of learned acts that are based on reliable subacts. The first act of the list is the stream act.
+	 * @param contextList The list of acts that constitute the context in which the learning occurs.
+	 * @param intentionAct The intention.
+	 * @return A list of the acts created from the learning. The first act of the list is the stream act if the first act of the contextList was the performed act.
+	 */
+	public List<IAct> record(List<IAct> contextList, IAct intentionAct)
+	{
+		List<IAct> newContextList= new ArrayList<IAct>(20);;
+		
+		if (intentionAct != null)
+		{
+			// For each act in the context ...
+			for (IAct contextAct : contextList)
+			{
+				// Build a new schema with the context act and the intention act 
+				ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
+				newSchema.incWeight();
+				System.out.println("learned " + newSchema.getLabel());
+				
+					// Created acts are part of the context 
+					// if their context and intention have passed the regularity
+					// if they are based on reliable noèmes
+				if ((contextAct.getConfidence() == Ernest.RELIABLE) &&
+  				   (intentionAct.getConfidence() == Ernest.RELIABLE))
+				{
+					newContextList.add(newSchema.getSucceedingAct());
+					// System.out.println("Reliable schema " + newSchema);
+				}
+			}
+		}
+		return newContextList; 
+	}
+
+	/**
 	 * Select an intention act from a given activation list.
-	 * @param context The context that generates the proposals.
+	 * The selected act receives an activation value 
+	 * @param activationList The list of acts that activate episodic memory.
 	 * @return The selected act.
 	 */
-	public IAct selectAct(IContext context)
+	public IAct selectAct(List<IAct> activationList)
 	{
 
 		List<IProposition> proposals = new ArrayList<IProposition>();	
@@ -155,12 +195,12 @@ public class EpisodicMemory
 			{
 				// Activate the schemas that match the context 
 				boolean activated = false;
-				for (IAct contextAct : context.getActivationList())
+				for (IAct contextAct : activationList)
 				{
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						System.out.println("Activate " + s);
+						// System.out.println("Activate " + s);
 					}
 				}
 				
@@ -240,9 +280,12 @@ public class EpisodicMemory
 		
 		IAct a = (p.getExpectation() >= 0 ? s.getSucceedingAct() : s.getFailingAct());
 		
-		// The noème's activation is set equal to its proposition's weight
+		// Activate the selected act in Episodic memory.
+		// (The act's activation is set equal to its proposition's weight)
 		a.setActivation(p.getWeight());
 		
+		// TODO at some point we may implement a smarter mechanism to spread the activation to sub-acts.
+
 		System.out.println("Select:" + a);
 
 		return a ;
