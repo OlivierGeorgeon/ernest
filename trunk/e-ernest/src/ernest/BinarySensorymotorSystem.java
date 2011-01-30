@@ -1,10 +1,10 @@
 package ernest;
 
 /**
- * The binary sensorymotor system can only sense a binary feedback from the environment
- * This sensorymotor system is provided as an example for the SimpleMaze environment
- * and as a parent class for more complex sensorymotor systems
- * @author Olivier
+ * The binary sensorymotor system can only sense a binary feedback from the environment.
+ * This sensorymotor system is provided as an example for the SimpleMaze environment,
+ * and as a parent class for more complex sensorymotor systems.
+ * @author ogeorgeon
  */
 public class BinarySensorymotorSystem implements ISensorymotorSystem 
 {
@@ -45,6 +45,9 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	 */
 	public IAct enactedAct(ISchema schema, boolean status) 
 	{
+		// The schema is null during the first cycle
+		if (schema == null) return null;
+		
 		String label = schema.getLabel();
 		
 		if (status)

@@ -1,10 +1,5 @@
 package ernest;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-
 /**
  * Implement Ernest 8.2's sensorymotor system. Extend the BinarySensorymotorSystem.
  * Can detect a two-pixel matrix. Each pixel represents the distance to a blue square in the corresponding visual field.
@@ -36,6 +31,9 @@ public class Visual82SensorymotorSystem  extends BinarySensorymotorSystem
 	 */
 	public IAct enactedAct(ISchema schema, boolean status)
 	{
+		// The schema is null during the first cycle
+		if (schema == null) return null;
+		
 		// Computes the act's label from the features returned by the sensory system and the status.
 		
 		String label = schema.getLabel();
