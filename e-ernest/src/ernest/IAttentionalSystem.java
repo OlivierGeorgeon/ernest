@@ -21,13 +21,10 @@ public interface IAttentionalSystem
 	public String getInternalState();
 	
 	/**
-	 * @return The primitive intended act in the current automatic loop.
-	 */
-	public  IAct getPrimitiveIntention();
-	
-	/**
 	 * Ernest's central process.
+	 * Choose the intentions to enact and control their enaction. 
 	 * @param primitiveEnaction The actually enacted primitive act.
+	 * @return The primitive schema to enact in the environment 
 	 */
 	public ISchema step(IAct primitiveEnaction); 
 }
