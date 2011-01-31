@@ -1,17 +1,17 @@
 package ernest;
 
 /**
- * An activation consists of the activated noème and a weight that determines the strength of the activation.
- * Schemas that receive the highest summarized activation weight are selected for evocation. 
+ * An activation consists of the activated act and a weight that determines the strength of the activation.
+ * Primitive acts that receive the highest summarized activation weight are selected for enaction. 
  * @author ogeorgeon
  */
 public interface IActivation extends Comparable<IActivation> 
 {
 
 	/**
-	 * @return The activation's noème.
+	 * @return The activation's act.
 	 */
-	public IAct getNoeme();
+	public IAct getAct();
 	
 	/**
 	 * @return The activation's weight.
