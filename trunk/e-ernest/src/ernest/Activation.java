@@ -1,23 +1,23 @@
 package ernest;
 
 /**
- * An activation consists of the activated noème and a weight that determines the strength of the activation.
- * Schemas that receive the highest summarized activation weight are selected for evocation. 
+ * An activation consists of the activated act and a weight that determines the strength of the activation.
+ * Primitive acts that receive the highest summarized activation weight are selected for enaction. 
  * @author ogeorgeon
  */
 public class Activation implements IActivation
 {
-	private IAct m_noeme = null;
+	private IAct m_act = null;
 	private Integer m_weight = null;
 	
 	/**
 	 * Constructor. 
-	 * @param n The activated noème.
+	 * @param n The activated act.
 	 * @param w The proposal's weight
 	 */
 	public Activation(IAct n, int w)
 	{
-		m_noeme = n;
+		m_act = n;
 		m_weight = w;
 	}
 
@@ -43,9 +43,9 @@ public class Activation implements IActivation
 	 * Get the proposal's schema.
 	 * @return The proposal's schema.
 	 */
-	public IAct getNoeme()
+	public IAct getAct()
 	{
-		return m_noeme;
+		return m_act;
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class Activation implements IActivation
 	}
 
 	/**
-	 * Two proposals are equal if they propose the same noeme. 
+	 * Two proposals are equal if they propose the same act. 
 	 */
 	public boolean equals(Object o)
 	{
@@ -72,7 +72,7 @@ public class Activation implements IActivation
 		else
 		{		
 			Activation other = (Activation)o;
-			ret = other.getNoeme() == m_noeme;
+			ret = other.getAct() == m_act;
 		}
 		
 		return ret;
@@ -84,7 +84,7 @@ public class Activation implements IActivation
 	 */
 	public String toString()
 	{
-		String s = String.format("%s w=%s", m_noeme , m_weight);  
+		String s = String.format("%s w=%s", m_act , m_weight);  
 		return s;
 	}
 	
