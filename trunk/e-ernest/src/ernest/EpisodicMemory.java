@@ -75,7 +75,7 @@ public class EpisodicMemory
 	 */
 	public ISchema addPrimitiveSchema(String label) 
 	{
-		ISchema s =  Schema.createMotorSchema(m_schemas.size() + 1, label);
+		ISchema s =  Schema.createPrimitiveSchema(m_schemas.size() + 1, label);
 		int i = m_schemas.indexOf(s);
 		if (i == -1)
 			m_schemas.add(s);
