@@ -20,7 +20,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	private EpisodicMemory m_episodicMemory;
 
 	/** The Tracer. */
-	private ITracer m_tracer = null; //new Tracer("trace.txt", true);
+	private ITracer m_tracer = null; //new Tracer("trace.txt");
 
 	/** A representation of Ernest's internal state. */
 	private String m_internalState = "";

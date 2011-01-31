@@ -2,9 +2,7 @@ package ernest;
 
 /**
  * An act is the association of a schema with the feedback the agent receives 
- * when trying to enact that schema. Concretely, an act associates a schema 
- * with a binary feedback status: Succeed (true) or Fail (false).  
- * An act also has a satisfaction value that represents Ernest's satisfaction to enact the act.
+ * when trying to enact that schema.    
  * @author mcohen
  * @author ogeorgeon
  */
