@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 /**
  * A very simple maze environment used to test Ernest.  
+ * Corresponds to the demo at http://e-ernest.blogspot.com/2010/12/java-ernest-72-in-vacuum.html
  * @author mcohen
  * @author ogeorgeon
  */

@@ -10,37 +10,32 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * This tracer logs the trace into an xml file.
+ * This tracer logs the trace into a text file.
+ * This text file can contain xml if xml tags are included in the logged lines and if the header and footer are used.   
  * @author ogeorgeon 
  */
 public class Tracer implements ITracer
 {
 
 	private  File logFile = null;
-	private boolean isLogging = true;
 
 	/**
 	 * Initialize the tracer.
 	 * @param logFileName The name of the file where to log the trace.
-	 * @param l Switch for tracing. Trace if true, trace not if false.
 	 */
-	public Tracer(String logFileName, boolean l)
+	public Tracer(String logFileName)
 	{ 	
-		isLogging = l;
-		if (isLogging)
+		try 
 		{
-			try 
+			logFile = new File(logFileName);
+			if (logFile.exists()) 
 			{
-				logFile = new File(logFileName);
-				if (logFile.exists()) 
-				{
-					logFile.delete();
-					logFile.createNewFile();
-				}
+				logFile.delete();
+				logFile.createNewFile();
 			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
+		}
+		catch (IOException e) {
+			e.printStackTrace();
 		}
 	} 
 	
@@ -52,7 +47,7 @@ public class Tracer implements ITracer
 	public boolean writeLine(String line) 
 	{
 		boolean r = false;
-		if (isLogging) 
+		if (logFile != null)
 		{
 			try 
 			{
@@ -70,8 +65,6 @@ public class Tracer implements ITracer
 				e.printStackTrace();
 			}
 		}
-		else 
-			r = true;
 		return r;
 	}
 
@@ -82,7 +75,7 @@ public class Tracer implements ITracer
 	public boolean writeHeader() 
 	{
 		boolean r = false;
-		if (isLogging) 
+		if (logFile != null)
 		{
 			try 
 			{
@@ -101,8 +94,6 @@ public class Tracer implements ITracer
 				e.printStackTrace();
 			}
 		}
-		else 
-			r = true;
 		return r;
 	}
 
@@ -113,7 +104,7 @@ public class Tracer implements ITracer
 	public boolean writeFooter() 
 	{
 		boolean r = false;
-		if (isLogging) 
+		if (logFile != null)
 		{
 			try 
 			{
@@ -131,8 +122,6 @@ public class Tracer implements ITracer
 				e.printStackTrace();
 			}
 		}
-		else 
-			r = true;
 		return r;
 	}
 }
