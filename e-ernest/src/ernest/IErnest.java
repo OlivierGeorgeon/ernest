@@ -19,7 +19,7 @@ public interface IErnest
 	/**
 	 * Set Ernest's sensorymotor system.
 	 * (The sensorymotor system is instantiated by the environment so that the environment can choose the suitable sensorymotor system)
-	 * @param sensorymotorSystem Ernest's sensory system
+	 * @param sensorymotorSystem Ernest's sensorymotor system
 	 */
 	public void setSensorymotorSystem(ISensorymotorSystem sensorymotorSystem);
 	
@@ -32,7 +32,7 @@ public interface IErnest
 
 	/**
 	 * Provide access to Ernest's episodic memory
-	 * (The environment can initialize episodic memory with inborn composite schemas) 
+	 * (The environment can populate Ernest's episodic memory with inborn composite schemas) 
 	 * @return Ernest's episodic memory. 
 	 */
     public EpisodicMemory getEpisodicMemory();
@@ -46,7 +46,7 @@ public interface IErnest
 	
 	/**
 	 * Run Ernest one step.
-	 * (All environments send at least a boolean status feedback on Ernest's action) 
+	 * (All environments return at least a boolean feedback from Ernest's actions) 
 	 * @param status The status received as feedback from the previous schema enaction.
 	 * @return The next primitive schema to enact.
 	 */
