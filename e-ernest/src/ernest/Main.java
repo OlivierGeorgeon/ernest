@@ -3,6 +3,8 @@ package ernest;
 /**
  * The main program.  
  * Gives an example code to run Ernest in a simulated environment.
+ * See an example demo that corresponds to these settings at 
+ * http://e-ernest.blogspot.com/2010/12/java-ernest-72-in-vacuum.html
  * @author ogeorgeon
  */
 public class Main 
@@ -17,7 +19,7 @@ public class Main
 		
 		IErnest ernest = new Ernest();
 		BinarySensorymotorSystem sms = new BinarySensorymotorSystem();
-		ITracer tracer = new Tracer("trace.txt", true);
+		ITracer tracer = new Tracer("trace.txt");
 		
 		// Initialize the Ernest 
 		
@@ -53,6 +55,7 @@ public class Main
 		
 		while (true)
 		{
+			// --> Insert breakpoint below to easily follow Ernest in Eclipse debug mode. 
 			System.out.println("Step #" + iCycle);
 			tracer.writeLine(" " + iCycle++ );
 			
