@@ -76,7 +76,7 @@ public class Ernest implements IErnest
 
 	/**
 	 * Provide access to Ernest's episodic memory
-	 * (The environment can populate episodic memory with inborn composite schemas) 
+	 * (The environment can populate Ernest's episodic memory with inborn composite schemas) 
 	 * @return Ernest's episodic memory. 
 	 */
     public EpisodicMemory getEpisodicMemory()
@@ -94,13 +94,19 @@ public class Ernest implements IErnest
 	}
 		
 	/**
+<<<<<<< .mine
 	 * Ernest's main process.
+	 * (All environments return at least a boolean feedback from Ernest's actions) 
+=======
+	 * Ernest's main process.
+>>>>>>> .r57
 	 * @param status The status received as a feedback from the previous primitive enaction.
 	 * @return The next primitive schema to enact.
 	 */
 	public String step(boolean status) 
 	{
 		// Determine the primitive enacted act from the enacted schema and the data sensed in the environment.
+		// (May use additional sensory data from the environment, e.g., received via the sensorymotorSystem.senseMatrix() method)
 		
 		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveSchema, status);
 		
