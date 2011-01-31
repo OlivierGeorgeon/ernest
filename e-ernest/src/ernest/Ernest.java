@@ -94,12 +94,8 @@ public class Ernest implements IErnest
 	}
 		
 	/**
-<<<<<<< .mine
 	 * Ernest's main process.
 	 * (All environments return at least a boolean feedback from Ernest's actions) 
-=======
-	 * Ernest's main process.
->>>>>>> .r57
 	 * @param status The status received as a feedback from the previous primitive enaction.
 	 * @return The next primitive schema to enact.
 	 */
