@@ -1,9 +1,10 @@
 package ernest;
 
 /**
- * Implement Ernest 8.2's sensorymotor system. Extend the BinarySensorymotorSystem.
+ * Implement Ernest 8.2's sensorymotor system. 
  * Can detect a two-pixel matrix. Each pixel represents the distance to a blue square in the corresponding visual field.
- * The sensed features correspond to changes in each visual fields.
+ * Generate sensed features that correspond to changes in each visual fields.
+ * See example demo at http://e-ernest.blogspot.com/2011/01/ernest-82-can-find-his-food.html
  * @author ogeorgeon
  */
 public class Visual82SensorymotorSystem  extends BinarySensorymotorSystem
@@ -31,10 +32,10 @@ public class Visual82SensorymotorSystem  extends BinarySensorymotorSystem
 	 */
 	public IAct enactedAct(ISchema schema, boolean status)
 	{
-		// The schema is null during the first cycle
+		// The schema is null during the first cycle, then the enacted act is null.
 		if (schema == null) return null;
 		
-		// Computes the act's label from the features returned by the sensory system and the status.
+		// Computes the act's label from the features returned by the sensory system and from the status.
 		
 		String label = schema.getLabel();
 		
@@ -57,8 +58,7 @@ public class Visual82SensorymotorSystem  extends BinarySensorymotorSystem
 	}
 	
 	/**
-	 * Convert the matrix provided by the environment into an icon.
-	 * Update the currently sensed icon. 
+	 * Generate sensory features from the sensed matrix sent by the environment.
 	 * @param matrix The matrix sensed in the environment. 
 	 */
 	public void senseMatrix(int[][] matrix) 
