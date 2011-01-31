@@ -107,14 +107,6 @@ public class AttentionalSystem implements IAttentionalSystem {
 	}
 
 	/**
-	 * @return The primitive intention act in the current automatic loop.
-	 */
-	public IAct getPrimitiveIntention() 
-	{
-		return m_primitiveIntention;
-	}
-
-	/**
 	 * Shift the context when a decision cycle terminates and the next begins.
 	 * The context list is passed to the base context list.
 	 * The activation list is reinitialized from the enacted act and the performed act.
@@ -148,6 +140,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	
 	/**
 	 * Ernest's main process.
+	 * Choose intentions to enact and control their enaction. 
 	 */
 	public ISchema step(IAct primitiveEnaction) 
 	{
@@ -156,59 +149,48 @@ public class AttentionalSystem implements IAttentionalSystem {
 		IAct intentionAct = null;
 		IAct enactedAct = null;
 		
-		// Review the enaction if any.
+		// If Ernest had a primitive intention then we follow up the current enaction.
 
 		if (m_primitiveIntention != null)
 		{
 			// Compute the actually enacted act
 			
 			enactedAct = enactedAct(m_primitiveIntention.getSchema(), primitiveEnaction);
-			
 			System.out.println("Enacted " + enactedAct );
 			
-			// The selected intention is it over?
+			// Compute the next sub-intention, null if we have reached the end of the previous intended act.
 			
 			intentionAct = nextAct(m_primitiveIntention, primitiveEnaction);
 		}	
 
-		// Shift decision cycle if no ongoing enaction
+		// If we have a context and the current enaction is over then we record and we shift the context.
 
 		if (intentionAct == null && enactedAct != null)
 		{
-			System.out.println("Schift ================ ");
-			// No ongoing schema to enact. The decision cycle is over.  
-			// Shift to the next decision cycle
-			//shiftDecisionCycle(enactedAct);
+			// log the previous decision cycle
+
+			// TODO also compute surprise in the case of primitive intention acts.  
+			if (m_intentionAct != enactedAct && !m_intentionAct.getStatus())  m_internalState= "!";
+			m_tracer.writeLine(enactedAct.getLabel() + m_internalState);
+
+			System.out.println("New decision ================ ");
+			
+			// Process the performed act
 			
 			IAct performedAct = null;
 
-			// Log the previous decision cycle's trace
-
-			// TODO also compute surprise in the case of primitive intention acts.  
-			if (m_intentionAct != enactedAct && !m_intentionAct.getStatus())
-				 m_internalState= "!";
-			m_tracer.writeLine(enactedAct.getLabel() + m_internalState);
-
-			// Determine the performed act
-			
 			ISchema intendedSchema = m_intentionAct.getSchema();
 			
-			if (intendedSchema == enactedAct.getSchema())
-				performedAct = enactedAct;
-			else
-				performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
+			if (intendedSchema == enactedAct.getSchema()) performedAct = enactedAct;
+			else	performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
 			
 			System.out.println("Performed " + performedAct );
 			
 			// learn from the  context and the performed act
-			
 			m_episodicMemory.resetLearnCount();
-			
 			List<IAct> streamContextList = m_episodicMemory.record(m_contextList, performedAct);
-			
-			
-			// learn from the base context and the stream act
-			
+						
+			// learn from the base context and the stream act			
 			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of hte list
 			 {
 				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
@@ -217,8 +199,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 					 m_episodicMemory.record(m_baseContextList, streamAct);
 			 }
 
-			// learn from the current context and the actually enacted act
-			
+			// learn from the current context and the actually enacted act			
 			if (enactedAct != performedAct)
 			{
 				System.out.println("Learn from enacted");
@@ -233,21 +214,18 @@ public class AttentionalSystem implements IAttentionalSystem {
 				}
 			}			
 
-			// Assess the new context ====
+			// Update the context.
 			
-			// Shift the context and renitialize it with the new enactedAct 
-			// The enacted act needs to be the first of the context list to construct the stream act
 			shiftDecisionCycle(enactedAct, performedAct, streamContextList);
 			
 		}
 		
-		// print the new current context
+		// Log the activation list and the learned count for debug
 		System.out.println("Activation context list: ");
-		for (IAct a : m_activationList)
-			{	System.out.println(a);}
+		for (IAct a : m_activationList)	{	System.out.println(a);}
 		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
 			
-		// Select a new intention if the decision cycle has shifted
+		// If we don't have an ongoing intention then we choose a new intention.
 		
 		if (intentionAct == null)
 		{
@@ -256,14 +234,14 @@ public class AttentionalSystem implements IAttentionalSystem {
 		}
 		
 		// Spread the selected intention's activation to primitive acts.
-		// (so far, only selected intentions activate primitive acts)
+		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)
 		
-		IAct activeSensorymotorNoeme = spreadActivation(intentionAct);
-		List<IAct> activeSensorymotorNoemes = new ArrayList<IAct>(10);
-		activeSensorymotorNoemes.add(activeSensorymotorNoeme);
+		IAct activePrimitiveAct = spreadActivation(intentionAct);
+		List<IAct> activePrimitiveActs = new ArrayList<IAct>(10);
+		activePrimitiveActs.add(activePrimitiveAct);
 		
-		// Sensorymotor noèmes compete and Ernest selects that with the highest activation
-		IAct nextPrimitiveAct = selectAct(activeSensorymotorNoemes);		
+		// Sensorymotor acts compete and Ernest selects that with the highest activation
+		IAct nextPrimitiveAct = selectAct(activePrimitiveActs);		
 		m_primitiveIntention = nextPrimitiveAct;
 		
 		return nextPrimitiveAct.getSchema();
