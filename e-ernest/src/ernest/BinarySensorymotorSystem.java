@@ -61,4 +61,11 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return enactedAct;
 	}
 
+	/**
+	 * Not used by the binary sensorymotor system
+	 */
+	public void senseMatrix(int[][] matrix) 
+	{
+	}
+
 }

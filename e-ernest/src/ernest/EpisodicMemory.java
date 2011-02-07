@@ -161,7 +161,7 @@ public class EpisodicMemory
 				// Build a new schema with the context act and the intention act 
 				ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
 				newSchema.incWeight();
-				System.out.println("learned " + newSchema.getLabel());
+				//System.out.println("learned " + newSchema.getLabel());
 				
 					// Created acts are part of the context 
 					// if their context and intention have passed the regularity
