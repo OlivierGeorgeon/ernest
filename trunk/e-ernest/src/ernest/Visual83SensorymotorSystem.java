@@ -68,6 +68,7 @@ public class Visual83SensorymotorSystem  extends BinarySensorymotorSystem
 		m_previousBlueCount  = m_currentBlueCount;
 		m_currentLeftPixel   = matrix[0][0];
 		m_currentRightPixel  = matrix[1][0];
+		int blink            = matrix[2][0];
 		m_currentBlueCount   = (matrix[0][0] < Ernest.INFINITE ? 1 : 0) + (matrix[1][0] < Ernest.INFINITE ? 1 : 0);
 		
 		m_satisfaction = 0;
@@ -102,14 +103,23 @@ public class Visual83SensorymotorSystem  extends BinarySensorymotorSystem
 		// (The total number of blue pixels has decreased) 
 		else if (m_currentBlueCount < m_previousBlueCount)
 		{
-			m_feature = "o";
+			m_feature = "-";
 			m_satisfaction = - 150;
 		}
 		
-		// empty (emptyness makes Ernest unhappy)
+		// empty (emptiness makes Ernest unhappy)
+		// See a blink while turning
+		// (no intrinsic satisfaction othewise Ernest keeps turning for blinking)
+		else if (blink == 1)
+		{
+			m_feature = ".";
+			m_satisfaction = 0;
+		}
+
+		// empty (emptiness makes Ernest unhappy)
 		else if (m_currentBlueCount == 0)
 		{
-			m_feature = "-";
+			m_feature = "o";
 			m_satisfaction = -50;
 		}
 
