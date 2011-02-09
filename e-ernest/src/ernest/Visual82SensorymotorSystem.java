@@ -73,6 +73,9 @@ public class Visual82SensorymotorSystem  extends BinarySensorymotorSystem
 		// The sensed features correspond to changes in the pixels.
 		m_leftFeature  = sensePixel(m_previousLeftPixel, m_currentLeftPixel);
 		m_rightFeature = sensePixel(m_previousRightPixel, m_currentRightPixel);		
+		
+		if (m_leftFeature.equals("o") && m_rightFeature.equals("o"))
+			m_satisfaction = -100;
 	}
 
 	/**
@@ -97,21 +100,21 @@ public class Visual82SensorymotorSystem  extends BinarySensorymotorSystem
 		else if (previousPixel < Ernest.INFINITE && currentPixel < previousPixel)
 		{
 			feature = "+";
-			satisfaction = 100;
+			satisfaction = 200;
 		}
 
 		// appear
 		else if (previousPixel == Ernest.INFINITE && currentPixel < Ernest.INFINITE)
 		{
 			feature = "*";
-			satisfaction = 150;
+			satisfaction = 50;
 		}
 		
 		// disappear
 		else if (previousPixel < Ernest.INFINITE && currentPixel == Ernest.INFINITE)
 		{
 			feature = "o";
-			satisfaction = -150;
+			satisfaction = -100;
 		}
 
 		System.out.println("Sensed " + feature);
