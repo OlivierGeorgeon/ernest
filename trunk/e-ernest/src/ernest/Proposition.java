@@ -4,7 +4,7 @@ package ernest;
  * Represents a proposal for enacting a Schema. 
  * A proposal consists of the proposed schema, 
  * a weight that determines the strength of the proposal,
- * and an expectation that determines the prediction that the schema will succeed
+ * and an expectation that determines the prediction that the schema will succeed.
  * @author mcohen
  * @author ogeorgeon
  */
@@ -101,7 +101,11 @@ public class Proposition implements IProposition
 	 */
 	public String toString()
 	{
-		String s = String.format("%s w=%s e=%s", m_schema , m_weight, m_expectation);  
+		int satisfaction = 0;
+		if (m_expectation >= 0) satisfaction = m_schema.getSucceedingAct().getSatisfaction();
+		else satisfaction = m_schema.getFailingAct().getSatisfaction();
+			
+		String s = String.format("%s w=%s e=%s s=%s", m_schema , m_weight, m_expectation, satisfaction);  
 		return s;
 	}
 	

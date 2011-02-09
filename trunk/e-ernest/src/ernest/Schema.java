@@ -202,7 +202,7 @@ public class Schema implements ISchema
 	 * @return The schema's textual representation.
 	 */
 	public String toString()
-	{
+	{		
 		String s;
 		if (isPrimitive())
 			s = String.format("[%s %s w=%s]", 
@@ -210,6 +210,8 @@ public class Schema implements ISchema
 		else
 			s = String.format("[%s %s <C:S%s, I:S%s> w=%s]", 
 					getSucceedingAct(), getFailingAct(), getContextAct().getLabel(), getIntentionAct().getLabel(), getWeight());
+
+		s = String.format("\"%s w=%s\"", m_label, getWeight());
 		return s;
 	}
 

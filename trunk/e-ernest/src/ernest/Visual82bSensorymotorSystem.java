@@ -6,7 +6,7 @@ package ernest;
  * Generate sensed features that correspond to changes in the visual fields.
  * @author ogeorgeon
  */
-public class Visual83SensorymotorSystem  extends BinarySensorymotorSystem
+public class Visual82bSensorymotorSystem  extends BinarySensorymotorSystem
 {
 
 	/** The values of the pixels */

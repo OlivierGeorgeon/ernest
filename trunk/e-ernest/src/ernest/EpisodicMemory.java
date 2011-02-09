@@ -200,7 +200,7 @@ public class EpisodicMemory
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						// System.out.println("Activate " + s);
+						System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
 				
@@ -254,7 +254,7 @@ public class EpisodicMemory
 			}
 		}
 
-		// System.out.println("Propose: ");
+		System.out.println("Propose: ");
 		for (IProposition p : proposals)
 			System.out.println(p);
 
