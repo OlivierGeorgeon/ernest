@@ -19,6 +19,9 @@ public class EpisodicMemory
 	/** A list of all the acts ever created. */
 	public List<IAct> m_acts = new ArrayList<IAct>(2000);
 	
+	/** A list of all the landmarks ever identified. */
+	public List<ILandmark> m_landmarks = new ArrayList<ILandmark>(20);
+	
 	/** Random generator used to break a tie when selecting a schema... */
 	private static Random m_rand = new Random(); 
 
@@ -52,7 +55,7 @@ public class EpisodicMemory
 	 * @param status The act's status
 	 * @param satisfaction The act's satisfaction
 	 * @param confidence The act's confidence
-	 * @return the new art if created or the already existing act
+	 * @return the new act if created or the already existing acts
 	 */
 	public IAct addAct(String label, ISchema schema, boolean status, int satisfaction, int confidence)
 	{
@@ -290,5 +293,27 @@ public class EpisodicMemory
 
 		return a ;
 	}
+
+	/**
+	 * Add a landmark to episodic memory if it does not already exist
+	 * @param red Component of the landmark's color
+	 * @param green Component of the landmark's color
+	 * @param blue Component of the landmark's color
+	 * @return the new landmark if created or the already existing landmark
+	 */
+	public ILandmark addLandmark(int red, int green, int blue)
+	{
+		ILandmark l = new Landmark(red,green,blue);
+		
+		int i = m_landmarks.indexOf(l);
+		if (i == -1)
+			// The landmark does not exist
+			m_landmarks.add(l);
+		else 
+			// The landmark already exists: return a pointer to it.
+			l =  m_landmarks.get(i);
+		return l;
+	}
+	
 
 }
