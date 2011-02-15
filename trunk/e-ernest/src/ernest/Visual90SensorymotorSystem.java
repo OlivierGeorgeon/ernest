@@ -73,6 +73,21 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		m_currentLeftLandmark   = m_episodicMemory.addLandmark(matrix[0][1], matrix[0][2], matrix[0][3]);
 		m_currentRightLandmark  = m_episodicMemory.addLandmark(matrix[1][1], matrix[1][2], matrix[1][3]);
 		
+		
+		// TODO: See other goals
+		if (!m_currentLeftLandmark.equals(m_attentionalSystem.getGoalLandmark()))
+		{
+			m_currentLeftDistance = Ernest.INFINITE;
+			if (m_currentLeftLandmark.isSingularity())
+				m_attentionalSystem.setNearbyLandmark(m_currentLeftLandmark);
+		}
+		if (!m_currentRightLandmark.equals(m_attentionalSystem.getGoalLandmark()))
+		{
+			m_currentRightDistance = Ernest.INFINITE;
+			if (m_currentRightLandmark.isSingularity())
+				m_attentionalSystem.setNearbyLandmark(m_currentRightLandmark);
+		}
+		
 		m_satisfaction = 0;
 		
 		// The sensed features correspond to changes in the pixels.

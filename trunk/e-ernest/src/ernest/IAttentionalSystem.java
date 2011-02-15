@@ -27,4 +27,17 @@ public interface IAttentionalSystem
 	 * @return The primitive schema to enact in the environment 
 	 */
 	public ISchema step(IAct primitiveEnaction); 
+	
+	/**
+	 * Defines Ernest's current landmark goal
+	 * @param landmark the goal landmark
+	 */
+	public void setGoalLandmark(ILandmark landmark);
+
+	/**
+	 * @return The current landmark goal
+	 */
+	public ILandmark getGoalLandmark();
+
+	public void setNearbyLandmark(ILandmark landmark);
 }

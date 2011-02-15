@@ -52,4 +52,11 @@ public class Landmark implements ILandmark
 		return ret;
 	}
 	
+	/**
+	 * @return false if this landmark's color is the standard wall color. true in all other cases.
+	 */
+	public boolean isSingularity()
+	{
+		return !m_color.equals(Ernest.WALL_COLOR);
+	}
 }

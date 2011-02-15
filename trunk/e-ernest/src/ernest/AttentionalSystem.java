@@ -7,7 +7,7 @@ import java.util.Random;
 
 /**
  * Ernest's attentional system.
- * Maintain lists of acts that represent Ernest's current situation
+ * Maintain lists of acts that represent Ernest's current situation.
  * Control the current enaction.
  * @author ogeorgeon
  */
@@ -54,17 +54,71 @@ public class AttentionalSystem implements IAttentionalSystem {
 	private IAct m_primitiveIntention = null;
 
 	/**
+	 * The current goal landmark.
+	 */
+	private ILandmark m_goalLandmark;
+	private ILandmark m_nearbyLandmark;
+	private String m_goalState = "0";
+
+	/** Ernest's internal clock  */
+	private int m_clock;
+
+	/**
 	 * Constructor for the attentional system.
 	 * Initialize the pointer to episodic memory.
 	 */
 	protected AttentionalSystem(EpisodicMemory episodicMemory)
 	{
 		m_episodicMemory = episodicMemory;
+		// TODO more elaborated goal system
+		m_goalLandmark = m_episodicMemory.addLandmark(150, 128, 255);
 	}
 
+	/**
+	 * Defines Ernest's current landmark goal
+	 */
+	public void setGoalLandmark(ILandmark landmark)
+	{
+		m_goalLandmark = landmark;
+	}
+
+	/**
+	 * @return The current goal landmark
+	 */
+	public ILandmark getGoalLandmark()
+	{
+		return m_goalLandmark;
+	}
+
+	public void setNearbyLandmark(ILandmark landmark)
+	{
+		m_nearbyLandmark = landmark;
+	}
+	
 	public void setTracer(ITracer tracer)
 	{
 		m_tracer = tracer;
+	}
+	
+	/**
+	 * Tick Ernest's internal clock
+	 */
+	private void tick()
+	{
+		m_clock++;
+		
+		// Shift goal every 100 cycles
+		if ((m_clock % 200) < 100)
+		{
+			m_goalLandmark = m_episodicMemory.addLandmark(150, 128, 255);
+			m_goalState = "1";
+		}
+		else
+		{
+			m_goalLandmark = m_episodicMemory.addLandmark(227, 124, 255);
+			m_goalState = "2";
+		}
+			
 	}
 	
 	/**
@@ -73,7 +127,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public String getInternalState()
 	{
-		return m_internalState;
+		//return m_internalState;
+		return m_goalState;
 	}
 
 	/**
@@ -145,6 +200,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	public ISchema step(IAct primitiveEnaction) 
 	{
 		m_internalState= "";
+		tick();
 
 		IAct intentionAct = null;
 		IAct enactedAct = null;

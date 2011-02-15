@@ -10,10 +10,11 @@ public interface ISensorymotorSystem
 {
 	
 	/**
-	 * Set the connection to Ernest's episodic memory
+	 * Initialize the sensorymotor system with the connection to episodic memory and to the attentional system
 	 * @param episodicMemory Ernest's episodic memory
+	 * @param attentionalSystem Ernest's attentional system
 	 */
-	public void setEpisodicMemory(EpisodicMemory episodicMemory);
+	public void init(EpisodicMemory episodicMemory, IAttentionalSystem attentionalSystem);
 
 	/**
 	 * Used by the environment to set the primitive binary sensorymotor acts.
