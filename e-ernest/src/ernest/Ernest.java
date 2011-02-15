@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 /**
  * The main Ernest class used to create an Ernest agent in the environment.
  * @author ogeorgeon
@@ -8,6 +10,8 @@ public class Ernest implements IErnest
 {
 	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
+	
+	public static Color WALL_COLOR = new Color(128, 255, 128); // Color.getHSBColor(1/3f, 1f, 0.5f)
 
 	/** Hypothetical act (Cannot be chosen as an intention. Cannot support higher-level learning). */
 	public static final int HYPOTHETICAL = 1;
@@ -62,7 +66,7 @@ public class Ernest implements IErnest
 	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
 	{
 		m_sensorymotorSystem = sensor;
-		m_sensorymotorSystem.setEpisodicMemory(m_episodicMemory);
+		m_sensorymotorSystem.init(m_episodicMemory, m_attentionalSystem);
 	};
 	
 	/**

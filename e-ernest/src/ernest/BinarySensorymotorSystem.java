@@ -9,10 +9,12 @@ package ernest;
 public class BinarySensorymotorSystem implements ISensorymotorSystem 
 {
 	protected EpisodicMemory m_episodicMemory;
+	protected IAttentionalSystem m_attentionalSystem;
 
-	public void setEpisodicMemory(EpisodicMemory episodicMemory)
+	public void init(EpisodicMemory episodicMemory, IAttentionalSystem attentionalSystem)
 	{
 		m_episodicMemory = episodicMemory;
+		m_attentionalSystem = attentionalSystem;
 	}
 	
 	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction) 
