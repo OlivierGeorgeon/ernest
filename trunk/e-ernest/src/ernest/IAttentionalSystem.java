@@ -40,4 +40,7 @@ public interface IAttentionalSystem
 	public ILandmark getGoalLandmark();
 
 	public void setNearbyLandmark(ILandmark landmark);
+	public void drink();
+	public void eat();
+	
 }

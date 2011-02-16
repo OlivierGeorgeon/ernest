@@ -23,4 +23,14 @@ public interface ILandmark
 	 * @return false if this landmark's color is the standard wall color. True in all other cases.
 	 */
 	boolean isSingularity();
+
+	/**
+	 * @return True if the landmark is food.
+	 */
+	boolean isFood();
+
+	/**
+	 * @return True if the landmark is water.
+	 */
+	boolean isWater();
 }

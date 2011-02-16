@@ -53,10 +53,27 @@ public class Landmark implements ILandmark
 	}
 	
 	/**
-	 * @return false if this landmark's color is the standard wall color. true in all other cases.
+	 * @return false if this landmark's color is the standard wall color or bump color. true in all other cases.
 	 */
 	public boolean isSingularity()
 	{
-		return !m_color.equals(Ernest.WALL_COLOR);
+		boolean regularWall = m_color.equals(Ernest.WALL_COLOR) || m_color.equals(Ernest.BUMP_COLOR);
+		return !regularWall ;
+	}
+
+	/**
+	 * @return true if the landmark is water.
+	 */
+	public boolean isWater()
+	{
+		return (m_color.equals(Ernest.WATER_COLOR)) ;
+	}
+
+	/**
+	 * @return true if the landmark is food.
+	 */
+	public boolean isFood()
+	{
+		return (m_color.equals(Ernest.FOOD_COLOR)) ;
 	}
 }

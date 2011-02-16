@@ -53,15 +53,19 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	private IAct m_primitiveIntention = null;
 
+	// ERNEST'S MOTIVATIONAL SYSTEM
+	
 	/**
 	 * The current goal landmark.
 	 */
 	private ILandmark m_goalLandmark;
 	private ILandmark m_nearbyLandmark;
-	private String m_goalState = "0";
 
 	/** Ernest's internal clock  */
+	private int TANK_INCREMENT = 50;
 	private int m_clock;
+	private int m_waterTank = 0;
+	private int m_foodTank = TANK_INCREMENT;
 
 	/**
 	 * Constructor for the attentional system.
@@ -95,6 +99,18 @@ public class AttentionalSystem implements IAttentionalSystem {
 		m_nearbyLandmark = landmark;
 	}
 	
+	public void drink()
+	{
+		m_waterTank += TANK_INCREMENT;
+		if (m_goalLandmark.isWater()) m_goalLandmark = null;
+	}
+	
+	public void eat()
+	{
+		m_foodTank += TANK_INCREMENT;
+		if (m_goalLandmark.isFood()) m_goalLandmark = null;
+	}
+	
 	public void setTracer(ITracer tracer)
 	{
 		m_tracer = tracer;
@@ -105,20 +121,38 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	private void tick()
 	{
-		m_clock++;
+		//m_clock++;
+		m_waterTank--;
+		m_foodTank--;
+		
+		if (m_foodTank  <= 0 && m_goalLandmark == null) 
+		{
+			m_goalLandmark = m_episodicMemory.addLandmark(Ernest.FOOD_COLOR);
+		}
+		if (m_waterTank <= 0 && m_goalLandmark == null) 
+		{
+			m_goalLandmark = m_episodicMemory.addLandmark(Ernest.WATER_COLOR);
+		}
+		
+		//m_goalLandmark = m_episodicMemory.addLandmark(Ernest.WATER_COLOR);
 		
 		// Shift goal every 100 cycles
-		if ((m_clock % 200) < 100)
-		{
-			m_goalLandmark = m_episodicMemory.addLandmark(150, 128, 255);
-			m_goalState = "1";
-		}
-		else
-		{
-			m_goalLandmark = m_episodicMemory.addLandmark(227, 124, 255);
-			m_goalState = "2";
-		}
-			
+		//if ((m_clock % 300) < 100)
+		//{
+		//	m_goalLandmark = m_episodicMemory.addLandmark(150, 128, 255);
+		//	m_goalState = "1";
+		//}
+		//else if ((m_clock % 300) < 200)
+		//{
+		//	m_goalLandmark = m_episodicMemory.addLandmark(227, 124, 255);
+		//	m_goalState = "2";
+		//}
+		//else 
+		//{
+		//	m_goalLandmark = null;
+		//	m_goalState = "0";
+		//}
+		
 	}
 	
 	/**
@@ -128,7 +162,11 @@ public class AttentionalSystem implements IAttentionalSystem {
 	public String getInternalState()
 	{
 		//return m_internalState;
-		return m_goalState;
+		String state = "0";
+		if (m_goalLandmark.isWater()) state = "1";
+		if (m_goalLandmark.isFood()) state = "2";
+		
+		return state;
 	}
 
 	/**
