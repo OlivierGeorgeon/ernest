@@ -11,8 +11,13 @@ public class Ernest implements IErnest
 	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
 	
-	public static Color WALL_COLOR = new Color(128, 255, 128); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	/** Color of regular wall  */
+	public static Color WALL_COLOR   = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
 
+	public static Color BUMP_COLOR   = new Color(255, 0, 0);
+	public static Color WATER_COLOR  = new Color(150, 128, 255);
+	public static Color FOOD_COLOR   = new Color(227, 124, 255);
+	
 	/** Hypothetical act (Cannot be chosen as an intention. Cannot support higher-level learning). */
 	public static final int HYPOTHETICAL = 1;
 

@@ -1,5 +1,6 @@
 package ernest;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -315,5 +316,8 @@ public class EpisodicMemory
 		return l;
 	}
 	
-
+	public ILandmark addLandmark(Color color)
+	{
+		return addLandmark(color.getRed(),color.getGreen() ,color.getBlue());
+	}
 }

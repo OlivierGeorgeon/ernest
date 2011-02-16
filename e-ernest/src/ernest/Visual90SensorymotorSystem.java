@@ -74,18 +74,24 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		m_currentRightLandmark  = m_episodicMemory.addLandmark(matrix[1][1], matrix[1][2], matrix[1][3]);
 		
 		
-		// TODO: See other goals
-		if (!m_currentLeftLandmark.equals(m_attentionalSystem.getGoalLandmark()))
+		if (m_currentLeftLandmark.isSingularity())
+			m_attentionalSystem.setNearbyLandmark(m_currentLeftLandmark);
+		else 
+			m_currentLeftDistance = Ernest.INFINITE;
+
+		if (m_currentRightLandmark.isSingularity())
+			m_attentionalSystem.setNearbyLandmark(m_currentRightLandmark);
+		else 
+			m_currentRightDistance = Ernest.INFINITE;
+
+		// If there is a goal landmark then everything else appears away
+		if ( (m_attentionalSystem.getGoalLandmark() != null) && !m_attentionalSystem.getGoalLandmark().equals(m_currentLeftLandmark))
 		{
 			m_currentLeftDistance = Ernest.INFINITE;
-			if (m_currentLeftLandmark.isSingularity())
-				m_attentionalSystem.setNearbyLandmark(m_currentLeftLandmark);
 		}
-		if (!m_currentRightLandmark.equals(m_attentionalSystem.getGoalLandmark()))
+		if ((m_attentionalSystem.getGoalLandmark() != null) && !m_attentionalSystem.getGoalLandmark().equals(m_currentRightLandmark))
 		{
 			m_currentRightDistance = Ernest.INFINITE;
-			if (m_currentRightLandmark.isSingularity())
-				m_attentionalSystem.setNearbyLandmark(m_currentRightLandmark);
 		}
 		
 		m_satisfaction = 0;
@@ -96,6 +102,13 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		if (m_leftFeature.equals("o") && m_rightFeature.equals("o"))
 			m_satisfaction = -100;
+		
+		// Impact on the motivational system
+		if (m_leftFeature.equals("x") && m_currentLeftLandmark.isWater())
+			m_attentionalSystem.drink();
+		if (m_leftFeature.equals("x") && m_currentLeftLandmark.isFood())
+			m_attentionalSystem.eat();
+		
 	}
 
 	/**
