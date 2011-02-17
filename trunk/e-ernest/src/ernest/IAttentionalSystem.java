@@ -39,8 +39,9 @@ public interface IAttentionalSystem
 	 */
 	public ILandmark getGoalLandmark();
 
-	public void setNearbyLandmark(ILandmark landmark);
+	public void addNearbyLandmark(ILandmark landmark);
 	public void drink();
 	public void eat();
+	public void bump(ILandmark landmark);
 	
 }

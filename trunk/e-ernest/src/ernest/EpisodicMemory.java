@@ -316,8 +316,18 @@ public class EpisodicMemory
 		return l;
 	}
 	
+	/**
+	 * Add a landmark to episodic memory if it does not already exist
+	 * @param color The landmark's color
+	 * @return the new landmark if created or the already existing landmark
+	 */
 	public ILandmark addLandmark(Color color)
 	{
-		return addLandmark(color.getRed(),color.getGreen() ,color.getBlue());
+		return addLandmark(color.getRed() ,color.getGreen() ,color.getBlue());
+	}
+	
+	public List<ILandmark> getLandmarkList()
+	{
+		return m_landmarks;
 	}
 }

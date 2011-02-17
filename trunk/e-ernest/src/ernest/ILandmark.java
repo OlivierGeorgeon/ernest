@@ -27,10 +27,18 @@ public interface ILandmark
 	/**
 	 * @return True if the landmark is food.
 	 */
-	boolean isFood();
+	int getEatability();
+	void updateEatability(int t );
 
 	/**
 	 * @return True if the landmark is water.
 	 */
-	boolean isWater();
+	int getDrinkability();
+	void updateDrinkability(int t);
+
+	int getLastTimeSeen();
+	void setLastTimeSeen(int t);
+
 }
+
+
