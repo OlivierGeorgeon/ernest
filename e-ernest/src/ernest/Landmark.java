@@ -11,6 +11,9 @@ public class Landmark implements ILandmark
 {
 
 	private Color m_color;
+	private int m_lastTimeSeen;
+	private int m_eatability;
+	private int m_drinkability;
 	
 	protected Landmark(int red, int green, int blue)
 	{
@@ -64,16 +67,47 @@ public class Landmark implements ILandmark
 	/**
 	 * @return true if the landmark is water.
 	 */
-	public boolean isWater()
+	public int getDrinkability()
 	{
-		return (m_color.equals(Ernest.WATER_COLOR)) ;
+		//return (m_color.equals(Ernest.WATER_COLOR)) ;
+		return m_drinkability;
+	}
+	
+	public void updateDrinkability(int t)
+	{
+		int elapsed = t - m_lastTimeSeen;
+		
+		// Drinkability is inversely proportional to the time elapsed
+		// between the last time seeing this lankmark since thirsty and drinking.
+		if (elapsed > 0) m_drinkability = 1000/elapsed;
 	}
 
 	/**
 	 * @return true if the landmark is food.
 	 */
-	public boolean isFood()
+	public int getEatability()
 	{
-		return (m_color.equals(Ernest.FOOD_COLOR)) ;
+		//return (m_color.equals(Ernest.FOOD_COLOR)) ;
+		return m_eatability;
 	}
+	
+	public void updateEatability(int t)
+	{
+		int elapsed = t - m_lastTimeSeen;
+		
+		// Eatability is inversely proportional to the time elapsed
+		// between the last time seeing this lankmark since hungry and eating.
+		if (elapsed > 0) m_eatability = 1000/elapsed;
+	}
+
+	public void setLastTimeSeen(int t)
+	{
+		m_lastTimeSeen = t;
+	}
+	
+	public int getLastTimeSeen()
+	{
+		return m_lastTimeSeen;
+	}
+
 }

@@ -59,13 +59,25 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 * The current goal landmark.
 	 */
 	private ILandmark m_goalLandmark;
+
+	/**
+	 * The list nearby landmarks. 
+	 */
+	private List<ILandmark> m_nearbyLandmarks = new ArrayList<ILandmark>();
 	private ILandmark m_nearbyLandmark;
 
+	/** The increment gained from drinking or eating a square  */
+	private int LEVEL_INCREMENT    = 200;
+	private int VISUAL_PERSISTENCE = 10;
+	
 	/** Ernest's internal clock  */
-	private int TANK_INCREMENT = 50;
 	private int m_clock;
-	private int m_waterTank = 0;
-	private int m_foodTank = TANK_INCREMENT;
+
+	/** The water level that raises thirst when empty (homeostatic sodium dilution)    */
+	private int m_waterLevel = 0;
+
+	/** The food level that raises hunger when empty (homeostatic glucose level)  */
+	private int m_glucoseLevel = LEVEL_INCREMENT;
 
 	/**
 	 * Constructor for the attentional system.
@@ -94,21 +106,54 @@ public class AttentionalSystem implements IAttentionalSystem {
 		return m_goalLandmark;
 	}
 
-	public void setNearbyLandmark(ILandmark landmark)
-	{
-		m_nearbyLandmark = landmark;
-	}
-	
+	/**
+	 * The internal effect of the reflex mechanism of drinking when Ernest tastes water.
+	 */
 	public void drink()
 	{
-		m_waterTank += TANK_INCREMENT;
-		if (m_goalLandmark.isWater()) m_goalLandmark = null;
+		m_waterLevel += LEVEL_INCREMENT;
+		
+		// update the nearby landmarks' drinkability based on the time elapsed since these were seen.
+		for (ILandmark l : m_nearbyLandmarks) 
+			l.updateDrinkability(m_clock);
 	}
 	
+	/**
+	 * The internal effect of the reflex mechanism of eating when Ernest tastes glucose.
+	 */
 	public void eat()
 	{
-		m_foodTank += TANK_INCREMENT;
-		if (m_goalLandmark.isFood()) m_goalLandmark = null;
+		m_glucoseLevel += LEVEL_INCREMENT;
+		
+		// update the nearby landmarks' edibility based on the time elapsed since these were seen.
+		for (ILandmark l : m_nearbyLandmarks) 
+			l.updateEatability(m_clock);
+	}
+	
+	/**
+	 * The internal effect of bumping into a landmark.
+	 * The landmark is removed from the list of nearby landmarks.
+	 */
+	public void bump(ILandmark landmark)
+	{
+		if (m_nearbyLandmarks.contains(landmark))
+			m_nearbyLandmarks.remove(landmark);
+	}
+	
+	private boolean isThirsty()
+	{
+		return m_waterLevel <= 0;
+	}
+	
+	private boolean isHungry()
+	{
+		return m_glucoseLevel <= 0;
+	}
+	
+	public void addNearbyLandmark(ILandmark landmark)
+	{
+		landmark.setLastTimeSeen(m_clock);
+		m_nearbyLandmarks.add(landmark);
 	}
 	
 	public void setTracer(ITracer tracer)
@@ -121,19 +166,51 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	private void tick()
 	{
-		//m_clock++;
-		m_waterTank--;
-		m_foodTank--;
+		m_clock++;
+		m_waterLevel--;
+		m_glucoseLevel--;
 		
-		if (m_foodTank  <= 0 && m_goalLandmark == null) 
-		{
-			m_goalLandmark = m_episodicMemory.addLandmark(Ernest.FOOD_COLOR);
-		}
-		if (m_waterTank <= 0 && m_goalLandmark == null) 
-		{
-			m_goalLandmark = m_episodicMemory.addLandmark(Ernest.WATER_COLOR);
-		}
+		// Remove old landmarks from the list of nearby landmarks
+		for (ILandmark l : m_nearbyLandmarks) 
+			if (m_clock - l.getLastTimeSeen() > VISUAL_PERSISTENCE)
+				m_nearbyLandmarks.remove(l);
 		
+		// Choose goal
+		
+		ILandmark goalLandmark = null;
+		
+		if (isThirsty())
+		{
+			// Select the most drinkable landmark among the nearby landmarks
+			// TODO: another level of intrinsically motivated schema mechanism ?
+			if (m_nearbyLandmarks.size() > 0)
+			{
+				goalLandmark = m_nearbyLandmarks.get(0);
+				for (ILandmark l : m_nearbyLandmarks)
+					if (l.getDrinkability() > goalLandmark.getDrinkability())
+						goalLandmark = l;
+			}
+		}
+		else if (isHungry())
+		{
+			// Select the most edible landmark among the nearby landmarks
+			// TODO: another level of intrinsically motivated schema mechanism ?
+			if (m_nearbyLandmarks.size() > 0)
+			{
+				goalLandmark = m_nearbyLandmarks.get(0);
+				for (ILandmark l : m_nearbyLandmarks)
+					if (l.getEatability() > goalLandmark.getEatability())
+						goalLandmark = l;
+			}
+		}
+		else
+		{
+			// possibly choose a prominent goal 
+		}	
+		
+
+		
+
 		//m_goalLandmark = m_episodicMemory.addLandmark(Ernest.WATER_COLOR);
 		
 		// Shift goal every 100 cycles
@@ -152,7 +229,6 @@ public class AttentionalSystem implements IAttentionalSystem {
 		//	m_goalLandmark = null;
 		//	m_goalState = "0";
 		//}
-		
 	}
 	
 	/**
@@ -162,11 +238,12 @@ public class AttentionalSystem implements IAttentionalSystem {
 	public String getInternalState()
 	{
 		//return m_internalState;
-		String state = "0";
-		if (m_goalLandmark.isWater()) state = "1";
-		if (m_goalLandmark.isFood()) state = "2";
+
+		int state = 0;
+		if (isThirsty()) state = state + 1;
+		if (isHungry()) state = state + 2;
 		
-		return state;
+		return state + "";
 	}
 
 	/**
