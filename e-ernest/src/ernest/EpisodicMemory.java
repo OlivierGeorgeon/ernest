@@ -326,8 +326,12 @@ public class EpisodicMemory
 		return addLandmark(color.getRed() ,color.getGreen() ,color.getBlue());
 	}
 	
-	public List<ILandmark> getLandmarkList()
+	public ILandmark getLandmark(Color color)
 	{
-		return m_landmarks;
+		ILandmark l = new Landmark(color.getRed(), color.getGreen(), color.getBlue());
+		if (m_landmarks.contains(l))
+			return l;
+		else
+			return null;
 	}
 }

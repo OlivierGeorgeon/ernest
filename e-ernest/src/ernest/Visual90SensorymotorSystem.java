@@ -26,6 +26,8 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 	/** The intrinsic satisfaction of sensing the current features */
 	private int m_satisfaction = 0;
 	
+	private int PROXIMITY_DISTANCE = 2;
+	
 	/** The taste of water */
 	private int TASTE_WATER = 1;
 
@@ -85,17 +87,21 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		m_currentLeftLandmark   = m_episodicMemory.addLandmark(matrix[0][1], matrix[0][2], matrix[0][3]);
 		m_currentRightLandmark  = m_episodicMemory.addLandmark(matrix[1][1], matrix[1][2], matrix[1][3]);
 		
-		if (m_currentLeftLandmark.isSingularity())
-			m_attentionalSystem.addNearbyLandmark(m_currentLeftLandmark);
-		else 
+		if (m_currentLeftDistance <= PROXIMITY_DISTANCE)
+			m_attentionalSystem.check(m_currentLeftLandmark);
+		if (m_currentRightDistance <= PROXIMITY_DISTANCE)
+			m_attentionalSystem.check(m_currentRightLandmark);
+		
+		// Landmarks are inhibited if they have been recently checked 
+		// and they don't satisfy Ernest's current homeostatic state, 
+		// or if they are regular wall.
+		if (m_attentionalSystem.isInhibited(m_currentLeftLandmark))
 			m_currentLeftDistance = Ernest.INFINITE;
-
-		if (m_currentRightLandmark.isSingularity())
-			m_attentionalSystem.addNearbyLandmark(m_currentRightLandmark);
-		else 
+		if (m_attentionalSystem.isInhibited(m_currentRightLandmark))
 			m_currentRightDistance = Ernest.INFINITE;
-
-		// If there is a goal landmark then everything else appears far away in the infinite
+			
+		
+/*		// If Ernest has a goal landmark then the visual system is blind to other landmarks.
 		if ( (m_attentionalSystem.getGoalLandmark() != null) && !m_attentionalSystem.getGoalLandmark().equals(m_currentLeftLandmark))
 		{
 			m_currentLeftDistance = Ernest.INFINITE;
@@ -104,7 +110,7 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		{
 			m_currentRightDistance = Ernest.INFINITE;
 		}
-		
+*/		
 		m_satisfaction = 0;
 		
 		// The sensed features correspond to changes in the pixels.
@@ -119,9 +125,9 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		int taste = matrix[2][0];
 		
 		if (taste == TASTE_WATER)
-			m_attentionalSystem.drink();
+			m_attentionalSystem.drink(m_currentLeftLandmark);
 		if (taste == TASTE_FOOD)
-			m_attentionalSystem.eat();
+			m_attentionalSystem.eat(m_currentLeftLandmark);
 		
 	}
 

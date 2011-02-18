@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 /**
  * Ernest's attentional system.
  * Maintain lists of acts that represent Ernest's current situation
@@ -29,19 +31,40 @@ public interface IAttentionalSystem
 	public ISchema step(IAct primitiveEnaction); 
 	
 	/**
-	 * Defines Ernest's current landmark goal
-	 * @param landmark the goal landmark
+	 * The internal effect of the reflex mechanism of drinking when Ernest tastes water.
+	 * @param landmark The landmark that is drunk.
 	 */
-	public void setGoalLandmark(ILandmark landmark);
+	public void drink(ILandmark landmark);
 
 	/**
-	 * @return The current landmark goal
+	 * The internal effect of the reflex mechanism of eating when Ernest tastes food.
+	 * @param landmark The landmark that is eaten.
 	 */
-	public ILandmark getGoalLandmark();
-
-	public void addNearbyLandmark(ILandmark landmark);
-	public void drink();
-	public void eat();
+	public void eat(ILandmark landmark);
+	
+	/**
+	 * The internal effect of bumping a wall.
+	 * @param landmark The landmark that is bumped.
+	 */
 	public void bump(ILandmark landmark);
 	
+	/**
+	 * Tells if a color is inhibited by Ernest's attentional system.
+	 * @param color The color to test.
+	 * @return true if the color is inhibited.
+	 */
+	public boolean isInhibited(Color color);
+	
+	/**
+	 * Tells if the landmark is inhibited by Ernest's attentional system.
+	 * @param landmark The landmark to test.
+	 * @return true if the landmark is inhibited.
+	 */
+	public boolean isInhibited(ILandmark landmark);
+	
+	/**
+	 * Check at a landmark. 
+	 * @param landmark The landmark to check
+	 */
+	public void check(ILandmark landmark);
 }
