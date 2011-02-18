@@ -52,4 +52,6 @@ public interface IErnest
 	 */
 	public String step(boolean status);
 	
+	public IAttentionalSystem getAttentionalSystem();
+	
 }

@@ -123,5 +123,10 @@ public class Ernest implements IErnest
 		
 		return m_primitiveSchema.getLabel();
 	}
+
+	public IAttentionalSystem getAttentionalSystem() 
+	{
+		return m_attentionalSystem;
+	}
 		
 }

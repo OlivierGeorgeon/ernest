@@ -20,24 +20,44 @@ public interface ILandmark
 	String getLabel();
 	
 	/**
-	 * @return false if this landmark's color is the standard wall color. True in all other cases.
+	 * @return True if the landmark is drinkable.
 	 */
-	boolean isSingularity();
+	boolean isDrinkable();
+	
+	/**
+	 * Mark this landmark as drinkable
+	 */
+	void setDrinkable();
 
 	/**
-	 * @return True if the landmark is food.
+	 * @return True if the landmark is edible.
 	 */
-	int getEatability();
-	void updateEatability(int t );
+	boolean isEdible();
+	
+	/**
+	 * Mark this landmark as edible.
+	 */
+	void setEdible();
 
 	/**
-	 * @return True if the landmark is water.
+	 * @return True if the landmark is a wall that would be bumped.
 	 */
-	int getDrinkability();
-	void updateDrinkability(int t);
+	boolean isBumpable();
+	
+	/**
+	 * Mark this landmark as a wall that would be bumped.
+	 */
+	void setBumpable();
 
-	int getLastTimeSeen();
-	void setLastTimeSeen(int t);
+	/**
+	 * @return the timestamp when this landmark was last checked.
+	 */
+	int getLastTimeChecked();
+	
+	/**
+	 * @param t the timestamp when this landmark is checked. 
+	 */
+	void setLastTimeChecked(int t);
 
 }
 

@@ -3,8 +3,9 @@ package ernest;
 import java.awt.Color;
 
 /**
- * A landmark is an item that can be identified by its visual features.
- * Ernest 9.0 identifies landmarks by their color.
+ * A landmark is a pattern in Ernest's visual scene that Ernest can memorize and recognize.
+ * Ernest can learn associations between landmarks and behaviors such as drink, eat, and bump.
+ * Ernest 9.0 recognize landmarks by their color.
  * @author Olivier
  */
 public class Landmark implements ILandmark 
@@ -12,8 +13,9 @@ public class Landmark implements ILandmark
 
 	private Color m_color;
 	private int m_lastTimeSeen;
-	private int m_eatability;
-	private int m_drinkability;
+	private boolean m_edible;
+	private boolean m_drinkable;
+	private boolean m_bumpable;
 	
 	protected Landmark(int red, int green, int blue)
 	{
@@ -26,7 +28,7 @@ public class Landmark implements ILandmark
 	}
 
 	/**
-	 * @return The act's string representation
+	 * @return The landmark's string representation
 	 */
 	public String getLabel()
 	{
@@ -34,7 +36,7 @@ public class Landmark implements ILandmark
 	}
 	
 	/**
-	 * Landmarks are equal if they have the same color. 
+	 * Landmarks are equal if they have the same label (i.e. the same color). 
 	 */
 	public boolean equals(Object o)
 	{
@@ -56,58 +58,50 @@ public class Landmark implements ILandmark
 	}
 	
 	/**
-	 * @return false if this landmark's color is the standard wall color or bump color. true in all other cases.
-	 */
-	public boolean isSingularity()
-	{
-		boolean regularWall = m_color.equals(Ernest.WALL_COLOR) || m_color.equals(Ernest.BUMP_COLOR);
-		return !regularWall ;
-	}
-
-	/**
 	 * @return true if the landmark is water.
 	 */
-	public int getDrinkability()
+	public boolean isDrinkable()
 	{
 		//return (m_color.equals(Ernest.WATER_COLOR)) ;
-		return m_drinkability;
+		return m_drinkable;
 	}
 	
-	public void updateDrinkability(int t)
+	public void setDrinkable()
 	{
-		int elapsed = t - m_lastTimeSeen;
-		
-		// Drinkability is inversely proportional to the time elapsed
-		// between the last time seeing this lankmark since thirsty and drinking.
-		if (elapsed > 0) m_drinkability = 1000/elapsed;
+		m_drinkable = true;
 	}
 
 	/**
 	 * @return true if the landmark is food.
 	 */
-	public int getEatability()
+	public boolean isEdible()
 	{
-		//return (m_color.equals(Ernest.FOOD_COLOR)) ;
-		return m_eatability;
+		return m_edible;
 	}
 	
-	public void updateEatability(int t)
+	public void setEdible()
 	{
-		int elapsed = t - m_lastTimeSeen;
-		
-		// Eatability is inversely proportional to the time elapsed
-		// between the last time seeing this lankmark since hungry and eating.
-		if (elapsed > 0) m_eatability = 1000/elapsed;
+		m_edible = true;
 	}
 
-	public void setLastTimeSeen(int t)
+	public void setLastTimeChecked(int t)
 	{
 		m_lastTimeSeen = t;
 	}
 	
-	public int getLastTimeSeen()
+	public int getLastTimeChecked()
 	{
 		return m_lastTimeSeen;
+	}
+
+	public boolean isBumpable()
+	{
+		return m_bumpable;
+	}
+	
+	public void setBumpable()
+	{
+		m_bumpable = true;
 	}
 
 }
