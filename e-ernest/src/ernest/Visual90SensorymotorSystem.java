@@ -18,6 +18,8 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 	
 	private ILandmark m_currentLeftLandmark;
 	private ILandmark m_currentRightLandmark;
+	private ILandmark m_previousLeftLandmark;
+	private ILandmark m_previousRightLandmark;
 	
 	/** The features that are sensed by the distal system. */
 	private String m_leftFeature = " ";
@@ -26,7 +28,7 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 	/** The intrinsic satisfaction of sensing the current features */
 	private int m_satisfaction = 0;
 	
-	private int PROXIMITY_DISTANCE = 2;
+	private int PROXIMITY_DISTANCE = 21; // two squares straight or one in diagonal
 	
 	/** The taste of water */
 	private int TASTE_WATER = 1;
@@ -84,38 +86,31 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		m_currentLeftDistance   = matrix[0][0];
 		m_currentRightDistance  = matrix[1][0];
 		
+		m_previousLeftLandmark  = m_currentLeftLandmark;
+		m_previousRightLandmark = m_currentRightLandmark;
 		m_currentLeftLandmark   = m_episodicMemory.addLandmark(matrix[0][1], matrix[0][2], matrix[0][3]);
 		m_currentRightLandmark  = m_episodicMemory.addLandmark(matrix[1][1], matrix[1][2], matrix[1][3]);
 		
+		// If the landmark is bumpable, Ernest checks in at the landmark.
+
 		if (m_currentLeftDistance <= PROXIMITY_DISTANCE)
 			m_attentionalSystem.check(m_currentLeftLandmark);
 		if (m_currentRightDistance <= PROXIMITY_DISTANCE)
 			m_attentionalSystem.check(m_currentRightLandmark);
 		
-		// Landmarks are inhibited if they have been recently checked 
-		// and they don't satisfy Ernest's current homeostatic state, 
-		// or if they are regular wall.
+		// Inhibited landmarks are not processed in search for visual features. 
+	
 		if (m_attentionalSystem.isInhibited(m_currentLeftLandmark))
 			m_currentLeftDistance = Ernest.INFINITE;
 		if (m_attentionalSystem.isInhibited(m_currentRightLandmark))
 			m_currentRightDistance = Ernest.INFINITE;
 			
-		
-/*		// If Ernest has a goal landmark then the visual system is blind to other landmarks.
-		if ( (m_attentionalSystem.getGoalLandmark() != null) && !m_attentionalSystem.getGoalLandmark().equals(m_currentLeftLandmark))
-		{
-			m_currentLeftDistance = Ernest.INFINITE;
-		}
-		if ((m_attentionalSystem.getGoalLandmark() != null) && !m_attentionalSystem.getGoalLandmark().equals(m_currentRightLandmark))
-		{
-			m_currentRightDistance = Ernest.INFINITE;
-		}
-*/		
 		m_satisfaction = 0;
 		
-		// The sensed features correspond to changes in the pixels.
-		m_leftFeature  = sensePixel(m_previousLeftDistance, m_currentLeftDistance);
-		m_rightFeature = sensePixel(m_previousRightDistance, m_currentRightDistance);		
+		// Compute the visual features that reflect changes in how uninhibited landmarks are seen.
+		
+		m_leftFeature  = sensePixel(m_previousLeftDistance, m_currentLeftDistance, m_previousLeftLandmark, m_currentLeftLandmark);
+		m_rightFeature = sensePixel(m_previousRightDistance, m_currentRightDistance, m_previousRightLandmark, m_currentRightLandmark);		
 		
 		if (m_leftFeature.equals("o") && m_rightFeature.equals("o"))
 			m_satisfaction = -100;
@@ -137,34 +132,35 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 	 * @param currentPixel The pixel's current value.
 	 * @return The sensed feature
 	 */
-	private String sensePixel(int previousPixel, int currentPixel) 
+	private String sensePixel(int previousDistance, int currentDistance, ILandmark previousLandmark, ILandmark currentLandmark) 
 	{
 		String feature = " ";
 		int satisfaction = 0;
 		
 		// arrived
-		if (previousPixel > currentPixel && currentPixel == 0)
+		if (previousDistance > currentDistance && currentDistance == 0)
 		{
 			feature = "x";
 			satisfaction = 100;
 		}
 		
 		// closer
-		else if (previousPixel < Ernest.INFINITE && currentPixel < previousPixel)
+		else if (previousDistance < Ernest.INFINITE && currentDistance < previousDistance && currentLandmark.equals(previousLandmark))
 		{
 			feature = "+";
 			satisfaction = 200;
 		}
 
 		// appear
-		else if (previousPixel == Ernest.INFINITE && currentPixel < Ernest.INFINITE)
+		else if (previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE)
 		{
 			feature = "*";
 			satisfaction = 50;
 		}
 		
 		// disappear
-		else if (previousPixel < Ernest.INFINITE && currentPixel == Ernest.INFINITE)
+		//else if (previousPixel < Ernest.INFINITE && currentPixel == Ernest.INFINITE)
+		else if (currentDistance  == Ernest.INFINITE || !currentLandmark.equals(previousLandmark))
 		{
 			feature = "o";
 			satisfaction = -100;
