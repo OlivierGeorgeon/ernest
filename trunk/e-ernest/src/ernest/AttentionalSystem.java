@@ -57,10 +57,10 @@ public class AttentionalSystem implements IAttentionalSystem {
 	// ERNEST'S MOTIVATIONAL SYSTEM
 	
 	/** The increment in the water or food tank gained from drinking or eating a square  */
-	private int LEVEL_INCREMENT    = 100;
+	private int LEVEL_INCREMENT    = 90;
 
 	/** The duration during which checked landmarks remain inhibited  */
-	private int PERSISTENCE = 30;
+	private int PERSISTENCE = 40;// 40;
 	
 	/** Ernest's internal clock  */
 	private int m_clock;
@@ -70,6 +70,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 
 	/** The food tank level that raises hunger when empty (homeostatic glucose level)  */
 	private int m_glucoseLevel = LEVEL_INCREMENT;
+	
+	private int m_distanceToTarget = Ernest.INFINITE;
 	
 	/**
 	 * Constructor for the attentional system.
@@ -101,8 +103,11 @@ public class AttentionalSystem implements IAttentionalSystem {
 			if (m_clock - landmark.getLastTimeChecked() > PERSISTENCE) inhibited = false;
 			
 			// If the landmark matches Ernest's current state then it is deshinibited
-			if (isThirsty() && landmark.isDrinkable()) inhibited = false;
-			if (isHungry() && landmark.isEdible()) inhibited = false;		
+			// if the landmark's distance to target is closer than Ernest's current distance then it is deshinibited
+			if (isThirsty() && (landmark.isDrinkable() || (landmark.getDistanceToWater() < m_distanceToTarget))) 
+				inhibited = false;
+			if (isHungry() && (landmark.isEdible() || (landmark.getDistanceToFood() < m_distanceToTarget))) 
+				inhibited = false;		
 		}	
 		return inhibited;
 	}
@@ -111,9 +116,11 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public void drink(ILandmark landmark)
 	{
-		m_waterLevel += LEVEL_INCREMENT;
+		m_waterLevel = LEVEL_INCREMENT;
+		m_glucoseLevel = 0; // get hungry after eating
 		landmark.setDrinkable();
 		landmark.setLastTimeChecked(m_clock);
+		m_episodicMemory.UpdateDistanceToWater(m_clock);
 	}
 	
 	/**
@@ -121,9 +128,11 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public void eat(ILandmark landmark)
 	{
-		m_glucoseLevel += LEVEL_INCREMENT;
+		m_glucoseLevel = LEVEL_INCREMENT;
+		m_waterLevel = 0; // get hungry after eating
 		landmark.setEdible();
 		landmark.setLastTimeChecked(m_clock);
+		m_episodicMemory.UpdateDistanceToFood(m_clock);
 	}
 	
 	/**
@@ -133,13 +142,24 @@ public class AttentionalSystem implements IAttentionalSystem {
 	public void bump(ILandmark landmark)
 	{
 		landmark.setBumpable();
-		landmark.setLastTimeChecked(m_clock);
+		check(landmark);
+		//landmark.setLastTimeChecked(m_clock);
 	}
 	
 	public void check(ILandmark landmark)
 	{
 		if (landmark.isBumpable())
 			landmark.setLastTimeChecked(m_clock);
+		if (isThirsty())
+		{
+			landmark.setLastTimeThirsty(m_clock);
+			m_distanceToTarget = landmark.getDistanceToWater();
+		}
+		if (isHungry())
+		{
+			landmark.setLastTimeHungry(m_clock);
+			m_distanceToTarget = landmark.getDistanceToFood();
+		}
 	}
 	private boolean isThirsty()
 	{
@@ -162,8 +182,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 	private void tick()
 	{
 		m_clock++;
-		m_waterLevel--;
-		m_glucoseLevel--;
+		//m_waterLevel--;
+		//m_glucoseLevel--;
 	}
 	
 	/**

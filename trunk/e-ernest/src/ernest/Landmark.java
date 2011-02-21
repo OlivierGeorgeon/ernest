@@ -17,6 +17,11 @@ public class Landmark implements ILandmark
 	private boolean m_drinkable;
 	private boolean m_bumpable;
 	
+	private int m_lastTimeThirsty = 0;
+	private int m_lastTimeHungry = 0;
+	private int m_distanceToWater;
+	private int m_distanceToFood;
+	
 	protected Landmark(int red, int green, int blue)
 	{
 		m_color = new Color(red, green, blue);
@@ -102,6 +107,44 @@ public class Landmark implements ILandmark
 	public void setBumpable()
 	{
 		m_bumpable = true;
+	}
+
+	public void setLastTimeThirsty(int t) 
+	{
+		m_lastTimeThirsty = t;
+	}
+
+	public void setLastTimeHungry(int t) 
+	{
+		m_lastTimeHungry = t;
+	}
+
+	public void setDistanceToWater(int t) 
+	{
+		if (m_lastTimeThirsty > 0)
+		{
+			m_distanceToWater = t - m_lastTimeThirsty;
+			m_lastTimeThirsty = 0;
+		}
+	}
+
+	public void setDistanceToFood(int t) 
+	{
+		if (m_lastTimeHungry > 0)
+		{
+			m_distanceToFood = t - m_lastTimeHungry;
+			m_lastTimeHungry = 0;
+		}
+	}
+
+	public int getDistanceToWater() 
+	{
+		return m_distanceToWater;
+	}
+
+	public int getDistanceToFood() 
+	{
+		return m_distanceToFood;
 	}
 
 }

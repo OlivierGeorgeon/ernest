@@ -334,4 +334,16 @@ public class EpisodicMemory
 		else
 			return null;
 	}
+	
+	public void UpdateDistanceToWater(int clock)
+	{
+		for (ILandmark l : m_landmarks)
+			l.setDistanceToWater(clock);
+	}
+
+	public void UpdateDistanceToFood(int clock)
+	{
+		for (ILandmark l : m_landmarks)
+			l.setDistanceToFood(clock);
+	}
 }

@@ -58,6 +58,15 @@ public interface ILandmark
 	 * @param t the timestamp when this landmark is checked. 
 	 */
 	void setLastTimeChecked(int t);
+	
+	void setLastTimeThirsty(int t);
+	void setLastTimeHungry(int t);
+	void setDistanceToWater(int t);
+	void setDistanceToFood(int t);
+	int getDistanceToWater();
+	int getDistanceToFood();
+	
+	
 
 }
 
