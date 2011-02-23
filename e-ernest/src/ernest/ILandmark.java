@@ -59,14 +59,39 @@ public interface ILandmark
 	 */
 	void setLastTimeChecked(int t);
 	
+	/**
+	 * This landmark is checked while being thirsty at the current time.
+	 * @param t current time
+	 */
 	void setLastTimeThirsty(int t);
+
+	/**
+	 * This landmark is checked while being hungry at the current time.
+	 * @param t current time
+	 */
 	void setLastTimeHungry(int t);
+	
+	/**
+	 * The distance to water is set equal to the difference between the current time and the last time checked when thirsty.
+	 * @param t current time
+	 */
 	void setDistanceToWater(int t);
+	
+	/**
+	 * The distance to food is set equal to the difference between the current time and the last time checked when hungry.
+	 * @param t current time
+	 */
 	void setDistanceToFood(int t);
+
+	/**
+	 * @return the distance to water as currently assessed
+	 */
 	int getDistanceToWater();
+
+	/**
+	 * @return the distance to food as currently assessed
+	 */
 	int getDistanceToFood();
-	
-	
 
 }
 

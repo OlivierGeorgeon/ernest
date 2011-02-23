@@ -7,21 +7,22 @@ package ernest;
 public interface ITracer {
 
 	/**
-	 * @param line The line to trace
-	 * @return true if tracer ok
-	 */
-	public boolean writeLine(String line);
-	
-	/**
-	 * Initialize the tracer
-	 * @return true if tracer ok
-	 */
-	public boolean writeHeader();
-	
-	/**
 	 * Cose the tracer
 	 * @return true if tracer ok
 	 */
-	public boolean writeFooter();
+	public boolean close();
 	
+	/**
+	 * Create a new event
+	 * @param t the time stamp
+	 */
+	public void startNewEvent(int t);
+	
+	/**
+	 * Add a new property to the current event
+	 * @param name The property's name
+	 * @param value The property's value
+	 */
+	public void addEventProperty(String name, String value);
+
 }

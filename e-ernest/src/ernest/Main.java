@@ -57,10 +57,12 @@ public class Main
 		{
 			// --> Insert breakpoint below to easily follow Ernest in Eclipse debug mode. 
 			System.out.println("Step #" + iCycle);
-			tracer.writeLine(" " + iCycle++ );
+			tracer.startNewEvent(iCycle++);
 			
 			schema = ernest.step(status);
 			status = environment.enact(schema);
+			
+			tracer.close(); // Needed with the XMLTracer to save the xml file each time.
 		}
 
 	}
