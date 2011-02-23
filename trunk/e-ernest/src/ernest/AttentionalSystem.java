@@ -102,8 +102,9 @@ public class AttentionalSystem implements IAttentionalSystem {
 			// If the landmark has been forgotten then it is deshinibited
 			if (m_clock - landmark.getLastTimeChecked() > PERSISTENCE) inhibited = false;
 			
-			// If the landmark matches Ernest's current state then it is deshinibited
-			// if the landmark's distance to target is closer than Ernest's current distance then it is deshinibited
+			// If the landmark matches Ernest's current state then it is disinhibited
+			// if the landmark's distance to target is closer than Ernest's current distance then it is disinhibited
+			// TODO: only disinhibit the closest landmark to target if there is more than one in the vicinity. 
 			if (isThirsty() && (landmark.isDrinkable() || (landmark.getDistanceToWater() < m_distanceToTarget))) 
 				inhibited = false;
 			if (isHungry() && (landmark.isEdible() || (landmark.getDistanceToFood() < m_distanceToTarget))) 
@@ -112,27 +113,33 @@ public class AttentionalSystem implements IAttentionalSystem {
 		return inhibited;
 	}
 	/**
-	 * The internal effect of the reflex mechanism of drinking when Ernest tastes water.
+	 * The internal effect of the reflex behavior of drinking when Ernest tastes water.
 	 */
 	public void drink(ILandmark landmark)
 	{
-		m_waterLevel = LEVEL_INCREMENT;
-		m_glucoseLevel = 0; // get hungry after eating
-		landmark.setDrinkable();
-		landmark.setLastTimeChecked(m_clock);
+		//landmark.setDrinkable(); // not necessary because drinkable landmarks are disinhibited when thristy due to their null distance to water.
+		check(landmark);
 		m_episodicMemory.UpdateDistanceToWater(m_clock);
+
+		// Get hungry after drinking
+		m_waterLevel = LEVEL_INCREMENT;
+		m_glucoseLevel = 0;
+		check(landmark); // check again now that Ernest is hungry
 	}
 	
 	/**
-	 * The internal effect of the reflex mechanism of eating when Ernest tastes glucose.
+	 * The internal effect of the reflex behavior of eating when Ernest tastes food.
 	 */
 	public void eat(ILandmark landmark)
 	{
-		m_glucoseLevel = LEVEL_INCREMENT;
-		m_waterLevel = 0; // get hungry after eating
-		landmark.setEdible();
-		landmark.setLastTimeChecked(m_clock);
+		//landmark.setEdible(); // not necessary because edible landmarks are disinhibited when hungry due to their null distance to food.
+		check(landmark);
 		m_episodicMemory.UpdateDistanceToFood(m_clock);
+		
+		// Get thirsty after eating
+		m_glucoseLevel = LEVEL_INCREMENT;
+		m_waterLevel = 0;
+		check(landmark); // check again now that Ernest is thirsty
 	}
 	
 	/**
@@ -161,6 +168,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 			m_distanceToTarget = landmark.getDistanceToFood();
 		}
 	}
+	
 	private boolean isThirsty()
 	{
 		return m_waterLevel <= 0;
@@ -295,7 +303,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 
 			// TODO also compute surprise in the case of primitive intention acts.  
 			if (m_intentionAct != enactedAct && !m_intentionAct.getStatus())  m_internalState= "!";
-			m_tracer.writeLine(enactedAct.getLabel() + m_internalState);
+			m_tracer.addEventProperty("enacted_act", enactedAct.getLabel());
+			m_tracer.addEventProperty("interrupted", m_internalState);
 
 			System.out.println("New decision ================ ");
 			

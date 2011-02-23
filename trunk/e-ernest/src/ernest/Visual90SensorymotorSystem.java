@@ -98,7 +98,7 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		if (m_currentRightDistance <= PROXIMITY_DISTANCE)
 			m_attentionalSystem.check(m_currentRightLandmark);
 		
-		// Inhibited landmarks are not processed in search for visual features. 
+		// Inhibited landmarks are not processed for dynamic visual features. 
 	
 		if (m_attentionalSystem.isInhibited(m_currentLeftLandmark))
 			m_currentLeftDistance = Ernest.INFINITE;
@@ -107,13 +107,13 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 			
 		m_satisfaction = 0;
 		
-		// Compute the visual features that reflect changes in how uninhibited landmarks are seen.
+		// Compute the dynamic visual features that reflect changes in how uninhibited landmarks are seen.
 		
 		m_leftFeature  = sensePixel(m_previousLeftDistance, m_currentLeftDistance, m_previousLeftLandmark, m_currentLeftLandmark);
 		m_rightFeature = sensePixel(m_previousRightDistance, m_currentRightDistance, m_previousRightLandmark, m_currentRightLandmark);		
 		
-		if (m_leftFeature.equals("o") && m_rightFeature.equals("o"))
-			m_satisfaction = -100;
+		//if (m_leftFeature.equals("o") && m_rightFeature.equals("o")) // don't excessively punish landmark disappearance in case of narrow visual field (PI/8).
+		//	m_satisfaction = -100;
 		
 		// Taste =====
 		
@@ -145,7 +145,8 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		}
 		
 		// closer
-		else if (previousDistance < Ernest.INFINITE && currentDistance < previousDistance && currentLandmark.equals(previousLandmark))
+		else if (previousDistance < Ernest.INFINITE && currentDistance < previousDistance 
+				&& currentLandmark.equals(previousLandmark))
 		{
 			feature = "+";
 			satisfaction = 200;
@@ -160,7 +161,9 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// disappear
 		//else if (previousPixel < Ernest.INFINITE && currentPixel == Ernest.INFINITE)
-		else if (currentDistance  == Ernest.INFINITE || !currentLandmark.equals(previousLandmark))
+		//else if (currentDistance  == Ernest.INFINITE || !currentLandmark.equals(previousLandmark))
+		else if (previousDistance < Ernest.INFINITE 
+				&& (currentDistance  == Ernest.INFINITE || !currentLandmark.equals(previousLandmark)))
 		{
 			feature = "o";
 			satisfaction = -100;
