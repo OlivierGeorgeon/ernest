@@ -30,7 +30,7 @@ public class Ernest implements IErnest
 	/** Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
 	public static int ACTIVATION_THRESH = 1;
 
-	/** Maximum length of a schema (For the schema to be chosen as an intention)*/
+	/** Maximum length of a schema (For the schema to be chosen as an intention) */
 	public static int SCHEMA_MAX_LENGTH = INFINITE;
 	
 	/** Ernest's primitive schema currently enacted */
@@ -44,6 +44,9 @@ public class Ernest implements IErnest
 	
 	/** Ernest's sensorymotor system. */
 	private ISensorymotorSystem m_sensorymotorSystem;
+
+	/** Ernest's tracing system. */
+	private ITracer m_tracer = null;
 
 	/**
 	 * Set Ernest's fundamental learning parameters.
@@ -71,7 +74,7 @@ public class Ernest implements IErnest
 	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
 	{
 		m_sensorymotorSystem = sensor;
-		m_sensorymotorSystem.init(m_episodicMemory, m_attentionalSystem);
+		m_sensorymotorSystem.init(m_episodicMemory, m_attentionalSystem, m_tracer);
 	};
 	
 	/**
@@ -80,7 +83,9 @@ public class Ernest implements IErnest
 	 */
 	public void setTracer(ITracer tracer) 
 	{ 
-		m_attentionalSystem.setTracer(tracer); 
+		m_tracer = tracer;
+		m_attentionalSystem.setTracer(m_tracer); 
+		m_episodicMemory.setTracer(m_tracer);
 	}
 
 	/**

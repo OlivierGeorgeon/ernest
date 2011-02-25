@@ -146,5 +146,10 @@ public class Landmark implements ILandmark
 	{
 		return m_distanceToFood;
 	}
+	
+	public String getHexColor()
+	{
+		return Integer.toHexString( m_color.getRGB() & 0x00ffffff ); 
+	}
 
 }

@@ -10,11 +10,15 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 {
 	protected EpisodicMemory m_episodicMemory;
 	protected IAttentionalSystem m_attentionalSystem;
+	protected ITracer m_tracer;
 
-	public void init(EpisodicMemory episodicMemory, IAttentionalSystem attentionalSystem)
+	public void init(EpisodicMemory episodicMemory, IAttentionalSystem attentionalSystem, ITracer tracer)
 	{
 		m_episodicMemory = episodicMemory;
 		m_attentionalSystem = attentionalSystem;
+		m_tracer = tracer;
+		// TODO clean this up.
+		if (tracer == null) System.out.println("The method Ernest.setTracer() must be called before the method Ernest.setSensorymotorSystem.");
 	}
 	
 	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction) 

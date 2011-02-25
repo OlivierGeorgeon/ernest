@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.w3c.dom.Element;
+
 /**
  * This tracer logs the trace into a text file.
  * @author ogeorgeon 
@@ -71,10 +73,10 @@ public class Tracer implements ITracer
 
 	public void startNewEvent(int t) 
 	{
-		addEventProperty("cycle", " " + t); 
+		addEventElement("cycle", " " + t); 
 	}
 
-	public void addEventProperty(String name, String value) 
+	public Element addEventElement(String name, String value) 
 	{
 		if (name.equals("cycle") || name.equals("enacted_act") || name.equals("interrupted")) 
 		{
@@ -94,6 +96,13 @@ public class Tracer implements ITracer
 				System.out.println("Error logging the trace.");
 				e.printStackTrace();
 			}
-		}		
+		}	
+		return null;
+	}
+
+	public Element addSubelement(Element element, String name, String textContent) 
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

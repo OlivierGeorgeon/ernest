@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.w3c.dom.Element;
+
 /**
  * Ernest's attentional system.
  * Maintain lists of acts that represent Ernest's current situation.
@@ -117,6 +119,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public void drink(ILandmark landmark)
 	{
+		m_tracer.addEventElement("drink", "true");
+
 		//landmark.setDrinkable(); // not necessary because drinkable landmarks are disinhibited when thristy due to their null distance to water.
 		check(landmark);
 		m_episodicMemory.UpdateDistanceToWater(m_clock);
@@ -132,6 +136,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public void eat(ILandmark landmark)
 	{
+		m_tracer.addEventElement("eat", landmark.getHexColor());
 		//landmark.setEdible(); // not necessary because edible landmarks are disinhibited when hungry due to their null distance to food.
 		check(landmark);
 		m_episodicMemory.UpdateDistanceToFood(m_clock);
@@ -148,6 +153,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public void bump(ILandmark landmark)
 	{
+		m_tracer.addEventElement("bump_landmark", landmark.getHexColor());
 		landmark.setBumpable();
 		check(landmark);
 		//landmark.setLastTimeChecked(m_clock);
@@ -155,6 +161,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 	
 	public void check(ILandmark landmark)
 	{
+		m_tracer.addEventElement("check_landmark", landmark.getHexColor());
+
 		if (landmark.isBumpable())
 			landmark.setLastTimeChecked(m_clock);
 		if (isThirsty())
@@ -275,6 +283,10 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public ISchema step(IAct primitiveEnaction) 
 	{
+		m_tracer.startNewEvent(m_clock);
+		m_tracer.addEventElement("is_thristy", new Boolean(isThirsty()).toString());
+		m_tracer.addEventElement("is_hungry", new Boolean(isHungry()).toString());
+		
 		m_internalState= "";
 		tick();
 
@@ -285,6 +297,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 
 		if (m_primitiveIntention != null)
 		{
+			m_tracer.addEventElement("primitive_intended_act", m_primitiveIntention.getLabel());
+			m_tracer.addEventElement("primitive_enacted_act", primitiveEnaction.getLabel());
 			// Compute the actually enacted act
 			
 			enactedAct = enactedAct(m_primitiveIntention.getSchema(), primitiveEnaction);
@@ -303,8 +317,9 @@ public class AttentionalSystem implements IAttentionalSystem {
 
 			// TODO also compute surprise in the case of primitive intention acts.  
 			if (m_intentionAct != enactedAct && !m_intentionAct.getStatus())  m_internalState= "!";
-			m_tracer.addEventProperty("enacted_act", enactedAct.getLabel());
-			m_tracer.addEventProperty("interrupted", m_internalState);
+			m_tracer.addEventElement("top_enacted_act", enactedAct.getLabel());
+			m_tracer.addEventElement("interrupted", m_internalState);
+			m_tracer.addEventElement("new_intention", "true");
 
 			System.out.println("New decision ================ ");
 			
@@ -317,6 +332,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 			if (intendedSchema == enactedAct.getSchema()) performedAct = enactedAct;
 			else	performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
 			
+			m_tracer.addEventElement("Performed", performedAct.getLabel() );
 			System.out.println("Performed " + performedAct );
 			
 			// learn from the  context and the performed act
@@ -355,7 +371,13 @@ public class AttentionalSystem implements IAttentionalSystem {
 		
 		// Log the activation list and the learned count for debug
 		System.out.println("Activation context list: ");
-		for (IAct a : m_activationList)	{	System.out.println(a);}
+		Element activation = m_tracer.addEventElement("activation_context_acts", "");
+		for (IAct a : m_activationList)	
+		{	
+			m_tracer.addSubelement(activation, "act", a.getLabel());
+			System.out.println(a);
+		}
+		m_tracer.addEventElement("learn_count", m_episodicMemory.getLearnCount() + "");
 		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
 			
 		// If we don't have an ongoing intention then we choose a new intention.
@@ -365,6 +387,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 			intentionAct = m_episodicMemory.selectAct(m_activationList);
 			m_intentionAct = intentionAct;
 		}
+		
+		m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
 		
 		// Spread the selected intention's activation to primitive acts.
 		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)
@@ -377,6 +401,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 		IAct nextPrimitiveAct = selectAct(activePrimitiveActs);		
 		m_primitiveIntention = nextPrimitiveAct;
 		
+		m_tracer.addEventElement("next_primitive_intention", nextPrimitiveAct.getLabel());
 		return nextPrimitiveAct.getSchema();
 				
 	}
