@@ -93,6 +93,7 @@ public interface ILandmark
 	 */
 	int getDistanceToFood();
 
+	String getHexColor();
 }
 
 

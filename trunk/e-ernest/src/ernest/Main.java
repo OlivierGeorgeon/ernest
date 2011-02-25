@@ -24,9 +24,9 @@ public class Main
 		// Initialize the Ernest 
 		
 		ernest.setParameters(6, 1, 6);
-		ernest.setSensorymotorSystem(sms);
 		ernest.setTracer(tracer);
-		
+		ernest.setSensorymotorSystem(sms);
+
 		// Set Ernest's primitive interactions and motivations
 		
 		sms.addPrimitiveAct(">", true,   50); // Move

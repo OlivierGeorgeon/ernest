@@ -2,6 +2,8 @@ package ernest;
 
 import java.awt.Color;
 
+import org.w3c.dom.Element;
+
 /**
  * Implement Ernest 9.0's sensorymotor system. 
  * Recieves a matrix of EyeFixation objects from the environment.
@@ -91,20 +93,35 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		m_currentLeftLandmark   = m_episodicMemory.addLandmark(matrix[0][1], matrix[0][2], matrix[0][3]);
 		m_currentRightLandmark  = m_episodicMemory.addLandmark(matrix[1][1], matrix[1][2], matrix[1][3]);
 		
-		// If the landmark is bumpable, Ernest checks in at the landmark.
-
-		if (m_currentLeftDistance <= PROXIMITY_DISTANCE)
-			m_attentionalSystem.check(m_currentLeftLandmark);
-		if (m_currentRightDistance <= PROXIMITY_DISTANCE)
-			m_attentionalSystem.check(m_currentRightLandmark);
+		// Trace 
+		
+		Element leftElement = m_tracer.addEventElement("eye_left", "");
+		m_tracer.addSubelement(leftElement, "color", m_currentLeftLandmark.getHexColor());
+		m_tracer.addSubelement(leftElement, "distance", m_currentLeftDistance + "");
+		m_tracer.addSubelement(leftElement, "distance_to_water", m_currentLeftLandmark.getDistanceToWater() + "");
+		m_tracer.addSubelement(leftElement, "distance_to_food", m_currentLeftLandmark.getDistanceToFood() + "");
+		
+		Element rightElement = m_tracer.addEventElement("eye_right", "");
+		m_tracer.addSubelement(rightElement, "color", m_currentRightLandmark.getHexColor());
+		m_tracer.addSubelement(rightElement, "distance", m_currentRightDistance + "");
+		m_tracer.addSubelement(rightElement, "distance_to_water", m_currentRightLandmark.getDistanceToWater() + "");
+		m_tracer.addSubelement(rightElement, "distance_to_food", m_currentRightLandmark.getDistanceToFood() + "");
 		
 		// Inhibited landmarks are not processed for dynamic visual features. 
-	
+		// nor checked in.
+		
 		if (m_attentionalSystem.isInhibited(m_currentLeftLandmark))
 			m_currentLeftDistance = Ernest.INFINITE;
 		if (m_attentionalSystem.isInhibited(m_currentRightLandmark))
 			m_currentRightDistance = Ernest.INFINITE;
 			
+		// When Ernest enters a landmark's vicinity, he checks in at the landmark.
+
+		if (m_currentLeftDistance <= PROXIMITY_DISTANCE)
+			m_attentionalSystem.check(m_currentLeftLandmark);
+		else if (m_currentRightDistance <= PROXIMITY_DISTANCE) // no need to check twice because left and right landmarks would be the same.
+			m_attentionalSystem.check(m_currentRightLandmark);
+		
 		m_satisfaction = 0;
 		
 		// Compute the dynamic visual features that reflect changes in how uninhibited landmarks are seen.

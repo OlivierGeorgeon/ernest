@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.w3c.dom.Element;
+
 /**
  * Ernest's episodic memory contains all the schemas and acts ever created.
  * It offers methods to record new schemas and acts.
@@ -14,6 +16,9 @@ import java.util.Random;
  */
 public class EpisodicMemory 
 {
+	/** The tracer */
+	private ITracer m_tracer;
+	
 	/** A list of all the schemas ever created ... */
 	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
 
@@ -29,6 +34,13 @@ public class EpisodicMemory
 	/** Counter of learned schemas for tracing */
 	private int m_learnCount = 0;
 	
+	/**
+	 * @param tracer The tracer
+	 */
+	public void setTracer(ITracer tracer)
+	{
+		m_tracer = tracer;
+	}
 	/**
 	 * @return the number of schema learned since the last reset
 	 */
@@ -193,6 +205,7 @@ public class EpisodicMemory
 		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
 		// Browse all the existing schemas 
+		Element activations = m_tracer.addEventElement("activations", "");
 		for (ISchema s : m_schemas)
 		{
 			if (!s.isPrimitive())
@@ -204,6 +217,7 @@ public class EpisodicMemory
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
+						m_tracer.addSubelement(activations, "activation", s + " s=" + s.getIntentionAct().getSatisfaction());
 						System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
@@ -259,8 +273,12 @@ public class EpisodicMemory
 		}
 
 		System.out.println("Propose: ");
+		Element proposalElmt = m_tracer.addEventElement("proposals", "");
 		for (IProposition p : proposals)
+		{
+			m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
 			System.out.println(p);
+		}
 
 		// sort by weighted proposition...
 		Collections.sort(proposals);

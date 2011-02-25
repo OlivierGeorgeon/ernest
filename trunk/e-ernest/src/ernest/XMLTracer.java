@@ -9,7 +9,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 import java.util.Calendar;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 
 /**
@@ -110,14 +109,33 @@ public class XMLTracer implements ITracer
 	}
 
 	/**
-	 * Add a new property to the current event
-	 * @param name The property's name
-	 * @param value The property's value
+	 * Add a new element to the current event
+	 * @param name The element's name
+	 * @param textContent The element's textual content
+	 * @return a pointer to the element that can be used to add sub elements.
 	 */
-	public void addEventProperty(String name, String value)
+	public Element addEventElement(String name, String textContent)
 	{
-		Element property = m_document.createElement(name);
-		property.setTextContent(value);
-		m_currentEvent.appendChild(property);
+		if (m_currentEvent != null)
+		{
+			Element element = m_document.createElement(name);
+			element.setTextContent(textContent);
+			m_currentEvent.appendChild(element);
+			return element;
+		}
+		else 
+			return null;
+	}
+	
+	public Element addSubelement(Element element, String name, String textContent)
+	{
+		if (element != null)
+		{
+			Element subElement = m_document.createElement(name);
+			subElement.setTextContent(textContent);
+			element.appendChild(subElement);
+			return subElement;
+		}
+		else return null;
 	}
 }
