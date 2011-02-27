@@ -37,7 +37,7 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 
 	/** The taste of glucose */
 	private int TASTE_FOOD = 2;
-
+	
 	/**
 	 * Determine the enacted act.
 	 * Made from the binary feedback status plus the features provided by the distal sensory system. 
@@ -61,7 +61,7 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 			label = "[" + label + "]";
 		
 		// Bump into a landmark
-		if (label.equals("[>]"))
+		if (label.equals("[>]") && m_currentLeftLandmark.equals(m_currentRightLandmark))
 			m_attentionalSystem.bump(m_currentLeftLandmark);
 		
 		// Compute the act's satisfaction 
@@ -98,17 +98,20 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		Element leftElement = m_tracer.addEventElement("eye_left", "");
 		m_tracer.addSubelement(leftElement, "color", m_currentLeftLandmark.getHexColor());
 		m_tracer.addSubelement(leftElement, "distance", m_currentLeftDistance + "");
-		m_tracer.addSubelement(leftElement, "distance_to_water", m_currentLeftLandmark.getDistanceToWater() + "");
-		m_tracer.addSubelement(leftElement, "distance_to_food", m_currentLeftLandmark.getDistanceToFood() + "");
+		m_tracer.addSubelement(leftElement, "time_to_water", m_currentLeftLandmark.getDistanceToWater() + "");
+		m_tracer.addSubelement(leftElement, "time_to_food", m_currentLeftLandmark.getDistanceToFood() + "");
+		m_tracer.addSubelement(leftElement, "last_checked", m_currentLeftLandmark.getLastTimeChecked() + "");
 		
 		Element rightElement = m_tracer.addEventElement("eye_right", "");
 		m_tracer.addSubelement(rightElement, "color", m_currentRightLandmark.getHexColor());
 		m_tracer.addSubelement(rightElement, "distance", m_currentRightDistance + "");
-		m_tracer.addSubelement(rightElement, "distance_to_water", m_currentRightLandmark.getDistanceToWater() + "");
-		m_tracer.addSubelement(rightElement, "distance_to_food", m_currentRightLandmark.getDistanceToFood() + "");
+		m_tracer.addSubelement(rightElement, "time_to_water", m_currentRightLandmark.getDistanceToWater() + "");
+		m_tracer.addSubelement(rightElement, "time_to_food", m_currentRightLandmark.getDistanceToFood() + "");
+		m_tracer.addSubelement(rightElement, "last_checked", m_currentRightLandmark.getLastTimeChecked() + "");
 		
 		// Inhibited landmarks are not processed for dynamic visual features. 
 		// nor checked in.
+		// TODO Inhibited landmarks are not even transmitted to the visual system
 		
 		if (m_attentionalSystem.isInhibited(m_currentLeftLandmark))
 			m_currentLeftDistance = Ernest.INFINITE;
@@ -119,7 +122,7 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 
 		if (m_currentLeftDistance <= PROXIMITY_DISTANCE)
 			m_attentionalSystem.check(m_currentLeftLandmark);
-		else if (m_currentRightDistance <= PROXIMITY_DISTANCE) // no need to check twice because left and right landmarks would be the same.
+		if (m_currentRightDistance <= PROXIMITY_DISTANCE) // ???no need to check twice because left and right landmarks would be the same.
 			m_attentionalSystem.check(m_currentRightLandmark);
 		
 		m_satisfaction = 0;
@@ -136,11 +139,12 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		int taste = matrix[2][0];
 		
-		if (taste == TASTE_WATER)
+		if (taste == TASTE_WATER && m_currentLeftDistance == 0)
 			m_attentionalSystem.drink(m_currentLeftLandmark);
-		if (taste == TASTE_FOOD)
+		if (taste == TASTE_FOOD && m_currentLeftDistance == 0)
 			m_attentionalSystem.eat(m_currentLeftLandmark);
-		
+		if (taste > TASTE_FOOD && m_currentLeftDistance == 0)
+			m_attentionalSystem.visit(m_currentLeftLandmark);
 	}
 
 	/**

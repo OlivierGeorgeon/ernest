@@ -88,11 +88,18 @@ public class AttentionalSystem implements IAttentionalSystem {
 	
 	public boolean isInhibited(Color color)
 	{
+		boolean inhibited = true;
 		ILandmark l = m_episodicMemory.getLandmark(color);
 		if (l == null)
-			return false;
+		{
+			//System.out.println("unknown landmark");
+			inhibited = false;
+		}
 		else
-			return isInhibited(l);		
+		{
+			inhibited = isInhibited(l);
+		}
+		return inhibited;
 	}
 
 	public boolean isInhibited(ILandmark landmark)
@@ -102,14 +109,14 @@ public class AttentionalSystem implements IAttentionalSystem {
 		if (!landmark.getColor().equals(Ernest.WALL_COLOR))
 		{
 			// If the landmark has been forgotten then it is deshinibited
-			if (m_clock - landmark.getLastTimeChecked() > PERSISTENCE) inhibited = false;
+			if ((m_clock - landmark.getLastTimeChecked()) > PERSISTENCE) inhibited = false;
 			
 			// If the landmark matches Ernest's current state then it is disinhibited
 			// if the landmark's distance to target is closer than Ernest's current distance then it is disinhibited
 			// TODO: only disinhibit the closest landmark to target if there is more than one in the vicinity. 
-			if (isThirsty() && (landmark.isDrinkable() || (landmark.getDistanceToWater() < m_distanceToTarget))) 
+			if (isThirsty() && landmark.getDistanceToWater() < m_distanceToTarget) 
 				inhibited = false;
-			if (isHungry() && (landmark.isEdible() || (landmark.getDistanceToFood() < m_distanceToTarget))) 
+			if (isHungry() && landmark.getDistanceToFood() < m_distanceToTarget) 
 				inhibited = false;		
 		}	
 		return inhibited;
@@ -119,11 +126,13 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public void drink(ILandmark landmark)
 	{
-		m_tracer.addEventElement("drink", "true");
+		m_tracer.addEventElement("drink", landmark.getHexColor());
 
 		//landmark.setDrinkable(); // not necessary because drinkable landmarks are disinhibited when thristy due to their null distance to water.
+		landmark.setVisited();
 		check(landmark);
 		m_episodicMemory.UpdateDistanceToWater(m_clock);
+		landmark.setDrinkable(); 
 
 		// Get hungry after drinking
 		m_waterLevel = LEVEL_INCREMENT;
@@ -138,13 +147,22 @@ public class AttentionalSystem implements IAttentionalSystem {
 	{
 		m_tracer.addEventElement("eat", landmark.getHexColor());
 		//landmark.setEdible(); // not necessary because edible landmarks are disinhibited when hungry due to their null distance to food.
+		landmark.setVisited();
 		check(landmark);
 		m_episodicMemory.UpdateDistanceToFood(m_clock);
+		landmark.setEdible(); // set time to food to null even when Ernest is not hungry
 		
 		// Get thirsty after eating
 		m_glucoseLevel = LEVEL_INCREMENT;
 		m_waterLevel = 0;
 		check(landmark); // check again now that Ernest is thirsty
+	}
+	
+	public void visit(ILandmark landmark)
+	{
+		m_tracer.addEventElement("visit", landmark.getHexColor());
+		landmark.setVisited();
+		check(landmark);
 	}
 	
 	/**
@@ -154,7 +172,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	public void bump(ILandmark landmark)
 	{
 		m_tracer.addEventElement("bump_landmark", landmark.getHexColor());
-		landmark.setBumpable();
+		landmark.setVisited();
 		check(landmark);
 		//landmark.setLastTimeChecked(m_clock);
 	}
@@ -163,21 +181,23 @@ public class AttentionalSystem implements IAttentionalSystem {
 	{
 		m_tracer.addEventElement("check_landmark", landmark.getHexColor());
 
-		if (landmark.isBumpable())
+		if (landmark.isVisited())
 			landmark.setLastTimeChecked(m_clock);
 		if (isThirsty())
 		{
 			landmark.setLastTimeThirsty(m_clock);
-			m_distanceToTarget = landmark.getDistanceToWater();
+			if (landmark.getDistanceToWater() > 0) // (not yet arrived to final target)
+				m_distanceToTarget = landmark.getDistanceToWater();
 		}
 		if (isHungry())
 		{
 			landmark.setLastTimeHungry(m_clock);
+			if (landmark.getDistanceToFood() > 0) // (not yet arrived to final target)
 			m_distanceToTarget = landmark.getDistanceToFood();
 		}
 	}
 	
-	private boolean isThirsty()
+	public boolean isThirsty()
 	{
 		return m_waterLevel <= 0;
 	}
@@ -286,6 +306,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 		m_tracer.startNewEvent(m_clock);
 		m_tracer.addEventElement("is_thristy", new Boolean(isThirsty()).toString());
 		m_tracer.addEventElement("is_hungry", new Boolean(isHungry()).toString());
+		m_tracer.addEventElement("time_to_target", m_distanceToTarget + "");
 		
 		m_internalState= "";
 		tick();

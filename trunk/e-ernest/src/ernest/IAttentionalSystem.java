@@ -67,4 +67,7 @@ public interface IAttentionalSystem
 	 * @param landmark The landmark to check
 	 */
 	public void check(ILandmark landmark);
+	
+	public boolean isThirsty();
+	public void visit(ILandmark landmark);
 }
