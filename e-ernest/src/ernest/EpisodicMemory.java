@@ -344,21 +344,38 @@ public class EpisodicMemory
 		return addLandmark(color.getRed() ,color.getGreen() ,color.getBlue());
 	}
 	
+	/**
+	 * Search for a landmark associated with the specified color.
+	 * @param color The specified color.
+	 * @return the landmark if it exists or null if not.
+	 */
 	public ILandmark getLandmark(Color color)
 	{
 		ILandmark l = new Landmark(color.getRed(), color.getGreen(), color.getBlue());
-		if (m_landmarks.contains(l))
-			return l;
-		else
+
+		int i = m_landmarks.indexOf(l);
+		if (i == -1)
+			// The landmark does not exist
 			return null;
+		else 
+			// The landmark already exists: return a pointer to it.
+			return  m_landmarks.get(i);
 	}
 	
+	/**
+	 * Update all landmarks' distance to water based on the current time.
+	 * @param clock Ernest's current time.
+	 */
 	public void UpdateDistanceToWater(int clock)
 	{
 		for (ILandmark l : m_landmarks)
 			l.setDistanceToWater(clock);
 	}
 
+	/**
+	 * Update all landmarks' distance to food based on the current time.
+	 * @param clock Ernest's current time.
+	 */
 	public void UpdateDistanceToFood(int clock)
 	{
 		for (ILandmark l : m_landmarks)

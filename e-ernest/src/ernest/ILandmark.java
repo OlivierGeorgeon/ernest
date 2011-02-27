@@ -20,20 +20,10 @@ public interface ILandmark
 	String getLabel();
 	
 	/**
-	 * @return True if the landmark is drinkable.
-	 */
-	boolean isDrinkable();
-	
-	/**
 	 * Mark this landmark as drinkable
 	 */
 	void setDrinkable();
 
-	/**
-	 * @return True if the landmark is edible.
-	 */
-	boolean isEdible();
-	
 	/**
 	 * Mark this landmark as edible.
 	 */
@@ -42,12 +32,12 @@ public interface ILandmark
 	/**
 	 * @return True if the landmark is a wall that would be bumped.
 	 */
-	boolean isBumpable();
+	boolean isVisited();
 	
 	/**
 	 * Mark this landmark as a wall that would be bumped.
 	 */
-	void setBumpable();
+	void setVisited();
 
 	/**
 	 * @return the timestamp when this landmark was last checked.
