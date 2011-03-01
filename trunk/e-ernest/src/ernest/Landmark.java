@@ -92,11 +92,16 @@ public class Landmark implements ILandmark
 
 	public void setLastTimeThirsty(int t) 
 	{
+		// When mature, Ernest considers all landmarks as visited. This reduces ugly chaotic behavior in Ernest 9.0 demo.
+		if (t > Ernest.MATURITY)
+			m_visited = true;
 		m_lastTimeThirsty = t;
 	}
 
 	public void setLastTimeHungry(int t) 
 	{
+		if (t > Ernest.MATURITY)
+			m_visited = true;
 		m_lastTimeHungry = t;
 	}
 
@@ -104,8 +109,10 @@ public class Landmark implements ILandmark
 	{
 		if (m_lastTimeThirsty > 0)
 		{
-			m_distanceToWater = (m_distanceToWater + t - m_lastTimeThirsty) / 2;
-			//m_distanceToWater = t - m_lastTimeThirsty;
+			//if (m_distanceToWater == Ernest.INFINITE)
+			//	m_distanceToWater = t - m_lastTimeThirsty;
+			//m_distanceToWater = (m_distanceToWater + t - m_lastTimeThirsty) / 2;
+			m_distanceToWater = t - m_lastTimeThirsty;
 			m_lastTimeThirsty = 0;
 		}
 	}
@@ -114,12 +121,23 @@ public class Landmark implements ILandmark
 	{
 		if (m_lastTimeHungry > 0)
 		{
-			m_distanceToFood = (m_distanceToFood + t - m_lastTimeHungry) / 2;
+			int d = t - m_lastTimeHungry;
+			// update if the distance is shorter assuming that the landmarks and the hive don't move.
+			if (m_distanceToFood > d)
+				m_distanceToFood = d;//(m_distanceToFood + t - m_lastTimeHungry) / 2;
 			//m_distanceToFood =  t - m_lastTimeHungry;
 			m_lastTimeHungry = 0;
 		}
 	}
 
+	public void updateTimeFromHive(int t)
+	{
+		// update if the distance is shorter assuming that the landmarks and the hive don't move.
+		if (m_distanceToFood > t)
+			m_distanceToFood = t;//(m_distanceToFood + t - m_lastTimeHungry) / 2;	
+		System.out.println(getHexColor() + "distance to food: " + t);
+	}
+	
 	public int getDistanceToWater() 
 	{
 		return m_distanceToWater;
@@ -132,7 +150,8 @@ public class Landmark implements ILandmark
 	
 	public String getHexColor()
 	{
-		return Integer.toHexString( m_color.getRGB() & 0x00ffffff ); 
+		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
+		return s;
 	}
 
 }

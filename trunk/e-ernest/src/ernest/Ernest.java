@@ -33,6 +33,9 @@ public class Ernest implements IErnest
 	/** Maximum length of a schema (For the schema to be chosen as an intention) */
 	public static int SCHEMA_MAX_LENGTH = INFINITE;
 	
+	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
+	public static int MATURITY = 150;
+	
 	/** Ernest's primitive schema currently enacted */
 	private ISchema m_primitiveSchema = null;
 	

@@ -29,4 +29,13 @@ public interface ITracer {
 
 	public Element addSubelement(Element element, String name, String textContent);
 
+	/**
+	 * Create an event that can be populated using its reference.
+	 * @param source The source of the event: Ernest or user
+	 * @param type The event's type.
+	 * @param t The event's time stamp.
+	 * @return The pointer to the event.
+	 */
+	public Element newEvent(String source, String type, int t);
+
 }

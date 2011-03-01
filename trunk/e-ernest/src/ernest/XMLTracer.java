@@ -24,6 +24,7 @@ public class XMLTracer implements ITracer
 	private Element m_sequence;
 	private Element m_currentEvent;
 	private String m_fileName;
+	private int m_id = 0;
 	
 	/**
 	 * Initialize the tracer.
@@ -94,18 +95,43 @@ public class XMLTracer implements ITracer
 	}
 
 	/**
-	 * Create a new event
+	 * Create an event that can be populated using its reference.
+	 * @param type The event's type.
+	 * @param t The event's time stamp.
+	 * @return The pointer to the event.
+	 */
+	public Element newEvent(String source, String type, int t)
+	{
+		Element event = m_document.createElement("event");
+		
+		m_id++;
+		event.setAttribute("id", m_id + "");
+		event.setAttribute("source", source);
+		event.setAttribute("date", t + "");
+			
+		Element ty = m_document.createElement("type");
+		ty.setTextContent(type);
+		event.appendChild(ty);
+		
+		m_sequence.appendChild(event);
+
+		return event;
+	}
+	
+	/**
+	 * Create a new event that can be populated with elements later.
 	 * @param t the time stamp
 	 */
 	public void startNewEvent(int t)
 	{
 		m_currentEvent = m_document.createElement("event");
-		m_sequence.appendChild(m_currentEvent);
 		
-		Element date = m_document.createElement("date");
-		date.setTextContent(t + "");
-
-		m_currentEvent.appendChild(date);
+		m_id++;
+		m_currentEvent.setAttribute("id", m_id + "");
+		m_currentEvent.setAttribute("source", "Ernest");
+		m_currentEvent.setAttribute("date", t +"");
+			
+		m_sequence.appendChild(m_currentEvent);
 	}
 
 	/**

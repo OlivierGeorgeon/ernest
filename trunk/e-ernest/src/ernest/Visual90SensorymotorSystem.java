@@ -49,6 +49,9 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		// The schema is null during the first cycle, then the enacted act is null.
 		if (schema == null) return null;
 		
+		m_tracer.addEventElement("primitive_enacted_schema", schema.getLabel());
+		m_tracer.addEventElement("primitive_feedback", new Boolean(status).toString());
+
 		// Computes the act's label from the features returned by the sensory system and from the status.
 		
 		String label = schema.getLabel();
@@ -67,6 +70,8 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		// Compute the act's satisfaction 
 		
 		int satisfaction = m_satisfaction + schema.resultingAct(status).getSatisfaction();  
+		
+		m_tracer.addEventElement("primitive_satisfaction", satisfaction + "");
 		
 		// Create the act in episodic memory if it does not exist.
 		
@@ -122,7 +127,7 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 
 		if (m_currentLeftDistance <= PROXIMITY_DISTANCE)
 			m_attentionalSystem.check(m_currentLeftLandmark);
-		if (m_currentRightDistance <= PROXIMITY_DISTANCE) // ???no need to check twice because left and right landmarks would be the same.
+		if (m_currentRightDistance <= PROXIMITY_DISTANCE && !m_currentLeftLandmark.equals(m_currentRightLandmark)) 
 			m_attentionalSystem.check(m_currentRightLandmark);
 		
 		m_satisfaction = 0;
@@ -132,8 +137,8 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		m_leftFeature  = sensePixel(m_previousLeftDistance, m_currentLeftDistance, m_previousLeftLandmark, m_currentLeftLandmark);
 		m_rightFeature = sensePixel(m_previousRightDistance, m_currentRightDistance, m_previousRightLandmark, m_currentRightLandmark);		
 		
-		//if (m_leftFeature.equals("o") && m_rightFeature.equals("o")) // don't excessively punish landmark disappearance in case of narrow visual field (PI/8).
-		//	m_satisfaction = -100;
+		m_tracer.addSubelement(leftElement, "dynamic_feature", m_leftFeature);
+		m_tracer.addSubelement(rightElement, "dynamic_feature", m_rightFeature);
 		
 		// Taste =====
 		

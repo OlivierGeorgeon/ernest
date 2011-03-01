@@ -218,7 +218,7 @@ public class EpisodicMemory
 					{
 						activated = true;
 						m_tracer.addSubelement(activations, "activation", s + " s=" + s.getIntentionAct().getSatisfaction());
-						System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
+						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
 				
@@ -277,7 +277,7 @@ public class EpisodicMemory
 		for (IProposition p : proposals)
 		{
 			m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
-			System.out.println(p);
+			//System.out.println(p);
 		}
 
 		// sort by weighted proposition...
