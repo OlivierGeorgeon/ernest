@@ -84,6 +84,9 @@ public interface ILandmark
 	int getDistanceToFood();
 
 	String getHexColor();
+	
+	public void updateTimeFromHive(int t);
+
 }
 
 

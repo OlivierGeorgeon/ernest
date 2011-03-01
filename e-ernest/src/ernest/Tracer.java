@@ -105,4 +105,10 @@ public class Tracer implements ITracer
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Element newEvent(String source, String type, int t) 
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
