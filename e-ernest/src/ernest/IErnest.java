@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 /**
  * The interface through which the environment can use an Ernest agent. 
  * @author ogeorgeon
@@ -52,6 +54,13 @@ public interface IErnest
 	 */
 	public String step(boolean status);
 	
-	public IAttentionalSystem getAttentionalSystem();
+	//public IAttentionalSystem getAttentionalSystem();
+	
+	/**
+	 * @param color
+	 * @return true if the color is inhibited by Ernest's static system
+	 */
+	public boolean isInhibited(Color color);
+	public boolean isThirsty();
 	
 }

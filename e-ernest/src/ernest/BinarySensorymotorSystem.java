@@ -9,12 +9,14 @@ package ernest;
 public class BinarySensorymotorSystem implements ISensorymotorSystem 
 {
 	protected EpisodicMemory m_episodicMemory;
+	protected StaticSystem m_staticSystem;
 	protected IAttentionalSystem m_attentionalSystem;
 	protected ITracer m_tracer;
 
-	public void init(EpisodicMemory episodicMemory, IAttentionalSystem attentionalSystem, ITracer tracer)
+	public void init(EpisodicMemory episodicMemory, StaticSystem staticSystem, IAttentionalSystem attentionalSystem, ITracer tracer)
 	{
 		m_episodicMemory = episodicMemory;
+		m_staticSystem = staticSystem;
 		m_attentionalSystem = attentionalSystem;
 		m_tracer = tracer;
 		// TODO clean this up.

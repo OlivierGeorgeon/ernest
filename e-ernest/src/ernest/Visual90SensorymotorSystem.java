@@ -65,7 +65,7 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Bump into a landmark
 		if (label.equals("[>]") && m_currentLeftLandmark.equals(m_currentRightLandmark))
-			m_attentionalSystem.bump(m_currentLeftLandmark);
+			m_staticSystem.bump(m_currentLeftLandmark);
 		
 		// Compute the act's satisfaction 
 		
@@ -95,8 +95,8 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		m_previousLeftLandmark  = m_currentLeftLandmark;
 		m_previousRightLandmark = m_currentRightLandmark;
-		m_currentLeftLandmark   = m_episodicMemory.addLandmark(matrix[0][1], matrix[0][2], matrix[0][3]);
-		m_currentRightLandmark  = m_episodicMemory.addLandmark(matrix[1][1], matrix[1][2], matrix[1][3]);
+		m_currentLeftLandmark   = m_staticSystem.addLandmark(matrix[0][1], matrix[0][2], matrix[0][3]);
+		m_currentRightLandmark  = m_staticSystem.addLandmark(matrix[1][1], matrix[1][2], matrix[1][3]);
 		
 		// Trace 
 		
@@ -118,17 +118,17 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		// nor checked in.
 		// TODO Inhibited landmarks are not even transmitted to the visual system
 		
-		if (m_attentionalSystem.isInhibited(m_currentLeftLandmark))
+		if (m_staticSystem.isInhibited(m_currentLeftLandmark))
 			m_currentLeftDistance = Ernest.INFINITE;
-		if (m_attentionalSystem.isInhibited(m_currentRightLandmark))
+		if (m_staticSystem.isInhibited(m_currentRightLandmark))
 			m_currentRightDistance = Ernest.INFINITE;
 			
 		// When Ernest enters a landmark's vicinity, he checks in at the landmark.
 
 		if (m_currentLeftDistance <= PROXIMITY_DISTANCE)
-			m_attentionalSystem.check(m_currentLeftLandmark);
+			m_staticSystem.check(m_currentLeftLandmark);
 		if (m_currentRightDistance <= PROXIMITY_DISTANCE && !m_currentLeftLandmark.equals(m_currentRightLandmark)) 
-			m_attentionalSystem.check(m_currentRightLandmark);
+			m_staticSystem.check(m_currentRightLandmark);
 		
 		m_satisfaction = 0;
 		
@@ -145,11 +145,11 @@ public class Visual90SensorymotorSystem  extends BinarySensorymotorSystem
 		int taste = matrix[2][0];
 		
 		if (taste == TASTE_WATER && m_currentLeftDistance == 0)
-			m_attentionalSystem.drink(m_currentLeftLandmark);
+			m_staticSystem.drink(m_currentLeftLandmark);
 		if (taste == TASTE_FOOD && m_currentLeftDistance == 0)
-			m_attentionalSystem.eat(m_currentLeftLandmark);
+			m_staticSystem.eat(m_currentLeftLandmark);
 		if (taste > TASTE_FOOD && m_currentLeftDistance == 0)
-			m_attentionalSystem.visit(m_currentLeftLandmark);
+			m_staticSystem.visit(m_currentLeftLandmark);
 	}
 
 	/**
