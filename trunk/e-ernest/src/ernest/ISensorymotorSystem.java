@@ -11,10 +11,12 @@ public interface ISensorymotorSystem
 	
 	/**
 	 * Initialize the sensorymotor system with the connection to episodic memory and to the attentional system
-	 * @param episodicMemory Ernest's episodic memory
-	 * @param attentionalSystem Ernest's attentional system
+	 * @param episodicMemory Ernest's episodic memory.
+	 * @param staticSystem Ernest's static system.
+	 * @param attentionalSystem Ernest's attentional system.
+	 * @param tracer Ernest's tracer.
 	 */
-	public void init(EpisodicMemory episodicMemory, IAttentionalSystem attentionalSystem , ITracer tracer);
+	public void init(EpisodicMemory episodicMemory, StaticSystem staticSystem, IAttentionalSystem attentionalSystem , ITracer tracer);
 
 	/**
 	 * Used by the environment to set the primitive binary sensorymotor acts.

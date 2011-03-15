@@ -42,8 +42,11 @@ public class Ernest implements IErnest
 	/** Ernest's episodic memory. */
 	private EpisodicMemory m_episodicMemory = new EpisodicMemory();
 
+	/** Ernest's static system. */
+	private StaticSystem m_staticSystem = new StaticSystem();
+
 	/** Ernest's attentional system. */
-	private IAttentionalSystem m_attentionalSystem = new AttentionalSystem(m_episodicMemory);
+	private IAttentionalSystem m_attentionalSystem = new AttentionalSystem(m_episodicMemory, m_staticSystem);
 	
 	/** Ernest's sensorymotor system. */
 	private ISensorymotorSystem m_sensorymotorSystem;
@@ -77,7 +80,7 @@ public class Ernest implements IErnest
 	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
 	{
 		m_sensorymotorSystem = sensor;
-		m_sensorymotorSystem.init(m_episodicMemory, m_attentionalSystem, m_tracer);
+		m_sensorymotorSystem.init(m_episodicMemory, m_staticSystem, m_attentionalSystem, m_tracer);
 	};
 	
 	/**
@@ -89,6 +92,7 @@ public class Ernest implements IErnest
 		m_tracer = tracer;
 		m_attentionalSystem.setTracer(m_tracer); 
 		m_episodicMemory.setTracer(m_tracer);
+		m_staticSystem.setTracer(m_tracer);
 	}
 
 	/**
@@ -132,9 +136,30 @@ public class Ernest implements IErnest
 		return m_primitiveSchema.getLabel();
 	}
 
-	public IAttentionalSystem getAttentionalSystem() 
+	public boolean isInhibited(Color color)
 	{
-		return m_attentionalSystem;
+		boolean inhibited = true;
+		ILandmark l = m_staticSystem.getLandmark(color);
+		if (l == null)
+		{
+			//System.out.println("unknown landmark");
+			inhibited = false;
+		}
+		else
+		{
+			inhibited = m_staticSystem.isInhibited(l);
+		}
+		return inhibited;
 	}
+	
+	public boolean isThirsty()
+	{
+		return m_staticSystem.isThirsty();
+	}
+
+//	public IAttentionalSystem getAttentionalSystem() 
+//	{
+//		return m_attentionalSystem;
+//	}
 		
 }

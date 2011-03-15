@@ -1,6 +1,5 @@
 package ernest;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,9 +23,6 @@ public class EpisodicMemory
 
 	/** A list of all the acts ever created. */
 	public List<IAct> m_acts = new ArrayList<IAct>(2000);
-	
-	/** A list of all the landmarks ever identified. */
-	public List<ILandmark> m_landmarks = new ArrayList<ILandmark>(20);
 	
 	/** Random generator used to break a tie when selecting a schema... */
 	private static Random m_rand = new Random(); 
@@ -313,72 +309,4 @@ public class EpisodicMemory
 		return a ;
 	}
 
-	/**
-	 * Add a landmark to episodic memory if it does not already exist
-	 * @param red Component of the landmark's color
-	 * @param green Component of the landmark's color
-	 * @param blue Component of the landmark's color
-	 * @return the new landmark if created or the already existing landmark
-	 */
-	public ILandmark addLandmark(int red, int green, int blue)
-	{
-		ILandmark l = new Landmark(red,green,blue);
-		
-		int i = m_landmarks.indexOf(l);
-		if (i == -1)
-			// The landmark does not exist
-			m_landmarks.add(l);
-		else 
-			// The landmark already exists: return a pointer to it.
-			l =  m_landmarks.get(i);
-		return l;
-	}
-	
-	/**
-	 * Add a landmark to episodic memory if it does not already exist
-	 * @param color The landmark's color
-	 * @return the new landmark if created or the already existing landmark
-	 */
-	public ILandmark addLandmark(Color color)
-	{
-		return addLandmark(color.getRed() ,color.getGreen() ,color.getBlue());
-	}
-	
-	/**
-	 * Search for a landmark associated with the specified color.
-	 * @param color The specified color.
-	 * @return the landmark if it exists or null if not.
-	 */
-	public ILandmark getLandmark(Color color)
-	{
-		ILandmark l = new Landmark(color.getRed(), color.getGreen(), color.getBlue());
-
-		int i = m_landmarks.indexOf(l);
-		if (i == -1)
-			// The landmark does not exist
-			return null;
-		else 
-			// The landmark already exists: return a pointer to it.
-			return  m_landmarks.get(i);
-	}
-	
-	/**
-	 * Update all landmarks' distance to water based on the current time.
-	 * @param clock Ernest's current time.
-	 */
-	public void UpdateDistanceToWater(int clock)
-	{
-		for (ILandmark l : m_landmarks)
-			l.setDistanceToWater(clock);
-	}
-
-	/**
-	 * Update all landmarks' distance to food based on the current time.
-	 * @param clock Ernest's current time.
-	 */
-	public void UpdateDistanceToFood(int clock)
-	{
-		for (ILandmark l : m_landmarks)
-			l.setDistanceToFood(clock);
-	}
 }

@@ -30,44 +30,4 @@ public interface IAttentionalSystem
 	 */
 	public ISchema step(IAct primitiveEnaction); 
 	
-	/**
-	 * The internal effect of the reflex mechanism of drinking when Ernest tastes water.
-	 * @param landmark The landmark that is drunk.
-	 */
-	public void drink(ILandmark landmark);
-
-	/**
-	 * The internal effect of the reflex mechanism of eating when Ernest tastes food.
-	 * @param landmark The landmark that is eaten.
-	 */
-	public void eat(ILandmark landmark);
-	
-	/**
-	 * The internal effect of bumping a wall.
-	 * @param landmark The landmark that is bumped.
-	 */
-	public void bump(ILandmark landmark);
-	
-	/**
-	 * Tells if a color is inhibited by Ernest's attentional system.
-	 * @param color The color to test.
-	 * @return true if the color is inhibited.
-	 */
-	public boolean isInhibited(Color color);
-	
-	/**
-	 * Tells if the landmark is inhibited by Ernest's attentional system.
-	 * @param landmark The landmark to test.
-	 * @return true if the landmark is inhibited.
-	 */
-	public boolean isInhibited(ILandmark landmark);
-	
-	/**
-	 * Check at a landmark. 
-	 * @param landmark The landmark to check
-	 */
-	public void check(ILandmark landmark);
-	
-	public boolean isThirsty();
-	public void visit(ILandmark landmark);
 }
