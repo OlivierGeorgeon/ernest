@@ -13,7 +13,7 @@ public class StaticSystem
 {
 
 	/** The Tracer. */
-	private ITracer m_tracer = null; //new Tracer("trace.txt");
+	private ITracer m_tracer = null; 
 
 	/** Ernest's internal clock  */
 	private int m_clock;
@@ -34,6 +34,7 @@ public class StaticSystem
 	private int m_glucoseLevel = LEVEL_INCREMENT;
 	
 	private int m_distanceToTarget = Ernest.INFINITE;
+	
 	private int m_lastTimeInHive = 0; // Ok if Ernest does not pass by the hive at start because it is close anyway.
 	
 	/**
@@ -47,7 +48,7 @@ public class StaticSystem
 	/**
 	 * Tick Ernest's clock.
 	 * Used to simulate a decay in Static memory
-	 * Also generates the trace of the motivational information
+	 * Also traces the data related to homeostasis motivation
 	 */
 	public void tick()
 	{
@@ -128,32 +129,38 @@ public class StaticSystem
 		for (ILandmark l : m_landmarks)
 			l.setDistanceToFood(clock);
 	}
+	
+	/**
+	 * Tells if a landmark is inhibited or not
+	 * @param landmark The landmark to check 
+	 * @return true if inhibited, false if not.
+	 */
 	public boolean isInhibited(ILandmark landmark)
 	{
 		boolean inhibited = true;
 		
 		if (!landmark.getColor().equals(Ernest.WALL_COLOR))
 		{
-			// If the landmark has been forgotten then it is deshinibited
+			// If the landmark has been forgotten then it is uninhibited
 			if (isThirsty())
 			{
+				// Forgotten landmarks are uninhibited (except the hive that can't be forgotten)
 				if ((m_clock - landmark.getLastTimeChecked()) > PERSISTENCE  &&
 						landmark.getDistanceToFood() != 0 )
 					inhibited = false;
 			
-			// If the landmark matches Ernest's current state then it is disinhibited
-			// if the landmark's distance to target is closer than Ernest's current distance then it is disinhibited
-			// TODO: only disinhibit the closest landmark to target if there is more than one in the vicinity. 
+				// if the landmark's distance to target is closer than Ernest's current distance then it is uninhibited
 				if (landmark.getDistanceToWater() < m_distanceToTarget) 
 					inhibited = false;
 			}
 			// back to hive
 			if (isHungry())
 			{
+				// Forgotten landmarks are uninhibited (except the flowers that can't be forgotten)
 				if ((m_clock - landmark.getLastTimeChecked()) > PERSISTENCE   &&
 						landmark.getDistanceToWater() != 0 )
 					inhibited = false;
-			
+				// landmarks closer to target are uninhibited
 				if (landmark.getDistanceToFood() < m_distanceToTarget) 
 					inhibited = false;		
 			}
@@ -169,11 +176,9 @@ public class StaticSystem
 	{
 		m_tracer.addEventElement("drink", landmark.getHexColor());
 
-		//landmark.setDrinkable(); // not necessary because drinkable landmarks are disinhibited when thristy due to their null distance to water.
-		landmark.setVisited();
+		landmark.setLastTimeChecked(m_clock);
 		check(landmark);
 		updateDistanceToWater(m_clock);
-		landmark.setDrinkable(); 
 
 		// Get hungry after drinking
 		m_waterLevel = LEVEL_INCREMENT;
@@ -188,11 +193,9 @@ public class StaticSystem
 	public void eat(ILandmark landmark)
 	{
 		m_tracer.addEventElement("eat", landmark.getHexColor());
-		//landmark.setEdible(); // not necessary because edible landmarks are disinhibited when hungry due to their null distance to food.
-		landmark.setVisited();
+		landmark.setLastTimeChecked(m_clock);
 		check(landmark);
 		updateDistanceToFood(m_clock);
-		landmark.setEdible(); // set time to food to null even when Ernest is not hungry
 		m_lastTimeInHive = m_clock;
 		
 		// Get thirsty after eating
@@ -201,10 +204,15 @@ public class StaticSystem
 		check(landmark); // check again now that Ernest is thirsty
 	}
 	
+	/**
+	 * Visit a landmark 
+	 * Mark this landmark as visited so it can be inhibited later.
+	 * @param landmark The visited landmark.
+	 */
 	public void visit(ILandmark landmark)
 	{
 		m_tracer.addEventElement("visit", landmark.getHexColor());
-		landmark.setVisited();
+		landmark.setLastTimeChecked(m_clock);
 		check(landmark);
 	}
 	
@@ -215,9 +223,8 @@ public class StaticSystem
 	public void bump(ILandmark landmark)
 	{
 		m_tracer.addEventElement("bump_landmark", landmark.getHexColor());
-		landmark.setVisited();
+		landmark.setLastTimeChecked(m_clock);
 		check(landmark);
-		//landmark.setLastTimeChecked(m_clock);
 	}
 	
 	/**
@@ -230,8 +237,11 @@ public class StaticSystem
 		{
 			m_tracer.addEventElement("check_landmark", landmark.getHexColor());
 	
-			if (landmark.isVisited())
+			// Only check the landmark if it already has been visited 
+			if (landmark.getLastTimeChecked() > 0)
 				landmark.setLastTimeChecked(m_clock);
+			
+			// Estimate distance to water (even if the landmark is not checked)
 			if (isThirsty())
 			{
 				landmark.setLastTimeThirsty(m_clock);
@@ -239,6 +249,8 @@ public class StaticSystem
 				if (landmark.getDistanceToWater() > 0) // (not yet arrived to final target)
 					m_distanceToTarget = landmark.getDistanceToWater();
 			}
+			
+			// Estimate distance to food (even if the landmark is not checked)
 			if (isHungry())
 			{
 				landmark.setLastTimeHungry(m_clock);
@@ -263,6 +275,5 @@ public class StaticSystem
 	{
 		return m_glucoseLevel <= 0;
 	}
-	
 
 }

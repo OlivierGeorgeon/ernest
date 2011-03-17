@@ -13,7 +13,6 @@ public class Landmark implements ILandmark
 
 	private Color m_color;
 	private int m_lastTimeChecked = - Ernest.INFINITE; // Landmarks must not be inhibited at start
-	private boolean m_visited;
 	
 	private int m_lastTimeThirsty = 0;
 	private int m_lastTimeHungry = 0;
@@ -30,6 +29,11 @@ public class Landmark implements ILandmark
 		return m_color;
 	}
 
+	public String getHexColor()
+	{
+		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
+		return s;
+	}
 	/**
 	 * @return The landmark's string representation
 	 */
@@ -60,16 +64,6 @@ public class Landmark implements ILandmark
 		return ret;
 	}
 	
-	public void setDrinkable()
-	{
-		m_distanceToWater = 0;
-	}
-
-	public void setEdible()
-	{
-		m_distanceToFood = 0;
-	}
-
 	public void setLastTimeChecked(int t)
 	{
 		m_lastTimeChecked = t;
@@ -80,28 +74,18 @@ public class Landmark implements ILandmark
 		return m_lastTimeChecked;
 	}
 
-	public boolean isVisited()
-	{
-		return m_visited;
-	}
-	
-	public void setVisited()
-	{
-		m_visited = true;
-	}
-
 	public void setLastTimeThirsty(int t) 
 	{
 		// When mature, Ernest considers all landmarks as visited. This reduces ugly chaotic behavior in Ernest 9.0 demo.
 		if (t > Ernest.MATURITY)
-			m_visited = true;
+			m_lastTimeChecked = t;
 		m_lastTimeThirsty = t;
 	}
 
 	public void setLastTimeHungry(int t) 
 	{
 		if (t > Ernest.MATURITY)
-			m_visited = true;
+			m_lastTimeChecked = t;
 		m_lastTimeHungry = t;
 	}
 
@@ -148,10 +132,4 @@ public class Landmark implements ILandmark
 		return m_distanceToFood;
 	}
 	
-	public String getHexColor()
-	{
-		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
-		return s;
-	}
-
 }
