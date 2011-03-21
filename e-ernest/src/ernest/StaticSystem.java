@@ -276,4 +276,37 @@ public class StaticSystem
 		return m_glucoseLevel <= 0;
 	}
 
+	/**
+	 * Gives the direction of the most desirable landmark in retinotopic coordinate
+	 * If several landmarks are tied, returns the most inward.
+	 * @param colliculus The colliculus
+	 * @return The desired direction or -1 if no desirable landmark
+	 */
+	public int[] desiredDirection(ILandmark[][] colliculus)
+	{
+		int[] desiredDirection = new int[2];
+		desiredDirection[0] = -1; desiredDirection[1] = -1; 
+		int distanceToTarget = Ernest.INFINITE + 1; // need to consider unvisited landmarks
+		
+		//for (int i = 0 ; i < colliculus.length ; i++)
+		for (int i = 0 ; i < 3 ; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				if ( isThirsty() && !isInhibited(colliculus[i][j]) && colliculus[i][j].getDistanceToWater() < distanceToTarget )
+				{
+					distanceToTarget = colliculus[i][j].getDistanceToWater();
+					desiredDirection[0] = i; desiredDirection[1] = j; 
+				}
+				if ( isHungry() && !isInhibited(colliculus[i][j]) && colliculus[i][j].getDistanceToFood() < distanceToTarget )
+				{
+					distanceToTarget = colliculus[i][j].getDistanceToFood();
+					desiredDirection[0] = i; desiredDirection[1] = j; 
+				}
+			}
+		}
+		
+		return desiredDirection;
+	}
+	
 }
