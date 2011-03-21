@@ -14,9 +14,10 @@ public class Ernest implements IErnest
 	/** Color of regular wall  */
 	public static Color WALL_COLOR   = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
 
-	public static Color BUMP_COLOR   = new Color(255, 0, 0);
-	public static Color WATER_COLOR  = new Color(150, 128, 255);
-	public static Color FOOD_COLOR   = new Color(227, 124, 255);
+	public static int RESOLUTION_RETINA = 12;
+	//public static Color BUMP_COLOR   = new Color(255, 0, 0);
+	//public static Color WATER_COLOR  = new Color(150, 128, 255);
+	//public static Color FOOD_COLOR   = new Color(227, 124, 255);
 	
 	/** Hypothetical act (Cannot be chosen as an intention. Cannot support higher-level learning). */
 	public static final int HYPOTHETICAL = 1;
