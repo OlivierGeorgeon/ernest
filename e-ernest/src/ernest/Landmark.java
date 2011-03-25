@@ -119,7 +119,7 @@ public class Landmark implements ILandmark
 		// update if the distance is shorter assuming that the landmarks and the hive don't move.
 		if (m_distanceToFood > t)
 			m_distanceToFood = t;//(m_distanceToFood + t - m_lastTimeHungry) / 2;	
-		System.out.println(getHexColor() + "distance to food: " + t);
+		System.out.println(getHexColor() + " distance to food: " + t);
 	}
 	
 	public int getDistanceToWater() 

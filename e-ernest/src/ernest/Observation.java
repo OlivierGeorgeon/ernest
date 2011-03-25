@@ -64,14 +64,18 @@ public class Observation implements IObservation {
 	public void trace(ITracer tracer, String element) 
 	{
 		Element e = tracer.addEventElement(element, "");
-		tracer.addSubelement(e, "color", m_landmark.getHexColor());
-		tracer.addSubelement(e, "time_to_water", m_landmark.getDistanceToWater() + "");
-		tracer.addSubelement(e, "time_to_food", m_landmark.getDistanceToFood() + "");
-		tracer.addSubelement(e, "last_checked", m_landmark.getLastTimeChecked() + "");
-		tracer.addSubelement(e, "distance", m_distance + "");
+		if (m_landmark != null)
+		{
+			tracer.addSubelement(e, "color", m_landmark.getHexColor());
+			tracer.addSubelement(e, "time_to_water", m_landmark.getDistanceToWater() + "");
+			tracer.addSubelement(e, "time_to_food", m_landmark.getDistanceToFood() + "");
+			tracer.addSubelement(e, "last_checked", m_landmark.getLastTimeChecked() + "");
+			tracer.addSubelement(e, "distance", m_distance + "");
+			tracer.addSubelement(e, "retinotopic_direction", m_direction + "");
+		}
+		// There can be a disappear dynamic feature from the previous landmark
 		tracer.addSubelement(e, "dynamic_feature", m_dynamicFeature);
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
-		tracer.addSubelement(e, "retinotopic_direction", m_direction + "");
 	}
 
 }
