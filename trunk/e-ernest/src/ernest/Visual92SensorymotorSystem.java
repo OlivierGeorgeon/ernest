@@ -13,10 +13,10 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 {
 
 	/** The observations */
-	private IObservation m_currentObservation;
+	private IObservation m_currentObservation = new Observation();
 	private IObservation m_previousObservation;
 	
-	private int PROXIMITY_DISTANCE = 21; // two squares straight or one in diagonal
+	private int PROXIMITY_DISTANCE = 5; // Ernest will also check when he sees a more interesting target
 	
 	/** The taste of water */
 	private int TASTE_WATER = 1;
@@ -114,12 +114,12 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		int taste = matrix[Ernest.RESOLUTION_RETINA][0];
 		
-		if (taste == TASTE_WATER && m_currentObservation.getDistance() == 0)
-			m_staticSystem.drink(m_currentObservation.getLandmark());
-		if (taste == TASTE_FOOD && m_currentObservation.getDistance() == 0)
-			m_staticSystem.eat(m_currentObservation.getLandmark());
-		if (taste > TASTE_FOOD && m_currentObservation.getDistance() == 0)
-			m_staticSystem.visit(m_currentObservation.getLandmark());
+		if (taste == TASTE_WATER)
+			m_staticSystem.drink(colliculus[0][0].getLandmark()); // Look for the landmark under Ernest's feet
+		if (taste == TASTE_FOOD)
+			m_staticSystem.eat(colliculus[0][0].getLandmark());
+		if (taste > TASTE_FOOD)
+			m_staticSystem.visit(colliculus[0][0].getLandmark());
 	}
 
 	/**

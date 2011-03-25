@@ -58,7 +58,6 @@ public class StaticSystem
 		m_tracer.addEventElement("time_to_target", m_distanceToTarget + "");
 		
 		m_clock++;
-		System.out.println("Distance to target " + m_distanceToTarget );
 	}
 	
 	/**
@@ -222,9 +221,12 @@ public class StaticSystem
 	 */
 	public void bump(ILandmark landmark)
 	{
-		m_tracer.addEventElement("bump_landmark", landmark.getHexColor());
-		landmark.setLastTimeChecked(m_clock);
-		check(landmark);
+		if (landmark != null)
+		{
+			m_tracer.addEventElement("bump_landmark", landmark.getHexColor());
+			landmark.setLastTimeChecked(m_clock);
+			check(landmark);
+		}
 	}
 	
 	/**
@@ -279,6 +281,7 @@ public class StaticSystem
 	/**
 	 * Compute a focus observation from the colliculus and from the previous focus observation.
 	 * If several landmarks are tied, returns the most inward.
+	 * TODO consider the distance or the apparent angle to choose between tied landmarks
 	 * @param colliculus The colliculus
 	 * @return The desired direction or -1 if no desirable landmark
 	 */
@@ -286,43 +289,76 @@ public class StaticSystem
 	{
 		IObservation currentObservation = new Observation();
 		ILandmark previousLandmark = previousObservation.getLandmark();
+		ILandmark currentLandmark = null;
+		
 		int distanceToTarget = Ernest.INFINITE + 1; // need to consider unvisited landmarks
 		String dynamicFeature = "";
 		int satisfaction = 0;
 		
-		if (isThirsty())
+		if (isThirsty() && previousLandmark != null)
 			distanceToTarget = previousLandmark.getDistanceToWater();
-		if (isHungry())
+		if (isHungry() && previousLandmark != null)
 			distanceToTarget = previousLandmark.getDistanceToFood();
 		
 		// Look for a more interesting observation than the previous observation (starting from the colliculus's center) 
-				
-		for (int i = 0 ; i < colliculus.length / 2 ; i++)
-		//for (int i = 0 ; i < 3 ; i++)
+		boolean seePrevious = false;
+		for (int i = 0 ; (i < colliculus.length / 2); i++)
 		{
-			for (int j = 0; j < 2; j++)
+			for (int j = 0; (j <= 1); j++)
 			{
-				for (int k = -1; k <= 1; k = k + 2)
+				for (int k = 0; (k <= 1); k++)
 				{
-					int r = k * i +  colliculus.length / 2; // get retinotopic coordinate from colliculus coordinate
+					// get retinotopic coordinate from colliculus coordinate
+					int r = colliculus.length / 2 - i - 1;
+					if (k > 0)
+						r = colliculus.length / 2 + i;
+						
 					ILandmark l = colliculus[r][j].getLandmark();
-					if ( isThirsty() && !isInhibited(l) && (l.getDistanceToWater() < distanceToTarget || l.equals(previousLandmark)))
+					
+					// Look for more interesting landmarks
+					if ( isThirsty() && !isInhibited(l) && (l.getDistanceToWater() < distanceToTarget))
 					{
 						distanceToTarget = l.getDistanceToWater();
 						currentObservation.setLandmark(l);
 						currentObservation.setDistance(distanceToTarget);
 						currentObservation.setDirection(r);
+						currentObservation.setDistance(colliculus[r][j].getDistance());
 					}
-					if ( isHungry() && !isInhibited(l) && (l.getDistanceToFood() < distanceToTarget || l.equals(previousLandmark)))
+					if ( isHungry() && !isInhibited(l) && (l.getDistanceToFood() < distanceToTarget))
 					{
 						distanceToTarget = l.getDistanceToFood();
 						currentObservation.setLandmark(l);
 						currentObservation.setDistance(distanceToTarget);
 						currentObservation.setDirection(r);
+						currentObservation.setDistance(colliculus[r][j].getDistance());
+					}
+					
+					// Look for the same landmark as in the previous cycle
+					if (l.equals(previousLandmark) && !seePrevious  && !isInhibited(l))
+					{
+						seePrevious = true;
+						if ( isThirsty() )
+						{
+							distanceToTarget = l.getDistanceToWater();
+							currentObservation.setLandmark(l);
+							currentObservation.setDistance(distanceToTarget);
+							currentObservation.setDirection(r);
+							currentObservation.setDistance(colliculus[r][j].getDistance());
+						}
+						if ( isHungry() )
+						{
+							distanceToTarget = l.getDistanceToFood();
+							currentObservation.setLandmark(l);
+							currentObservation.setDistance(distanceToTarget);
+							currentObservation.setDirection(r);
+							currentObservation.setDistance(colliculus[r][j].getDistance());
+						}
 					}
 				}
 			}
 		}
+		if (currentObservation != null)
+			currentLandmark = currentObservation.getLandmark(); 
 		
 		if (previousLandmark == null)
 		{
@@ -342,79 +378,86 @@ public class StaticSystem
 		else
 		{
 			// There was a previous observation
-			if (previousLandmark.equals(currentObservation.getLandmark()))
+			if (previousLandmark.equals(currentLandmark))
 			{
 				// Track the same landmark
-				if (Math.abs(currentObservation.getDirection() - previousObservation.getDirection()) < colliculus.length / 4
-						&& (currentObservation.getDistance() < previousObservation.getDistance()))
+				if ( Math.abs(currentObservation.getDirection() * 2 - (colliculus.length - 1)) < colliculus.length / 2 - 1) // narrow the fovea
 				{
-					// Closer in the same direction
-					dynamicFeature = "+";
-					satisfaction = 100;
+					// The landmark is now in the fovea
+					if (currentObservation.getDistance() < previousObservation.getDistance()
+						|| (Math.abs(previousObservation.getDirection() * 2 - (colliculus.length - 1)) > colliculus.length / 2 - 1))
+					{
+						// The landmark was previously farther
+						dynamicFeature = "+";
+						satisfaction = 150;
+					}
 				}
 				else if (currentObservation.getDirection() < colliculus.length / 2 )
 				{
-					// To the right
-					if ( previousObservation.getDistance() > currentObservation.getDistance()
-						||	Math.abs(colliculus.length / 2 - previousObservation.getDirection()) > colliculus.length / 2 - currentObservation.getDirection())
+					// The landmark is now on the right side
+					if ( Math.abs(previousObservation.getDirection() * 2 - (colliculus.length - 1)) < colliculus.length / 2 - 1)
 					{
-						dynamicFeature = ".+";
-						satisfaction = 100;
-					}
-					else 
-					{
+						// The landmark was previously in the fovea
 						dynamicFeature = ".-";
 						satisfaction = -100;
 					}
+					// TODO see what to do if the landmark was already on the right side
 				}
 				else if (currentObservation.getDirection() >= colliculus.length / 2 )
 				{
-					// To the left
-					if ( previousObservation.getDistance() > currentObservation.getDistance()
-						||	Math.abs(previousObservation.getDirection() - colliculus.length / 2) > currentObservation.getDirection() - colliculus.length / 2)
+					// The landmark is now on the left side
+					if ( Math.abs(previousObservation.getDirection() * 2 - (colliculus.length - 1)) < colliculus.length / 2 - 1)
 					{
-						dynamicFeature = "+.";
-						satisfaction = 100;
+						// The landmark was previously in the fovea
+						dynamicFeature = "-.";
+						satisfaction = -150;
 					}
-					else 
-					{
-						dynamicFeature = ".-";
-						satisfaction = -100;
-					}
+					// TODO see what to do if the landmark was already on the right side
 				}
 				else
 				{
-					dynamicFeature = "-";
-					satisfaction = -100;
+					// Just for debug. This should never happen
+					dynamicFeature = "--";
+					satisfaction = -150;
 				}
-				dynamicFeature = "+";
-				satisfaction = 100;
 			}
-			else if (currentObservation.getLandmark() == null)
+			else 
 			{
-				// All landmarks of interest have disappeared 
-				if (previousObservation.getDirection() < colliculus.length / 4 )
-					dynamicFeature = ".-";
-				else if (currentObservation.getDirection() > colliculus.length * 3 / 4 )
-					dynamicFeature = "-.";
-				else 
-					dynamicFeature = "-";
-				satisfaction = -100;
-			}
-			else
-			{
-				// A landmark of greater interest has appeared
-				if (currentObservation.getDirection() < colliculus.length / 4 )
-					dynamicFeature = ".+";
-				else if (currentObservation.getDirection() > colliculus.length * 3 / 4 )
-					dynamicFeature = "+.";
-				else 
-					dynamicFeature = "+";
-				satisfaction = 100;
+				// Stop tracking the previous landmark
+				
+				if (currentLandmark == null)
+				{
+					// All landmarks of interest have disappeared 
+					if (previousObservation.getDirection() < colliculus.length / 4 )
+						dynamicFeature = ".-";
+					else if (previousObservation.getDirection() >= colliculus.length * 3 / 4 )
+						dynamicFeature = "-.";
+					else 
+						// Just for debug. This should never happen
+						dynamicFeature = "-";
+					satisfaction = -150;
+				}
+				else
+				{
+					// A landmark of greater interest has appeared
+					check(previousLandmark);
+					if (currentObservation.getDirection() < colliculus.length / 4 + 1)
+						dynamicFeature = ".+";
+					else if (currentObservation.getDirection() >= colliculus.length * 3 / 4 - 1)
+						dynamicFeature = "+.";
+					else 
+						dynamicFeature = "+";
+					satisfaction = 150;
+				}
 			}
 		}
 		currentObservation.setDynamicFeature(dynamicFeature);
 		currentObservation.setSatisfaction(satisfaction);
+		
+		if (previousLandmark !=null)
+			System.out.println("previous landmark " + previousLandmark.getHexColor());
+		if (currentLandmark != null)
+			System.out.println("current landmark " + currentObservation.getLandmark().getHexColor());
 		
 		return currentObservation;
 	}
