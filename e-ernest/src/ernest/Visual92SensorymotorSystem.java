@@ -99,7 +99,7 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 		m_previousObservation  = m_currentObservation;
 		m_currentObservation = m_staticSystem.focusObservation(m_previousObservation, colliculus);
 				
-		// Trace
+		// Trace the current observation
 		
 		m_currentObservation.trace(m_tracer, "current_observation");
 		
@@ -120,56 +120,5 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 			m_staticSystem.eat(colliculus[0][0].getLandmark());
 		if (taste > TASTE_FOOD)
 			m_staticSystem.visit(colliculus[0][0].getLandmark());
-	}
-
-	/**
-	 * Sense the feature based on a pixel change 
-	 * @param previousPixel The pixel's previous value.
-	 * @param currentPixel The pixel's current value.
-	 * @return The sensed feature
-	 */
-	private String sensePixel(int previousDistance, int currentDistance, ILandmark previousLandmark, ILandmark currentLandmark) 
-	{
-		String feature = " ";
-		int satisfaction = 0;
-		
-		// arrived
-		if (previousDistance > currentDistance && currentDistance == 0)
-		{
-			feature = "x";
-			satisfaction = 100;
-		}
-		
-		// closer
-		else if (previousDistance < Ernest.INFINITE && currentDistance < previousDistance 
-				&& currentLandmark.equals(previousLandmark))
-		{
-			feature = "+";
-			satisfaction = 200;
-		}
-
-		// appear
-		else if (previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE)
-		{
-			feature = "*";
-			satisfaction = 50;
-		}
-		
-		// disappear
-		//else if (previousPixel < Ernest.INFINITE && currentPixel == Ernest.INFINITE)
-		//else if (currentDistance  == Ernest.INFINITE || !currentLandmark.equals(previousLandmark))
-		else if (previousDistance < Ernest.INFINITE 
-				&& (currentDistance  == Ernest.INFINITE || !currentLandmark.equals(previousLandmark)))
-		{
-			feature = "o";
-			satisfaction = -100;
-		}
-
-		System.out.println("Sensed " + feature);
-		
-		//m_satisfaction += satisfaction;
-
-		return feature;
-	}
-	
+	}	
 }
