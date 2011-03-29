@@ -173,15 +173,15 @@ public class StaticSystem
 	 */
 	public void drink(ILandmark landmark)
 	{
-		m_tracer.addEventElement("drink", landmark.getHexColor());
-
-		landmark.setLastTimeChecked(m_clock);
-		check(landmark);
-		updateDistanceToWater(m_clock);
-
-		// Get hungry after drinking
-		m_waterLevel = LEVEL_INCREMENT;
-		m_glucoseLevel = 0;
+		if (isThirsty())
+		{
+			m_tracer.addEventElement("drink", landmark.getHexColor());
+			landmark.setLastTimeChecked(m_clock);
+			check(landmark);
+			updateDistanceToWater(m_clock);
+			m_waterLevel = LEVEL_INCREMENT;
+			m_glucoseLevel = 0;
+		}
 		check(landmark); // check again now that Ernest is hungry
 	}
 	
@@ -191,15 +191,16 @@ public class StaticSystem
 	 */
 	public void eat(ILandmark landmark)
 	{
-		m_tracer.addEventElement("eat", landmark.getHexColor());
-		landmark.setLastTimeChecked(m_clock);
-		check(landmark);
-		updateDistanceToFood(m_clock);
-		m_lastTimeInHive = m_clock;
-		
-		// Get thirsty after eating
-		m_glucoseLevel = LEVEL_INCREMENT;
-		m_waterLevel = 0;
+		if (isHungry())
+		{
+			m_tracer.addEventElement("eat", landmark.getHexColor());
+			landmark.setLastTimeChecked(m_clock);
+			check(landmark);
+			updateDistanceToFood(m_clock);
+			m_lastTimeInHive = m_clock;
+			m_glucoseLevel = LEVEL_INCREMENT;
+			m_waterLevel = 0;
+		}
 		check(landmark); // check again now that Ernest is thirsty
 	}
 	
@@ -230,7 +231,10 @@ public class StaticSystem
 	}
 	
 	/**
-	 * Check at a landmark. 
+	 * Check-in at a landmark. 
+	 * The landmark is tagged with the current time (lastTimeChecked)
+	 * The tag is associated with Ernest's motivation (lastTimeThirsty and lastTimeHungry)
+	 * Ernest's estimated time to target is updated based on this landmark (distanceToFood or distanceToWater).
 	 * @param landmark The landmark to check
 	 */
 	public void check(ILandmark landmark)
@@ -239,8 +243,8 @@ public class StaticSystem
 		{
 			m_tracer.addEventElement("check_landmark", landmark.getHexColor());
 	
-			// Only check the landmark if it already has been visited 
-			if (landmark.getLastTimeChecked() > 0)
+			// Only check the landmark if it has already been visited 
+			// if (landmark.getLastTimeChecked() > 0)
 				landmark.setLastTimeChecked(m_clock);
 			
 			// Estimate distance to water (even if the landmark is not checked)
@@ -282,6 +286,7 @@ public class StaticSystem
 	 * Compute a focus observation from the colliculus and from the previous focus observation.
 	 * If several landmarks are tied, returns the most inward.
 	 * TODO consider the distance or the apparent angle to choose between tied landmarks
+	 * @param previousObservation The observation made during the previous step
 	 * @param colliculus The colliculus
 	 * @return The desired direction or -1 if no desirable landmark
 	 */
@@ -368,7 +373,7 @@ public class StaticSystem
 				// A landmark of interest has appeared
 				if (currentObservation.getDirection() < colliculus.length / 4 )
 					dynamicFeature = ".+";
-				else if (currentObservation.getDirection() > colliculus.length * 3 / 4 )
+				else if (currentObservation.getDirection() >= colliculus.length * 3 / 4 )
 					dynamicFeature = "+.";
 				else 
 					dynamicFeature = "+";
@@ -395,24 +400,34 @@ public class StaticSystem
 				else if (currentObservation.getDirection() < colliculus.length / 2 )
 				{
 					// The landmark is now on the right side
-					if ( Math.abs(previousObservation.getDirection() * 2 - (colliculus.length - 1)) < colliculus.length / 2 - 1)
+					if ( previousObservation.getDirection() >  currentObservation.getDirection())
 					{
-						// The landmark was previously in the fovea
+						// The landmark was previously more inward
 						dynamicFeature = ".-";
 						satisfaction = -100;
 					}
-					// TODO see what to do if the landmark was already on the right side
+					if ( previousObservation.getDirection() <  currentObservation.getDirection())
+					{
+						// The landmark was previously more outward
+						dynamicFeature = ".+";
+						satisfaction = 100;
+					}
 				}
 				else if (currentObservation.getDirection() >= colliculus.length / 2 )
 				{
 					// The landmark is now on the left side
-					if ( Math.abs(previousObservation.getDirection() * 2 - (colliculus.length - 1)) < colliculus.length / 2 - 1)
+					if ( previousObservation.getDirection() >  currentObservation.getDirection())
 					{
-						// The landmark was previously in the fovea
-						dynamicFeature = "-.";
-						satisfaction = -150;
+						// The landmark was previously more outward
+						dynamicFeature = ".+";
+						satisfaction = 100;
 					}
-					// TODO see what to do if the landmark was already on the right side
+					if ( previousObservation.getDirection() <  currentObservation.getDirection())
+					{
+						// The landmark was previously more inward
+						dynamicFeature = ".-";
+						satisfaction = -100;
+					}
 				}
 				else
 				{
