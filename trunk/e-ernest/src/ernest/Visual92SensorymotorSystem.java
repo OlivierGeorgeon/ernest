@@ -1,12 +1,11 @@
 package ernest;
 
-import java.awt.Color;
-
 import org.w3c.dom.Element;
 
 /**
- * Implement Ernest 9.0's sensorymotor system. 
- * Recieves a matrix of EyeFixation objects from the environment.
+ * Implement Ernest 9.2's sensorymotor system.
+ * Demoed here http://e-ernest.blogspot.com/2011/03/ernest-92.html 
+ * Ernest 9.2 has a visual resolution of 2x12 pixels.
  * @author ogeorgeon
  */
 public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
@@ -16,12 +15,12 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 	private IObservation m_currentObservation = new Observation();
 	private IObservation m_previousObservation;
 	
-	private int PROXIMITY_DISTANCE = 5; // Ernest will also check when he sees a more interesting target
+	private ILandmark m_wallAhead;
 	
 	/** The taste of water */
 	private int TASTE_WATER = 1;
 
-	/** The taste of glucose */
+	/** The taste of food */
 	private int TASTE_FOOD = 2;
 	
 	/**
@@ -49,7 +48,7 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Bump into a landmark TODO make sure we declare the good landmark bumped
 		if (label.equals("[>]"))
-			m_staticSystem.bump(m_currentObservation.getLandmark());
+			m_staticSystem.bump(m_wallAhead);
 		
 		// Compute the act's satisfaction 
 		
@@ -83,33 +82,26 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 			colliculus[i][1].setDistance(matrix[i][4]);
 		}
 
+		m_wallAhead = colliculus[5][1].getLandmark();
+		
 		// Trace the retina
+		
 		Element retinaElmt = m_tracer.addEventElement("retina", "");
 		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
-		{
-			m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, colliculus[i][0].getLandmark().getHexColor());			
-		}
-		
+			m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, colliculus[i][0].getLandmark().getHexColor());				
 		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
-		{
 			m_tracer.addSubelement(retinaElmt, "pixel_1_" + i, colliculus[i][1].getLandmark().getHexColor());			
-		}
 		
 		// Shift observations
+		
 		m_previousObservation  = m_currentObservation;
+
+		// The focus observation is the most motivating observation in the colliculus
+		
 		m_currentObservation = m_staticSystem.focusObservation(m_previousObservation, colliculus);
 				
-		// Trace the current observation
-		
 		m_currentObservation.trace(m_tracer, "current_observation");
 		
-		// When Ernest enters a landmark's vicinity, he checks in at the landmark.
-
-		if (m_currentObservation.getDistance() <= PROXIMITY_DISTANCE)
-			m_staticSystem.check(m_currentObservation.getLandmark());
-		if (m_currentObservation.getDistance() <= PROXIMITY_DISTANCE) 
-			m_staticSystem.check(m_currentObservation.getLandmark());
-				
 		// Taste =====
 		
 		int taste = matrix[Ernest.RESOLUTION_RETINA][0];
