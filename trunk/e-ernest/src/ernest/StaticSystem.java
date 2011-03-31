@@ -24,9 +24,6 @@ public class StaticSystem
 	/** The increment in the water or food tank gained from drinking or eating a square  */
 	private int LEVEL_INCREMENT    = 90;
 
-	/** The duration during which checked landmarks remain inhibited  */
-	private int PERSISTENCE = 50;// 40;
-	
 	/** The water tank level that raises thirst when empty (homeostatic sodium dilution)    */
 	private int m_waterLevel = 0;
 
@@ -58,6 +55,14 @@ public class StaticSystem
 		m_tracer.addEventElement("time_to_target", m_distanceToTarget + "");
 		
 		m_clock++;
+	}
+	
+	/**
+	 * @return Ernest's current time
+	 */
+	public int getClock()
+	{
+		return m_clock;
 	}
 	
 	/**
@@ -144,7 +149,7 @@ public class StaticSystem
 			if (isThirsty())
 			{
 				// Forgotten landmarks are uninhibited (except the hive that can't be forgotten)
-				if ((m_clock - landmark.getLastTimeChecked()) > PERSISTENCE  &&
+				if ((m_clock - landmark.getLastTimeChecked()) > Ernest.PERSISTENCE  &&
 						landmark.getDistanceToFood() != 0 )
 					inhibited = false;
 			
@@ -156,7 +161,7 @@ public class StaticSystem
 			if (isHungry())
 			{
 				// Forgotten landmarks are uninhibited (except the flowers that can't be forgotten)
-				if ((m_clock - landmark.getLastTimeChecked()) > PERSISTENCE   &&
+				if ((m_clock - landmark.getLastTimeChecked()) > Ernest.PERSISTENCE   &&
 						landmark.getDistanceToWater() != 0 )
 					inhibited = false;
 				// landmarks closer to target are uninhibited
@@ -283,198 +288,46 @@ public class StaticSystem
 	}
 
 	/**
-	 * Compute a focus observation from the colliculus and from the previous focus observation.
-	 * If several landmarks are tied, returns the most inward.
-	 * TODO consider the distance or the apparent angle to choose between tied landmarks
-	 * @param previousObservation The observation made during the previous step
+	 * Find the most motivating observation in the colliculus
 	 * @param colliculus The colliculus
-	 * @return The desired direction or -1 if no desirable landmark
+	 * @return The most motivating observation with its motivation value and its direction (*10).
 	 */
-	public IObservation focusObservation(IObservation previousObservation, IObservation[][] colliculus)
+	public IObservation salientObservation(IObservation[][] colliculus)
 	{
-		IObservation currentObservation = new Observation();
-		ILandmark previousLandmark = previousObservation.getLandmark();
+		IObservation salientObservation = new Observation();
 		ILandmark currentLandmark = null;
+
+		// Find the max motivation in the colliculus
 		
-		int distanceToTarget = Ernest.INFINITE + 1; // need to consider unvisited landmarks
-		String dynamicFeature = "";
-		int satisfaction = 0;
+		int maxMotivation = 0;
+		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
+			for (int j = 0; j <= 1; j++)
+				if (colliculus[i][j].getMotivation() > maxMotivation)
+				{
+					maxMotivation = colliculus[i][j].interest();
+					currentLandmark = colliculus[i][j].getLandmark();
+				}
 		
-		if (isThirsty() && previousLandmark != null)
-			distanceToTarget = previousLandmark.getDistanceToWater();
-		if (isHungry() && previousLandmark != null)
-			distanceToTarget = previousLandmark.getDistanceToFood();
+		// The direction is the average direction of the max motivation
 		
-		// Look for a more interesting observation than the previous observation (starting from the colliculus's center) 
-		boolean seePrevious = false;
-		for (int i = 0 ; (i < colliculus.length / 2); i++)
+		if (maxMotivation  > 0)
 		{
-			for (int j = 0; (j <= 1); j++)
-			{
-				for (int k = 0; (k <= 1); k++)
-				{
-					// get retinotopic coordinate from colliculus coordinate
-					int r = colliculus.length / 2 - i - 1;
-					if (k > 0)
-						r = colliculus.length / 2 + i;
-						
-					ILandmark l = colliculus[r][j].getLandmark();
-					
-					// Look for more interesting landmarks
-					if ( isThirsty() && !isInhibited(l) && (l.getDistanceToWater() < distanceToTarget))
+			int sumDirection = 0;
+			int nbDirection = 0;
+			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0; i--)
+				for (int j = 0; j <= 1; j++)
+					if (colliculus[i][j].getMotivation() >= maxMotivation)
 					{
-						distanceToTarget = l.getDistanceToWater();
-						currentObservation.setLandmark(l);
-						currentObservation.setDistance(distanceToTarget);
-						currentObservation.setDirection(r);
-						currentObservation.setDistance(colliculus[r][j].getDistance());
+						sumDirection += i * 10;
+						nbDirection++;
 					}
-					if ( isHungry() && !isInhibited(l) && (l.getDistanceToFood() < distanceToTarget))
-					{
-						distanceToTarget = l.getDistanceToFood();
-						currentObservation.setLandmark(l);
-						currentObservation.setDistance(distanceToTarget);
-						currentObservation.setDirection(r);
-						currentObservation.setDistance(colliculus[r][j].getDistance());
-					}
-					
-					// Look for the same landmark as in the previous cycle
-					if (l.equals(previousLandmark) && !seePrevious  && !isInhibited(l))
-					{
-						seePrevious = true;
-						if ( isThirsty() )
-						{
-							distanceToTarget = l.getDistanceToWater();
-							currentObservation.setLandmark(l);
-							currentObservation.setDistance(distanceToTarget);
-							currentObservation.setDirection(r);
-							currentObservation.setDistance(colliculus[r][j].getDistance());
-						}
-						if ( isHungry() )
-						{
-							distanceToTarget = l.getDistanceToFood();
-							currentObservation.setLandmark(l);
-							currentObservation.setDistance(distanceToTarget);
-							currentObservation.setDirection(r);
-							currentObservation.setDistance(colliculus[r][j].getDistance());
-						}
-					}
-				}
-			}
-		}
-		if (currentObservation != null)
-			currentLandmark = currentObservation.getLandmark(); 
+			salientObservation.setLandmark(currentLandmark);
+			salientObservation.setMotivation(maxMotivation);
+			salientObservation.setDirection((int) (sumDirection / nbDirection + .5));
+		}		
 		
-		if (previousLandmark == null)
-		{
-			// There was no previous observation
-			if (currentObservation.getLandmark() != null)
-			{
-				// A landmark of interest has appeared
-				if (currentObservation.getDirection() < colliculus.length / 4 )
-					dynamicFeature = ".+";
-				else if (currentObservation.getDirection() >= colliculus.length * 3 / 4 )
-					dynamicFeature = "+.";
-				else 
-					dynamicFeature = "+";
-				satisfaction = 100;
-			}
-		}
-		else
-		{
-			// There was a previous observation
-			if (previousLandmark.equals(currentLandmark))
-			{
-				// Track the same landmark
-				if ( Math.abs(currentObservation.getDirection() * 2 - (colliculus.length - 1)) < colliculus.length / 2 - 1) // narrow the fovea
-				{
-					// The landmark is now in the fovea
-					if (currentObservation.getDistance() < previousObservation.getDistance()
-						|| (Math.abs(previousObservation.getDirection() * 2 - (colliculus.length - 1)) > colliculus.length / 2 - 1))
-					{
-						// The landmark was previously farther
-						dynamicFeature = "+";
-						satisfaction = 150;
-					}
-				}
-				else if (currentObservation.getDirection() < colliculus.length / 2 )
-				{
-					// The landmark is now on the right side
-					if ( previousObservation.getDirection() >  currentObservation.getDirection())
-					{
-						// The landmark was previously more inward
-						dynamicFeature = ".-";
-						satisfaction = -100;
-					}
-					if ( previousObservation.getDirection() <  currentObservation.getDirection())
-					{
-						// The landmark was previously more outward
-						dynamicFeature = ".+";
-						satisfaction = 100;
-					}
-				}
-				else if (currentObservation.getDirection() >= colliculus.length / 2 )
-				{
-					// The landmark is now on the left side
-					if ( previousObservation.getDirection() >  currentObservation.getDirection())
-					{
-						// The landmark was previously more outward
-						dynamicFeature = ".+";
-						satisfaction = 100;
-					}
-					if ( previousObservation.getDirection() <  currentObservation.getDirection())
-					{
-						// The landmark was previously more inward
-						dynamicFeature = ".-";
-						satisfaction = -100;
-					}
-				}
-				else
-				{
-					// Just for debug. This should never happen
-					dynamicFeature = "--";
-					satisfaction = -150;
-				}
-			}
-			else 
-			{
-				// Stop tracking the previous landmark
-				
-				if (currentLandmark == null)
-				{
-					// All landmarks of interest have disappeared 
-					if (previousObservation.getDirection() < colliculus.length / 4 )
-						dynamicFeature = ".-";
-					else if (previousObservation.getDirection() >= colliculus.length * 3 / 4 )
-						dynamicFeature = "-.";
-					else 
-						// Just for debug. This should never happen
-						dynamicFeature = "-";
-					satisfaction = -150;
-				}
-				else
-				{
-					// A landmark of greater interest has appeared
-					check(previousLandmark);
-					if (currentObservation.getDirection() < colliculus.length / 4 + 1)
-						dynamicFeature = ".+";
-					else if (currentObservation.getDirection() >= colliculus.length * 3 / 4 - 1)
-						dynamicFeature = "+.";
-					else 
-						dynamicFeature = "+";
-					satisfaction = 150;
-				}
-			}
-		}
-		currentObservation.setDynamicFeature(dynamicFeature);
-		currentObservation.setSatisfaction(satisfaction);
-		
-		if (previousLandmark !=null)
-			System.out.println("previous landmark " + previousLandmark.getHexColor());
-		if (currentLandmark != null)
-			System.out.println("current landmark " + currentObservation.getLandmark().getHexColor());
-		
-		return currentObservation;
+		return salientObservation;
 	}
 	
 }
+	

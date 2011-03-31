@@ -1,8 +1,7 @@
 package ernest;
 
 /**
- * The focus of Ernest's current attention.
- * Ernest 9's focus is the closest landmark to the target in Ernest's visual field.
+ * An element of Ernest's visual system.
  * @author Olivier
  */
 public interface IObservation 
@@ -40,7 +39,7 @@ public interface IObservation
 	/**
 	 * @param dynamicFeature
 	 */
-	void setDynamicFeature(String dynamicFeature);
+//	void setDynamicFeature(String dynamicFeature);
 	
 	/**
 	 * @return The changes in this focus over the last interaction cycle.
@@ -63,4 +62,13 @@ public interface IObservation
 	 * @param element
 	 */
 	void trace(ITracer tracer, String element);
+	
+	void setMotivationalState(boolean thirsty);
+	void setClock(int clock);
+	int interest();
+	
+	void setMotivation(int motivation);
+	int getMotivation();
+	
+	void setDynamicFeature(IObservation previousObservation);
 }
