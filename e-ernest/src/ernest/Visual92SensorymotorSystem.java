@@ -77,9 +77,14 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 			colliculus[i][0] = new Observation();
 			colliculus[i][0].setLandmark(m_staticSystem.addLandmark(matrix[i][1], matrix[i][2], matrix[i][3]));
 			colliculus[i][0].setDistance(matrix[i][0]);
+			colliculus[i][0].setMotivationalState(m_staticSystem.isThirsty());
+			colliculus[i][0].setClock(m_staticSystem.getClock());
+			
 			colliculus[i][1] = new Observation();
 			colliculus[i][1].setLandmark(m_staticSystem.addLandmark(matrix[i][5], matrix[i][6], matrix[i][7]));
 			colliculus[i][1].setDistance(matrix[i][4]);
+			colliculus[i][1].setMotivationalState(m_staticSystem.isThirsty());
+			colliculus[i][1].setClock(m_staticSystem.getClock());
 		}
 
 		m_wallAhead = colliculus[5][1].getLandmark();
@@ -98,7 +103,8 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 
 		// The focus observation is the most motivating observation in the colliculus
 		
-		m_currentObservation = m_staticSystem.focusObservation(m_previousObservation, colliculus);
+		m_currentObservation = m_staticSystem.salientObservation(colliculus);
+		m_currentObservation.setDynamicFeature(m_previousObservation);
 				
 		m_currentObservation.trace(m_tracer, "current_observation");
 		

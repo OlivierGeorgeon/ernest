@@ -132,4 +132,28 @@ public class Landmark implements ILandmark
 		return m_distanceToFood;
 	}
 	
+	public int currentMotivation(boolean thirsty, int clock)
+	{
+		int motivation = 0;
+		
+		if ((clock - m_lastTimeChecked > Ernest.PERSISTENCE) && !getColor().equals(Ernest.WALL_COLOR))
+		{
+			
+			if (thirsty)
+			{
+				if (m_distanceToWater < Ernest.INFINITE)
+					motivation = Ernest.TOP_MOTIVATION - m_distanceToWater * Ernest.BASE_MOTIVATION; // TODO
+				else
+					motivation = Ernest.BASE_MOTIVATION;
+			}
+			else 
+			{
+				if (m_distanceToWater < Ernest.INFINITE)
+					motivation = Ernest.TOP_MOTIVATION - m_distanceToFood * Ernest.BASE_MOTIVATION; // TODO 
+				else
+					motivation = Ernest.BASE_MOTIVATION;
+			}
+		}
+		return motivation;
+	}
 }

@@ -80,6 +80,12 @@ public interface ILandmark
 	 * @param t The time from hive (or food).
 	 */
 	public void updateTimeFromHive(int t);
+	
+	/**
+	 * @param thirsty true if Ernest is thirsty, false if Ernest is hungry (seeks for the hive)
+	 * @return A value that represents Ernest's current interest for this landmark
+	 */
+	public int currentMotivation(boolean thirsty, int clock);
 
 }
 

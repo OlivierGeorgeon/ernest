@@ -34,6 +34,12 @@ public class Ernest implements IErnest
 	/** Maximum length of a schema (For the schema to be chosen as an intention) */
 	public static int SCHEMA_MAX_LENGTH = INFINITE;
 	
+	/** The duration during which checked landmarks remain not motivating  */
+	public static int PERSISTENCE = 50;// 40;
+	
+	public static int BASE_MOTIVATION =  1000;
+	public static int TOP_MOTIVATION = 100000;
+	
 	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
 	public static int MATURITY = 1500; // not used currently.
 	
