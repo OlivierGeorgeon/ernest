@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 import org.w3c.dom.Element;
 
 /**
@@ -77,17 +79,13 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 			colliculus[i][0] = new Observation();
 			colliculus[i][0].setLandmark(m_staticSystem.addLandmark(matrix[i][1], matrix[i][2], matrix[i][3]));
 			colliculus[i][0].setDistance(matrix[i][0]);
-			colliculus[i][0].setMotivationalState(m_staticSystem.isThirsty());
-			colliculus[i][0].setClock(m_staticSystem.getClock());
 			
 			colliculus[i][1] = new Observation();
 			colliculus[i][1].setLandmark(m_staticSystem.addLandmark(matrix[i][5], matrix[i][6], matrix[i][7]));
 			colliculus[i][1].setDistance(matrix[i][4]);
-			colliculus[i][1].setMotivationalState(m_staticSystem.isThirsty());
-			colliculus[i][1].setClock(m_staticSystem.getClock());
 		}
 
-		m_wallAhead = colliculus[5][1].getLandmark();
+		m_wallAhead = colliculus[6][1].getLandmark();
 		
 		// Trace the retina
 		
@@ -101,11 +99,17 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		m_previousObservation  = m_currentObservation;
 
-		// The focus observation is the most motivating observation in the colliculus
+		// The new observation is the most motivating observation in the colliculus
 		
 		m_currentObservation = m_staticSystem.salientObservation(colliculus);
 		m_currentObservation.setDynamicFeature(m_previousObservation);
-				
+		
+		// If shift to a more motivating landmark then check the previous landmark
+		ILandmark previousLandmark = m_previousObservation.getLandmark();
+		//if (previousLandmark != null && !previousLandmark.equals(m_currentObservation.getLandmark())
+		//		&& m_currentObservation.getMotivation() > m_previousObservation.getMotivation())
+		//	m_staticSystem.check(previousLandmark);
+		
 		m_currentObservation.trace(m_tracer, "current_observation");
 		
 		// Taste =====
@@ -119,4 +123,13 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 		if (taste > TASTE_FOOD)
 			m_staticSystem.visit(colliculus[0][0].getLandmark());
 	}	
+	
+	public Color getColor()
+	{
+		ILandmark l = m_currentObservation.getLandmark();
+		if (l == null)
+			return Ernest.WALL_COLOR;
+		else
+			return l.getColor();
+	}
 }

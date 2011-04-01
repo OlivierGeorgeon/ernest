@@ -3,6 +3,7 @@ package ernest;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
+import org.w3c.dom.Element;
 
 /**
  * Ernest's static system contains all the landmarks ever created.
@@ -30,7 +31,7 @@ public class StaticSystem
 	/** The food tank level that raises hunger when empty (homeostatic glucose level)  */
 	private int m_glucoseLevel = LEVEL_INCREMENT;
 	
-	private int m_distanceToTarget = Ernest.INFINITE;
+	// private int m_distanceToTarget = Ernest.INFINITE;
 	
 	private int m_lastTimeInHive = 0; // Ok if Ernest does not pass by the hive at start because it is close anyway.
 	
@@ -52,7 +53,6 @@ public class StaticSystem
 		m_tracer.addEventElement("clock", m_clock + "");
 		m_tracer.addEventElement("is_thristy", new Boolean(isThirsty()).toString());
 		m_tracer.addEventElement("is_hungry", new Boolean(isHungry()).toString());
-		m_tracer.addEventElement("time_to_target", m_distanceToTarget + "");
 		
 		m_clock++;
 	}
@@ -121,7 +121,10 @@ public class StaticSystem
 	public void updateDistanceToWater(int clock)
 	{
 		for (ILandmark l : m_landmarks)
+		{
 			l.setDistanceToWater(clock);
+			l.setLastTimeChecked(- Ernest.INFINITE); // needed to reconsider recently visited landmarks on the way back
+		}
 	}
 
 	/**
@@ -131,47 +134,12 @@ public class StaticSystem
 	public void updateDistanceToFood(int clock)
 	{
 		for (ILandmark l : m_landmarks)
+		{
 			l.setDistanceToFood(clock);
+			l.setLastTimeChecked(- Ernest.INFINITE); // needed to reconsider recently visited landmarks on the way back
+		}
 	}
 	
-	/**
-	 * Tells if a landmark is inhibited or not
-	 * @param landmark The landmark to check 
-	 * @return true if inhibited, false if not.
-	 */
-	public boolean isInhibited(ILandmark landmark)
-	{
-		boolean inhibited = true;
-		
-		if (!landmark.getColor().equals(Ernest.WALL_COLOR))
-		{
-			// If the landmark has been forgotten then it is uninhibited
-			if (isThirsty())
-			{
-				// Forgotten landmarks are uninhibited (except the hive that can't be forgotten)
-				if ((m_clock - landmark.getLastTimeChecked()) > Ernest.PERSISTENCE  &&
-						landmark.getDistanceToFood() != 0 )
-					inhibited = false;
-			
-				// if the landmark's distance to target is closer than Ernest's current distance then it is uninhibited
-				if (landmark.getDistanceToWater() < m_distanceToTarget) 
-					inhibited = false;
-			}
-			// back to hive
-			if (isHungry())
-			{
-				// Forgotten landmarks are uninhibited (except the flowers that can't be forgotten)
-				if ((m_clock - landmark.getLastTimeChecked()) > Ernest.PERSISTENCE   &&
-						landmark.getDistanceToWater() != 0 )
-					inhibited = false;
-				// landmarks closer to target are uninhibited
-				if (landmark.getDistanceToFood() < m_distanceToTarget) 
-					inhibited = false;		
-			}
-		}	
-		return inhibited;
-	}
-
 	/**
 	 * The internal effect of the reflex mechanism of drinking when Ernest tastes water.
 	 * @param landmark The landmark that is drunk.
@@ -179,14 +147,13 @@ public class StaticSystem
 	public void drink(ILandmark landmark)
 	{
 		if (isThirsty())
-		{
 			m_tracer.addEventElement("drink", landmark.getHexColor());
-			landmark.setLastTimeChecked(m_clock);
-			check(landmark);
-			updateDistanceToWater(m_clock);
-			m_waterLevel = LEVEL_INCREMENT;
-			m_glucoseLevel = 0;
-		}
+		landmark.setLastTimeChecked(m_clock);
+		check(landmark);
+		updateDistanceToWater(m_clock);
+		m_waterLevel = LEVEL_INCREMENT;
+		m_glucoseLevel = 0;
+		landmark.setLastTimeChecked(m_clock);
 		check(landmark); // check again now that Ernest is hungry
 	}
 	
@@ -197,15 +164,14 @@ public class StaticSystem
 	public void eat(ILandmark landmark)
 	{
 		if (isHungry())
-		{
 			m_tracer.addEventElement("eat", landmark.getHexColor());
-			landmark.setLastTimeChecked(m_clock);
-			check(landmark);
-			updateDistanceToFood(m_clock);
-			m_lastTimeInHive = m_clock;
-			m_glucoseLevel = LEVEL_INCREMENT;
-			m_waterLevel = 0;
-		}
+		landmark.setLastTimeChecked(m_clock);
+		check(landmark);
+		updateDistanceToFood(m_clock);
+		m_lastTimeInHive = m_clock;
+		m_glucoseLevel = LEVEL_INCREMENT;
+		m_waterLevel = 0;
+		landmark.setLastTimeChecked(m_clock);
 		check(landmark); // check again now that Ernest is thirsty
 	}
 	
@@ -246,27 +212,27 @@ public class StaticSystem
 	{
 		if (!landmark.getColor().equals(Ernest.WALL_COLOR))
 		{
-			m_tracer.addEventElement("check_landmark", landmark.getHexColor());
 	
 			// Only check the landmark if it has already been visited 
-			// if (landmark.getLastTimeChecked() > 0)
+			if (landmark.getLastTimeChecked() > 0)
+			{
+				Element e = m_tracer.addEventElement("check", "");
+				m_tracer.addSubelement(e, "color", landmark.getHexColor());
 				landmark.setLastTimeChecked(m_clock);
 			
-			// Estimate distance to water (even if the landmark is not checked)
-			if (isThirsty())
-			{
-				landmark.setLastTimeThirsty(m_clock);
-				landmark.updateTimeFromHive(m_clock - m_lastTimeInHive);
-				if (landmark.getDistanceToWater() > 0) // (not yet arrived to final target)
-					m_distanceToTarget = landmark.getDistanceToWater();
-			}
-			
-			// Estimate distance to food (even if the landmark is not checked)
-			if (isHungry())
-			{
-				landmark.setLastTimeHungry(m_clock);
-				if (landmark.getDistanceToFood() > 0) // (not yet arrived to final target)
-				m_distanceToTarget = landmark.getDistanceToFood();
+				// Estimate distance to water 
+				if (isThirsty())
+				{
+					landmark.setLastTimeThirsty(m_clock);
+					landmark.updateTimeFromHive(m_clock - m_lastTimeInHive);
+					m_tracer.addSubelement(e, "time_from_hive", (m_clock - m_lastTimeInHive) + "");
+				}
+				
+				// Estimate distance to food 
+				if (isHungry())
+				{
+					landmark.setLastTimeHungry(m_clock);
+				}
 			}
 		}
 	}
@@ -296,17 +262,23 @@ public class StaticSystem
 	{
 		IObservation salientObservation = new Observation();
 		ILandmark currentLandmark = null;
+		int distance = Ernest.INFINITE;
 
 		// Find the max motivation in the colliculus
 		
 		int maxMotivation = 0;
 		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
 			for (int j = 0; j <= 1; j++)
-				if (colliculus[i][j].getMotivation() > maxMotivation)
+			{
+				int interest = colliculus[i][j].getLandmark().currentMotivation(isThirsty(), m_clock) - colliculus[i][j].getDistance();
+				colliculus[i][j].setMotivation(interest);
+				if (interest > maxMotivation)
 				{
-					maxMotivation = colliculus[i][j].interest();
+					maxMotivation = interest;
 					currentLandmark = colliculus[i][j].getLandmark();
+					distance = colliculus[i][j].getDistance();
 				}
+			}
 		
 		// The direction is the average direction of the max motivation
 		
@@ -322,6 +294,7 @@ public class StaticSystem
 						nbDirection++;
 					}
 			salientObservation.setLandmark(currentLandmark);
+			salientObservation.setDistance(distance);
 			salientObservation.setMotivation(maxMotivation);
 			salientObservation.setDirection((int) (sumDirection / nbDirection + .5));
 		}		

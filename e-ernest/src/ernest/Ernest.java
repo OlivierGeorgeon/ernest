@@ -143,30 +143,33 @@ public class Ernest implements IErnest
 		return m_primitiveSchema.getLabel();
 	}
 
-	public boolean isInhibited(Color color)
-	{
-		boolean inhibited = true;
-		ILandmark l = m_staticSystem.getLandmark(color);
-		if (l == null)
-		{
-			//System.out.println("unknown landmark");
-			inhibited = false;
-		}
-		else
-		{
-			inhibited = m_staticSystem.isInhibited(l);
-		}
-		return inhibited;
-	}
+//	public boolean isInhibited(Color color)
+//	{
+//		boolean inhibited = true;
+//		ILandmark l = m_staticSystem.getLandmark(color);
+//		if (l == null)
+//		{
+//			//System.out.println("unknown landmark");
+//			inhibited = false;
+//		}
+//		else
+//		{
+//			inhibited = m_staticSystem.isInhibited(l);
+//		}
+//		return inhibited;
+//	}
 	
 	public boolean isThirsty()
 	{
 		return m_staticSystem.isThirsty();
 	}
 
-//	public IAttentionalSystem getAttentionalSystem() 
-//	{
-//		return m_attentionalSystem;
-//	}
+	public Color getColor() 
+	{
+		if (m_sensorymotorSystem == null)
+			return WALL_COLOR;
+		else
+			return m_sensorymotorSystem.getColor();
+	}
 		
 }
