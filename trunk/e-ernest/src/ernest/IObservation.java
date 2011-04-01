@@ -63,10 +63,6 @@ public interface IObservation
 	 */
 	void trace(ITracer tracer, String element);
 	
-	void setMotivationalState(boolean thirsty);
-	void setClock(int clock);
-	int interest();
-	
 	void setMotivation(int motivation);
 	int getMotivation();
 	

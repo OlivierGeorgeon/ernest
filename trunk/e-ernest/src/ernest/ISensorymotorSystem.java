@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 /**
  * Generic interface for Ernest's sensorymotor system
  * Support primitive binary interactions.
@@ -41,4 +43,6 @@ public interface ISensorymotorSystem
 	 * @param matrix The matrix sensed in the environment. 
 	 */
 	public void senseMatrix(int[][] matrix); 
+	
+	public Color getColor();
 }

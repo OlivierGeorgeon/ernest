@@ -138,22 +138,18 @@ public class Landmark implements ILandmark
 		
 		if ((clock - m_lastTimeChecked > Ernest.PERSISTENCE) && !getColor().equals(Ernest.WALL_COLOR))
 		{
-			
-			if (thirsty)
-			{
-				if (m_distanceToWater < Ernest.INFINITE)
-					motivation = Ernest.TOP_MOTIVATION - m_distanceToWater * Ernest.BASE_MOTIVATION; // TODO
-				else
-					motivation = Ernest.BASE_MOTIVATION;
-			}
-			else 
-			{
-				if (m_distanceToWater < Ernest.INFINITE)
-					motivation = Ernest.TOP_MOTIVATION - m_distanceToFood * Ernest.BASE_MOTIVATION; // TODO 
-				else
-					motivation = Ernest.BASE_MOTIVATION;
-			}
+			// Curiosity to visit unknown or forgotten landmarks
+			motivation = Ernest.BASE_MOTIVATION;
+	
+			if (thirsty && (m_distanceToWater < Ernest.INFINITE) && (m_distanceToFood != 0))
+				// Motivated to get closer to water
+				motivation = Ernest.TOP_MOTIVATION - m_distanceToWater * Ernest.BASE_MOTIVATION; // TODO
+			 
+			if (!thirsty && (m_distanceToFood < Ernest.INFINITE) && (m_distanceToWater != 0))
+				// Motivate to get closer to food
+				motivation = Ernest.TOP_MOTIVATION - m_distanceToFood * Ernest.BASE_MOTIVATION; // TODO 
 		}
+
 		return motivation;
 	}
 }

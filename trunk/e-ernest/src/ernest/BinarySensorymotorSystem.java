@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 /**
  * The binary sensorymotor system can only sense a binary feedback from the environment.
  * This sensorymotor system is provided as an example for the SimpleMaze environment,
@@ -74,6 +76,11 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	 */
 	public void senseMatrix(int[][] matrix) 
 	{
+	}
+
+	public Color getColor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

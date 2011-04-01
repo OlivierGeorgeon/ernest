@@ -14,8 +14,6 @@ public class Observation implements IObservation {
 	private String m_dynamicFeature  = "";
 	private int m_satisfaction = 0;
 	private int m_motivation = 0;
-	private boolean m_motivationalState = false;
-	private int m_clock = 0;
 	
 	public void setLandmark(ILandmark landmark) 
 	{
@@ -86,19 +84,6 @@ public class Observation implements IObservation {
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
 	}
 
-	public void setMotivationalState(boolean thirsty)
-	{
-		m_motivationalState = thirsty;
-	}
-	public void setClock(int clock)
-	{
-		m_clock = clock;
-	}
-
-	public int interest()
-	{
-		return m_landmark.currentMotivation(m_motivationalState, m_clock) - m_distance;
-	}
 	
 	public int getMotivation()
 	{
@@ -114,9 +99,9 @@ public class Observation implements IObservation {
 	{
 		String dynamicFeature = "";
 		
-		int minFovea = 30;
-		int centerFovea = 60;
-		int maxFovea = 90;
+		int minFovea = 25;
+		int centerFovea = 55;
+		int maxFovea = 85;
 		
 		if (minFovea >= m_direction)
 		{
@@ -170,10 +155,10 @@ public class Observation implements IObservation {
 				if ( Math.abs(previousObservation.getDirection() - centerFovea) > Math.abs(m_direction - centerFovea))
 					// The landmark is now more inward
 					dynamicFeature = "+";
-				else if (m_direction > centerFovea)
+				else if (m_direction > previousObservation.getDirection())
 					// The landmark is now more outward to the left
 					dynamicFeature = "-.";
-				else
+				else if (previousObservation.getDirection() > m_direction)
 					// The landmark is now more outward to the right
 					dynamicFeature = ".-";
 			}

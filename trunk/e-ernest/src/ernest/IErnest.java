@@ -60,7 +60,8 @@ public interface IErnest
 	 * @param color
 	 * @return true if the color is inhibited by Ernest's static system
 	 */
-	public boolean isInhibited(Color color);
+	// public boolean isInhibited(Color color);
 	public boolean isThirsty();
+	public Color getColor();
 	
 }
