@@ -35,7 +35,7 @@ public class Ernest implements IErnest
 	public static int SCHEMA_MAX_LENGTH = INFINITE;
 	
 	/** The duration during which checked landmarks remain not motivating  */
-	public static int PERSISTENCE = 50;// 40;
+	public static int PERSISTENCE = 20; // (50 Ernest 9.3)
 	
 	public static int BASE_MOTIVATION =  1000;
 	public static int TOP_MOTIVATION = 100000;

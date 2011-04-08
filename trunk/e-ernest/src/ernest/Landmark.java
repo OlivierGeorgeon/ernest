@@ -140,7 +140,9 @@ public class Landmark implements ILandmark
 		{
 			// Curiosity to visit unknown or forgotten landmarks
 			motivation = Ernest.BASE_MOTIVATION;
-	
+		
+		}{  // Ernest 10 always sees fishes 
+			
 			if (thirsty && (m_distanceToWater < Ernest.INFINITE) && (m_distanceToFood != 0))
 				// Motivated to get closer to water
 				motivation = Ernest.TOP_MOTIVATION - m_distanceToWater * Ernest.BASE_MOTIVATION; // TODO
@@ -152,4 +154,5 @@ public class Landmark implements ILandmark
 
 		return motivation;
 	}
+
 }
