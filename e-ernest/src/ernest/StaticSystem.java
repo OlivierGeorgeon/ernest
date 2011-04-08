@@ -148,13 +148,20 @@ public class StaticSystem
 	{
 		if (isThirsty())
 			m_tracer.addEventElement("drink", landmark.getHexColor());
-		landmark.setLastTimeChecked(m_clock);
-		check(landmark);
-		updateDistanceToWater(m_clock);
-		m_waterLevel = LEVEL_INCREMENT;
-		m_glucoseLevel = 0;
-		landmark.setLastTimeChecked(m_clock);
-		check(landmark); // check again now that Ernest is hungry
+		// Ernest 10.0 is always thirsty !!!
+		
+		landmark.setLastTimeThirsty(m_clock); // 
+		landmark.setDistanceToWater(m_clock);
+		
+		// Switch to hive-seeking mode (Ernest 9.3)
+		
+		//landmark.setLastTimeChecked(m_clock);
+		//check(landmark);
+		//updateDistanceToWater(m_clock);
+		//m_waterLevel = LEVEL_INCREMENT;
+		//m_glucoseLevel = 0;
+		//landmark.setLastTimeChecked(m_clock);
+		//check(landmark); // check again now that Ernest is hungry
 	}
 	
 	/**

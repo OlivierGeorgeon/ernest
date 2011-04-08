@@ -82,7 +82,10 @@ public interface ILandmark
 	public void updateTimeFromHive(int t);
 	
 	/**
+	 * Tell how motivating is a landmark 
+	 * For Ernest 9.3 (http://e-ernest.blogspot.com/2011/04/ernest-93.html)
 	 * @param thirsty true if Ernest is thirsty, false if Ernest is hungry (seeks for the hive)
+	 * @param clock Ernest's internal clock
 	 * @return A value that represents Ernest's current interest for this landmark
 	 */
 	public int currentMotivation(boolean thirsty, int clock);
