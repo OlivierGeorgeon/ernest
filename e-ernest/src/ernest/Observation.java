@@ -125,7 +125,7 @@ public class Observation implements IObservation {
 		}
 		else if (m_direction >= maxFovea)
 		{
-			// The landmark is on now the left side
+			// The landmark is now on the left side
 			if (previousObservation.getMotivation() > m_motivation)
 				// Less motivating
 				dynamicFeature = "-.";

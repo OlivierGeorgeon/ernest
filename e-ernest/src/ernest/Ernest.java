@@ -14,10 +14,11 @@ public class Ernest implements IErnest
 	/** Color of regular wall  */
 	public static Color WALL_COLOR   = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
 
+	/** Ernest's retina resolution  */
 	public static int RESOLUTION_RETINA = 12;
-	//public static Color BUMP_COLOR   = new Color(255, 0, 0);
-	//public static Color WATER_COLOR  = new Color(150, 128, 255);
-	//public static Color FOOD_COLOR   = new Color(227, 124, 255);
+	
+	/** Ernest's number of rows in the retina */
+	public static int ROW_RETINA = 1;
 	
 	/** Hypothetical act (Cannot be chosen as an intention. Cannot support higher-level learning). */
 	public static final int HYPOTHETICAL = 1;
@@ -113,7 +114,7 @@ public class Ernest implements IErnest
     }
 
 	/**
-	 * Get a description of Ernest's internal state.
+	 * Get a description of Ernest's internal state (to display in the environment).
 	 * @return A representation of Ernest's internal state
 	 */
 	public String internalState() 
@@ -143,22 +144,6 @@ public class Ernest implements IErnest
 		return m_primitiveSchema.getLabel();
 	}
 
-//	public boolean isInhibited(Color color)
-//	{
-//		boolean inhibited = true;
-//		ILandmark l = m_staticSystem.getLandmark(color);
-//		if (l == null)
-//		{
-//			//System.out.println("unknown landmark");
-//			inhibited = false;
-//		}
-//		else
-//		{
-//			inhibited = m_staticSystem.isInhibited(l);
-//		}
-//		return inhibited;
-//	}
-	
 	public boolean isThirsty()
 	{
 		return m_staticSystem.isThirsty();

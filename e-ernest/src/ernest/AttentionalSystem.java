@@ -187,9 +187,9 @@ public class AttentionalSystem implements IAttentionalSystem {
 
 			// TODO also compute surprise in the case of primitive intention acts.  
 			if (m_intentionAct != enactedAct && !m_intentionAct.getStatus())  m_internalState= "!";
-			m_tracer.addEventElement("top_enacted_act", enactedAct.getLabel());
-			m_tracer.addEventElement("interrupted", m_internalState);
-			m_tracer.addEventElement("new_intention", "true");
+			//m_tracer.addEventElement("top_enacted_act", enactedAct.getLabel());
+			//m_tracer.addEventElement("interrupted", m_internalState);
+			//m_tracer.addEventElement("new_intention", "true");
 
 			System.out.println("New decision ================ ");
 			
@@ -202,7 +202,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 			if (intendedSchema == enactedAct.getSchema()) performedAct = enactedAct;
 			else	performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
 			
-			m_tracer.addEventElement("top_performed", performedAct.getLabel() );
+			//m_tracer.addEventElement("top_performed", performedAct.getLabel() );
 			System.out.println("Performed " + performedAct );
 			
 			// learn from the  context and the performed act
@@ -313,7 +313,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	/**
 	 * Recursively finds the next act to enact in the hierarchy of prescribers.
 	 * @param prescribedAct The prescribed act.
-	 * @param prescribedAct The enacted act.
+	 * @param enactedAct The enacted act.
 	 * @return the next intention act to enact or null if failed or completed
 	 */
 	private IAct nextAct(IAct prescribedAct, IAct enactedAct)
@@ -328,6 +328,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 		{
 			if (prescribedAct == enactedAct)
 			{
+				m_tracer.addEventElement("intention_correct", prescribedAct.getLabel());
 				// Correctly enacted
 				if (prescriberSchema.getPointer() == 0)
 				{
@@ -346,11 +347,15 @@ public class AttentionalSystem implements IAttentionalSystem {
 			}
 			else
 			{
+				m_tracer.addEventElement("intention_incorrect", prescribedAct.getLabel());
 				// move to prescriber act with a failure status
 				IAct prescriberAct = prescriberSchema.getPrescriberAct();
 				nextAct = nextAct(prescriberAct, prescriberSchema.getFailingAct());				
 			}
 		}
+		
+		if (nextAct !=null)
+			m_tracer.addEventElement("composite_intention", nextAct.getLabel());
 
 		return nextAct;
 	}
@@ -406,6 +411,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 			subact.setActivation(a.getActivation());
 			primitiveAct = spreadActivation(subact);
 		}
+		
+		m_tracer.addEventElement("prescribed_intention", primitiveAct.getLabel());
 		
 		return primitiveAct;
 	}

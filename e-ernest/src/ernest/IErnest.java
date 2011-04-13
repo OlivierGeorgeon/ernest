@@ -54,14 +54,13 @@ public interface IErnest
 	 */
 	public String step(boolean status);
 	
-	//public IAttentionalSystem getAttentionalSystem();
-	
 	/**
 	 * @param color
 	 * @return true if the color is inhibited by Ernest's static system
 	 */
-	// public boolean isInhibited(Color color);
 	public boolean isThirsty();
+
+	
 	public Color getColor();
 	
 }
