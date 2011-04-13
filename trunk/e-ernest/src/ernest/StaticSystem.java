@@ -275,7 +275,7 @@ public class StaticSystem
 		
 		int maxMotivation = 0;
 		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
-			for (int j = 0; j <= 1; j++)
+			for (int j = 0; j < Ernest.ROW_RETINA; j++) //  only check the first row
 			{
 				int interest = colliculus[i][j].getLandmark().currentMotivation(isThirsty(), m_clock) - colliculus[i][j].getDistance();
 				colliculus[i][j].setMotivation(interest);
@@ -294,7 +294,7 @@ public class StaticSystem
 			int sumDirection = 0;
 			int nbDirection = 0;
 			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0; i--)
-				for (int j = 0; j <= 1; j++)
+				for (int j = 0; j < Ernest.ROW_RETINA; j++)
 					if (colliculus[i][j].getMotivation() >= maxMotivation)
 					{
 						sumDirection += i * 10;
