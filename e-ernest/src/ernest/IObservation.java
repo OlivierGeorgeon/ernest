@@ -1,5 +1,7 @@
 package ernest;
 
+import tracing.ITracer;
+
 /**
  * An element of Ernest's visual system.
  * @author Olivier

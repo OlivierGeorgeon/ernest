@@ -8,6 +8,8 @@ import java.util.Random;
 
 import org.w3c.dom.Element;
 
+import tracing.ITracer;
+
 /**
  * Ernest's attentional system.
  * Maintain lists of acts that represent Ernest's current situation.
@@ -241,7 +243,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 		
 		// Log the activation list and the learned count for debug
 		System.out.println("Activation context list: ");
-		Element activation = m_tracer.addEventElement("activation_context_acts", "");
+		Object activation = m_tracer.addEventElement("activation_context_acts");
 		for (IAct a : m_activationList)	
 		{	
 			m_tracer.addSubelement(activation, "act", a.getLabel());

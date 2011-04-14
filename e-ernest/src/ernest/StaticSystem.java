@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;
 
+import tracing.ITracer;
+
 /**
  * Ernest's static system contains all the landmarks ever created.
  * It offers methods to record and refresh new landmarks.
@@ -223,7 +225,7 @@ public class StaticSystem
 			// Only check the landmark if it has already been visited 
 			if (landmark.getLastTimeChecked() > 0)
 			{
-				Element e = m_tracer.addEventElement("check", "");
+				Object e = m_tracer.addEventElement("check");
 				m_tracer.addSubelement(e, "color", landmark.getHexColor());
 				landmark.setLastTimeChecked(m_clock);
 			

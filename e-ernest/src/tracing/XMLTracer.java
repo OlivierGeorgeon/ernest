@@ -1,4 +1,4 @@
-package ernest;
+package tracing;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -7,6 +7,8 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
+
+
 import java.util.Calendar;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -15,7 +17,7 @@ import java.text.SimpleDateFormat;
  * This tracer logs the trace into an XML file.
  * @author Olivier
  */
-public class XMLTracer implements ITracer 
+public class XMLTracer implements ITracer<Element>
 {
 
 	private static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
@@ -133,6 +135,8 @@ public class XMLTracer implements ITracer
 			
 		m_sequence.appendChild(m_currentEvent);
 	}
+	
+	public void finishEvent() {}
 
 	/**
 	 * Add a new element to the current event
@@ -140,7 +144,17 @@ public class XMLTracer implements ITracer
 	 * @param textContent The element's textual content
 	 * @return a pointer to the element that can be used to add sub elements.
 	 */
-	public Element addEventElement(String name, String textContent)
+	public Element addEventElement(String name)
+	{
+		return this.addEventElementImpl(name, "");
+	}
+	
+	public void addEventElement(String name, String textContent)
+	{
+		this.addEventElementImpl(name, textContent);
+	}
+	
+	private Element addEventElementImpl(String name, String textContent)
 	{
 		if (m_currentEvent != null)
 		{
@@ -152,8 +166,18 @@ public class XMLTracer implements ITracer
 		else 
 			return null;
 	}
+
+	public Element addSubelement(Element element, String name)
+	{
+		return this.addSubelementImpl(element, name, "");
+	}
 	
-	public Element addSubelement(Element element, String name, String textContent)
+	public void addSubelement(Element element, String name, String textContent)
+	{
+		this.addSubelementImpl(element, name, textContent);
+	}
+	
+	private Element addSubelementImpl(Element element, String name, String textContent)
 	{
 		if (element != null)
 		{

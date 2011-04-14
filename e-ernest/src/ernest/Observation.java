@@ -2,6 +2,8 @@ package ernest;
 
 import org.w3c.dom.Element;
 
+import tracing.ITracer;
+
 /**
  * An element of Ernest's visual system.
  * @author Olivier
@@ -68,7 +70,7 @@ public class Observation implements IObservation {
 
 	public void trace(ITracer tracer, String element) 
 	{
-		Element e = tracer.addEventElement(element, "");
+		Object e = tracer.addEventElement(element);
 		if (m_landmark != null)
 		{
 			tracer.addSubelement(e, "color", m_landmark.getHexColor());

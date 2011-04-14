@@ -1,19 +1,18 @@
-package ernest;
+package tracing;
 
-import org.w3c.dom.Element;
 
 /**
  * Generates Ernest's activity traces. 
  * @author ogeorgeon
  */
-public interface ITracer {
+public interface ITracer<EventElement> {
 
 	/**
 	 * Cose the tracer
 	 * @return true if tracer ok
 	 */
 	public boolean close();
-	
+
 	/**
 	 * Create a new event
 	 * @param t the time stamp
@@ -21,13 +20,21 @@ public interface ITracer {
 	public void startNewEvent(int t);
 	
 	/**
+	 * Closes the current event.
+	 * @param t the time stamp
+	 */
+	public void finishEvent();
+	
+	/**
 	 * Add a new property to the current event
 	 * @param name The property's name
 	 * @param value The property's value
 	 */
-	public Element addEventElement(String name, String value);
+	public EventElement addEventElement(String name);
+	public void addEventElement(String name, String value);
 
-	public Element addSubelement(Element element, String name, String textContent);
+	public EventElement addSubelement(EventElement element, String name);
+	public void addSubelement(EventElement element, String name, String textContent);
 
 	/**
 	 * Create an event that can be populated using its reference.
@@ -36,6 +43,6 @@ public interface ITracer {
 	 * @param t The event's time stamp.
 	 * @return The pointer to the event.
 	 */
-	public Element newEvent(String source, String type, int t);
+	public EventElement newEvent(String source, String type, int t);
 
 }

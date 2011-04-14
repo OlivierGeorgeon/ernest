@@ -1,5 +1,8 @@
 package ernest;
 
+import tracing.ITracer;
+import tracing.KTBSTracer;
+
 /**
  * The main program.  
  * Gives an example code to run Ernest in a simulated environment.
@@ -19,7 +22,7 @@ public class Main
 		
 		IErnest ernest = new Ernest();
 		BinarySensorymotorSystem sms = new BinarySensorymotorSystem();
-		ITracer tracer = new Tracer("trace.txt");
+		ITracer tracer = new KTBSTracer("http://localhost:8001/IDEAL/", "http://salade.dyndns.org/nomodel#");
 		
 		// Initialize the Ernest 
 		
