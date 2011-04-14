@@ -86,7 +86,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 
 		// Trace the retina
 		
-		Element retinaElmt = m_tracer.addEventElement("retina", "");
+		Object retinaElmt = m_tracer.addEventElement("retina");
 		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
 			m_tracer.addSubelement(retinaElmt, "pixel_" + i, colliculus[i][0].getLandmark().getHexColor());				
 		
@@ -116,7 +116,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 			m_staticSystem.visit(colliculus[0][1].getLandmark());
 		
 		// Kinesthetic =====
-		Element s = m_tracer.addEventElement("somatotopic_map", "");
+		Object s = m_tracer.addEventElement("somatotopic_map");
 		int [][] somatoMap = new int[3][3];
 		for (int j = 0; j < 3; j++)
 			for (int i = 0; i < 3; i++)

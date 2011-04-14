@@ -2,6 +2,8 @@ package ernest;
 
 import java.awt.Color;
 
+import tracing.ITracer;
+
 /**
  * Generic interface for Ernest's sensorymotor system
  * Support primitive binary interactions.

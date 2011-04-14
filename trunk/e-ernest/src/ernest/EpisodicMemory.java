@@ -7,6 +7,8 @@ import java.util.Random;
 
 import org.w3c.dom.Element;
 
+import tracing.ITracer;
+
 /**
  * Ernest's episodic memory contains all the schemas and acts ever created.
  * It offers methods to record new schemas and acts.
@@ -177,7 +179,7 @@ public class EpisodicMemory
 				
 					// Created acts are part of the context 
 					// if their context and intention have passed the regularity
-					// if they are based on reliable noèmes
+					// if they are based on reliable noÔøΩmes
 				if ((contextAct.getConfidence() == Ernest.RELIABLE) &&
   				   (intentionAct.getConfidence() == Ernest.RELIABLE))
 				{
@@ -201,7 +203,7 @@ public class EpisodicMemory
 		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
 		// Browse all the existing schemas 
-		Element activations = m_tracer.addEventElement("activations", "");
+		Object activations = m_tracer.addEventElement("activations");
 		for (ISchema s : m_schemas)
 		{
 			if (!s.isPrimitive())
@@ -269,7 +271,7 @@ public class EpisodicMemory
 		}
 
 		System.out.println("Propose: ");
-		Element proposalElmt = m_tracer.addEventElement("proposals", "");
+		Object proposalElmt = m_tracer.addEventElement("proposals");
 		for (IProposition p : proposals)
 		{
 			m_tracer.addSubelement(proposalElmt, "proposal", p.toString());

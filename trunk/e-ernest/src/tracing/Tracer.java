@@ -1,4 +1,4 @@
-package ernest;
+package tracing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,11 +7,12 @@ import java.io.IOException;
 
 import org.w3c.dom.Element;
 
+
 /**
  * This tracer logs the trace into a text file.
  * @author ogeorgeon 
  */
-public class Tracer implements ITracer
+public class Tracer implements ITracer<Object>
 {
 
 	private  File logFile = null;
@@ -75,8 +76,20 @@ public class Tracer implements ITracer
 	{
 		addEventElement("cycle", " " + t); 
 	}
+	
+	public void finishEvent() {}
 
-	public Element addEventElement(String name, String value) 
+	public void addEventElement(String name, String value) 
+	{
+		addEventElementImpl(name, value);
+	}
+	
+	public Object addEventElement(String name) 
+	{
+		return addEventElementImpl(name, "");
+	}
+	
+	private Object addEventElementImpl(String name, String value) 
 	{
 		if (name.equals("cycle") || name.equals("enacted_act") || name.equals("interrupted")) 
 		{
@@ -100,13 +113,18 @@ public class Tracer implements ITracer
 		return null;
 	}
 
-	public Element addSubelement(Element element, String name, String textContent) 
+	public Object addSubelement(Object element, String name) 
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public void addSubelement(Object element, String name, String textContent) 
+	{
+		// TODO Auto-generated method stub
+	}
 
-	public Element newEvent(String source, String type, int t) 
+	public Object newEvent(String source, String type, int t) 
 	{
 		// TODO Auto-generated method stub
 		return null;

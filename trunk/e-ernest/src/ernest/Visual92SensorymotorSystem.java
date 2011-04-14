@@ -88,8 +88,7 @@ public class Visual92SensorymotorSystem  extends BinarySensorymotorSystem
 		m_wallAhead = colliculus[6][1].getLandmark();
 		
 		// Trace the retina
-		
-		Element retinaElmt = m_tracer.addEventElement("retina", "");
+		Object retinaElmt = m_tracer.addEventElement("retina");
 		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
 			m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, colliculus[i][0].getLandmark().getHexColor());				
 		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
