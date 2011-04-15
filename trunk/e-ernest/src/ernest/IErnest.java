@@ -56,13 +56,4 @@ public interface IErnest
 	 */
 	public String step(boolean status);
 	
-	/**
-	 * @param color
-	 * @return true if the color is inhibited by Ernest's static system
-	 */
-	public boolean isThirsty();
-
-	
-	public Color getColor();
-	
 }

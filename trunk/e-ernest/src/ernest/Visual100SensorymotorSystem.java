@@ -16,13 +16,10 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 	private IObservation m_currentObservation = new Observation();
 	private IObservation m_previousObservation;
 	
-	private ILandmark m_wallAhead;
-	
-	/** The taste of water */
-	private int TASTE_WATER = 1;
-
-	/** The taste of food */
-	private int TASTE_FOOD = 2;
+	private IStimulation m_visualStandStimulation;
+	private IStimulation m_visualFrontStimulation;
+	private IStimulation m_tactileFrontStimulation;
+	private IStimulation m_gustatoryFrontStimulation;
 	
 	/**
 	 * Determine the enacted act.
@@ -49,7 +46,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Bump into a landmark TODO make sure we declare the good landmark bumped
 		if (label.equals("[>]"))
-			m_staticSystem.bump(m_wallAhead);
+			m_staticSystem.addBundle(m_visualFrontStimulation, m_tactileFrontStimulation, m_gustatoryFrontStimulation, 0);
 		
 		// Compute the act's satisfaction 
 		
@@ -65,73 +62,61 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 	}
 	
 	/**
-	 * Generate sensory features from the sensed matrix sent by the environment.
+	 * Generate sensory stimulations from the sensed matrix received from the environment.
 	 * @param matrix The matrix sensed in the environment. 
 	 */
 	public void senseMatrix(int[][] matrix) 
 	{
 		// Vision =====
 		
-		IObservation[][] colliculus = new Observation[Ernest.RESOLUTION_RETINA][2];
+		IStimulation[] visualCortex = new Stimulation[Ernest.RESOLUTION_RETINA];
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-		{
-			colliculus[i][0] = new Observation();
-			colliculus[i][0].setLandmark(m_staticSystem.addLandmark(matrix[i][1], matrix[i][2], matrix[i][3]));
-			colliculus[i][0].setDistance(matrix[i][0]);
-			
-			colliculus[i][1] = new Observation();
-			colliculus[i][1].setLandmark(m_staticSystem.addLandmark(matrix[i][5], matrix[i][6], matrix[i][7]));
-			colliculus[i][1].setDistance(matrix[i][4]);
-		}
+			visualCortex[i] = m_staticSystem.addStimulation(matrix[i][1], matrix[i][2], matrix[i][3], matrix[i][0]);
 
-		// Trace the retina
+		m_visualStandStimulation = m_staticSystem.addStimulation(matrix[0][5], matrix[0][6], matrix[0][7], matrix[0][4]);
+		m_visualFrontStimulation = visualCortex[Ernest.RESOLUTION_RETINA / 2];
 		
-		Object retinaElmt = m_tracer.addEventElement("retina");
+		Object retinaElmt = m_tracer.addEventElement("visual");
 		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
-			m_tracer.addSubelement(retinaElmt, "pixel_" + i, colliculus[i][0].getLandmark().getHexColor());				
+		{
+			m_tracer.addSubelement(retinaElmt, "pixel_" + i, visualCortex[i].getHexColor());
+			m_tracer.addSubelement(retinaElmt, "distance_" + i, visualCortex[i].getDistance() + "");
+		}
 		
-		// Shift observations
+		// Touch =====
 		
-		m_previousObservation  = m_currentObservation;
-
-		// The new observation is the most motivating observation in the colliculus
-		
-		m_currentObservation = m_staticSystem.salientObservation(colliculus);
-		m_currentObservation.setDynamicFeature(m_previousObservation);
-		
-		if (m_currentObservation.getDirection() >= 50 && m_currentObservation.getDirection() <= 60) // looking forward, then if bumped, that would be a wall
-			m_wallAhead = m_currentObservation.getLandmark();
-
-		m_currentObservation.trace(m_tracer, "current_observation");
-		
-		// Taste =====
-		
-		int taste = matrix[0][8];
-		
-		if (taste == TASTE_WATER)
-			m_staticSystem.drink(colliculus[0][1].getLandmark()); // Look for the landmark under Ernest's feet
-		if (taste == TASTE_FOOD)
-			m_staticSystem.eat(colliculus[0][1].getLandmark());
-		if (taste > TASTE_FOOD)
-			m_staticSystem.visit(colliculus[0][1].getLandmark());
-		
-		// Kinesthetic =====
-		Object s = m_tracer.addEventElement("somatotopic_map");
-		int [][] somatoMap = new int[3][3];
+		Object s = m_tracer.addEventElement("tactile");
+		IStimulation [][] somatoCortex = new IStimulation[3][3];
 		for (int j = 0; j < 3; j++)
 			for (int i = 0; i < 3; i++)
 			{
-				somatoMap[i][j] = matrix[i][9 + j];
-				m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoMap[i][j] + "");
+				somatoCortex[i][j] = m_staticSystem.addStimulation(Ernest.STIMULATION_TACTILE, matrix[i][9 + j]);
+				m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getValue() + "");
 			}
+		m_tactileFrontStimulation = somatoCortex[1][0];
+
+		// Taste =====
+		
+		IStimulation taste = m_staticSystem.addStimulation(Ernest.STIMULATION_GUSTATORY, matrix[0][8]); 
+		m_tracer.addEventElement("gustatory", taste.getValue() + "");
+		m_gustatoryFrontStimulation = m_staticSystem.addStimulation(Ernest.STIMULATION_GUSTATORY, Ernest.STIMULATION_TASTE_NOTHING);
+
+		// Bundle the stimulations together ===
+		
+		int attractiveness = 0;
+		if (taste.getValue() == Ernest.STIMULATION_TASTE_FISH)
+			attractiveness = Ernest.TOP_MOTIVATION;
+		else if (somatoCortex[1][1].getValue() == Ernest.STIMULATION_TOUCH_ALGA)
+			attractiveness = Ernest.BASE_MOTIVATION;
+		
+		m_staticSystem.addBundle(m_visualStandStimulation, somatoCortex[1][1], taste, attractiveness);
+		
+		// Updates the current observation
+		
+		m_previousObservation  = m_currentObservation;		
+		m_currentObservation = m_staticSystem.salientObservation(visualCortex, somatoCortex);
+		m_currentObservation.setDynamicFeature(m_previousObservation);
+		m_currentObservation.trace(m_tracer, "current_observation");
+				
 	}	
-	
-	public Color getColor()
-	{
-		ILandmark l = m_currentObservation.getLandmark();
-		if (l == null)
-			return Ernest.WALL_COLOR;
-		else
-			return l.getColor();
-	}
 }

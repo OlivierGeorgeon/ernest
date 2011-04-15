@@ -84,11 +84,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 */
 	public String getInternalState()
 	{
-		int state = 0;
-		if (m_staticSystem.isThirsty()) state = 1;
-		if (m_staticSystem.isHungry()) state = state + 2;
-		//return m_internalState;
-		return state + "";
+		return m_internalState;
 	}
 
 	/**

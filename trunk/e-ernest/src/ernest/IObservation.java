@@ -9,14 +9,14 @@ import tracing.ITracer;
 public interface IObservation 
 {
 	/**
-	 * @param landmark
+	 * @param hexColor this observation's main color in hexadecimal code.
 	 */
-	void setLandmark(ILandmark landmark);
+	void setHexColor(String hexColor);
 	
 	/**
-	 * @return The landmark in the focus
+	 * @return this observation's main color in hexadecimal code.
 	 */
-	ILandmark getLandmark();
+	String getHexColor();
 
 	/**
 	 * @param distance
@@ -37,11 +37,6 @@ public interface IObservation
 	 * @return The landmark's directin in retinotopic reference
 	 */
 	int getDirection();
-	
-	/**
-	 * @param dynamicFeature
-	 */
-//	void setDynamicFeature(String dynamicFeature);
 	
 	/**
 	 * @return The changes in this focus over the last interaction cycle.
@@ -65,8 +60,15 @@ public interface IObservation
 	 */
 	void trace(ITracer tracer, String element);
 	
-	void setMotivation(int motivation);
-	int getMotivation();
+	/**
+	 * @param attractiveness This observation's attractiveness
+	 */
+	void setAttractiveness(int attractiveness);
+	
+	/**
+	 * @return This observation's attractiveness
+	 */
+	int getAttractiveness();
 	
 	void setDynamicFeature(IObservation previousObservation);
 }

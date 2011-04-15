@@ -46,5 +46,4 @@ public interface ISensorymotorSystem
 	 */
 	public void senseMatrix(int[][] matrix); 
 	
-	public Color getColor();
 }
