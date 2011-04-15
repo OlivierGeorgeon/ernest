@@ -14,10 +14,18 @@ public class Ernest implements IErnest
 	public static final int INFINITE = 1000;
 	
 	/** Color of regular wall  */
-	public static Color WALL_COLOR   = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
-
+	public static Color COLOR_WALL   = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	public static Color COLOR_WATER  = new Color(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	public static Color COLOR_TOUCH_EMPTY  = new Color(140,140, 140); 
+	public static Color COLOR_TOUCH_ALGA   = new Color(70, 70, 70); 
+	public static Color COLOR_TOUCH_FISH  = new Color(70, 70, 70); 
+	public static Color COLOR_TOUCH_WALL  = new Color(0, 0, 0);
+	
 	/** Ernest's retina resolution  */
 	public static int RESOLUTION_RETINA = 12;
+	
+	/** Ernest's colliculus resolution  */
+	public static int RESOLUTION_COLLICULUS = 24;
 	
 	/** Ernest's number of rows in the retina */
 	public static int ROW_RETINA = 1;
@@ -45,6 +53,39 @@ public class Ernest implements IErnest
 	
 	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
 	public static int MATURITY = 1500; // not used currently.
+	
+	/** A gustatory stimulation */
+	public static int STIMULATION_GUSTATORY = 0;
+	
+	/** A kinematic stimulation */
+	public static int STIMULATION_KINEMATIC = 1;
+	
+	/** A visual stimulation */
+	public static int STIMULATION_VISUAL = 2;
+	
+	/** A tactile stimulation */
+	public static int STIMULATION_TACTILE = 3;
+	
+	/** The taste of nothing */
+	public static int STIMULATION_TASTE_NOTHING = 0;
+
+	/** The taste of fish */
+	public static int STIMULATION_TASTE_FISH = 1;
+
+	/** The taste of food */
+	public static int STIMULATION_FOOD = 2;
+	
+	/** Feeling empty */
+	public static int STIMULATION_TOUCH_EMPTY = 0;
+	
+	/** Feeling soft */
+	public static int STIMULATION_TOUCH_ALGA = 1;
+	
+	/** Feeling hard */
+	public static int STIMULATION_TOUCH_FISH = 2;
+	
+	/** Feeling hard */
+	public static int STIMULATION_TOUCH_WALL = 3;
 	
 	/** Ernest's primitive schema currently enacted */
 	private ISchema m_primitiveSchema = null;
@@ -146,17 +187,4 @@ public class Ernest implements IErnest
 		return m_primitiveSchema.getLabel();
 	}
 
-	public boolean isThirsty()
-	{
-		return m_staticSystem.isThirsty();
-	}
-
-	public Color getColor() 
-	{
-		if (m_sensorymotorSystem == null)
-			return WALL_COLOR;
-		else
-			return m_sensorymotorSystem.getColor();
-	}
-		
 }

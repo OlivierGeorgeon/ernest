@@ -21,21 +21,11 @@ public class StaticSystem
 	/** Ernest's internal clock  */
 	private int m_clock;
 
-	/** A list of all the landmarks ever identified. */
-	public List<ILandmark> m_landmarks = new ArrayList<ILandmark>(20);
+	/** A list of all the stimulations ever identified. */
+	public List<IStimulation> m_stimulations = new ArrayList<IStimulation>(20);
 	
-	/** The increment in the water or food tank gained from drinking or eating a square  */
-	private int LEVEL_INCREMENT    = 90;
-
-	/** The water tank level that raises thirst when empty (homeostatic sodium dilution)    */
-	private int m_waterLevel = 0;
-
-	/** The food tank level that raises hunger when empty (homeostatic glucose level)  */
-	private int m_glucoseLevel = LEVEL_INCREMENT;
-	
-	// private int m_distanceToTarget = Ernest.INFINITE;
-	
-	private int m_lastTimeInHive = 0; // Ok if Ernest does not pass by the hive at start because it is close anyway.
+	/** A list of all the bundles ever identified. */
+	public List<IBundle> m_bundles = new ArrayList<IBundle>(20);
 	
 	/**
 	 * @param tracer The tracer
@@ -48,13 +38,10 @@ public class StaticSystem
 	/**
 	 * Tick Ernest's clock.
 	 * Used to simulate a decay in Static memory
-	 * Also traces the data related to homeostasis motivation
 	 */
 	public void tick()
 	{
 		m_tracer.addEventElement("clock", m_clock + "");
-		m_tracer.addEventElement("is_thristy", new Boolean(isThirsty()).toString());
-		m_tracer.addEventElement("is_hungry", new Boolean(isHungry()).toString());
 		
 		m_clock++;
 	}
@@ -68,248 +55,167 @@ public class StaticSystem
 	}
 	
 	/**
-	 * Add a landmark to episodic memory if it does not already exist
+	 * Add a stimulation to static memory if it does not already exist
 	 * @param red Component of the landmark's color
 	 * @param green Component of the landmark's color
 	 * @param blue Component of the landmark's color
-	 * @return the new landmark if created or the already existing landmark
+	 * @param distance The distance of the stimulation (or intensity)
+	 * @return the new stimulation if created or the already existing landmark
 	 */
-	public ILandmark addLandmark(int red, int green, int blue)
+	public IStimulation addStimulation(int red, int green, int blue, int distance)
 	{
-		ILandmark l = new Landmark(red,green,blue);
+		IStimulation l = new Stimulation(red,green,blue,distance);
 		
-		int i = m_landmarks.indexOf(l);
+		int i = m_stimulations.indexOf(l);
 		if (i == -1)
 			// The landmark does not exist
-			m_landmarks.add(l);
+			m_stimulations.add(l);
 		else 
+		{
 			// The landmark already exists: return a pointer to it.
-			l =  m_landmarks.get(i);
+			l =  m_stimulations.get(i);
+			l.setDistance(distance);
+		}
 		return l;
 	}
 	
 	/**
-	 * Add a landmark to episodic memory if it does not already exist
-	 * @param color The landmark's color
-	 * @return the new landmark if created or the already existing landmark
+	 * Add a bundle to static memory if it does not already exist
+	 * @param stimulation1 First stimulation
+	 * @param stimulation2 Second stimulation
+	 * @param stimulation3 Third stimulation
+	 * @param motivation The bundle's motivational value
+	 * @return the new bundle if created or the already existing landmark
 	 */
-	public ILandmark addLandmark(Color color)
+	public IBundle addBundle(IStimulation stimulation1, IStimulation stimulation2, IStimulation stimulation3, int motivation)
 	{
-		return addLandmark(color.getRed() ,color.getGreen() ,color.getBlue());
-	}
-	
-	/**
-	 * Search for a landmark associated with the specified color.
-	 * @param color The specified color.
-	 * @return the landmark if it exists or null if not.
-	 */
-	public ILandmark getLandmark(Color color)
-	{
-		ILandmark l = new Landmark(color.getRed(), color.getGreen(), color.getBlue());
-
-		int i = m_landmarks.indexOf(l);
+		IBundle bundle = new Bundle(stimulation1,stimulation2,stimulation3);
+		
+		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
-			// The landmark does not exist
-			return null;
+		{
+			m_bundles.add(bundle);
+			Object b = m_tracer.addEventElement("bundle");
+			m_tracer.addSubelement(b, "color", bundle.getVisualStimulation().getHexColor());
+			m_tracer.addSubelement(b, "tactile", bundle.getTactileStimulation().getValue() + "");
+			m_tracer.addSubelement(b, "gustatory", bundle.getGustatoryStimulation().getValue() + "");
+		}
 		else 
 			// The landmark already exists: return a pointer to it.
-			return  m_landmarks.get(i);
-	}
-	
-	/**
-	 * Update all landmarks' distance to water based on the current time.
-	 * @param clock Ernest's current time.
-	 */
-	public void updateDistanceToWater(int clock)
-	{
-		for (ILandmark l : m_landmarks)
-		{
-			l.setDistanceToWater(clock);
-			l.setLastTimeChecked(- Ernest.INFINITE); // needed to reconsider recently visited landmarks on the way back
-		}
-	}
+			bundle =  m_bundles.get(i);
+		
+		bundle.setLastTimeBundled(m_clock);
 
-	/**
-	 * Update all landmarks' distance to food based on the current time.
-	 * @param clock Ernest's current time.
-	 */
-	public void updateDistanceToFood(int clock)
-	{
-		for (ILandmark l : m_landmarks)
-		{
-			l.setDistanceToFood(clock);
-			l.setLastTimeChecked(- Ernest.INFINITE); // needed to reconsider recently visited landmarks on the way back
-		}
+		return bundle;
 	}
 	
 	/**
-	 * The internal effect of the reflex mechanism of drinking when Ernest tastes water.
-	 * @param landmark The landmark that is drunk.
+	 * Add a stimulation to episodic memory if it does not already exist
+	 * @param type The stimulation's type
+	 * @param value The stimulation's value
+	 * @return the new landmark if created or the already existing landmark
 	 */
-	public void drink(ILandmark landmark)
+	public IStimulation addStimulation(int type, int value)
 	{
-		if (isThirsty())
-			m_tracer.addEventElement("drink", landmark.getHexColor());
-		// Ernest 10.0 is always thirsty !!!
+		IStimulation l = new Stimulation(type, value);
 		
-		landmark.setLastTimeThirsty(m_clock); // 
-		landmark.setDistanceToWater(m_clock);
-		
-		// Switch to hive-seeking mode (Ernest 9.3)
-		
-		//landmark.setLastTimeChecked(m_clock);
-		//check(landmark);
-		//updateDistanceToWater(m_clock);
-		//m_waterLevel = LEVEL_INCREMENT;
-		//m_glucoseLevel = 0;
-		//landmark.setLastTimeChecked(m_clock);
-		//check(landmark); // check again now that Ernest is hungry
+		int i = m_stimulations.indexOf(l);
+		if (i == -1)
+			// The landmark does not exist
+			m_stimulations.add(l);
+		else 
+			// The landmark already exists: return a pointer to it.
+			l =  m_stimulations.get(i);
+		return l;
 	}
 	
-	/**
-	 * The internal effect of the reflex mechanism of eating when Ernest tastes food.
-	 * @param landmark The landmark that is eaten.
-	 */
-	public void eat(ILandmark landmark)
-	{
-		if (isHungry())
-			m_tracer.addEventElement("eat", landmark.getHexColor());
-		landmark.setLastTimeChecked(m_clock);
-		check(landmark);
-		updateDistanceToFood(m_clock);
-		m_lastTimeInHive = m_clock;
-		m_glucoseLevel = LEVEL_INCREMENT;
-		m_waterLevel = 0;
-		landmark.setLastTimeChecked(m_clock);
-		check(landmark); // check again now that Ernest is thirsty
-	}
-	
-	/**
-	 * Visit a landmark 
-	 * Mark this landmark as visited so it can be inhibited later.
-	 * @param landmark The visited landmark.
-	 */
-	public void visit(ILandmark landmark)
-	{
-		m_tracer.addEventElement("visit", landmark.getHexColor());
-		landmark.setLastTimeChecked(m_clock);
-		check(landmark);
-	}
-	
-	/**
-	 * The internal effect of bumping a wall.
-	 * @param landmark The landmark that is bumped.
-	 */
-	public void bump(ILandmark landmark)
-	{
-		if (landmark != null)
-		{
-			m_tracer.addEventElement("bump_landmark", landmark.getHexColor());
-			landmark.setLastTimeChecked(m_clock);
-			check(landmark);
-		}
-	}
-	
-	/**
-	 * Check-in at a landmark. 
-	 * The landmark is tagged with the current time (lastTimeChecked)
-	 * The tag is associated with Ernest's motivation (lastTimeThirsty and lastTimeHungry)
-	 * Ernest's estimated time to target is updated based on this landmark (distanceToFood or distanceToWater).
-	 * @param landmark The landmark to check
-	 */
-	public void check(ILandmark landmark)
-	{
-		if (!landmark.getColor().equals(Ernest.WALL_COLOR))
-		{
-	
-			// Only check the landmark if it has already been visited 
-			if (landmark.getLastTimeChecked() > 0)
-			{
-				Object e = m_tracer.addEventElement("check");
-				m_tracer.addSubelement(e, "color", landmark.getHexColor());
-				landmark.setLastTimeChecked(m_clock);
-			
-				// Estimate distance to water 
-				if (isThirsty())
-				{
-					landmark.setLastTimeThirsty(m_clock);
-					landmark.updateTimeFromHive(m_clock - m_lastTimeInHive);
-					m_tracer.addSubelement(e, "time_from_hive", (m_clock - m_lastTimeInHive) + "");
-				}
-				
-				// Estimate distance to food 
-				if (isHungry())
-				{
-					landmark.setLastTimeHungry(m_clock);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * @return true if Ernest is thirsty
-	 */
-	public boolean isThirsty()
-	{
-		return m_waterLevel <= 0;
-	}
-	
-	/**
-	 * @return true is Ernest is hungry
-	 */
-	public boolean isHungry()
-	{
-		return m_glucoseLevel <= 0;
-	}
-
 	/**
 	 * Find the most motivating observation in the colliculus
-	 * @param colliculus The colliculus
+	 * TODO use the tactile cortex too
+	 * @param visualCortex The set of visual stimulations in the visual cortex
+	 * @param tactileCortex The set of tactile stimulations in the tactile cortex
 	 * @return The most motivating observation with its motivation value and its direction (*10).
 	 */
-	public IObservation salientObservation(IObservation[][] colliculus)
+	public IObservation salientObservation(IStimulation[] visualCortex, IStimulation[][] tactileCortex)
 	{
 		IObservation salientObservation = new Observation();
-		ILandmark currentLandmark = null;
 		int distance = Ernest.INFINITE;
+		int[] colliculus = new int[Ernest.RESOLUTION_COLLICULUS];
+		int[][] tactileMotivation = new int[3][3];
+		String color = "";
 
-		// Find the max motivation in the colliculus
+		// Find the max attractiveness in the visual cortex
 		
-		int maxMotivation = 0;
+		int maxAttractiveness = 0;
 		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
-			for (int j = 0; j < Ernest.ROW_RETINA; j++) //  only check the first row
+		{
+			int attractiveness = visualAttractiveness(visualCortex[i]) - visualCortex[i].getDistance();
+			colliculus[i] = attractiveness;
+			if (attractiveness > maxAttractiveness)
 			{
-				int interest = colliculus[i][j].getLandmark().currentMotivation(isThirsty(), m_clock) - colliculus[i][j].getDistance();
-				colliculus[i][j].setMotivation(interest);
-				if (interest > maxMotivation)
-				{
-					maxMotivation = interest;
-					currentLandmark = colliculus[i][j].getLandmark();
-					distance = colliculus[i][j].getDistance();
-				}
+				maxAttractiveness = attractiveness;
+				distance = visualCortex[i].getDistance();
+				color = visualCortex[i].getHexColor();
 			}
+		}
 		
-		// The direction is the average direction of the max motivation
+		// The tactile motivation
+		for (int i = 0 ; i < 3; i++)
+			for (int j = 0 ; j < 3; j++)	
+				tactileMotivation[i][j] = tactileAttractiveness(tactileCortex[i][j]);
+
 		
-		if (maxMotivation  > 0)
+		// The direction is the average direction of the max attractiveness in the colliculus
+		
+		if (maxAttractiveness  > 0)
 		{
 			int sumDirection = 0;
 			int nbDirection = 0;
 			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0; i--)
-				for (int j = 0; j < Ernest.ROW_RETINA; j++)
-					if (colliculus[i][j].getMotivation() >= maxMotivation)
-					{
-						sumDirection += i * 10;
-						nbDirection++;
-					}
-			salientObservation.setLandmark(currentLandmark);
+				if (colliculus[i] >= maxAttractiveness)
+				{
+					sumDirection += i * 10;
+					nbDirection++;
+				}
+			salientObservation.setHexColor(color);
 			salientObservation.setDistance(distance);
-			salientObservation.setMotivation(maxMotivation);
+			salientObservation.setAttractiveness(maxAttractiveness);
 			salientObservation.setDirection((int) (sumDirection / nbDirection + .5));
 		}		
 		
 		return salientObservation;
 	}
-	
+		
+	/**
+	 * TODO manage different bundles with the same stimulation and more than one visual stimulation
+	 * @param stimulation The stimulation
+	 * @return The motivation value generated by this stimulation.
+	 * (Either the bundle's motivation or the base motivation is this stimulation evokes no bundle.
+	 */
+	private int visualAttractiveness(IStimulation stimulation)
+	{
+		if (stimulation.getColor().equals(Ernest.COLOR_WALL))
+			return 0;
+		
+		for (IBundle bundle : m_bundles)
+			if (bundle.getVisualStimulation().equals(stimulation))
+				return bundle.getAttractiveness(m_clock);
+
+		return Ernest.BASE_MOTIVATION;
+	}
+	/**
+	 * TODO manage different bundles with the same stimulation and more than one visual stimulation
+	 * @param stimulation The stimulation
+	 * @return The motivation value generated by this stimulation.
+	 * (Either the bundle's motivation or the base motivation is this stimulation evokes no bundle.
+	 */
+	private int tactileAttractiveness(IStimulation stimulation)
+	{
+		for (IBundle bundle : m_bundles)
+			if (bundle.getTactileStimulation().equals(stimulation))
+				return bundle.getAttractiveness(m_clock);
+
+		return Ernest.BASE_MOTIVATION;
+	}
 }
 	

@@ -10,21 +10,21 @@ import tracing.ITracer;
  */
 public class Observation implements IObservation {
 
-	private ILandmark m_landmark = null;
 	private int m_distance = Ernest.INFINITE;
 	private int m_direction = 0;
 	private String m_dynamicFeature  = "";
 	private int m_satisfaction = 0;
-	private int m_motivation = 0;
+	private int m_attractiveness = 0;
+	private String m_hexColor = "";
 	
-	public void setLandmark(ILandmark landmark) 
+	public void setHexColor(String hexColor) 
 	{
-		m_landmark = landmark;
+		m_hexColor = hexColor;
 	}
 
-	public ILandmark getLandmark() 
+	public String getHexColor() 
 	{
-		return m_landmark;
+		return m_hexColor;
 	}
 
 	public void setDistance(int distance) 
@@ -71,30 +71,23 @@ public class Observation implements IObservation {
 	public void trace(ITracer tracer, String element) 
 	{
 		Object e = tracer.addEventElement(element);
-		if (m_landmark != null)
-		{
-			tracer.addSubelement(e, "color", m_landmark.getHexColor());
-			tracer.addSubelement(e, "time_to_water", m_landmark.getDistanceToWater() + "");
-			tracer.addSubelement(e, "time_to_food", m_landmark.getDistanceToFood() + "");
-			tracer.addSubelement(e, "last_checked", m_landmark.getLastTimeChecked() + "");
-			tracer.addSubelement(e, "distance", m_distance + "");
-			tracer.addSubelement(e, "motivation", m_motivation + "");
-			tracer.addSubelement(e, "direction", m_direction + "");
-		}
-		// There can be a disappear dynamic feature from the previous landmark
+
+		tracer.addSubelement(e, "color", m_hexColor);
+		tracer.addSubelement(e, "distance", m_distance + "");
+		tracer.addSubelement(e, "attractiveness", m_attractiveness + "");
+		tracer.addSubelement(e, "direction", m_direction + "");
 		tracer.addSubelement(e, "dynamic_feature", m_dynamicFeature);
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
 	}
-
 	
-	public int getMotivation()
+	public int getAttractiveness()
 	{
-		return m_motivation;
+		return m_attractiveness;
 	}
 
-	public void setMotivation(int motivation)
+	public void setAttractiveness(int attractiveness)
 	{
-		m_motivation = motivation;
+		m_attractiveness = attractiveness;
 	}
 
 	public void setDynamicFeature(IObservation previousObservation)
@@ -108,10 +101,10 @@ public class Observation implements IObservation {
 		if (minFovea >= m_direction)
 		{
 			// The landmark is now on the right side
-			if (previousObservation.getMotivation() > m_motivation)
+			if (previousObservation.getAttractiveness() > m_attractiveness)
 				// Less motivating
 				dynamicFeature = ".-";
-			else if (previousObservation.getMotivation() == m_motivation)
+			else if (previousObservation.getAttractiveness() == m_attractiveness)
 			{
 				// As motivating
 				if ( previousObservation.getDirection() >  m_direction)
@@ -128,10 +121,10 @@ public class Observation implements IObservation {
 		else if (m_direction >= maxFovea)
 		{
 			// The landmark is now on the left side
-			if (previousObservation.getMotivation() > m_motivation)
+			if (previousObservation.getAttractiveness() > m_attractiveness)
 				// Less motivating
 				dynamicFeature = "-.";
-			else if (previousObservation.getMotivation() == m_motivation)
+			else if (previousObservation.getAttractiveness() == m_attractiveness)
 			{
 				// As motivating
 				if ( m_direction > previousObservation.getDirection())
@@ -148,10 +141,10 @@ public class Observation implements IObservation {
 		else 
 		{
 			// The landmark is now in the fovea
-			if (previousObservation.getMotivation() > m_motivation)
+			if (previousObservation.getAttractiveness() > m_attractiveness)
 				// Less motivating
 				dynamicFeature = "-";
-			else if (previousObservation.getMotivation() == m_motivation)
+			else if (previousObservation.getAttractiveness() == m_attractiveness)
 			{
 				// As motivating
 				if ( Math.abs(previousObservation.getDirection() - centerFovea) > Math.abs(m_direction - centerFovea))

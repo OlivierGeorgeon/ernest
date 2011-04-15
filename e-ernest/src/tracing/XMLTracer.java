@@ -59,7 +59,7 @@ public class XMLTracer implements ITracer<Element>
 
 		// Prepare the tree
 		m_sequence = m_document.createElement("sequence");
-		m_sequence.setAttribute("version","Ernest 9.0");
+		m_sequence.setAttribute("version","Ernest 10.0");
 		m_sequence.setAttribute("date",date);
 		m_document.appendChild(m_sequence);
 		
