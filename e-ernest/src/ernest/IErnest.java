@@ -55,5 +55,6 @@ public interface IErnest
 	 * @return The next primitive schema to enact.
 	 */
 	public String step(boolean status);
+	public String step(int[][] matrix);
 	
 }

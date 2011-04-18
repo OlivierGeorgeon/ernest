@@ -130,15 +130,16 @@ public class StaticSystem
 	}
 	
 	/**
-	 * Find the most motivating observation in the colliculus
+	 * Create an Observation from the sensory cortex
+	 * In particular, find the direction and the value of the highest attractiveness
 	 * TODO use the tactile cortex too
 	 * @param visualCortex The set of visual stimulations in the visual cortex
 	 * @param tactileCortex The set of tactile stimulations in the tactile cortex
 	 * @return The most motivating observation with its motivation value and its direction (*10).
 	 */
-	public IObservation salientObservation(IStimulation[] visualCortex, IStimulation[][] tactileCortex)
+	public IObservation observe(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematic, IStimulation taste)
 	{
-		IObservation salientObservation = new Observation();
+		IObservation observation = new Observation();
 		int distance = Ernest.INFINITE;
 		int[] colliculus = new int[Ernest.RESOLUTION_COLLICULUS];
 		int[][] tactileMotivation = new int[3][3];
@@ -164,6 +165,13 @@ public class StaticSystem
 			for (int j = 0 ; j < 3; j++)	
 				tactileMotivation[i][j] = tactileAttractiveness(tactileCortex[i][j]);
 
+		// Kinematic
+		
+		observation.setKinematic(kinematic.getValue());
+		
+		// Taste
+		
+		observation.setTaste(taste.getValue());
 		
 		// The direction is the average direction of the max attractiveness in the colliculus
 		
@@ -177,13 +185,13 @@ public class StaticSystem
 					sumDirection += i * 10;
 					nbDirection++;
 				}
-			salientObservation.setHexColor(color);
-			salientObservation.setDistance(distance);
-			salientObservation.setAttractiveness(maxAttractiveness);
-			salientObservation.setDirection((int) (sumDirection / nbDirection + .5));
+			observation.setHexColor(color);
+			observation.setDistance(distance);
+			observation.setAttractiveness(maxAttractiveness);
+			observation.setDirection((int) (sumDirection / nbDirection + .5));
 		}		
 		
-		return salientObservation;
+		return observation;
 	}
 		
 	/**

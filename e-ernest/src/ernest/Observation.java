@@ -16,6 +16,9 @@ public class Observation implements IObservation {
 	private int m_satisfaction = 0;
 	private int m_attractiveness = 0;
 	private String m_hexColor = "";
+	private int m_kinematic = 0;
+	private int m_taste = 0;
+	private String m_label;
 	
 	public void setHexColor(String hexColor) 
 	{
@@ -67,6 +70,31 @@ public class Observation implements IObservation {
 	{
 		return m_satisfaction;
 	}
+	
+	public void setKinematic(int kinematic)
+	{
+		m_kinematic = kinematic;
+	}
+
+	public int getKinematic()
+	{
+		return m_kinematic;
+	}
+
+	public void setTaste(int taste)
+	{
+		m_taste = taste;
+	}
+
+	public int getTaste()
+	{
+		return m_taste;
+	}
+
+	public String getLabel()
+	{
+		return m_label;
+	}
 
 	public void trace(ITracer tracer, String element) 
 	{
@@ -90,7 +118,7 @@ public class Observation implements IObservation {
 		m_attractiveness = attractiveness;
 	}
 
-	public void setDynamicFeature(IObservation previousObservation)
+	public void setDynamicFeature(IAct act, IObservation previousObservation)
 	{
 		String dynamicFeature = "";
 		
@@ -172,8 +200,87 @@ public class Observation implements IObservation {
 		if (dynamicFeature.equals("-"))
 			satisfaction = -150;
 		
+		
+		String label = dynamicFeature;
+		if (act != null)
+		{
+			satisfaction = satisfaction + act.getSchema().resultingAct(m_kinematic == 1).getSatisfaction();
+			label = act.getSchema().getLabel() + dynamicFeature;
+		}
+		
+		// Label
+
+		if (m_kinematic == 1)
+			m_label = "(" + label + m_dynamicFeature + ")";
+		else 
+			m_label = "[" + label + m_dynamicFeature + "]";
+		
 		m_dynamicFeature = dynamicFeature;
 		m_satisfaction = satisfaction;
 	}
 
+	public void setDynamicFeature2(IAct act, IObservation previousObservation)
+	{
+		String dynamicFeature = "";
+		
+		int minFovea = 25;
+		int centerFovea = 55;
+		int maxFovea = 85;
+		int foveaDiameter = 30;
+		
+		// Attractiveness feature
+		if (previousObservation.getAttractiveness() > m_attractiveness)
+			// Farther
+			dynamicFeature = "-";		
+		else if (Math.abs(previousObservation.getDirection() - centerFovea ) < Math.abs(m_direction - centerFovea))
+			// More outward
+			dynamicFeature = "-";
+		else if (Math.abs(previousObservation.getDirection() - centerFovea ) > Math.abs(m_direction - centerFovea))
+			// More inward
+			dynamicFeature = "+";
+		else if (previousObservation.getAttractiveness() < m_attractiveness)
+			// Closer
+			dynamicFeature = "+";
+
+		int satisfaction = 0;
+		if (dynamicFeature.equals("-"))
+			satisfaction = -100;
+		if (dynamicFeature.equals("+"))
+			satisfaction = 100;
+		
+		// Direction feature
+		
+		if (!dynamicFeature.equals(""))
+		{
+			if (minFovea >= m_direction)
+				dynamicFeature = "|" + dynamicFeature;
+			else if (m_direction >= maxFovea )
+				dynamicFeature = dynamicFeature + "|";
+		}		
+		
+		// Gustatory
+		
+		if (m_taste == Ernest.STIMULATION_TASTE_FISH)
+		{
+			dynamicFeature = "*";
+			satisfaction = 200;
+		}
+		
+		String label = dynamicFeature;
+		if (act != null)
+		{
+			satisfaction = satisfaction + act.getSchema().resultingAct(m_kinematic == 1).getSatisfaction();
+			label = act.getSchema().getLabel() + dynamicFeature;
+		}
+		
+		// Label
+
+		if (m_kinematic == 1)
+			m_label = "(" + label + m_dynamicFeature + ")";
+		else 
+			m_label = "[" + label + m_dynamicFeature + "]";
+		
+		m_dynamicFeature = dynamicFeature;
+		m_satisfaction = satisfaction;
+	}
 }

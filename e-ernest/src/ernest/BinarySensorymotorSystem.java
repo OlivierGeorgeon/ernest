@@ -55,12 +55,12 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	 * @param status The status returned as a feedback from the enacted schema
 	 * @return The enacted act
 	 */
-	public IAct enactedAct(ISchema schema, boolean status) 
+	public IAct enactedAct(IAct act, boolean status) 
 	{
 		// The schema is null during the first cycle
-		if (schema == null) return null;
+		if (act == null) return null;
 		
-		String label = schema.getLabel();
+		String label = act.getSchema().getLabel();
 		
 		if (status)
 			label = "(" + label + ")";
@@ -68,19 +68,12 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 			label = "[" + label + "]";
 			
 		// Create the act in episodic memory if it does not exist.	
-		IAct enactedAct = m_episodicMemory.addAct(label, schema, status, 0, Ernest.RELIABLE);
+		IAct enactedAct = m_episodicMemory.addAct(label, act.getSchema(), status, 0, Ernest.RELIABLE);
 		
 		return enactedAct;
 	}
 
-	/**
-	 * Not used by the binary sensorymotor system
-	 */
-	public void senseMatrix(int[][] matrix) 
-	{
-	}
-
-	public Color getColor() {
+	public IAct enactedAct(IAct act, int[][] matrix) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -153,7 +153,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	 * Ernest's main process.
 	 * Choose intentions to enact and control their enaction. 
 	 */
-	public ISchema step(IAct primitiveEnaction) 
+	public IAct step(IAct primitiveEnaction) 
 	{
 		m_internalState= "";
 		m_staticSystem.tick();
@@ -270,7 +270,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 		m_primitiveIntention = nextPrimitiveAct;
 		
 		m_tracer.addEventElement("next_primitive_intention", nextPrimitiveAct.getLabel());
-		return nextPrimitiveAct.getSchema();
+		return nextPrimitiveAct;
 				
 	}
 	

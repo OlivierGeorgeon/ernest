@@ -30,6 +30,6 @@ public interface IAttentionalSystem
 	 * @param primitiveEnaction The actually enacted primitive act.
 	 * @return The primitive schema to enact in the environment 
 	 */
-	public ISchema step(IAct primitiveEnaction); 
+	public IAct step(IAct primitiveEnaction); 
 	
 }
