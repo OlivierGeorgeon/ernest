@@ -70,5 +70,13 @@ public interface IObservation
 	 */
 	int getAttractiveness();
 	
-	void setDynamicFeature(IObservation previousObservation);
+	void setKinematic(int kinematic);
+	int getKinematic();
+	void setTaste(int taste);
+	int getTaste();
+	
+	String getLabel();
+	
+	void setDynamicFeature(IAct act, IObservation previousObservation);
+	void setDynamicFeature2(IAct act, IObservation previousObservation);
 }

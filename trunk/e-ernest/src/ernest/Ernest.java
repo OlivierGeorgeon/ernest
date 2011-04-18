@@ -66,6 +66,9 @@ public class Ernest implements IErnest
 	/** A tactile stimulation */
 	public static int STIMULATION_TACTILE = 3;
 	
+	/** A circadian stimulation */
+	public static int STIMULATION_CIRCADIAN = 4;
+	
 	/** The taste of nothing */
 	public static int STIMULATION_TASTE_NOTHING = 0;
 
@@ -88,7 +91,7 @@ public class Ernest implements IErnest
 	public static int STIMULATION_TOUCH_WALL = 3;
 	
 	/** Ernest's primitive schema currently enacted */
-	private ISchema m_primitiveSchema = null;
+	private IAct m_primitiveAct = null;
 	
 	/** Ernest's episodic memory. */
 	private EpisodicMemory m_episodicMemory = new EpisodicMemory();
@@ -174,17 +177,37 @@ public class Ernest implements IErnest
 	public String step(boolean status) 
 	{
 		// Determine the primitive enacted act from the enacted schema and the data sensed in the environment.
-		// (May use additional sensory data from the environment, e.g., received via the sensorymotorSystem.senseMatrix() method)
 		
-		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveSchema, status);
+		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
-		m_primitiveSchema = m_attentionalSystem.step(enactedPrimitiveAct);
+		m_primitiveAct = m_attentionalSystem.step(enactedPrimitiveAct);
 		
 		// Return the schema to enact.
 		
-		return m_primitiveSchema.getLabel();
+		return m_primitiveAct.getSchema().getLabel();
+	}
+
+	/**
+	 * Ernest's main process.
+	 * (All environments return at least a boolean feedback from Ernest's actions) 
+	 * @param status The status received as a feedback from the previous primitive enaction.
+	 * @return The next primitive schema to enact.
+	 */
+	public String step(int[][] matrix) 
+	{
+		// Determine the primitive enacted act from the enacted schema and the data sensed in the environment.
+		
+		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, matrix);
+		
+		// Let Ernest decide for the next primitive schema to enact.
+		
+		m_primitiveAct = m_attentionalSystem.step(enactedPrimitiveAct);
+		
+		// Return the schema to enact.
+		
+		return m_primitiveAct.getSchema().getLabel();
 	}
 
 }

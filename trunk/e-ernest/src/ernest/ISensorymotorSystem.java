@@ -37,13 +37,14 @@ public interface ISensorymotorSystem
 	 * @param status The status returned as a feedback from the enacted schema
 	 * @return The enacted act
 	 */
-	public IAct enactedAct(ISchema schema, boolean status);
+	public IAct enactedAct(IAct act, boolean status);
+	public IAct enactedAct(IAct act, int[][] matrix);
 	
 	/**
 	 * Generate sensory features from the sensed matrix sent by the environment.
 	 * (Only used by visual sensorymotor systems)
 	 * @param matrix The matrix sensed in the environment. 
 	 */
-	public void senseMatrix(int[][] matrix); 
+	//public void senseMatrix(int[][] matrix); 
 	
 }
