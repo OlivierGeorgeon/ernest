@@ -23,6 +23,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		IStimulation visualFrontStimulation;
 		IStimulation visualStandStimulation;
 		IStimulation tactileFrontStimulation;
+		IStimulation tactileStandStimulation;
 		IStimulation gustatoryFrontStimulation;
 		IStimulation kinematicStimulation;
 		
@@ -53,6 +54,9 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 				m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getValue() + "");
 			}
 		tactileFrontStimulation = somatoCortex[1][0];
+		tactileStandStimulation = somatoCortex[1][1];
+		
+		
 		kinematicStimulation = m_staticSystem.addStimulation(Ernest.STIMULATION_KINEMATIC, matrix[1][8]);
 		m_tracer.addEventElement("kinematic", kinematicStimulation.getValue() + "");
 
@@ -81,6 +85,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		// Updates the current observation
 		
 		m_previousObservation  = m_currentObservation;		
+		//m_currentObservation = m_staticSystem.observe(visualCortex, somatoCortex, kinematicStimulation, tactileStandStimulation);
 		m_currentObservation = m_staticSystem.observe(visualCortex, somatoCortex, kinematicStimulation, taste);
 		m_currentObservation.setDynamicFeature2(act, m_previousObservation);
 		m_currentObservation.trace(m_tracer, "current_observation");
