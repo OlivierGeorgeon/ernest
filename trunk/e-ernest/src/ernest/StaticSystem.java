@@ -161,9 +161,22 @@ public class StaticSystem
 		}
 		
 		// The tactile motivation
+		
 		for (int i = 0 ; i < 3; i++)
 			for (int j = 0 ; j < 3; j++)	
 				tactileMotivation[i][j] = tactileAttractiveness(tactileCortex[i][j]);
+		
+		// TODO better connect the somatosensory information to the colliculus...
+		
+//		if (tactileMotivation[0][0] == Ernest.STIMULATION_TOUCH_WALL &&
+//			tactileMotivation[0][1] == Ernest.STIMULATION_TOUCH_WALL &&
+//			tactileMotivation[1][0] == Ernest.STIMULATION_TOUCH_WALL)
+//			colliculus[0] += 1;
+//		if (tactileMotivation[1][0] == Ernest.STIMULATION_TOUCH_WALL &&
+//			tactileMotivation[2][0] == Ernest.STIMULATION_TOUCH_WALL &&
+//			tactileMotivation[2][1] == Ernest.STIMULATION_TOUCH_WALL)
+//			colliculus[11] += 1;
+			
 
 		// Kinematic
 		

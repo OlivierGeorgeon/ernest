@@ -232,21 +232,21 @@ public class Observation implements IObservation {
 		if (previousObservation.getAttractiveness() > m_attractiveness)
 			// Farther
 			dynamicFeature = "-";		
+		else if (previousObservation.getAttractiveness() < m_attractiveness)
+			// Closer
+			dynamicFeature = "+";
 		else if (Math.abs(previousObservation.getDirection() - centerFovea ) < Math.abs(m_direction - centerFovea))
 			// More outward
 			dynamicFeature = "-";
 		else if (Math.abs(previousObservation.getDirection() - centerFovea ) > Math.abs(m_direction - centerFovea))
 			// More inward
 			dynamicFeature = "+";
-		else if (previousObservation.getAttractiveness() < m_attractiveness)
-			// Closer
-			dynamicFeature = "+";
 
 		int satisfaction = 0;
 		if (dynamicFeature.equals("-"))
 			satisfaction = -100;
 		if (dynamicFeature.equals("+"))
-			satisfaction = 100;
+			satisfaction = 20;
 		
 		// Direction feature
 		
