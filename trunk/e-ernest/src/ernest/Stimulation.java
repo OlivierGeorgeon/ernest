@@ -100,5 +100,6 @@ public class Stimulation implements IStimulation
 		}
 		
 		return ret;
-	}	
+	}
+
 }

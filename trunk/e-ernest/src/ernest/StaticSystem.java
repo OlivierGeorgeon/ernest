@@ -145,20 +145,56 @@ public class StaticSystem
 		int[][] tactileMotivation = new int[3][3];
 		String color = "";
 
-		// Find the max attractiveness in the visual cortex
-		
-		int maxAttractiveness = 0;
+		List<IObservation> observations = new ArrayList<IObservation>(Ernest.RESOLUTION_COLLICULUS);
+
+		// Lists the various observations in the visual field
+
 		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
 		{
-			int attractiveness = visualAttractiveness(visualCortex[i]) - visualCortex[i].getDistance();
-			colliculus[i] = attractiveness;
-			if (attractiveness > maxAttractiveness)
+			int nbDirection = 1;
+			int sumDirection = i * 10;
+			int j = i + 1;
+			while ( j < Ernest.RESOLUTION_RETINA && visualCortex[i].equals(visualCortex[j]))
 			{
-				maxAttractiveness = attractiveness;
-				distance = visualCortex[i].getDistance();
-				color = visualCortex[i].getHexColor();
-			}
+				nbDirection++;
+				sumDirection += j * 10;
+				j++;
+			}	
+			IObservation o = new Observation();
+			o.setDirection((int) (sumDirection / nbDirection + .5));
+			o.setDistance(visualCortex[i].getDistance());
+			o.setSpan(nbDirection);
+			o.setVisual(visualCortex[i]);
+			// The attractiveness depends on the bundle's attractiveness and then on the stimulation's proximity.
+			o.setAttractiveness(visualAttractiveness(visualCortex[i]) - visualCortex[i].getDistance());
+			//observation.setAttractiveness(nbDirection);
+			observations.add(o);
 		}
+		
+		// Find the most attractive observation in the visual field
+		
+		int maxAttractiveness = 0;
+		for (IObservation o : observations)
+			if (o.getAttractiveness() > maxAttractiveness)
+			{
+				maxAttractiveness = o.getAttractiveness();
+				observation = o;
+			}
+		
+		
+//		int maxAttractiveness = 0;
+//		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
+//		{
+//			// The attractiveness depends on the bundle's attractiveness and then on the stimulation's proximity.
+//			int attractiveness = visualAttractiveness(visualCortex[i]) - visualCortex[i].getDistance();
+//			colliculus[i] = attractiveness;
+//			if (attractiveness > maxAttractiveness)
+//			{
+//				maxAttractiveness = attractiveness;
+//				distance = visualCortex[i].getDistance();
+//				color = visualCortex[i].getHexColor();
+//			}
+//		}
 		
 		// The tactile motivation
 		
@@ -166,18 +202,6 @@ public class StaticSystem
 			for (int j = 0 ; j < 3; j++)	
 				tactileMotivation[i][j] = tactileAttractiveness(tactileCortex[i][j]);
 		
-		// TODO better connect the somatosensory information to the colliculus...
-		
-//		if (tactileMotivation[0][0] == Ernest.STIMULATION_TOUCH_WALL &&
-//			tactileMotivation[0][1] == Ernest.STIMULATION_TOUCH_WALL &&
-//			tactileMotivation[1][0] == Ernest.STIMULATION_TOUCH_WALL)
-//			colliculus[0] += 1;
-//		if (tactileMotivation[1][0] == Ernest.STIMULATION_TOUCH_WALL &&
-//			tactileMotivation[2][0] == Ernest.STIMULATION_TOUCH_WALL &&
-//			tactileMotivation[2][1] == Ernest.STIMULATION_TOUCH_WALL)
-//			colliculus[11] += 1;
-			
-
 		// Kinematic
 		
 		observation.setKinematic(kinematic.getValue());
@@ -188,21 +212,22 @@ public class StaticSystem
 		
 		// The direction is the average direction of the max attractiveness in the colliculus
 		
-		if (maxAttractiveness  > 0)
-		{
-			int sumDirection = 0;
-			int nbDirection = 0;
-			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0; i--)
-				if (colliculus[i] >= maxAttractiveness)
-				{
-					sumDirection += i * 10;
-					nbDirection++;
-				}
-			observation.setHexColor(color);
-			observation.setDistance(distance);
-			observation.setAttractiveness(maxAttractiveness);
-			observation.setDirection((int) (sumDirection / nbDirection + .5));
-		}		
+//		if (maxAttractiveness  > 0)
+//		{
+//			int sumDirection = 0;
+//			int nbDirection = 0;
+//			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0; i--)
+//				if (colliculus[i] >= maxAttractiveness)
+//				{
+//					sumDirection += i * 10;
+//					nbDirection++;
+//				}
+//			observation.setHexColor(color);
+//			observation.setDistance(distance);
+//			//observation.setAttractiveness(maxAttractiveness);
+//			observation.setAttractiveness(nbDirection);
+//			observation.setDirection((int) (sumDirection / nbDirection + .5));
+//		}		
 		
 		return observation;
 	}

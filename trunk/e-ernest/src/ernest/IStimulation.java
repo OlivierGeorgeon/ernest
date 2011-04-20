@@ -33,4 +33,5 @@ public interface IStimulation
 	 * @returns The value of the stimulus 
 	 */
 	int getValue();
+	
 }

@@ -74,9 +74,16 @@ public interface IObservation
 	int getKinematic();
 	void setTaste(int taste);
 	int getTaste();
+	public void setVisual(IStimulation stimulation); 
+	public IStimulation getVisual(); 
 	
 	String getLabel();
 	
 	void setDynamicFeature(IAct act, IObservation previousObservation);
 	void setDynamicFeature2(IAct act, IObservation previousObservation);
+	
+	int getSpan();
+	void setSpan(int span);
+
+
 }

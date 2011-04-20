@@ -19,6 +19,9 @@ public class Observation implements IObservation {
 	private int m_kinematic = 0;
 	private int m_taste = 0;
 	private String m_label;
+	private int m_span;
+	private IStimulation m_visual;
+
 	
 	public void setHexColor(String hexColor) 
 	{
@@ -51,10 +54,15 @@ public class Observation implements IObservation {
 		return m_direction;
 	}
 
-//	public void setDynamicFeature(String dynamicFeature) 
-//	{
-//		m_dynamicFeature = dynamicFeature; 
-//	}
+	public void setVisual(IStimulation stimulation) 
+	{
+		m_visual = stimulation;
+	}
+
+	public IStimulation getVisual() 
+	{
+		return m_visual;
+	}
 
 	public String getDynamicFeature() 
 	{
@@ -94,6 +102,16 @@ public class Observation implements IObservation {
 	public String getLabel()
 	{
 		return m_label;
+	}
+
+	public int getSpan() 
+	{
+		return m_span;
+	}
+
+	public void setSpan(int span) 
+	{
+		m_span = span;
 	}
 
 	public void trace(ITracer tracer, String element) 
@@ -223,10 +241,8 @@ public class Observation implements IObservation {
 	{
 		String dynamicFeature = "";
 		
-		int minFovea = 25;
-		int centerFovea = 55;
-		int maxFovea = 85;
-		int foveaDiameter = 30;
+		int minFovea = Ernest.CENTER_RETINA - 30; // 25;
+		int maxFovea = Ernest.CENTER_RETINA + 30; // 85;
 		
 		// Attractiveness feature
 		if (previousObservation.getAttractiveness() > m_attractiveness)
@@ -235,10 +251,10 @@ public class Observation implements IObservation {
 		else if (previousObservation.getAttractiveness() < m_attractiveness)
 			// Closer
 			dynamicFeature = "+";
-		else if (Math.abs(previousObservation.getDirection() - centerFovea ) < Math.abs(m_direction - centerFovea))
+		else if (Math.abs(previousObservation.getDirection() - Ernest.CENTER_RETINA ) < Math.abs(m_direction - Ernest.CENTER_RETINA))
 			// More outward
 			dynamicFeature = "-";
-		else if (Math.abs(previousObservation.getDirection() - centerFovea ) > Math.abs(m_direction - centerFovea))
+		else if (Math.abs(previousObservation.getDirection() - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
 			// More inward
 			dynamicFeature = "+";
 
