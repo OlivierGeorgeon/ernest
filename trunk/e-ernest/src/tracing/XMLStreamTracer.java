@@ -7,30 +7,31 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.jrdf.graph.ObjectNode;
 import org.w3c.dom.*;
 
-
+import java.util.Arrays;
 import java.util.Calendar;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 
 /**
- * This tracer logs the trace thru a named pipe.
+ * This tracer logs the trace by sendin it to a remote php script.
  */
-public class NamedPipeTracer implements ITracer<Element>
+public class XMLStreamTracer implements ITracer<Element>
 {
 
 	private static final String DATE_FORMAT_NOW = "yyyy-MM-dd HH:mm:ss";
 
 	private Document m_document;
-	private Element m_sequence;
 	private Element m_currentEvent;
-	private String m_fileName;
+	private String m_traceId;
 	private int m_id = 0;
 
 	private boolean m_eventStarted;
@@ -41,25 +42,21 @@ public class NamedPipeTracer implements ITracer<Element>
 
 	private Transformer m_transformer;
 
-	private FileOutputStream m_fos;
-
 	private Element m_root;
 
 	private int m_last_t;
+
+	private String m_url;
 	
 	/**
 	 * Initialize the tracer.
 	 * @param fileName The name of the trace file
 	 */
-	public NamedPipeTracer(String fileName)
+	public XMLStreamTracer(String url)
 	{
-		m_fileName = fileName;
-		try {
-			m_fos = new FileOutputStream(new File(fileName), true);
-		} catch (FileNotFoundException e2) {
-			e2.printStackTrace();
-			System.exit(0);
-		}
+		m_url = url;
+		m_traceId = "test";
+		this.post_new_trace();
 		
 		m_eventStarted = false;
 		
@@ -90,13 +87,154 @@ public class NamedPipeTracer implements ITracer<Element>
 		m_document = m_builder.newDocument();
 	} 
 	
+	protected void post_obsel(String obselData)
+	{
+		try
+		{
+			URL base = new URL(m_url + "streamTrace.php");
+			HttpURLConnection baseCon = (HttpURLConnection) base.openConnection();
+			baseCon.setRequestMethod("POST");
+			
+			String data = URLEncoder.encode("traceId", "UTF-8")+
+			            "="+URLEncoder.encode(m_traceId, "UTF-8");
+			data += "&"+URLEncoder.encode("data", "UTF-8")+
+			            "=" + URLEncoder.encode(obselData, "UTF-8");
+
+			System.err.println(data);
+			
+			baseCon.setDoOutput(true);
+			baseCon.setDoInput(true);
+			baseCon.setUseCaches (false);
+			
+			OutputStream os = baseCon.getOutputStream();
+			os.write(data.getBytes());
+			os.flush();
+			os.close();
+			
+			int response = baseCon.getResponseCode();
+			if(response >= 300 || response < 200)
+			{
+				System.err.println("Post failed: \"\"\"");
+				InputStream es = baseCon.getErrorStream();
+				for(int ch = es.read(); ch != -1; ch = es.read())
+				{
+					System.err.print((char)ch);
+				}
+				System.err.println("\"\"\"");
+			}else{
+				System.err.println("Done.");
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			System.err.println("Invalid URL (" + m_url + ").");
+			System.exit(0);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Couldn't reach the server (" + m_url + ").");
+			System.exit(0);
+		};
+	}
+
+	protected void post_new_trace()
+	{
+		try
+		{
+			URL base = new URL(m_url + "newStreamedTrace.php");
+			HttpURLConnection baseCon = (HttpURLConnection) base.openConnection();
+			baseCon.setRequestMethod("POST");
+			
+			String data = "";
+			/*data += URLEncoder.encode("traceId", "UTF-8")+
+			            "="+URLEncoder.encode(m_traceId, "UTF-8");*/
+
+			baseCon.setDoOutput(true);
+			baseCon.setDoInput(true);
+			baseCon.setUseCaches (false);
+			
+			OutputStream os = baseCon.getOutputStream();
+			os.write(data.getBytes());
+			os.flush();
+			os.close();
+			
+			int response = baseCon.getResponseCode();
+			if(response >= 300 || response < 200)
+			{
+				System.err.println("Post failed: \"\"\"");
+				InputStream es = baseCon.getErrorStream();
+				for(int ch = es.read(); ch != -1; ch = es.read())
+				{
+					System.err.print((char)ch);
+				}
+				System.err.println("\"\"\"");
+			}else{
+				InputStream is = baseCon.getInputStream();
+				byte[] b = new byte[1000];
+				int len = is.read(b);
+				m_traceId = new String(Arrays.copyOf(b, len));
+				System.err.println("Done.");
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			System.err.println("Invalid URL (" + m_url + ").");
+			System.exit(0);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Couldn't reach the server (" + m_url + ").");
+			System.exit(0);
+		};
+	}
+	
+	protected void post_end_of_trace()
+	{
+		try
+		{
+			URL base = new URL(m_url + "endOfStream.php");
+			HttpURLConnection baseCon = (HttpURLConnection) base.openConnection();
+			baseCon.setRequestMethod("POST");
+			
+			String data = URLEncoder.encode("traceId", "UTF-8")+
+			            "="+URLEncoder.encode(m_traceId, "UTF-8");
+
+			baseCon.setDoOutput(true);
+			baseCon.setDoInput(true);
+			baseCon.setUseCaches (false);
+			
+			OutputStream os = baseCon.getOutputStream();
+			os.write(data.getBytes());
+			os.flush();
+			os.close();
+			
+			int response = baseCon.getResponseCode();
+			if(response >= 300 || response < 200)
+			{
+				System.err.println("Post failed: \"\"\"");
+				InputStream es = baseCon.getErrorStream();
+				for(int ch = es.read(); ch != -1; ch = es.read())
+				{
+					System.err.print((char)ch);
+				}
+				System.err.println("\"\"\"");
+			}else{
+				System.err.println("Done.");
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			System.err.println("Invalid URL (" + m_url + ").");
+			System.exit(0);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Couldn't reach the server (" + m_url + ").");
+			System.exit(0);
+		};
+	}
+	
 	/**
 	 * Write the XML document to the file trace.xml
 	 * from http://java.developpez.com/faq/xml/?page=xslt#creerXmlDom
 	 */
 	public boolean close() 
 	{
-		//TODO: notify eot
+		this.post_end_of_trace();
 		return true;
 	}
 
@@ -163,16 +301,7 @@ public class NamedPipeTracer implements ITracer<Element>
 			e.printStackTrace();
 		}
 		
-		byte[] message = sw.toString().getBytes();
-		int len = message.length;
-		
-		try {
-			m_fos.write(Integer.toString(len).getBytes());
-			m_fos.write("\n".getBytes());
-			m_fos.write(message);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.post_obsel(sw.toString());
 		
 		m_document.removeChild(m_root);
 	}
