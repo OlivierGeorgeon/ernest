@@ -147,7 +147,7 @@ public class StaticSystem
 
 		List<IObservation> observations = new ArrayList<IObservation>(Ernest.RESOLUTION_COLLICULUS);
 
-		// Lists the various observations in the visual field
+		// Create a List of the various observations in the visual field
 
 		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
 		{
@@ -165,9 +165,9 @@ public class StaticSystem
 			o.setDistance(visualCortex[i].getDistance());
 			o.setSpan(nbDirection);
 			o.setVisual(visualCortex[i]);
-			// The attractiveness depends on the bundle's attractiveness and then on the stimulation's proximity.
+			// The attractiveness depends primarily on the bundle's attractiveness and secondarily on the stimulation's proximity.
 			o.setAttractiveness(visualAttractiveness(visualCortex[i]) - visualCortex[i].getDistance());
-			//observation.setAttractiveness(nbDirection);
+			//observation.setAttractiveness(visualAttractiveness(visualCortex[i]) + nbDirection);
 			observations.add(o);
 		}
 		
@@ -180,21 +180,6 @@ public class StaticSystem
 				maxAttractiveness = o.getAttractiveness();
 				observation = o;
 			}
-		
-		
-//		int maxAttractiveness = 0;
-//		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
-//		{
-//			// The attractiveness depends on the bundle's attractiveness and then on the stimulation's proximity.
-//			int attractiveness = visualAttractiveness(visualCortex[i]) - visualCortex[i].getDistance();
-//			colliculus[i] = attractiveness;
-//			if (attractiveness > maxAttractiveness)
-//			{
-//				maxAttractiveness = attractiveness;
-//				distance = visualCortex[i].getDistance();
-//				color = visualCortex[i].getHexColor();
-//			}
-//		}
 		
 		// The tactile motivation
 		
@@ -209,25 +194,6 @@ public class StaticSystem
 		// Taste
 		
 		observation.setTaste(taste.getValue());
-		
-		// The direction is the average direction of the max attractiveness in the colliculus
-		
-//		if (maxAttractiveness  > 0)
-//		{
-//			int sumDirection = 0;
-//			int nbDirection = 0;
-//			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0; i--)
-//				if (colliculus[i] >= maxAttractiveness)
-//				{
-//					sumDirection += i * 10;
-//					nbDirection++;
-//				}
-//			observation.setHexColor(color);
-//			observation.setDistance(distance);
-//			//observation.setAttractiveness(maxAttractiveness);
-//			observation.setAttractiveness(nbDirection);
-//			observation.setDirection((int) (sumDirection / nbDirection + .5));
-//		}		
 		
 		return observation;
 	}
