@@ -49,8 +49,11 @@ public class Ernest implements IErnest
 	/** The duration during which checked landmarks remain not motivating  */
 	public static int PERSISTENCE = 20; // (50 Ernest 9.3)
 	
-	public static int BASE_MOTIVATION =  1000;
-	public static int TOP_MOTIVATION = 100000;
+	/** Base attractiveness of bundles that are not edible  */
+	public static int BASE_MOTIVATION =  200;
+
+	/** Top attractiveness of bundles that are edible  */
+	public static int TOP_MOTIVATION  =  400;
 	
 	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
 	public static int MATURITY = 1500; // not used currently.

@@ -16,8 +16,11 @@ public interface IBundle
 	IStimulation getGustatoryStimulation();
 	
 	/**
-	 * @param clock Ernest's current clock value
-	 * @return this bundle's motivation at the given time
+	 * TOP_MOTIVATION (400) if this bundle's gustatory motivation is STIMULATION_TASTE_FISH.
+	 * Otherwise BASE_MOTIVATION (200) if this bundle has been forgotten,
+	 * or 0 if this bundle has just been visited.
+	 * @param clock Ernest's current clock value.
+	 * @return This bundle's attractiveness at the given time.
 	 */
 	int getAttractiveness(int clock);
 
