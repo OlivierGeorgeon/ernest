@@ -10,14 +10,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
-import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,7 +33,6 @@ import org.jrdf.graph.GraphElementFactory;
 import org.jrdf.graph.GraphElementFactoryException;
 import org.jrdf.graph.Literal;
 import org.jrdf.graph.ObjectNode;
-import org.jrdf.graph.PredicateNode;
 import org.jrdf.graph.Triple;
 import org.jrdf.graph.URIReference;
 import org.jrdf.parser.RdfReader;
@@ -55,7 +46,6 @@ import utils.Strings;
 
 /**
  * This tracer logs the trace into an XML file.
- * @author Olivier
  */
 public class KTBSTracer implements ITracer<Element> //TODO
 {
