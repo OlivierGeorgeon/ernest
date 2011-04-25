@@ -57,4 +57,6 @@ public interface IErnest
 	public String step(boolean status);
 	public String step(int[][] matrix);
 	
+	public IObservation getObservation();
+
 }

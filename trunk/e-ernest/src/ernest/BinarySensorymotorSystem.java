@@ -78,4 +78,9 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return null;
 	}
 
+	public IObservation getObservation()
+	{
+		return null;
+	}
+
 }

@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 import tracing.ITracer;
 
 /**
@@ -8,11 +10,6 @@ import tracing.ITracer;
  */
 public interface IObservation 
 {
-	/**
-	 * @param hexColor this observation's main color in hexadecimal code.
-	 */
-	void setHexColor(String hexColor);
-	
 	/**
 	 * @return this observation's main color in hexadecimal code.
 	 */
@@ -70,20 +67,52 @@ public interface IObservation
 	 */
 	int getAttractiveness();
 	
+	/**
+	 * Computes the observation's dynamic features
+	 * @param act
+	 * @param previousObservation
+	 */
+	void setDynamicFeature(IAct act, IObservation previousObservation);
+	
 	void setKinematic(int kinematic);
 	int getKinematic();
-	void setTaste(int taste);
-	int getTaste();
+	void taste(IStimulation taste);
+//	int getTaste();
 	public void setVisual(IStimulation stimulation); 
 	public IStimulation getVisual(); 
 	
 	String getLabel();
 	
-	void setDynamicFeature(IAct act, IObservation previousObservation);
-	void setDynamicFeature2(IAct act, IObservation previousObservation);
-	
 	int getSpan();
 	void setSpan(int span);
 
+	public void setMap(IStimulation[][] tactileMatrix);
+
+	/**
+	 * Translate the observation
+	 * TODO the observation transformations should be learned rather than hard coded (at least with the assumption that it is linear).
+	 * @param previousObservation The previous observation
+	 */
+	//public void forward(IObservation previousObservation);
+	
+	/**
+	 * Rotate the observation
+	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
+	 * @param previousObservation The previous observation
+	 */
+	//public void turnRight(IObservation previousObservation);
+
+	/**
+	 * Rotate the observation
+	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
+	 * @param previousObservation The previous observation
+	 */
+	//public void turnLeft(IObservation previousObservation);
+
+	public int getTactile(int x, int y);
+	public Color getColor(int x, int y);
+	public IBundle getBundle(int x, int y);
+	
+	void setFrontBundle(IBundle bundle);
 
 }

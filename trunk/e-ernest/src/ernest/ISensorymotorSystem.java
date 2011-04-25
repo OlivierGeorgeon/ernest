@@ -46,5 +46,6 @@ public interface ISensorymotorSystem
 	 * @param matrix The matrix sensed in the environment. 
 	 */
 	//public void senseMatrix(int[][] matrix); 
-	
+	public IObservation getObservation();
+
 }

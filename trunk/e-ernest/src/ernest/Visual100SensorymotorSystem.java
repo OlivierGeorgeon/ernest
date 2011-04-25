@@ -74,20 +74,20 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Bundle the stimulations together ===
 		
-		int attractiveness = 0;
-		if (taste.getValue() == Ernest.STIMULATION_TASTE_FISH)
-			attractiveness = Ernest.TOP_MOTIVATION;
-		else if (somatoCortex[1][1].getValue() == Ernest.STIMULATION_TOUCH_ALGA)
-			attractiveness = Ernest.BASE_MOTIVATION;
-		
-		m_staticSystem.addBundle(visualStandStimulation, somatoCortex[1][1], taste, attractiveness);
+//		int attractiveness = 0;
+//		if (taste.getValue() == Ernest.STIMULATION_TASTE_FISH)
+//			attractiveness = Ernest.TOP_MOTIVATION;
+//		else if (somatoCortex[1][1].getValue() == Ernest.STIMULATION_TOUCH_ALGA)
+//			attractiveness = Ernest.BASE_MOTIVATION;
+//		
+//		m_staticSystem.addBundle(visualStandStimulation, somatoCortex[1][1], taste, attractiveness);
 		
 		// Updates the current observation
 		
 		m_previousObservation  = m_currentObservation;		
 		//m_currentObservation = m_staticSystem.observe(visualCortex, somatoCortex, kinematicStimulation, tactileStandStimulation);
 		m_currentObservation = m_staticSystem.observe(visualCortex, somatoCortex, kinematicStimulation, taste);
-		m_currentObservation.setDynamicFeature2(act, m_previousObservation);
+		m_currentObservation.setDynamicFeature(act, m_previousObservation);
 		m_currentObservation.trace(m_tracer, "current_observation");
 				
 		// If the intended act was null (during the first cycle), then the enacted act is null.
@@ -97,8 +97,8 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 
 		// Bump
 		
-		if (m_currentObservation.getLabel().equals("[>]"))
-			m_staticSystem.addBundle(visualFrontStimulation, tactileFrontStimulation, gustatoryFrontStimulation, 0);
+//		if (m_currentObservation.getLabel().equals("[>]"))
+//			m_staticSystem.addBundle(visualFrontStimulation, tactileFrontStimulation, gustatoryFrontStimulation, 0);
 				
 		// Create the act in episodic memory if it does not exist.
 
@@ -107,8 +107,13 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 			// If it's the night, Ernest is dreaming and acts are always correctly enacted.
 			enactedAct = act;
 		else
-			enactedAct = m_episodicMemory.addAct(m_currentObservation.getLabel(), act.getSchema(), (m_currentObservation.getKinematic()==1), m_currentObservation.getSatisfaction(), Ernest.RELIABLE);
+			enactedAct = m_episodicMemory.addAct(m_currentObservation.getLabel(), act.getSchema(), (m_currentObservation.getKinematic() == Ernest.STIMULATION_KINEMATIC_SUCCEED), m_currentObservation.getSatisfaction(), Ernest.RELIABLE);
 		
 		return enactedAct;
+	}
+	
+	public IObservation getObservation()
+	{
+		return m_currentObservation;
 	}
 }

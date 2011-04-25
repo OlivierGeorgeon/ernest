@@ -1,8 +1,10 @@
 package ernest;
 
 /**
- * A bundle of sensory stimulations.
- * May correspond to a physical object according to Hume's bundle theory (http://en.wikipedia.org/wiki/Bundle_theory)
+ * A bundle of sensory stimulations. 
+ * So far, a bundle is defined by its visual and its tactile stimulation. 
+ * Other stimulations are optional.
+ * A bundle may correspond to a physical object according to Hume's bundle theory (http://en.wikipedia.org/wiki/Bundle_theory)
  * @author Olivier
  */
 public interface IBundle 
@@ -13,6 +15,7 @@ public interface IBundle
 	 */
 	IStimulation getVisualStimulation();
 	IStimulation getTactileStimulation();
+	void setGustatoryStimulation(IStimulation  gustatoryStimulation); 
 	IStimulation getGustatoryStimulation();
 	
 	/**
