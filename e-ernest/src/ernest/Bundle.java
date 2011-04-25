@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * A bundle of sensory stimulations. 
+ * So far, a bundle is defined by its visual and its tactile stimulation. 
+ * Other stimulations are optional.
+ * A bundle may correspond to a physical object according to Hume's bundle theory (http://en.wikipedia.org/wiki/Bundle_theory)
  * @author Olivier
- * TODO bundles with more than 3 stimulations
  */
 public class Bundle implements IBundle {
 
@@ -14,6 +17,12 @@ public class Bundle implements IBundle {
 	IStimulation m_gustatoryStimulation;
 
 	int m_lastTimeBundled;
+	
+	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation)
+	{
+		m_visualStimulation = visualStimulation;
+		m_tactileStimulation = tactileStimulation;
+	}
 	
 	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation gustatoryStimulation)
 	{
@@ -30,6 +39,11 @@ public class Bundle implements IBundle {
 	public IStimulation getTactileStimulation() 
 	{
 		return m_tactileStimulation;
+	}
+	
+	public void setGustatoryStimulation(IStimulation  gustatoryStimulation) 
+	{
+		m_gustatoryStimulation = gustatoryStimulation;
 	}
 	
 	public IStimulation getGustatoryStimulation() 
@@ -51,7 +65,7 @@ public class Bundle implements IBundle {
 	 */
 	public int getAttractiveness(int clock) 
 	{
-		if (m_gustatoryStimulation.getValue() == Ernest.STIMULATION_TASTE_FISH)
+		if (m_gustatoryStimulation != null && m_gustatoryStimulation.getValue() == Ernest.STIMULATION_TASTE_FISH)
 			return Ernest.TOP_MOTIVATION;
 		else if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
 			return Ernest.BASE_MOTIVATION;
@@ -60,8 +74,8 @@ public class Bundle implements IBundle {
 	}
 
 	/**
-	 * Bundles are equal if they have the same stimulations. 
-	 * TODO More than 3 stimulations
+	 * Bundles are equal if they have the same visual and tactile stimulations. 
+	 * TODO More than 3 stimulations.
 	 */
 	public boolean equals(Object o)
 	{
@@ -77,8 +91,7 @@ public class Bundle implements IBundle {
 		{
 			IBundle other = (IBundle)o;
 			ret = other.getVisualStimulation().equals(m_visualStimulation) && 	
-				  other.getTactileStimulation().equals(m_tactileStimulation) &&
-				  other.getGustatoryStimulation().equals(m_gustatoryStimulation);
+				  other.getTactileStimulation().equals(m_tactileStimulation);
 		}
 		return ret;
 	}

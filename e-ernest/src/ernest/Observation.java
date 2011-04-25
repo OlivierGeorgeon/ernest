@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 import org.w3c.dom.Element;
 
 import tracing.ITracer;
@@ -15,22 +17,21 @@ public class Observation implements IObservation {
 	private String m_dynamicFeature  = "";
 	private int m_satisfaction = 0;
 	private int m_attractiveness = 0;
-	private String m_hexColor = "";
-	private int m_kinematic = 0;
-	private int m_taste = 0;
+	private int m_kinematic = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+	private IStimulation m_taste;
 	private String m_label;
 	private int m_span;
 	private IStimulation m_visual;
 
+	// The map of tactile stimulations
+	IStimulation[][] m_tactileMatrix = new IStimulation[3][3];
 	
-	public void setHexColor(String hexColor) 
-	{
-		m_hexColor = hexColor;
-	}
-
+	// The map of surrounding bundles 
+	IBundle[][] m_bundle = new IBundle[3][3];
+	
 	public String getHexColor() 
 	{
-		return m_hexColor;
+		return m_visual.getHexColor();
 	}
 
 	public void setDistance(int distance) 
@@ -89,14 +90,9 @@ public class Observation implements IObservation {
 		return m_kinematic;
 	}
 
-	public void setTaste(int taste)
+	public void taste(IStimulation gustatoryStimulation)
 	{
-		m_taste = taste;
-	}
-
-	public int getTaste()
-	{
-		return m_taste;
+		m_taste = gustatoryStimulation;
 	}
 
 	public String getLabel()
@@ -118,12 +114,13 @@ public class Observation implements IObservation {
 	{
 		Object e = tracer.addEventElement(element);
 
-		tracer.addSubelement(e, "color", m_hexColor);
+		tracer.addSubelement(e, "color", m_visual.getHexColor());
 		tracer.addSubelement(e, "distance", m_distance + "");
 		tracer.addSubelement(e, "attractiveness", m_attractiveness + "");
 		tracer.addSubelement(e, "direction", m_direction + "");
 		tracer.addSubelement(e, "dynamic_feature", m_dynamicFeature);
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
+		tracer.addSubelement(e, "span", m_span + "");
 	}
 	
 	public int getAttractiveness()
@@ -138,107 +135,29 @@ public class Observation implements IObservation {
 
 	public void setDynamicFeature(IAct act, IObservation previousObservation)
 	{
-		String dynamicFeature = "";
-		
-		int minFovea = 25;
-		int centerFovea = 55;
-		int maxFovea = 85;
-		
-		if (minFovea >= m_direction)
-		{
-			// The landmark is now on the right side
-			if (previousObservation.getAttractiveness() > m_attractiveness)
-				// Less motivating
-				dynamicFeature = ".-";
-			else if (previousObservation.getAttractiveness() == m_attractiveness)
-			{
-				// As motivating
-				if ( previousObservation.getDirection() >  m_direction)
-					// The landmark is now more outward
-					dynamicFeature = ".-";
-				if ( m_direction > previousObservation.getDirection())
-					// The landmark is now more inward
-					dynamicFeature = ".+";
-			}
-			else
-				// More motivating
-				dynamicFeature = ".+";
-		}
-		else if (m_direction >= maxFovea)
-		{
-			// The landmark is now on the left side
-			if (previousObservation.getAttractiveness() > m_attractiveness)
-				// Less motivating
-				dynamicFeature = "-.";
-			else if (previousObservation.getAttractiveness() == m_attractiveness)
-			{
-				// As motivating
-				if ( m_direction > previousObservation.getDirection())
-					// The landmark is now more outward
-					dynamicFeature = "-.";
-				if ( previousObservation.getDirection() >  m_direction)
-					// The landmark is now more inward
-					dynamicFeature = "+.";
-			}
-			else
-				// More motivating
-				dynamicFeature = "+.";
-		}
-		else 
-		{
-			// The landmark is now in the fovea
-			if (previousObservation.getAttractiveness() > m_attractiveness)
-				// Less motivating
-				dynamicFeature = "-";
-			else if (previousObservation.getAttractiveness() == m_attractiveness)
-			{
-				// As motivating
-				if ( Math.abs(previousObservation.getDirection() - centerFovea) > Math.abs(m_direction - centerFovea))
-					// The landmark is now more inward
-					dynamicFeature = "+";
-				else if (m_direction > previousObservation.getDirection())
-					// The landmark is now more outward to the left
-					dynamicFeature = "-.";
-				else if (previousObservation.getDirection() > m_direction)
-					// The landmark is now more outward to the right
-					dynamicFeature = ".-";
-			}
-			else
-				// More motivating
-				dynamicFeature = "+";
-		}
-		
-		int satisfaction = 0;
-		if (dynamicFeature.equals("-.") || dynamicFeature.equals(".-"))
-			satisfaction = -100;
-		if (dynamicFeature.equals("+.") || dynamicFeature.equals(".+"))
-			satisfaction = 100;
-		if (dynamicFeature.equals("+"))
-			satisfaction = 150;
-		if (dynamicFeature.equals("-"))
-			satisfaction = -150;
-		
-		
-		String label = dynamicFeature;
+		// Transform the bundle area
 		if (act != null)
 		{
-			satisfaction = satisfaction + act.getSchema().resultingAct(m_kinematic == 1).getSatisfaction();
-			label = act.getSchema().getLabel() + dynamicFeature;
+			if (act.getSchema().getLabel().equals(">"))
+			{
+				if (m_kinematic == Ernest.STIMULATION_KINEMATIC_FAIL)
+					copy(previousObservation);
+				else
+					forward(previousObservation);
+			}
+			if (act.getSchema().getLabel().equals("^"))
+				turnLeft(previousObservation);
+			if (act.getSchema().getLabel().equals("v"))
+				turnRight(previousObservation);
+		}		
+		
+		// Taste
+		if (m_taste.getValue() == Ernest.STIMULATION_TASTE_FISH && m_bundle[1][1] != null)
+		{
+			m_bundle[1][1].setGustatoryStimulation(m_taste);
+			m_bundle[1][1] = null;
 		}
-		
-		// Label
-
-		if (m_kinematic == 1)
-			m_label = "(" + label + m_dynamicFeature + ")";
-		else 
-			m_label = "[" + label + m_dynamicFeature + "]";
-		
-		m_dynamicFeature = dynamicFeature;
-		m_satisfaction = satisfaction;
-	}
-
-	public void setDynamicFeature2(IAct act, IObservation previousObservation)
-	{
+			
 		String dynamicFeature = "";
 		
 		int minFovea = Ernest.CENTER_RETINA - 30; // 25;
@@ -276,7 +195,7 @@ public class Observation implements IObservation {
 		
 		// Gustatory
 		
-		if (m_taste == Ernest.STIMULATION_TASTE_FISH)
+		if (m_taste.getValue() == Ernest.STIMULATION_TASTE_FISH)
 		{
 			dynamicFeature = "*";
 			satisfaction = 200;
@@ -285,18 +204,161 @@ public class Observation implements IObservation {
 		String label = dynamicFeature;
 		if (act != null)
 		{
-			satisfaction = satisfaction + act.getSchema().resultingAct(m_kinematic == 1).getSatisfaction();
+			satisfaction = satisfaction + act.getSchema().resultingAct(m_kinematic == Ernest.STIMULATION_KINEMATIC_SUCCEED).getSatisfaction();
 			label = act.getSchema().getLabel() + dynamicFeature;
 		}
 		
 		// Label
 
-		if (m_kinematic == 1)
+		if (m_kinematic == Ernest.STIMULATION_KINEMATIC_SUCCEED)
 			m_label = "(" + label + m_dynamicFeature + ")";
 		else 
 			m_label = "[" + label + m_dynamicFeature + "]";
 		
 		m_dynamicFeature = dynamicFeature;
 		m_satisfaction = satisfaction;
+	}
+	
+	public void setMap(IStimulation[][] tactileMatrix)
+	{
+		for (int i = 0 ; i < 3; i++)
+			for (int j = 0 ; j < 3; j++)	
+				m_tactileMatrix[i][j] = tactileMatrix[i][j];
+	}
+	
+	public int getTactile(int x, int y)
+	{
+		return m_tactileMatrix[x][y].getValue();
+	}
+
+	public Color getColor(int x, int y)
+	{
+		Color c = null;
+		if (m_bundle[x][y] == null)
+		{
+			if (m_tactileMatrix[x][y] != null)
+			{
+				int value = 140 - 70 * m_tactileMatrix[x][y].getValue();
+				c = new Color(value, value, value);
+			}
+		}
+		else
+			c = m_bundle[x][y].getVisualStimulation().getColor();
+		
+		return c;
+	}
+	
+	public IBundle getBundle(int x, int y)
+	{
+		return m_bundle[x][y];
+	}
+	
+	/**
+	 * Duplicate the observation
+	 * TODO the observation transformations should be learned rather than hard coded (at least with the assumption that it is linear).
+	 * @param previousObservation The previous observation
+	 */
+	private void copy(IObservation previousObservation)
+	{
+		// Tactile
+		
+		m_bundle[0][2] = previousObservation.getBundle(0,2);
+		m_bundle[1][2] = previousObservation.getBundle(1,2);
+		m_bundle[2][2] = previousObservation.getBundle(2,2);
+		
+		m_bundle[0][1] = previousObservation.getBundle(0,1);
+		m_bundle[1][1] = previousObservation.getBundle(1,1);
+		m_bundle[2][1] = previousObservation.getBundle(2,1);
+	
+		m_bundle[0][0] = previousObservation.getBundle(0,0);
+		//m_bundle[1][0] = previousObservation.getBundle(1,1);
+		m_bundle[2][0] = previousObservation.getBundle(2,0);
+	
+	}
+
+	/**
+	 * Translate the observation
+	 * TODO the observation transformations should be learned rather than hard coded (at least with the assumption that it is linear).
+	 * @param previousObservation The previous observation
+	 */
+	private void forward(IObservation previousObservation)
+	{
+		// Tactile
+		
+		m_bundle[0][2] = previousObservation.getBundle(0,1);
+		m_bundle[1][2] = previousObservation.getBundle(1,1);
+		m_bundle[2][2] = previousObservation.getBundle(2,1);
+		
+		m_bundle[0][1] = previousObservation.getBundle(0,0);
+		m_bundle[1][1] = previousObservation.getBundle(1,0);
+		m_bundle[2][1] = previousObservation.getBundle(2,0);
+	
+		// Gustatory
+		
+//		if (m_tactileMatrix[1][1].getValue() == Ernest.STIMULATION_TOUCH_FISH)
+//		{
+//			m_taste = Ernest.STIMULATION_TASTE_FISH;
+//			// eat
+//			//m_tactileMatrix[1][1] = Ernest.STIMULATION_TOUCH_EMPTY;
+//		}
+//		else 
+//			m_taste = Ernest.STIMULATION_TASTE_NOTHING;
+	}
+	
+	/**
+	 * Rotate the observation
+	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
+	 * @param previousObservation The previous observation
+	 */
+	private void turnRight(IObservation previousObservation)
+	{
+		// Tactile 
+		m_bundle[0][0] = previousObservation.getBundle(1,0);
+		//m_bundle[1][0] = previousObservation.getBundle(2,0);
+		m_bundle[2][0] = previousObservation.getBundle(2,1);
+		m_bundle[2][1] = previousObservation.getBundle(2,2);
+		m_bundle[2][2] = previousObservation.getBundle(1,2);
+		m_bundle[1][2] = previousObservation.getBundle(0,2);
+		m_bundle[0][2] = previousObservation.getBundle(0,1);
+		m_bundle[0][1] = previousObservation.getBundle(0,0);
+
+		m_bundle[1][1] = previousObservation.getBundle(1,1);
+
+		//		// Kinematic
+//		if (m_tactileMatrix[1][0].getValue() == Ernest.STIMULATION_TOUCH_WALL)
+//			m_kinematic = Ernest.STIMULATION_KINEMATIC_FAIL;
+//		else 
+//			m_kinematic = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+	}
+	
+	/**
+	 * Rotate the observation
+	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
+	 * @param previousObservation The previous observation
+	 */
+	private void turnLeft(IObservation previousObservation)
+	{
+		// Tactile counterclockwise
+		m_bundle[0][0] = previousObservation.getBundle(0,1);
+		m_bundle[0][1] = previousObservation.getBundle(0,2);
+		m_bundle[0][2] = previousObservation.getBundle(1,2);
+		m_bundle[1][2] = previousObservation.getBundle(2,2);
+		m_bundle[2][2] = previousObservation.getBundle(2,1);
+		m_bundle[2][1] = previousObservation.getBundle(2,0);
+		m_bundle[2][0] = previousObservation.getBundle(1,0);
+		//m_bundle[1][0] = previousObservation.getBundle(0,0);
+
+		m_bundle[1][1] = previousObservation.getBundle(1,1);
+
+		// Kinematic
+//		if (m_tactileMatrix[1][0].getValue() == Ernest.STIMULATION_TOUCH_WALL)
+//			m_kinematic = Ernest.STIMULATION_KINEMATIC_FAIL;
+//		else 
+//			m_kinematic = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+	}
+
+	public void setFrontBundle(IBundle bundle)
+	{
+		m_bundle[1][0] = bundle;
 	}
 }

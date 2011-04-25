@@ -49,10 +49,10 @@ public class Ernest implements IErnest
 	/** The duration during which checked landmarks remain not motivating  */
 	public static int PERSISTENCE = 20; // (50 Ernest 9.3)
 	
-	/** Base attractiveness of bundles that are not edible  */
+	/** 200 Base attractiveness of bundles that are not edible  */
 	public static int BASE_MOTIVATION =  200;
 
-	/** Top attractiveness of bundles that are edible  */
+	/** 400 Top attractiveness of bundles that are edible  */
 	public static int TOP_MOTIVATION  =  400;
 	
 	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
@@ -93,6 +93,12 @@ public class Ernest implements IErnest
 	
 	/** Feeling hard */
 	public static int STIMULATION_TOUCH_WALL = 3;
+	
+	/** 0. Kinematic succeed */	
+	public static int STIMULATION_KINEMATIC_SUCCEED = 0;
+	
+	/** 1. Bumping wall */	
+	public static int STIMULATION_KINEMATIC_FAIL = 1;
 	
 	/** Ernest's primitive schema currently enacted */
 	private IAct m_primitiveAct = null;
@@ -212,6 +218,14 @@ public class Ernest implements IErnest
 		// Return the schema to enact.
 		
 		return m_primitiveAct.getSchema().getLabel();
+	}
+
+	public IObservation getObservation()
+	{
+		if (m_sensorymotorSystem != null)
+			return m_sensorymotorSystem.getObservation();
+		else
+			return null;
 	}
 
 }
