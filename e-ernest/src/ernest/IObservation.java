@@ -16,26 +16,6 @@ public interface IObservation
 	String getHexColor();
 
 	/**
-	 * @param distance
-	 */
-	void setDistance(int distance);
-	
-	/**
-	 * @return Ernest's current distance to the landmark
-	 */
-	int getDistance();
-	
-	/**
-	 * @param direction
-	 */
-	void setDirection(int direction);
-	
-	/**
-	 * @return The landmark's directin in retinotopic reference
-	 */
-	int getDirection();
-	
-	/**
 	 * @return The changes in this focus over the last interaction cycle.
 	 */
 	String getDynamicFeature();
@@ -60,12 +40,12 @@ public interface IObservation
 	/**
 	 * @param attractiveness This observation's attractiveness
 	 */
-	void setAttractiveness(int attractiveness);
+//	void setAttractiveness(int attractiveness);
 	
 	/**
 	 * @return This observation's attractiveness
 	 */
-	int getAttractiveness();
+//	int getAttractiveness();
 	
 	/**
 	 * Computes the observation's dynamic features
@@ -74,17 +54,15 @@ public interface IObservation
 	 */
 	void setDynamicFeature(IAct act, IObservation previousObservation);
 	
-	void setKinematic(int kinematic);
-	int getKinematic();
+	void setKinematic(IStimulation kinematicStimulation);
+	IStimulation getKinematic();
 	void taste(IStimulation taste);
 //	int getTaste();
-	public void setVisual(IStimulation stimulation); 
-	public IStimulation getVisual(); 
 	
 	String getLabel();
 	
-	int getSpan();
-	void setSpan(int span);
+	//int getSpan();
+	//void setSpan(int span);
 
 	public void setMap(IStimulation[][] tactileMatrix);
 
@@ -115,4 +93,18 @@ public interface IObservation
 	
 	void setFrontBundle(IBundle bundle);
 
+	/**
+	 * Predicts the consequences of an intention on the current observation.
+	 * So far, only predicts the local map. 
+	 * @param act The intention act
+	 */
+	public void anticipate(IObservation previousObservation, IAct act);
+	
+	/**
+	 * @return true if the anticipation was confirmed, false if the anticipation was incorrect
+	 */
+	public boolean getConfirmation();
+	
+	public void setIcon(IIcon icon);
+	public IIcon getIcon();
 }
