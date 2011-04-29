@@ -100,6 +100,8 @@ public class Ernest implements IErnest
 	/** 1. Bumping wall */	
 	public static int STIMULATION_KINEMATIC_FAIL = 1;
 	
+	public static int STIMULATION_CIRCADIAN_DAY = 0;
+	
 	/** Ernest's primitive schema currently enacted */
 	private IAct m_primitiveAct = null;
 	

@@ -36,7 +36,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 	private String m_internalState = "";
 	
 	/** Random generator used to break a tie when selecting a schema... */
-	private static Random m_rand = new Random(); 
+	//private static Random m_rand = new Random(); 
 
 	/**
 	 * The context to learn new schemas with the first learning mechanism.
@@ -382,7 +382,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 		// pick one at random from the top of the proposal list
 		// count is equal to the number of proposals that are tied...
 	
-		IAct a = acts.get(m_rand.nextInt(count));
+		//IAct a = acts.get(m_rand.nextInt(count));
+		IAct a = acts.get(0); // alwas select the first
 		
 		return a ;
 	}

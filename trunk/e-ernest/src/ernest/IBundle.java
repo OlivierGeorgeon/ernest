@@ -13,10 +13,11 @@ public interface IBundle
 	/**
 	 * @return This bundle's visual stimulation 
 	 */
-	IStimulation getVisualStimulation();
+	IIcon getVisualIcon();
 	IStimulation getTactileStimulation();
 	void setGustatoryStimulation(IStimulation  gustatoryStimulation); 
 	IStimulation getGustatoryStimulation();
+	void setKinematicStimulation(IStimulation kinematicStimulation);
 	
 	/**
 	 * TOP_MOTIVATION (400) if this bundle's gustatory motivation is STIMULATION_TASTE_FISH.
@@ -28,5 +29,6 @@ public interface IBundle
 	int getAttractiveness(int clock);
 
 	void setLastTimeBundled(int clock);
+	
 	
 }

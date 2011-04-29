@@ -28,6 +28,9 @@ public class EpisodicMemory
 	
 	/** Random generator used to break a tie when selecting a schema... */
 	private static Random m_rand = new Random(); 
+	
+	/** If true then Ernest does not use random */
+	public static boolean DETERMINISTIC = true; 
 
 	/** Counter of learned schemas for tracing */
 	private int m_learnCount = 0;
@@ -294,7 +297,11 @@ public class EpisodicMemory
 		// pick one at random from the top of the proposal list
 		// count is equal to the number of proposals that are tied...
 
-		IProposition p = proposals.get(m_rand.nextInt(count));
+		IProposition p = null;
+		if (DETERMINISTIC)
+			p = proposals.get(0); // Always take the first
+		else
+			p = proposals.get(m_rand.nextInt(count)); // Break the tie at random
 		
 		ISchema s = p.getSchema();
 		

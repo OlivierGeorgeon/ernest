@@ -85,16 +85,16 @@ public class StaticSystem
 	 * @param tactileStimulation Second stimulation
 	 * @return the new bundle if created or the already existing landmark
 	 */
-	public IBundle addBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
+	public IBundle addBundle(IIcon visualIcon, IStimulation tactileStimulation)
 	{
-		IBundle bundle = new Bundle(visualStimulation,tactileStimulation);
+		IBundle bundle = new Bundle(visualIcon,tactileStimulation);
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
 		{
 			m_bundles.add(bundle);
 			Object b = m_tracer.addEventElement("bundle");
-			m_tracer.addSubelement(b, "color", bundle.getVisualStimulation().getHexColor());
+			m_tracer.addSubelement(b, "color", bundle.getVisualIcon().getHexColor());
 			m_tracer.addSubelement(b, "tactile", bundle.getTactileStimulation().getValue() + "");
 		}
 		else 
@@ -127,22 +127,19 @@ public class StaticSystem
 	}
 	
 	/**
-	 * Generate an Observation from the sensory stimulations.
-	 * In particular, find the direction and the value of the highest attractiveness.
-	 * TODO use the tactile cortex too.
+	 * Adjust the anticipated Observation according to the sensory stimulations.
+	 * @param observation The observation to be adjusted.
 	 * @param visualCortex The set of visual stimulations in the visual cortex.
 	 * @param tactileCortex The set of tactile stimulations in the tactile cortex.
-	 * @param taste The gustatory stimulation.
-	 * @return The most motivating observation with its motivation value and its direction (*10).
+	 * @param gustatoryStimulation The gustatory stimulation.
 	 */
-	public IObservation observe(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematic, IStimulation gustatoryStimulation)
+	public IObservation observe(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
 	{
-		IObservation observation = new Observation();
-		int[][] tactileMotivation = new int[3][3];
+        IObservation observation = new Observation();
 
-		List<IObservation> observations = new ArrayList<IObservation>(Ernest.RESOLUTION_COLLICULUS);
+		List<IIcon> icons = new ArrayList<IIcon>(Ernest.RESOLUTION_COLLICULUS);
 
-		// Create a List of the various observations in the visual field
+		// Create a List of the various icons in the visual field
 
 		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
 		{
@@ -155,26 +152,25 @@ public class StaticSystem
 				sumDirection += j * 10;
 				j++;
 			}	
-			IObservation o = new Observation();
-			o.setDirection((int) (sumDirection / nbDirection + .5));
-			o.setDistance(visualCortex[i].getDistance());
-			o.setSpan(nbDirection);
-			o.setVisual(visualCortex[i]);
-			// The attractiveness depends primarily on the bundle's attractiveness and secondarily on the stimulation's proximity.
-			//o.setAttractiveness(visualAttractiveness(visualCortex[i]) - visualCortex[i].getDistance());
-			//o.setAttractiveness(visualAttractiveness(visualCortex[i]) + 10 * nbDirection - Math.abs(Ernest.CENTER_RETINA));
-			o.setAttractiveness(attractiveness(visualCortex[i]) + 10 * nbDirection);
-			observations.add(o);
+			IIcon icon = new Icon();
+			icon.setDirection((int) (sumDirection / nbDirection + .5));
+			icon.setDistance(visualCortex[i].getDistance());
+			icon.setSpan(nbDirection);
+			icon.setColor(visualCortex[i].getColor());
+			icon.setAttractiveness(attractiveness(visualCortex[i]) + 10 * nbDirection);
+			icons.add(icon);
 		}
 		
-		// Find the most attractive observation in the visual field
+		// Find the most attractive icon in the visual field (There is at least a wall)
 		
 		int maxAttractiveness = 0;
-		for (IObservation o : observations)
-			if (o.getAttractiveness() > maxAttractiveness)
+		int visualDirection = 0;
+		for (IIcon icon : icons)
+			if (icon.getAttractiveness() > maxAttractiveness)
 			{
-				maxAttractiveness = o.getAttractiveness();
-				observation = o;
+				maxAttractiveness = icon.getAttractiveness();
+				visualDirection = icon.getDirection();
+				observation.setIcon(icon);
 			}
 		
 		// The somatotopic map
@@ -183,23 +179,22 @@ public class StaticSystem
 		
 		// Kinematic
 		
-		observation.setKinematic(kinematic.getValue());
+		observation.setKinematic(kinematicStimulation);
 		
 		// Taste
 		
 		observation.taste(gustatoryStimulation);
 		
-		// Bundle the visual and tactile stimulations in front
+		// Bundle the visual icon with the tactile stimulations in front
 		
-		if (observation.getDirection() >= 50 &&  observation.getDirection() <= 60
-				&& observation.getSpan() >= 3 
+		if (visualDirection >= 50 &&  visualDirection <= 60
+				&& observation.getIcon().getSpan() >= 3 
 				&& observation.getTactile(1, 0) != Ernest.STIMULATION_TOUCH_EMPTY)
 		{
-			IBundle b = addBundle(observation.getVisual(), tactileCortex[1][0]);
+			IBundle b = addBundle(observation.getIcon(), tactileCortex[1][0]);
 			observation.setFrontBundle(b);
 		}
-			
-		
+
 		return observation;
 	}
 		
@@ -215,24 +210,26 @@ public class StaticSystem
 			return 0;
 		
 		for (IBundle bundle : m_bundles)
-			if (bundle.getVisualStimulation().equals(stimulation))
+			if (bundle.getVisualIcon().getColor().equals(stimulation.getColor()))
 				return bundle.getAttractiveness(m_clock);
 
 		return Ernest.BASE_MOTIVATION;
 	}
+
 	/**
-	 * TODO manage different bundles with the same stimulation and more than one visual stimulation
-	 * @param stimulation The stimulation
-	 * @return The motivation value generated by this stimulation.
-	 * (Either the bundle's motivation or the base motivation is this stimulation evokes no bundle.
+	 * Generate an anticipated observation from the previous observation and the current intention.
+	 * @param previousObservation The latest observation. 
+	 * @param act The intended act.
+	 * @return The anticipated observation.
 	 */
-	private int tactileAttractiveness(IStimulation stimulation)
+	public IObservation anticipate(IObservation previousObservation, IAct act)
 	{
-		for (IBundle bundle : m_bundles)
-			if (bundle.getTactileStimulation().equals(stimulation))
-				return bundle.getAttractiveness(m_clock);
+		IObservation anticipation = new Observation();
 
-		return Ernest.BASE_MOTIVATION;
+		anticipation.anticipate(previousObservation, act);
+		
+		return anticipation;
 	}
+
 }
 	

@@ -12,28 +12,29 @@ import java.util.List;
  */
 public class Bundle implements IBundle {
 
-	IStimulation m_visualStimulation;
+	IIcon m_visualIcon;
 	IStimulation m_tactileStimulation;
 	IStimulation m_gustatoryStimulation;
+	IStimulation m_kinematicStimulation;
 
 	int m_lastTimeBundled;
 	
-	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation)
+	Bundle(IIcon visualIcon, IStimulation tactileStimulation)
 	{
-		m_visualStimulation = visualStimulation;
+		m_visualIcon = visualIcon;
 		m_tactileStimulation = tactileStimulation;
 	}
 	
-	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation gustatoryStimulation)
+	Bundle(IIcon visualIcon, IStimulation tactileStimulation, IStimulation gustatoryStimulation)
 	{
-		m_visualStimulation = visualStimulation;
+		m_visualIcon = visualIcon;
 		m_tactileStimulation = tactileStimulation;
 		m_gustatoryStimulation = gustatoryStimulation;
 	}
 	
-	public IStimulation getVisualStimulation() 
+	public IIcon getVisualIcon() 
 	{
-		return m_visualStimulation;
+		return m_visualIcon;
 	}
 	
 	public IStimulation getTactileStimulation() 
@@ -49,6 +50,11 @@ public class Bundle implements IBundle {
 	public IStimulation getGustatoryStimulation() 
 	{
 		return m_gustatoryStimulation;
+	}
+	
+	public void setKinematicStimulation(IStimulation kinematicStimulation)
+	{
+		m_kinematicStimulation = kinematicStimulation;
 	}
 	
 	public void setLastTimeBundled(int clock)
@@ -90,9 +96,10 @@ public class Bundle implements IBundle {
 		else
 		{
 			IBundle other = (IBundle)o;
-			ret = other.getVisualStimulation().equals(m_visualStimulation) && 	
+			ret = other.getVisualIcon().equals(m_visualIcon) && 	
 				  other.getTactileStimulation().equals(m_tactileStimulation);
 		}
 		return ret;
 	}
+
 }
