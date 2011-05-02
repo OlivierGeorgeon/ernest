@@ -314,20 +314,21 @@ public class XMLStreamTracer implements ITracer<Element>
 	 */
 	public Element addEventElement(String name)
 	{
-		return this.addEventElementImpl(name, "");
+		return this.addEventElementImpl(name, "", true);
 	}
 	
 	public void addEventElement(String name, String textContent)
 	{
-		this.addEventElementImpl(name, textContent);
+		this.addEventElementImpl(name, textContent, true);
 	}
 	
-	private Element addEventElementImpl(String name, String textContent)
+	private Element addEventElementImpl(String name, String textContent, boolean display)
 	{
 		if (m_currentEvent != null)
 		{
 			Element element = m_document.createElement(name);
 			element.setTextContent(textContent);
+			if (!display) element.setAttribute("display","no");
 			m_currentEvent.appendChild(element);
 			return element;
 		}
@@ -355,5 +356,10 @@ public class XMLStreamTracer implements ITracer<Element>
 			return subElement;
 		}
 		else return null;
+	}
+
+	public Element addEventElement(String name, boolean display) 
+	{
+		return this.addEventElementImpl(name, "", display);
 	}
 }

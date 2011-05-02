@@ -188,4 +188,9 @@ public class XMLTracer implements ITracer<Element>
 		}
 		else return null;
 	}
+
+	public Element addEventElement(String name, boolean display) 
+	{
+		return this.addEventElementImpl(name, "");
+	}
 }

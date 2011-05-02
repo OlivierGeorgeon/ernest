@@ -61,11 +61,18 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		m_previousObservation  = m_currentObservation;		
 		
 		// Create the act in episodic memory if it does not exist.
-
+		
 		IAct enactedAct;
+		
 		if (circadianStimulation.getValue() == Ernest.STIMULATION_CIRCADIAN_DAY) 
 		{
-			m_currentObservation = m_staticSystem.observe(visualCortex, somatoCortex, kinematicStimulation, gustatoryStimulation);					
+
+			boolean resultingStatus = (kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_SUCCEED);
+			IAct resultingAct = null;
+			if (act != null) resultingAct = act.getSchema().resultingAct(resultingStatus);
+			m_currentObservation = m_staticSystem.anticipate(m_previousObservation, resultingAct);
+			//m_currentObservation = m_staticSystem.observe(visualCortex, somatoCortex, kinematicStimulation, gustatoryStimulation);					
+			m_staticSystem.adjust(m_currentObservation, visualCortex, somatoCortex, kinematicStimulation, gustatoryStimulation);	
 			// If the intended act was null (during the first cycle), then the enacted act is null.
 			if (act == null) return null;
 			m_currentObservation.setDynamicFeature(act, m_previousObservation);

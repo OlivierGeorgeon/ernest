@@ -206,7 +206,7 @@ public class EpisodicMemory
 		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
 		// Browse all the existing schemas 
-		Object activations = m_tracer.addEventElement("activations");
+		Object activations = m_tracer.addEventElement("activations", false);
 		for (ISchema s : m_schemas)
 		{
 			if (!s.isPrimitive())
@@ -274,7 +274,7 @@ public class EpisodicMemory
 		}
 
 		System.out.println("Propose: ");
-		Object proposalElmt = m_tracer.addEventElement("proposals");
+		Object proposalElmt = m_tracer.addEventElement("proposals", false);
 		for (IProposition p : proposals)
 		{
 			m_tracer.addSubelement(proposalElmt, "proposal", p.toString());

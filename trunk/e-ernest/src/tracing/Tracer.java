@@ -129,4 +129,9 @@ public class Tracer implements ITracer<Object>
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public Object addEventElement(String name, boolean display) 
+	{
+		return addEventElementImpl(name, "");
+	}
 }

@@ -257,6 +257,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 		}
 		
 		m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
+		m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
 		
 		// Spread the selected intention's activation to primitive acts.
 		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)
@@ -383,7 +384,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 		// count is equal to the number of proposals that are tied...
 	
 		//IAct a = acts.get(m_rand.nextInt(count));
-		IAct a = acts.get(0); // alwas select the first
+		IAct a = acts.get(0); // always select the first
 		
 		return a ;
 	}

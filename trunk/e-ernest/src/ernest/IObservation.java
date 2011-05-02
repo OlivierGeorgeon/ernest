@@ -38,16 +38,6 @@ public interface IObservation
 	void trace(ITracer tracer, String element);
 	
 	/**
-	 * @param attractiveness This observation's attractiveness
-	 */
-//	void setAttractiveness(int attractiveness);
-	
-	/**
-	 * @return This observation's attractiveness
-	 */
-//	int getAttractiveness();
-	
-	/**
 	 * Computes the observation's dynamic features
 	 * @param act
 	 * @param previousObservation
@@ -57,13 +47,9 @@ public interface IObservation
 	void setKinematic(IStimulation kinematicStimulation);
 	IStimulation getKinematic();
 	void taste(IStimulation taste);
-//	int getTaste();
 	
 	String getLabel();
 	
-	//int getSpan();
-	//void setSpan(int span);
-
 	public void setMap(IStimulation[][] tactileMatrix);
 
 	/**
@@ -96,6 +82,7 @@ public interface IObservation
 	/**
 	 * Predicts the consequences of an intention on the current observation.
 	 * So far, only predicts the local map. 
+	 * Does not predict the square in front (leave it unchanged).
 	 * @param act The intention act
 	 */
 	public void anticipate(IObservation previousObservation, IAct act);

@@ -18,6 +18,7 @@ public interface IBundle
 	void setGustatoryStimulation(IStimulation  gustatoryStimulation); 
 	IStimulation getGustatoryStimulation();
 	void setKinematicStimulation(IStimulation kinematicStimulation);
+	IStimulation getKinematicStimulation();
 	
 	/**
 	 * TOP_MOTIVATION (400) if this bundle's gustatory motivation is STIMULATION_TASTE_FISH.
