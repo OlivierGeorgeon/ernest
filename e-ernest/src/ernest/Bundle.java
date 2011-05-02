@@ -57,6 +57,11 @@ public class Bundle implements IBundle {
 		m_kinematicStimulation = kinematicStimulation;
 	}
 	
+	public IStimulation getKinematicStimulation()
+	{
+		return m_kinematicStimulation;
+	}
+	
 	public void setLastTimeBundled(int clock)
 	{
 		m_lastTimeBundled = clock;

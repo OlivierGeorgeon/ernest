@@ -31,6 +31,17 @@ public interface ITracer<EventElement> {
 	 * @param value The property's value
 	 */
 	public EventElement addEventElement(String name);
+	
+	
+	/**
+	 * Add a new property to the current event
+	 * If display = 'no' then the subelements are not displayed by the XMLStraemTracer
+	 * @param name
+	 * @param display 
+	 * @return
+	 */
+	public EventElement addEventElement(String name, boolean display);
+
 	public void addEventElement(String name, String value);
 
 	public EventElement addSubelement(EventElement element, String name);

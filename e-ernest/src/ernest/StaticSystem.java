@@ -133,9 +133,10 @@ public class StaticSystem
 	 * @param tactileCortex The set of tactile stimulations in the tactile cortex.
 	 * @param gustatoryStimulation The gustatory stimulation.
 	 */
-	public IObservation observe(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
+	//public IObservation observe(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
+	public void adjust(IObservation observation, IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
 	{
-        IObservation observation = new Observation();
+        //IObservation observation = new Observation();
 
 		List<IIcon> icons = new ArrayList<IIcon>(Ernest.RESOLUTION_COLLICULUS);
 
@@ -177,15 +178,11 @@ public class StaticSystem
 				
 		observation.setMap(tactileCortex);
 		
-		// Kinematic
-		
-		observation.setKinematic(kinematicStimulation);
-		
 		// Taste
 		
 		observation.taste(gustatoryStimulation);
 		
-		// Bundle the visual icon with the tactile stimulations in front
+		// Bundle the visual icon with the tactile stimulation in front
 		
 		if (visualDirection >= 50 &&  visualDirection <= 60
 				&& observation.getIcon().getSpan() >= 3 
@@ -195,7 +192,14 @@ public class StaticSystem
 			observation.setFrontBundle(b);
 		}
 
-		return observation;
+		// Kinematic
+		
+		observation.setKinematic(kinematicStimulation);
+		
+		if (kinematicStimulation.getType() == Ernest.STIMULATION_KINEMATIC_FAIL && observation.getBundle(1, 0) != null)
+			observation.getBundle(1, 0).setKinematicStimulation(kinematicStimulation);
+		
+		//return observation;
 	}
 		
 	/**

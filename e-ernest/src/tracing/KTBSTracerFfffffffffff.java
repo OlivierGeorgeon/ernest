@@ -378,4 +378,9 @@ public class KTBSTracerFfffffffffff implements ITracer<BlankNode> //TODO
 		ObjectNode contentNode = m_elef.createLiteral(textContent);
 		m_graph.add(element, relNode, contentNode);
 	}
+
+	public BlankNode addEventElement(String name, boolean display) 
+	{
+		return this.addEventElement(name);
+	}
 }

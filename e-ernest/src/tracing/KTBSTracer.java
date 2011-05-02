@@ -439,4 +439,9 @@ public class KTBSTracer implements ITracer<Element> //TODO
 			element.appendChild(child);
 		}
 	}
+
+	public Element addEventElement(String name, boolean display) 
+	{
+		return this.addEventElement(name);
+	}
 }

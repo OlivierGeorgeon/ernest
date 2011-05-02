@@ -103,33 +103,23 @@ public class Observation implements IObservation {
 		}
 }
 	
-//	public int getAttractiveness()
-//	{
-//		return m_attractiveness;
-//	}
-//
-//	public void setAttractiveness(int attractiveness)
-//	{
-//		m_attractiveness = attractiveness;
-//	}
-
 	public void setDynamicFeature(IAct act, IObservation previousObservation)
 	{
         // Transform the bundle area
-        if (act != null)
-        {
-                if (act.getSchema().getLabel().equals(">"))
-                {
-                        if (m_kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
-                                copy(previousObservation);
-                        else
-                                forward(previousObservation);
-                }
-                if (act.getSchema().getLabel().equals("^"))
-                        turnLeft(previousObservation);
-                if (act.getSchema().getLabel().equals("v"))
-                        turnRight(previousObservation);
-        }               
+//        if (act != null)
+//        {
+//                if (act.getSchema().getLabel().equals(">"))
+//                {
+//                        if (m_kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
+//                                copy(previousObservation);
+//                        else
+//                                forward(previousObservation);
+//                }
+//                if (act.getSchema().getLabel().equals("^"))
+//                        turnLeft(previousObservation);
+//                if (act.getSchema().getLabel().equals("v"))
+//                        turnRight(previousObservation);
+//        }               
 
 		
 		// Taste
@@ -215,6 +205,7 @@ public class Observation implements IObservation {
 		
 		m_dynamicFeature = dynamicFeature;
 		m_satisfaction = satisfaction;
+		
 		if (act != null) m_confirmation = (status == act.getStatus());
 	}
 	
@@ -270,7 +261,7 @@ public class Observation implements IObservation {
 		m_bundle[2][1] = previousObservation.getBundle(2,1);
 	
 		m_bundle[0][0] = previousObservation.getBundle(0,0);
-		//m_bundle[1][0] = previousObservation.getBundle(1,1); // The front cell is updated when creating or recognizing a bundle
+		m_bundle[1][0] = previousObservation.getBundle(1,0); // The front cell is updated when creating or recognizing a bundle
 		m_bundle[2][0] = previousObservation.getBundle(2,0);
 	
 	}
@@ -305,7 +296,7 @@ public class Observation implements IObservation {
 	}
 	
 	/**
-	 * Rotate the observation
+	 * Rotate the observation counterclockwise when Ernest turns clockwise
 	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
 	 * @param previousObservation The previous observation
 	 */
@@ -313,7 +304,7 @@ public class Observation implements IObservation {
 	{
 		// Tactile 
 		m_bundle[0][0] = previousObservation.getBundle(1,0);
-		//m_bundle[1][0] = previousObservation.getBundle(2,0);  // The front cell is updated when creating or recognizing a bundle
+		m_bundle[1][0] = previousObservation.getBundle(2,0);  // The front cell is updated when creating or recognizing a bundle
 		m_bundle[2][0] = previousObservation.getBundle(2,1);
 		m_bundle[2][1] = previousObservation.getBundle(2,2);
 		m_bundle[2][2] = previousObservation.getBundle(1,2);
@@ -331,7 +322,7 @@ public class Observation implements IObservation {
 	}
 	
 	/**
-	 * Rotate the observation
+	 * Rotate the observation clockwise when Ernest turns counterclockwise
 	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
 	 * @param previousObservation The previous observation
 	 */
@@ -345,7 +336,7 @@ public class Observation implements IObservation {
 		m_bundle[2][2] = previousObservation.getBundle(2,1);
 		m_bundle[2][1] = previousObservation.getBundle(2,0);
 		m_bundle[2][0] = previousObservation.getBundle(1,0);
-		//m_bundle[1][0] = previousObservation.getBundle(0,0); // The front cell is updated when creating or recognizing a bundle
+		m_bundle[1][0] = previousObservation.getBundle(0,0); // The front cell is updated when creating or recognizing a bundle
 
 		m_bundle[1][1] = previousObservation.getBundle(1,1);
 
@@ -371,7 +362,8 @@ public class Observation implements IObservation {
 				if (act.getStatus())
 				{
 					// Move forward
-					forward(previousObservation);				}
+					forward(previousObservation);				
+				}
 				else
 				{
 					// No change but bump
@@ -386,7 +378,7 @@ public class Observation implements IObservation {
 			if (act.getSchema().getLabel().equals("v"))
 			{
 				// Turn right 
-				turnLeft(previousObservation);
+				turnRight(previousObservation);
 			}
 			
 		}		
