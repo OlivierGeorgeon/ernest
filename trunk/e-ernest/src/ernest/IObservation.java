@@ -86,6 +86,8 @@ public interface IObservation
 	 * @param act The intention act
 	 */
 	public void anticipate(IObservation previousObservation, IAct act);
+	public boolean anticipate(IObservation previousObservation, ISchema schema);
+
 	
 	/**
 	 * @return true if the anticipation was confirmed, false if the anticipation was incorrect

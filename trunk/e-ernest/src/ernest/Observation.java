@@ -384,6 +384,50 @@ public class Observation implements IObservation {
 		}		
 	}
 
+	public boolean anticipate(IObservation previousObservation, ISchema schema)
+	{
+		boolean anticipate = true;
+		if (schema != null)
+		{
+			// Local map
+			if (schema.getLabel().equals(">"))
+			{
+				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation() == null ||
+                    m_bundle[1][0].getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_SUCCEED)
+				{
+					// Move forward
+					forward(previousObservation);
+				}
+				else
+				{
+					// No change but bump
+					copy(previousObservation);
+					anticipate = false;
+				}
+			}
+			if (schema.getLabel().equals("^"))
+			{
+				// Turn left
+				turnLeft(previousObservation);
+				
+				if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation() != null &&
+	                    m_bundle[1][0].getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
+					anticipate = false;
+			}
+			if (schema.getLabel().equals("v"))
+			{
+				// Turn right 
+				turnRight(previousObservation);
+				
+				if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation() != null &&
+	                    m_bundle[1][0].getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
+					anticipate = false;
+			}
+			
+		}		
+		return anticipate;
+	}
+
 	public boolean getConfirmation()
 	{
 		return m_confirmation;
