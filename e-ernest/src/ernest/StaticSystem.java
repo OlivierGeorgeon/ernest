@@ -226,12 +226,17 @@ public class StaticSystem
 	 * @param act The intended act.
 	 * @return The anticipated observation.
 	 */
-	public IObservation anticipate(IObservation previousObservation, IAct act)
+	public IObservation anticipate(IObservation previousObservation, ISchema schema)
 	{
 		IObservation anticipation = new Observation();
-
-		anticipation.anticipate(previousObservation, act);
+		IStimulation kinematicStimulation;
 		
+		if (anticipation.anticipate(previousObservation, schema))
+			kinematicStimulation = addStimulation(Ernest.STIMULATION_KINEMATIC, Ernest.STIMULATION_KINEMATIC_SUCCEED);
+		else
+			kinematicStimulation = addStimulation(Ernest.STIMULATION_KINEMATIC, Ernest.STIMULATION_KINEMATIC_FAIL);
+
+		anticipation.setKinematic(kinematicStimulation);
 		return anticipation;
 	}
 
