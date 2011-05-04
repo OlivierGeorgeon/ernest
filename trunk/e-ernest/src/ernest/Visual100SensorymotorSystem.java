@@ -15,9 +15,6 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 	/** The current observations */
 	private IObservation m_currentObservation = new Observation();
 
-	/** The previous observations */
-	private IObservation m_previousObservation;
-	
 	public IAct enactedAct(IAct act, int[][] matrix) 
 	{
 		IStimulation kinematicStimulation;
@@ -58,32 +55,26 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Updates the current observation
 		
-		m_previousObservation  = m_currentObservation;		
-		
-		// Create the act in episodic memory if it does not exist.
-		
 		IAct enactedAct = null;
 		
 		if (circadianStimulation.getValue() == Ernest.STIMULATION_CIRCADIAN_DAY) 
 		{
-
-			//boolean resultingStatus = (kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_SUCCEED);
-			//IAct resultingAct = null;
-			if (act != null) //resultingAct = act.getSchema().resultingAct(resultingStatus);
-				m_currentObservation = m_staticSystem.anticipate(m_previousObservation, act.getSchema());
+			IObservation previousObservation = m_currentObservation;
+			if (act != null)
+				m_currentObservation = m_staticSystem.anticipate(m_currentObservation, act.getSchema());
 
 			m_staticSystem.adjust(m_currentObservation, visualCortex, somatoCortex, kinematicStimulation, gustatoryStimulation);	
 			// If the intended act was null (during the first cycle), then the enacted act is null.
 			if (act != null)
 			{
-				m_currentObservation.setDynamicFeature(act, m_previousObservation);
+				m_currentObservation.setDynamicFeature(act);
 				enactedAct = m_episodicMemory.addAct(m_currentObservation.getLabel(), act.getSchema(), m_currentObservation.getConfirmation(), m_currentObservation.getSatisfaction(), Ernest.RELIABLE);
 			}
 		}
 		else
 		{
 			// If it's the night, Ernest is dreaming, and acts are always correctly enacted.
-			m_currentObservation = m_staticSystem.anticipate(m_previousObservation, act.getSchema());
+			m_currentObservation = m_staticSystem.anticipate(m_currentObservation, act.getSchema());
 			enactedAct = act;
 		}
 		

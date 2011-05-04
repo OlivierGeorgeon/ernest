@@ -42,7 +42,7 @@ public interface IObservation
 	 * @param act
 	 * @param previousObservation
 	 */
-	void setDynamicFeature(IAct act, IObservation previousObservation);
+	void setDynamicFeature(IAct act);
 	
 	void setKinematic(IStimulation kinematicStimulation);
 	IStimulation getKinematic();
@@ -83,11 +83,13 @@ public interface IObservation
 	 * Predicts the consequences of an intention on the current observation.
 	 * So far, only predicts the local map. 
 	 * Does not predict the square in front (leave it unchanged).
-	 * @param act The intention act
+	 * @param previousObservation The previous observation on which we construct the anticipated observation.
+	 * @param schema The intention schema.
+	 * @return Whether the schema is expected to succeed or fail.
 	 */
-	public void anticipate(IObservation previousObservation, IAct act);
 	public boolean anticipate(IObservation previousObservation, ISchema schema);
 
+	public void setConfirmation(boolean confirmation);
 	
 	/**
 	 * @return true if the anticipation was confirmed, false if the anticipation was incorrect
@@ -96,4 +98,17 @@ public interface IObservation
 	
 	public void setIcon(IIcon icon);
 	public IIcon getIcon();
+	
+	public void clearMap();
+	
+	public void setDirection(int direction);
+	public int getDitection();
+	public void setPreviousDirection(int direction);
+	public int getPreviousDirection();
+	public void setAttractiveness(int attractiveness);
+	public int getAttractiveness();
+	public void setPreviousAttractiveness(int attractiveness);
+	public int getPreviousAttractiveness();
+	
+	
 }
