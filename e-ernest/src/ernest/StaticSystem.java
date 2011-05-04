@@ -174,6 +174,9 @@ public class StaticSystem
 				observation.setIcon(icon);
 			}
 		
+		observation.setAttractiveness(maxAttractiveness);
+		observation.setDirection(visualDirection);
+		
 		// The somatotopic map
 				
 		observation.setMap(tactileCortex);
@@ -194,10 +197,24 @@ public class StaticSystem
 
 		// Kinematic
 		
-		observation.setKinematic(kinematicStimulation);
+		if (kinematicStimulation.equals(observation.getKinematic()))
+			observation.setConfirmation(true);
+		else 
+		{
+			observation.setKinematic(kinematicStimulation);
+			observation.setConfirmation(false);
+		}
 		
-		if (kinematicStimulation.getType() == Ernest.STIMULATION_KINEMATIC_FAIL && observation.getBundle(1, 0) != null)
+		if (kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_FAIL && observation.getBundle(1, 0) != null)
 			observation.getBundle(1, 0).setKinematicStimulation(kinematicStimulation);
+		
+		// If the observation is not confirmed then the local map is cleared
+		if (!observation.getConfirmation())
+		{
+			observation.clearMap();
+		}
+
+		
 		
 		//return observation;
 	}

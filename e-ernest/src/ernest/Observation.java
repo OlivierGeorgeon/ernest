@@ -12,11 +12,13 @@ import tracing.ITracer;
  */
 public class Observation implements IObservation {
 
-	//private int m_distance = Ernest.INFINITE;
-	//private int m_direction = 0;
+	private int m_direction = Ernest.CENTER_RETINA;
+	private int m_previousDirection = Ernest.CENTER_RETINA;
+	private int m_attractiveness = 0;
+	private int m_previousAttractiveness = 0;
+
 	private String m_dynamicFeature  = "";
 	private int m_satisfaction = 0;
-	//private int m_attractiveness = 0;
 	private IStimulation m_kinematicStimulation;
 	private IStimulation m_gustatoryStimulation;
 	private String m_label = "no";
@@ -103,24 +105,8 @@ public class Observation implements IObservation {
 		}
 }
 	
-	public void setDynamicFeature(IAct act, IObservation previousObservation)
+	public void setDynamicFeature(IAct act)
 	{
-        // Transform the bundle area
-//        if (act != null)
-//        {
-//                if (act.getSchema().getLabel().equals(">"))
-//                {
-//                        if (m_kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
-//                                copy(previousObservation);
-//                        else
-//                                forward(previousObservation);
-//                }
-//                if (act.getSchema().getLabel().equals("^"))
-//                        turnLeft(previousObservation);
-//                if (act.getSchema().getLabel().equals("v"))
-//                        turnRight(previousObservation);
-//        }               
-
 		
 		// Taste
 		if (m_gustatoryStimulation.getValue() == Ernest.STIMULATION_TASTE_FISH && m_bundle[1][1] != null)
@@ -134,33 +120,17 @@ public class Observation implements IObservation {
 		int minFovea = Ernest.CENTER_RETINA - 30; // 25;
 		int maxFovea = Ernest.CENTER_RETINA + 30; // 85;
 		
-		int previousAttractiveness = 0;
-		int previousDirection = Ernest.CENTER_RETINA;
-		if (previousObservation != null && previousObservation.getIcon() != null)
-		{
-			previousAttractiveness = previousObservation.getIcon().getAttractiveness();
-			previousDirection = previousObservation.getIcon().getDirection();
-		}
-		
-		int currentAttractiveness = 0;
-		int currentDirection = Ernest.CENTER_RETINA;
-		if (m_icon != null)
-		{
-			currentAttractiveness = m_icon.getAttractiveness();
-			currentDirection = m_icon.getDirection();
-		}
-			
 		// Attractiveness feature
-		if (previousAttractiveness > currentAttractiveness)
+		if (m_previousAttractiveness > m_attractiveness)
 			// Farther
 			dynamicFeature = "-";		
-		else if (previousAttractiveness < currentAttractiveness)
+		else if (m_previousAttractiveness < m_attractiveness)
 			// Closer
 			dynamicFeature = "+";
-		else if (Math.abs(previousDirection - Ernest.CENTER_RETINA ) < Math.abs(currentDirection - Ernest.CENTER_RETINA))
+		else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) < Math.abs(m_direction - Ernest.CENTER_RETINA))
 			// More outward
 			dynamicFeature = "-";
-		else if (Math.abs(previousDirection - Ernest.CENTER_RETINA ) > Math.abs(currentDirection - Ernest.CENTER_RETINA))
+		else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
 			// More inward
 			dynamicFeature = "+";
 
@@ -207,6 +177,7 @@ public class Observation implements IObservation {
 		m_satisfaction = satisfaction;
 		
 		if (act != null) m_confirmation = (status == act.getStatus());
+		
 	}
 	
 	public void setMap(IStimulation[][] tactileMatrix)
@@ -243,6 +214,21 @@ public class Observation implements IObservation {
 		return m_bundle[x][y];
 	}
 	
+	public void clearMap()
+	{
+		m_bundle[0][2] = null;
+		m_bundle[1][2] = null;
+		m_bundle[2][2] = null;
+		
+		m_bundle[0][1] = null;
+		m_bundle[1][1] = null;
+		m_bundle[2][1] = null;
+	
+		m_bundle[0][0] = null;
+		m_bundle[1][0] = null; // The front cell is updated when creating or recognizing a bundle
+		m_bundle[2][0] = null;
+	}
+
 	/**
 	 * Duplicate the observation
 	 * TODO the observation transformations should be learned rather than hard coded (at least with the assumption that it is linear).
@@ -250,8 +236,6 @@ public class Observation implements IObservation {
 	 */
 	private void copy(IObservation previousObservation)
 	{
-		// Tactile
-		
 		m_bundle[0][2] = previousObservation.getBundle(0,2);
 		m_bundle[1][2] = previousObservation.getBundle(1,2);
 		m_bundle[2][2] = previousObservation.getBundle(2,2);
@@ -262,8 +246,7 @@ public class Observation implements IObservation {
 	
 		m_bundle[0][0] = previousObservation.getBundle(0,0);
 		m_bundle[1][0] = previousObservation.getBundle(1,0); // The front cell is updated when creating or recognizing a bundle
-		m_bundle[2][0] = previousObservation.getBundle(2,0);
-	
+		m_bundle[2][0] = previousObservation.getBundle(2,0);	
 	}
 
 	/**
@@ -273,8 +256,6 @@ public class Observation implements IObservation {
 	 */
 	private void forward(IObservation previousObservation)
 	{
-		// Tactile
-		
 		m_bundle[0][2] = previousObservation.getBundle(0,1);
 		m_bundle[1][2] = previousObservation.getBundle(1,1);
 		m_bundle[2][2] = previousObservation.getBundle(2,1);
@@ -282,17 +263,6 @@ public class Observation implements IObservation {
 		m_bundle[0][1] = previousObservation.getBundle(0,0);
 		m_bundle[1][1] = previousObservation.getBundle(1,0);
 		m_bundle[2][1] = previousObservation.getBundle(2,0);
-	
-		// Gustatory
-		
-//		if (m_tactileMatrix[1][1].getValue() == Ernest.STIMULATION_TOUCH_FISH)
-//		{
-//			m_taste = Ernest.STIMULATION_TASTE_FISH;
-//			// eat
-//			//m_tactileMatrix[1][1] = Ernest.STIMULATION_TOUCH_EMPTY;
-//		}
-//		else 
-//			m_taste = Ernest.STIMULATION_TASTE_NOTHING;
 	}
 	
 	/**
@@ -302,9 +272,8 @@ public class Observation implements IObservation {
 	 */
 	private void turnRight(IObservation previousObservation)
 	{
-		// Tactile 
 		m_bundle[0][0] = previousObservation.getBundle(1,0);
-		m_bundle[1][0] = previousObservation.getBundle(2,0);  // The front cell is updated when creating or recognizing a bundle
+		m_bundle[1][0] = previousObservation.getBundle(2,0);  // The front cell is updated when adjusting the observation
 		m_bundle[2][0] = previousObservation.getBundle(2,1);
 		m_bundle[2][1] = previousObservation.getBundle(2,2);
 		m_bundle[2][2] = previousObservation.getBundle(1,2);
@@ -313,12 +282,6 @@ public class Observation implements IObservation {
 		m_bundle[0][1] = previousObservation.getBundle(0,0);
 
 		m_bundle[1][1] = previousObservation.getBundle(1,1);
-
-		//		// Kinematic
-//		if (m_tactileMatrix[1][0].getValue() == Ernest.STIMULATION_TOUCH_WALL)
-//			m_kinematic = Ernest.STIMULATION_KINEMATIC_FAIL;
-//		else 
-//			m_kinematic = Ernest.STIMULATION_KINEMATIC_SUCCEED;
 	}
 	
 	/**
@@ -328,7 +291,6 @@ public class Observation implements IObservation {
 	 */
 	private void turnLeft(IObservation previousObservation)
 	{
-		// Tactile counterclockwise
 		m_bundle[0][0] = previousObservation.getBundle(0,1);
 		m_bundle[0][1] = previousObservation.getBundle(0,2);
 		m_bundle[0][2] = previousObservation.getBundle(1,2);
@@ -336,15 +298,9 @@ public class Observation implements IObservation {
 		m_bundle[2][2] = previousObservation.getBundle(2,1);
 		m_bundle[2][1] = previousObservation.getBundle(2,0);
 		m_bundle[2][0] = previousObservation.getBundle(1,0);
-		m_bundle[1][0] = previousObservation.getBundle(0,0); // The front cell is updated when creating or recognizing a bundle
+		m_bundle[1][0] = previousObservation.getBundle(0,0); // The front cell is updated when adjusting the observation
 
 		m_bundle[1][1] = previousObservation.getBundle(1,1);
-
-		// Kinematic
-//		if (m_tactileMatrix[1][0].getValue() == Ernest.STIMULATION_TOUCH_WALL)
-//			m_kinematic = Ernest.STIMULATION_KINEMATIC_FAIL;
-//		else 
-//			m_kinematic = Ernest.STIMULATION_KINEMATIC_SUCCEED;
 	}
 
 	public void setFrontBundle(IBundle bundle)
@@ -352,41 +308,9 @@ public class Observation implements IObservation {
 		m_bundle[1][0] = bundle;
 	}
 	
-	public void anticipate(IObservation previousObservation, IAct act)
-	{
-		if (act != null)
-		{
-			// Local map
-			if (act.getSchema().getLabel().equals(">"))
-			{
-				if (act.getStatus())
-				{
-					// Move forward
-					forward(previousObservation);				
-				}
-				else
-				{
-					// No change but bump
-					copy(previousObservation);
-				}
-			}
-			if (act.getSchema().getLabel().equals("^"))
-			{
-				// Turn left
-				turnLeft(previousObservation);
-			}
-			if (act.getSchema().getLabel().equals("v"))
-			{
-				// Turn right 
-				turnRight(previousObservation);
-			}
-			
-		}		
-	}
-
 	public boolean anticipate(IObservation previousObservation, ISchema schema)
 	{
-		boolean anticipate = true;
+		boolean success = true;
 		if (schema != null)
 		{
 			// Local map
@@ -402,7 +326,7 @@ public class Observation implements IObservation {
 				{
 					// No change but bump
 					copy(previousObservation);
-					anticipate = false;
+					success = false;
 				}
 			}
 			if (schema.getLabel().equals("^"))
@@ -412,7 +336,7 @@ public class Observation implements IObservation {
 				
 				if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation() != null &&
 	                    m_bundle[1][0].getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
-					anticipate = false;
+					success = false;
 			}
 			if (schema.getLabel().equals("v"))
 			{
@@ -421,17 +345,26 @@ public class Observation implements IObservation {
 				
 				if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation() != null &&
 	                    m_bundle[1][0].getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
-					anticipate = false;
+					success = false;
 			}
 			
 		}		
-		return anticipate;
+		m_previousDirection = previousObservation.getDitection();
+		m_previousAttractiveness = previousObservation.getAttractiveness();
+		
+		return success;
 	}
 
 	public boolean getConfirmation()
 	{
 		return m_confirmation;
 	}
+	
+	public void setConfirmation(boolean confirmation)
+	{
+		m_confirmation = confirmation;
+	}
+
 	public void setIcon(IIcon icon)
 	{
 		m_icon = icon;
@@ -440,6 +373,46 @@ public class Observation implements IObservation {
 	public IIcon getIcon()
 	{
 		return m_icon;
+	}
+
+	public void setDirection(int direction) 
+	{
+		m_direction = direction;
+	}
+
+	public int getDitection() 
+	{
+		return m_direction;
+	}
+
+	public void setPreviousDirection(int direction) 
+	{
+		m_previousDirection = direction;		
+	}
+
+	public int getPreviousDirection() 
+	{
+		return m_previousDirection;
+	}
+
+	public void setAttractiveness(int attractiveness) 
+	{
+		m_attractiveness = attractiveness;
+	}
+
+	public int getAttractiveness() 
+	{
+		return m_attractiveness;
+	}
+
+	public void setPreviousAttractiveness(int attractiveness) 
+	{
+		m_previousAttractiveness = attractiveness;
+	}
+
+	public int getPreviousAttractiveness() 
+	{
+		return m_previousAttractiveness;
 	}
 
 }
