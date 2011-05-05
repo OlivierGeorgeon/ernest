@@ -23,14 +23,17 @@ public class Bundle implements IBundle {
 	{
 		m_visualIcon = visualIcon;
 		m_tactileStimulation = tactileStimulation;
+		m_gustatoryStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+		m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
 	}
 	
-	Bundle(IIcon visualIcon, IStimulation tactileStimulation, IStimulation gustatoryStimulation)
-	{
-		m_visualIcon = visualIcon;
-		m_tactileStimulation = tactileStimulation;
-		m_gustatoryStimulation = gustatoryStimulation;
-	}
+//	Bundle(IIcon visualIcon, IStimulation tactileStimulation, IStimulation gustatoryStimulation, IStimulation kinematicStimulation)
+//	{
+//		m_visualIcon = visualIcon;
+//		m_tactileStimulation = tactileStimulation;
+//		m_gustatoryStimulation = gustatoryStimulation;
+//		m_kinematicStimulation = kinematicStimulation;
+//	}
 	
 	public IIcon getVisualIcon() 
 	{
@@ -76,7 +79,7 @@ public class Bundle implements IBundle {
 	 */
 	public int getAttractiveness(int clock) 
 	{
-		if (m_gustatoryStimulation != null && m_gustatoryStimulation.getValue() == Ernest.STIMULATION_TASTE_FISH)
+		if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 			return Ernest.TOP_MOTIVATION;
 		else if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
 			return Ernest.BASE_MOTIVATION;

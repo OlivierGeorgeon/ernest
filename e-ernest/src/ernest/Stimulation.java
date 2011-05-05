@@ -31,20 +31,18 @@ public class Stimulation implements IStimulation
 	 */
 	public Stimulation(int type, int value)
 	{
-		if (type == Ernest.STIMULATION_GUSTATORY)
-			if (value == Ernest.STIMULATION_TASTE_FISH)
-				m_color= Ernest.COLOR_WATER;
-		if (type == Ernest.STIMULATION_TACTILE)
-		{
-			if (value == Ernest.STIMULATION_TOUCH_EMPTY)
-				m_color= Ernest.COLOR_TOUCH_EMPTY;
-			if (value == Ernest.STIMULATION_TOUCH_ALGA)
-				m_color= Ernest.COLOR_TOUCH_ALGA;
-			if (value == Ernest.STIMULATION_TOUCH_FISH)
-				m_color= Ernest.COLOR_TOUCH_FISH;
-			if (value == Ernest.STIMULATION_TOUCH_WALL)
-				m_color= Ernest.COLOR_TOUCH_WALL;
-		}
+		//if (type == Ernest.STIMULATION_GUSTATORY)
+			//if (value == Ernest.STIMULATION_GUSTATORY_FISH.getValue())
+			//	m_color= Ernest.COLOR_WATER;
+//		if (type == Ernest.STIMULATION_TACTILE)
+//		{
+//			if (value == Ernest.STIMULATION_TOUCH_EMPTY)
+//				m_color= Ernest.COLOR_TOUCH_EMPTY;
+//			if (value == Ernest.STIMULATION_TOUCH_SOFT)
+//				m_color= Ernest.COLOR_TOUCH_ALGA;
+//			if (value == Ernest.STIMULATION_TOUCH_WALL)
+//				m_color= Ernest.COLOR_TOUCH_WALL;
+//		}
 		m_type = type;
 		m_value = value; 		
 	}

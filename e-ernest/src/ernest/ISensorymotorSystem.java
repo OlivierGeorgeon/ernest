@@ -40,12 +40,4 @@ public interface ISensorymotorSystem
 	public IAct enactedAct(IAct act, boolean status);
 	public IAct enactedAct(IAct act, int[][] matrix);
 	
-	/**
-	 * Generate sensory features from the sensed matrix sent by the environment.
-	 * (Only used by visual sensorymotor systems)
-	 * @param matrix The matrix sensed in the environment. 
-	 */
-	//public void senseMatrix(int[][] matrix); 
-	public IObservation getObservation();
-
 }
