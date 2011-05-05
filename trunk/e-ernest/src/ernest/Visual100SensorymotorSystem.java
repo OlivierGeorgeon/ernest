@@ -12,9 +12,6 @@ import org.w3c.dom.Element;
 public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 {
 
-	/** The current observations */
-	private IObservation m_currentObservation = new Observation();
-
 	public IAct enactedAct(IAct act, int[][] matrix) 
 	{
 		IStimulation kinematicStimulation;
@@ -42,6 +39,8 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 				m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getValue() + "");
 			}
 		
+		// Kinematic ====
+		
 		kinematicStimulation = m_staticSystem.addStimulation(Ernest.STIMULATION_KINEMATIC, matrix[1][8]);
 
 		// Taste =====
@@ -53,40 +52,36 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		IStimulation circadianStimulation = m_staticSystem.addStimulation(Ernest.STIMULATION_CIRCADIAN, matrix[2][8]); 
 		m_tracer.addEventElement("circadian", circadianStimulation.getValue() + "");
 		
-		// Updates the current observation
+		// Anticipate the current observation
 		
-		IAct enactedAct = null;
+//		if (act != null)
+//			m_staticSystem.setObservation(m_staticSystem.anticipate(act.getSchema()));
+
+		// Adjust the current observation
 		
+		IAct enactedAct = null;		
 		if (circadianStimulation.getValue() == Ernest.STIMULATION_CIRCADIAN_DAY) 
 		{
-			IObservation previousObservation = m_currentObservation;
-			if (act != null)
-				m_currentObservation = m_staticSystem.anticipate(m_currentObservation, act.getSchema());
-
-			m_staticSystem.adjust(m_currentObservation, visualCortex, somatoCortex, kinematicStimulation, gustatoryStimulation);	
+			m_staticSystem.adjust(visualCortex, somatoCortex, kinematicStimulation, gustatoryStimulation);	
+			IObservation currentObservation = m_staticSystem.getObservation();
 			// If the intended act was null (during the first cycle), then the enacted act is null.
 			if (act != null)
 			{
-				m_currentObservation.setDynamicFeature(act);
-				enactedAct = m_episodicMemory.addAct(m_currentObservation.getLabel(), act.getSchema(), m_currentObservation.getConfirmation(), m_currentObservation.getSatisfaction(), Ernest.RELIABLE);
+				currentObservation.setDynamicFeature(act);
+				enactedAct = m_episodicMemory.addAct(currentObservation.getLabel(), act.getSchema(), currentObservation.getConfirmation(), currentObservation.getSatisfaction(), Ernest.RELIABLE);
 			}
 		}
 		else
 		{
 			// If it's the night, Ernest is dreaming, and acts are always correctly enacted.
-			m_currentObservation = m_staticSystem.anticipate(m_currentObservation, act.getSchema());
 			enactedAct = act;
 		}
 		
-		m_currentObservation.trace(m_tracer, "current_observation");
 		if (act != null) m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
 
+		m_staticSystem.getObservation().trace(m_tracer, "current_observation");
+		
 		return enactedAct;
-	}
-	
-	public IObservation getObservation()
-	{
-		return m_currentObservation;
 	}
 	
 }

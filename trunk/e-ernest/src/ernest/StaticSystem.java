@@ -27,6 +27,9 @@ public class StaticSystem
 	/** A list of all the bundles ever identified. */
 	public List<IBundle> m_bundles = new ArrayList<IBundle>(20);
 	
+	/** The current observations */
+	private IObservation m_observation = new Observation();
+	
 	/**
 	 * @param tracer The tracer
 	 */
@@ -133,8 +136,7 @@ public class StaticSystem
 	 * @param tactileCortex The set of tactile stimulations in the tactile cortex.
 	 * @param gustatoryStimulation The gustatory stimulation.
 	 */
-	//public IObservation observe(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
-	public void adjust(IObservation observation, IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
+	public void adjust(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
 	{
         //IObservation observation = new Observation();
 
@@ -171,52 +173,46 @@ public class StaticSystem
 			{
 				maxAttractiveness = icon.getAttractiveness();
 				visualDirection = icon.getDirection();
-				observation.setIcon(icon);
+				m_observation.setIcon(icon);
 			}
 		
-		observation.setAttractiveness(maxAttractiveness);
-		observation.setDirection(visualDirection);
+		m_observation.setAttractiveness(maxAttractiveness);
+		m_observation.setDirection(visualDirection);
 		
 		// The somatotopic map
 				
-		observation.setMap(tactileCortex);
+		m_observation.setMap(tactileCortex);
 		
 		// Taste
 		
-		observation.taste(gustatoryStimulation);
+		m_observation.taste(gustatoryStimulation);
 		
+		// Kinematic
+		
+		m_observation.setConfirmation(kinematicStimulation.equals(m_observation.getKinematic()));
+		m_observation.setKinematic(kinematicStimulation);
+				
+		// If the observation is not confirmed then the local map is cleared
+		
+		if (!m_observation.getConfirmation())
+			m_observation.clearMap();
+
 		// Bundle the visual icon with the tactile stimulation in front
 		
 		if (visualDirection >= 50 &&  visualDirection <= 60
-				&& observation.getIcon().getSpan() >= 3 
-				&& observation.getTactile(1, 0) != Ernest.STIMULATION_TOUCH_EMPTY)
+				&& m_observation.getIcon().getSpan() >= 3 
+				&& !tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))
 		{
-			IBundle b = addBundle(observation.getIcon(), tactileCortex[1][0]);
-			observation.setFrontBundle(b);
+			IBundle bundle = addBundle(m_observation.getIcon(), tactileCortex[1][0]);
+			if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))
+				bundle.setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_FAIL);
+			m_observation.setFrontBundle(bundle);
 		}
 
-		// Kinematic
+//		if ( m_observation.getBundle(1, 0) != null && Ernest.STIMULATION_KINEMATIC_FAIL.equals(kinematicStimulation))
+//			m_observation.getBundle(1, 0).setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_FAIL);
 		
-		if (kinematicStimulation.equals(observation.getKinematic()))
-			observation.setConfirmation(true);
-		else 
-		{
-			observation.setKinematic(kinematicStimulation);
-			observation.setConfirmation(false);
-		}
-		
-		if (kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_FAIL && observation.getBundle(1, 0) != null)
-			observation.getBundle(1, 0).setKinematicStimulation(kinematicStimulation);
-		
-		// If the observation is not confirmed then the local map is cleared
-		if (!observation.getConfirmation())
-		{
-			observation.clearMap();
-		}
 
-		
-		
-		//return observation;
 	}
 		
 	/**
@@ -239,23 +235,24 @@ public class StaticSystem
 
 	/**
 	 * Generate an anticipated observation from the previous observation and the current intention.
-	 * @param previousObservation The latest observation. 
-	 * @param act The intended act.
+	 * @param schema The schema whose effects we want to anticipate
 	 * @return The anticipated observation.
 	 */
-	public IObservation anticipate(IObservation previousObservation, ISchema schema)
+	public IObservation anticipate(ISchema schema)
 	{
-		IObservation anticipation = new Observation();
-		IStimulation kinematicStimulation;
-		
-		if (anticipation.anticipate(previousObservation, schema))
-			kinematicStimulation = addStimulation(Ernest.STIMULATION_KINEMATIC, Ernest.STIMULATION_KINEMATIC_SUCCEED);
-		else
-			kinematicStimulation = addStimulation(Ernest.STIMULATION_KINEMATIC, Ernest.STIMULATION_KINEMATIC_FAIL);
-
-		anticipation.setKinematic(kinematicStimulation);
-		return anticipation;
+		IObservation observation = new Observation();
+		observation.anticipate(m_observation, schema);
+		return observation;
 	}
 
+	public void setObservation(IObservation observation)
+	{
+		m_observation = observation;
+	}
+
+	public IObservation getObservation()
+	{
+		return m_observation;
+	}
 }
 	

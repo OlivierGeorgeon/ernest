@@ -109,7 +109,7 @@ public class Observation implements IObservation {
 	{
 		
 		// Taste
-		if (m_gustatoryStimulation.getValue() == Ernest.STIMULATION_TASTE_FISH && m_bundle[1][1] != null)
+		if (m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH) && m_bundle[1][1] != null)
 		{
 			m_bundle[1][1].setGustatoryStimulation(m_gustatoryStimulation);
 			m_bundle[1][1] = null; // The fish disappears from the local map (into Ernest's stomach) !
@@ -152,7 +152,7 @@ public class Observation implements IObservation {
 		
 		// Gustatory
 		
-		if (m_gustatoryStimulation.getValue() == Ernest.STIMULATION_TASTE_FISH)
+		if (m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 		{
 			dynamicFeature = "*";
 			satisfaction = 200;
@@ -161,17 +161,17 @@ public class Observation implements IObservation {
 		String label = dynamicFeature;
 		if (act != null)
 		{
-			satisfaction = satisfaction + act.getSchema().resultingAct(m_kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_SUCCEED).getSatisfaction();
+			satisfaction = satisfaction + act.getSchema().resultingAct(m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_SUCCEED)).getSatisfaction();
 			label = act.getSchema().getLabel() + dynamicFeature;
 		}
 		
 		// Label
 		
-		boolean status = (m_kinematicStimulation.getValue() == Ernest.STIMULATION_KINEMATIC_SUCCEED);
+		boolean status = (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_SUCCEED));
 		if (status)
-			m_label = "(" + label + m_dynamicFeature + ")";
+			m_label = "(" + label + ")";
 		else 
-			m_label = "[" + label + m_dynamicFeature + "]";
+			m_label = "[" + label + "]";
 		
 		m_dynamicFeature = dynamicFeature;
 		m_satisfaction = satisfaction;
@@ -202,9 +202,13 @@ public class Observation implements IObservation {
 				int value = 140 - 70 * m_tactileMatrix[x][y].getValue();
 				c = new Color(value, value, value);
 			}
+			else c = Color.WHITE;
 		}
 		else
 			c = m_bundle[x][y].getVisualIcon().getColor();
+		
+		if (x == 1 && y == 0 && Ernest.STIMULATION_KINEMATIC_FAIL.equals(m_kinematicStimulation))
+			c = Color.RED;
 		
 		return c;
 	}
@@ -308,25 +312,24 @@ public class Observation implements IObservation {
 		m_bundle[1][0] = bundle;
 	}
 	
-	public boolean anticipate(IObservation previousObservation, ISchema schema)
+	public void anticipate(IObservation previousObservation, ISchema schema)
 	{
-		boolean success = true;
 		if (schema != null)
 		{
 			// Local map
 			if (schema.getLabel().equals(">"))
 			{
-				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation() == null ||
-                    m_bundle[1][0].getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_SUCCEED)
+				if (previousObservation.getBundle(1,0) == null || previousObservation.getBundle(1,0).getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_SUCCEED))
 				{
 					// Move forward
 					forward(previousObservation);
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
 				}
 				else
 				{
 					// No change but bump
 					copy(previousObservation);
-					success = false;
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FAIL;
 				}
 			}
 			if (schema.getLabel().equals("^"))
@@ -334,25 +337,26 @@ public class Observation implements IObservation {
 				// Turn left
 				turnLeft(previousObservation);
 				
-				if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation() != null &&
-	                    m_bundle[1][0].getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
-					success = false;
+				if (m_bundle[1][0] == null) 
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+				else
+					m_kinematicStimulation = m_bundle[1][0].getKinematicStimulation();
 			}
 			if (schema.getLabel().equals("v"))
 			{
 				// Turn right 
 				turnRight(previousObservation);
 				
-				if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation() != null &&
-	                    m_bundle[1][0].getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_FAIL)
-					success = false;
+				if (m_bundle[1][0] == null) 
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+				else
+					m_kinematicStimulation = m_bundle[1][0].getKinematicStimulation();
 			}
 			
 		}		
 		m_previousDirection = previousObservation.getDitection();
 		m_previousAttractiveness = previousObservation.getAttractiveness();
 		
-		return success;
 	}
 
 	public boolean getConfirmation()

@@ -271,6 +271,11 @@ public class AttentionalSystem implements IAttentionalSystem {
 		m_primitiveIntention = nextPrimitiveAct;
 		
 		m_tracer.addEventElement("next_primitive_intention", nextPrimitiveAct.getLabel());
+		
+		// Anticipate the next observation
+//		IObservation nextObservation = m_staticSystem.anticipate(nextPrimitiveAct.getSchema());
+//		m_staticSystem.setObservation(nextObservation);
+
 		return nextPrimitiveAct;
 				
 	}

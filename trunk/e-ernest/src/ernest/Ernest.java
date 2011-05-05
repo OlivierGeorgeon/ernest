@@ -73,32 +73,28 @@ public class Ernest implements IErnest
 	/** A circadian stimulation */
 	public static int STIMULATION_CIRCADIAN = 4;
 	
-	/** The taste of nothing */
-	public static int STIMULATION_TASTE_NOTHING = 0;
-
-	/** The taste of fish */
-	public static int STIMULATION_TASTE_FISH = 1;
-
 	/** The taste of food */
 	public static int STIMULATION_FOOD = 2;
 	
-	/** Feeling empty */
-	public static int STIMULATION_TOUCH_EMPTY = 0;
+	/** Touch empty */
+	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(STIMULATION_TACTILE, 0);
 	
-	/** Feeling soft */
-	public static int STIMULATION_TOUCH_ALGA = 1;
+	/** Touch soft */
+	public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(STIMULATION_TACTILE, 1);
 	
-	/** Feeling hard */
-	public static int STIMULATION_TOUCH_FISH = 2;
+	/** Touch hard */
+	public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(STIMULATION_TACTILE, 2);
 	
-	/** Feeling hard */
-	public static int STIMULATION_TOUCH_WALL = 3;
-	
-	/** 0. Kinematic succeed */	
-	public static int STIMULATION_KINEMATIC_SUCCEED = 0;
-	
-	/** 1. Bumping wall */	
-	public static int STIMULATION_KINEMATIC_FAIL = 1;
+	/** Kinematic Stimulation succeed */	
+	public static IStimulation STIMULATION_KINEMATIC_SUCCEED = new Stimulation(STIMULATION_KINEMATIC, 0);
+
+	/** Kinematic Stimulations fail*/
+	public static IStimulation STIMULATION_KINEMATIC_FAIL = new Stimulation(STIMULATION_KINEMATIC, 1);
+		
+	/** Gustatory Stimulations */	
+	public static IStimulation STIMULATION_GUSTATORY_NOTHING = new Stimulation(STIMULATION_GUSTATORY, 0);
+
+	public static IStimulation STIMULATION_GUSTATORY_FISH = new Stimulation(STIMULATION_GUSTATORY, 1);
 	
 	public static int STIMULATION_CIRCADIAN_DAY = 0;
 	
@@ -202,21 +198,25 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Ernest's main process.
-	 * (All environments return at least a boolean feedback from Ernest's actions) 
-	 * @param status The status received as a feedback from the previous primitive enaction.
+	 * Ernest's main process in the case of an environment that returns a matrix of stimuli.
+	 * @param stimuli The matrix of stimuli received from the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public String step(int[][] matrix) 
+	public String step(int[][] stimuli) 
 	{
-		// Determine the primitive enacted act from the enacted schema and the data sensed in the environment.
+		// Determine the primitive enacted act from the enacted schema and the stimuli received from the environment.		
 		
-		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, matrix);
+		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, stimuli);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
 		m_primitiveAct = m_attentionalSystem.step(enactedPrimitiveAct);
 		
+		// Anticipate the next observation
+		
+		if (m_primitiveAct != null)
+			m_staticSystem.setObservation(m_staticSystem.anticipate(m_primitiveAct.getSchema()));
+
 		// Return the schema to enact.
 		
 		return m_primitiveAct.getSchema().getLabel();
@@ -224,10 +224,7 @@ public class Ernest implements IErnest
 
 	public IObservation getObservation()
 	{
-		if (m_sensorymotorSystem != null)
-			return m_sensorymotorSystem.getObservation();
-		else
-			return null;
+		return m_staticSystem.getObservation();
 	}
 
 }
