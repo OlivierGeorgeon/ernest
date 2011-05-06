@@ -158,16 +158,21 @@ public class Observation implements IObservation {
 			satisfaction = 200;
 		}
 		
+		// Label
+		
+		boolean status = (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_FORWARD)
+				       || m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY)
+       	               || m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY));
+
 		String label = dynamicFeature;
 		if (act != null)
 		{
-			satisfaction = satisfaction + act.getSchema().resultingAct(m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_SUCCEED)).getSatisfaction();
+			satisfaction = satisfaction + act.getSchema().resultingAct(status).getSatisfaction();
 			label = act.getSchema().getLabel() + dynamicFeature;
 		}
 		
 		// Label
 		
-		boolean status = (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_SUCCEED));
 		if (status)
 			m_label = "(" + label + ")";
 		else 
@@ -207,8 +212,8 @@ public class Observation implements IObservation {
 		else
 			c = m_bundle[x][y].getVisualIcon().getColor();
 		
-		if (x == 1 && y == 0 && Ernest.STIMULATION_KINEMATIC_FAIL.equals(m_kinematicStimulation))
-			c = Color.RED;
+		//if (x == 1 && y == 0 && Ernest.STIMULATION_KINEMATIC_FAIL.equals(m_kinematicStimulation))
+		//	c = Color.RED;
 		
 		return c;
 	}
@@ -312,24 +317,28 @@ public class Observation implements IObservation {
 		m_bundle[1][0] = bundle;
 	}
 	
-	public void anticipate(IObservation previousObservation, ISchema schema)
+	public void anticipate(IObservation previousObservation, IAct act)
 	{
-		if (schema != null)
+		if (act != null)
 		{
+			ISchema schema = act.getSchema();
+			boolean status = act.getStatus();
 			// Local map
 			if (schema.getLabel().equals(">"))
 			{
-				if (previousObservation.getBundle(1,0) == null || previousObservation.getBundle(1,0).getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_SUCCEED))
+				if (previousObservation.getBundle(1,0) == null || previousObservation.getBundle(1,0).getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD))
 				{
 					// Move forward
 					forward(previousObservation);
-					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
+					status = true;
 				}
 				else
 				{
 					// No change but bump
 					copy(previousObservation);
-					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FAIL;
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_BUMP;
+					status = false;
 				}
 			}
 			if (schema.getLabel().equals("^"))
@@ -337,25 +346,38 @@ public class Observation implements IObservation {
 				// Turn left
 				turnLeft(previousObservation);
 				
-				if (m_bundle[1][0] == null) 
-					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD))
+				{
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY;
+					status = true;
+				}
 				else
-					m_kinematicStimulation = m_bundle[1][0].getKinematicStimulation();
+				{
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_LEFT_WALL;
+					status = false;
+				}
 			}
 			if (schema.getLabel().equals("v"))
 			{
 				// Turn right 
 				turnRight(previousObservation);
 				
-				if (m_bundle[1][0] == null) 
-					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD)) 
+				{
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY;
+					status = true;
+				}
 				else
-					m_kinematicStimulation = m_bundle[1][0].getKinematicStimulation();
+				{
+					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_RIGHT_WALL;
+					status = false;
+				}
 			}
 			
-		}		
 		m_previousDirection = previousObservation.getDitection();
 		m_previousAttractiveness = previousObservation.getAttractiveness();
+		m_confirmation = (status == act.getStatus()); 
+		}		
 		
 	}
 

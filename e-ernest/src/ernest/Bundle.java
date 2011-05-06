@@ -23,17 +23,9 @@ public class Bundle implements IBundle {
 	{
 		m_visualIcon = visualIcon;
 		m_tactileStimulation = tactileStimulation;
-		m_gustatoryStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
-		m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_SUCCEED;
+		m_gustatoryStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
+		m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
 	}
-	
-//	Bundle(IIcon visualIcon, IStimulation tactileStimulation, IStimulation gustatoryStimulation, IStimulation kinematicStimulation)
-//	{
-//		m_visualIcon = visualIcon;
-//		m_tactileStimulation = tactileStimulation;
-//		m_gustatoryStimulation = gustatoryStimulation;
-//		m_kinematicStimulation = kinematicStimulation;
-//	}
 	
 	public IIcon getVisualIcon() 
 	{

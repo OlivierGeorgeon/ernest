@@ -87,7 +87,7 @@ public interface IObservation
 	 * @param schema The intention schema.
 	 * @return Whether the schema is expected to succeed or fail.
 	 */
-	public void anticipate(IObservation previousObservation, ISchema schema);
+	public void anticipate(IObservation previousObservation, IAct act);
 
 	public void setConfirmation(boolean confirmation);
 	

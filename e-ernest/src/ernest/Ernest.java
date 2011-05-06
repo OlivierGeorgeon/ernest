@@ -86,10 +86,22 @@ public class Ernest implements IErnest
 	public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(STIMULATION_TACTILE, 2);
 	
 	/** Kinematic Stimulation succeed */	
-	public static IStimulation STIMULATION_KINEMATIC_SUCCEED = new Stimulation(STIMULATION_KINEMATIC, 0);
+	public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 0);
 
 	/** Kinematic Stimulations fail*/
-	public static IStimulation STIMULATION_KINEMATIC_FAIL = new Stimulation(STIMULATION_KINEMATIC, 1);
+	public static IStimulation STIMULATION_KINEMATIC_BUMP = new Stimulation(STIMULATION_KINEMATIC, 1);
+		
+	/** Kinematic Stimulations turn left toward empty square */
+	public static IStimulation STIMULATION_KINEMATIC_LEFT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 2);
+		
+	/** Kinematic Stimulations turn left toward wall */
+	public static IStimulation STIMULATION_KINEMATIC_LEFT_WALL = new Stimulation(STIMULATION_KINEMATIC, 3);
+		
+	/** Kinematic Stimulations turn left toward empty square */
+	public static IStimulation STIMULATION_KINEMATIC_RIGHT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 4);
+		
+	/** Kinematic Stimulations turn left toward wall */
+	public static IStimulation STIMULATION_KINEMATIC_RIGHT_WALL = new Stimulation(STIMULATION_KINEMATIC, 5);
 		
 	/** Gustatory Stimulations */	
 	public static IStimulation STIMULATION_GUSTATORY_NOTHING = new Stimulation(STIMULATION_GUSTATORY, 0);
@@ -100,6 +112,9 @@ public class Ernest implements IErnest
 	
 	/** Ernest's primitive schema currently enacted */
 	private IAct m_primitiveAct = null;
+	
+	/** Ernest's intention is being inhibited by the anticipated observation */
+	private boolean m_inhibited = false;
 	
 	/** Ernest's episodic memory. */
 	private EpisodicMemory m_episodicMemory = new EpisodicMemory();
@@ -198,15 +213,25 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Ernest's main process in the case of an environment that returns a matrix of stimuli.
-	 * @param stimuli The matrix of stimuli received from the environment.
+	 * Ernest's main process in the case of an environment that provides a matrix of stimuli.
+	 * @param stimuli The matrix of stimuli privided by the environment.
 	 * @return The next primitive schema to enact.
 	 */
 	public String step(int[][] stimuli) 
 	{
+		String primitiveSchema = "";
+		IAct enactedPrimitiveAct;
+		
 		// Determine the primitive enacted act from the enacted schema and the stimuli received from the environment.		
 		
-		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, stimuli);
+		if (m_inhibited)
+		{
+			// If the intention was inhibited and the anticipation is reset and the intention is considered enacted.
+			m_staticSystem.resetAnticipation();
+			enactedPrimitiveAct = m_primitiveAct.getSchema().resultingAct(false);
+		}
+		else
+			enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, stimuli);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
@@ -214,17 +239,24 @@ public class Ernest implements IErnest
 		
 		// Anticipate the next observation
 		
-		if (m_primitiveAct != null)
-			m_staticSystem.setObservation(m_staticSystem.anticipate(m_primitiveAct.getSchema()));
+		IObservation anticipation = m_staticSystem.anticipate(m_primitiveAct);
+
+		m_inhibited = anticipation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP); // !anticipation.getConfirmation();
+
+		if (m_inhibited)
+			System.out.println("intention inhibited");
+		else
+			// If the anticipation confirms the intention then the intention is selected for enaction.
+			primitiveSchema = m_primitiveAct.getSchema().getLabel();
 
 		// Return the schema to enact.
 		
-		return m_primitiveAct.getSchema().getLabel();
+		return primitiveSchema;
 	}
 
 	public IObservation getObservation()
 	{
-		return m_staticSystem.getObservation();
+		return m_staticSystem.getAnticipation();
 	}
 
 }
