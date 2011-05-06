@@ -30,6 +30,9 @@ public class StaticSystem
 	/** The current observations */
 	private IObservation m_observation = new Observation();
 	
+	/** The anticipated observation */
+	private IObservation m_anticipation = new Observation();
+	
 	/**
 	 * @param tracer The tracer
 	 */
@@ -130,15 +133,16 @@ public class StaticSystem
 	}
 	
 	/**
-	 * Adjust the anticipated Observation according to the sensory stimulations.
-	 * @param observation The observation to be adjusted.
+	 * Update the current Observation based on the anticiapted observatio and on to the sensory stimulations.
 	 * @param visualCortex The set of visual stimulations in the visual cortex.
 	 * @param tactileCortex The set of tactile stimulations in the tactile cortex.
+	 * @param kinematicStimulation The kinematic stimulation.
 	 * @param gustatoryStimulation The gustatory stimulation.
+	 * @return A pointer to the current observation that has been updated.
 	 */
-	public void adjust(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
+	public IObservation adjust(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
 	{
-        //IObservation observation = new Observation();
+		m_observation = m_anticipation;
 
 		List<IIcon> icons = new ArrayList<IIcon>(Ernest.RESOLUTION_COLLICULUS);
 
@@ -191,28 +195,38 @@ public class StaticSystem
 		
 		m_observation.setConfirmation(kinematicStimulation.equals(m_observation.getKinematic()));
 		m_observation.setKinematic(kinematicStimulation);
-				
-		// If the observation is not confirmed then the local map is cleared
+
+		// If bump, add the bump stimulation to the bundle where Ernest is standing 
 		
-		if (!m_observation.getConfirmation())
+		if (m_observation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP) && m_observation.getBundle(1, 1) != null) 
+			m_observation.getBundle(1, 1).setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
+		
+		// If current stimulations does not match the anticipated local map then the local map is cleared.
+		// TODO The criteria for deciding whether the matching is correct or incorrect need to be learned ! 
+
+		if (m_observation.getBundle(1, 1) != null && m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
 			m_observation.clearMap();
 
 		// Bundle the visual icon with the tactile stimulation in front
 		
-		if (visualDirection >= 50 &&  visualDirection <= 60
-				&& m_observation.getIcon().getSpan() >= 3 
-				&& !tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))
+		if (visualDirection >= 50 &&  visualDirection <= 60 && m_observation.getIcon().getSpan() >= 3 )
 		{
-			IBundle bundle = addBundle(m_observation.getIcon(), tactileCortex[1][0]);
-			if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))
-				bundle.setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_FAIL);
-			m_observation.setFrontBundle(bundle);
+			if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
+			{
+				IBundle bundle = addBundle(m_observation.getIcon(), tactileCortex[1][0]);
+				m_observation.setFrontBundle(bundle);
+			}
 		}
-
-//		if ( m_observation.getBundle(1, 0) != null && Ernest.STIMULATION_KINEMATIC_FAIL.equals(kinematicStimulation))
-//			m_observation.getBundle(1, 0).setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_FAIL);
-		
-
+		else
+			if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))		
+			{
+				IIcon blackIcon = new Icon();
+				blackIcon.setColor(Color.BLACK);
+				IBundle bundle = addBundle(blackIcon, Ernest.STIMULATION_TOUCH_WALL);
+				m_observation.setFrontBundle(bundle);
+			}
+			
+		return m_observation;
 	}
 		
 	/**
@@ -234,25 +248,28 @@ public class StaticSystem
 	}
 
 	/**
-	 * Generate an anticipated observation from the previous observation and the current intention.
-	 * @param schema The schema whose effects we want to anticipate
-	 * @return The anticipated observation.
+	 * Generate the anticipated observation from the previous observation and the current intention.
+	 * @param schema The schema whose effects we want to anticipate.
+	 * @return A pointer to the anticipated observation.
 	 */
-	public IObservation anticipate(ISchema schema)
+	public IObservation anticipate(IAct act)
 	{
-		IObservation observation = new Observation();
-		observation.anticipate(m_observation, schema);
-		return observation;
+		m_anticipation = new Observation();
+		m_anticipation.anticipate(m_observation, act);
+		return m_anticipation;
 	}
 
-	public void setObservation(IObservation observation)
+	/**
+	 * @return The anticipated observation
+	 */
+	public IObservation getAnticipation()
 	{
-		m_observation = observation;
+		return m_anticipation;
 	}
-
-	public IObservation getObservation()
+	
+	public void resetAnticipation()
 	{
-		return m_observation;
+		m_anticipation = m_observation;
 	}
 }
 	
