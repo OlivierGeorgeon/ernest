@@ -58,5 +58,7 @@ public interface IErnest
 	public String step(int[][] matrix);
 	
 	public IObservation getObservation();
+	
+	public StaticSystem getStaticSystem();
 
 }

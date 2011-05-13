@@ -117,7 +117,7 @@ public class Ernest implements IErnest
 	private boolean m_inhibited = false;
 	
 	/** Ernest's episodic memory. */
-	private EpisodicMemory m_episodicMemory = new EpisodicMemory();
+	private EpisodicMemory m_episodicMemory = new EpisodicMemory(this);
 
 	/** Ernest's static system. */
 	private StaticSystem m_staticSystem = new StaticSystem();
@@ -241,7 +241,7 @@ public class Ernest implements IErnest
 		
 		IObservation anticipation = m_staticSystem.anticipate(m_primitiveAct);
 
-		m_inhibited = anticipation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP); // !anticipation.getConfirmation();
+		//m_inhibited = anticipation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP); // !anticipation.getConfirmation();
 
 		if (m_inhibited)
 			System.out.println("intention inhibited");
@@ -257,6 +257,11 @@ public class Ernest implements IErnest
 	public IObservation getObservation()
 	{
 		return m_staticSystem.getAnticipation();
+	}
+
+	public StaticSystem getStaticSystem()
+	{
+		return m_staticSystem;
 	}
 
 }
