@@ -17,6 +17,9 @@ import tracing.ITracer;
  */
 public class EpisodicMemory 
 {
+	/** The reference to Ernest */
+	private IErnest m_ernest;
+	
 	/** The tracer */
 	private ITracer m_tracer;
 	
@@ -34,6 +37,11 @@ public class EpisodicMemory
 
 	/** Counter of learned schemas for tracing */
 	private int m_learnCount = 0;
+	
+	EpisodicMemory(IErnest ernest)
+	{
+		m_ernest = ernest;
+	}
 	
 	/**
 	 * @param tracer The tracer
@@ -231,6 +239,17 @@ public class EpisodicMemory
 					// The expectation is the proposing schema's weight signed with the proposed act's status  
 					int e = s.getWeight() * (s.getIntentionAct().getStatus() ? 1 : -1);
 					
+					// If primitive act then simulate it in the local map
+					if (s.getIntentionAct().getSchema().isPrimitive())
+					{
+						IObservation anticipation = m_ernest.getStaticSystem().anticipate(s.getIntentionAct());
+						// If disagreement 
+						//if (anticipation.getStatus() != s.getIntentionAct().getStatus())
+						//if (!anticipation.getStatus())
+						//w = 0;//(w +  s.getWeight() * s.getIntentionAct().getSchema().resultingAct(anticipation.getStatus()).getSatisfaction())/2;
+						//e = s.getWeight() * (anticipation.getStatus() ? 1 : -1);
+					}
+					
 					// If the intention is reliable
 					if ((s.getIntentionAct().getConfidence() == Ernest.RELIABLE ) &&						 
 						(s.getIntentionAct().getSchema().getLength() <= Ernest.SCHEMA_MAX_LENGTH ))
@@ -280,7 +299,15 @@ public class EpisodicMemory
 			m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
 			//System.out.println(p);
 		}
+		
+		// TODO Update the expected satisfaction of each proposed schema based on the local map anticipation
 
+		for (IProposition p : proposals)
+		{
+			IObservation anticipation = m_ernest.getStaticSystem().anticipate(p.getAct());
+			// Adjust the proposition's weight based on the anticipation in the local map 
+		}
+		
 		// sort by weighted proposition...
 		Collections.sort(proposals);
 		
@@ -305,7 +332,7 @@ public class EpisodicMemory
 		
 		ISchema s = p.getSchema();
 		
-		IAct a = (p.getExpectation() >= 0 ? s.getSucceedingAct() : s.getFailingAct());
+		IAct a = p.getAct();
 		
 		// Activate the selected act in Episodic memory.
 		// (The act's activation is set equal to its proposition's weight)

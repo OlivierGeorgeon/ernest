@@ -64,6 +64,11 @@ public class Proposition implements IProposition
 	{
 		return m_schema;
 	}
+
+	public IAct getAct()
+	{
+		return (m_expectation >= 0 ? m_schema.getSucceedingAct() : m_schema.getFailingAct());
+	}
 	
 	/**
 	 * The greatest proposal is that that has the greatest weight. 

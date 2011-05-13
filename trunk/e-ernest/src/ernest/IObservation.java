@@ -11,11 +11,7 @@ import tracing.ITracer;
 public interface IObservation 
 {
 	/**
-	 * @return this observation's main color in hexadecimal code.
-	 */
-	String getHexColor();
-
-	/**
+	 * Computes the observation's dynamic features used to generte the enacted act.
 	 * @return The changes in this focus over the last interaction cycle.
 	 */
 	String getDynamicFeature();
@@ -26,12 +22,13 @@ public interface IObservation
 	void setSatisfaction(int satisfaction);
 	
 	/**
+	 * This obervation's satisfaction value
 	 * @return the satisfaction associated with the change over the last interaction cycle.
 	 */
 	int getSatisfaction();
 	
 	/**
-	 * Record the focus's properties into the trace
+	 * Record this observation into the trace
 	 * @param tracer
 	 * @param element
 	 */
@@ -44,39 +41,53 @@ public interface IObservation
 	 */
 	void setDynamicFeature(IAct act);
 	
-	void setKinematic(IStimulation kinematicStimulation);
-	IStimulation getKinematic();
-	void taste(IStimulation taste);
 	
+	/**
+	 * @param kinematicStimulation
+	 */
+	void setKinematic(IStimulation kinematicStimulation);
+	
+	/**
+	 * @return This observation's kinematic stimulation
+	 */
+	IStimulation getKinematic();
+	
+	/**
+	 * @param taste
+	 */
+	void setGustatory(IStimulation taste);
+	
+	/**
+	 * @return The label of the enacted act
+	 */
 	String getLabel();
 	
+	/**
+	 * Set this observation's somatotopic map
+	 * @param tactileMatrix The matrix of tactile stimulations.
+	 */
 	public void setMap(IStimulation[][] tactileMatrix);
 
 	/**
-	 * Translate the observation
-	 * TODO the observation transformations should be learned rather than hard coded (at least with the assumption that it is linear).
-	 * @param previousObservation The previous observation
+	 * Get the color of a location in the local map for representation in the local map display
+	 * @param x x coordinate in the local map
+	 * @param y y coordinate in the local map
+	 * @return the cell's color in the local map
 	 */
-	//public void forward(IObservation previousObservation);
+	public Color getColor(int x, int y);
 	
 	/**
-	 * Rotate the observation
-	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
-	 * @param previousObservation The previous observation
+	 * Get the bundle in a specific cell in the local map
+	 * @param x x coordinate in the local map
+	 * @param y z coordinate in the local map
+	 * @return the bundle in the local map
 	 */
-	//public void turnRight(IObservation previousObservation);
-
-	/**
-	 * Rotate the observation
-	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
-	 * @param previousObservation The previous observation
-	 */
-	//public void turnLeft(IObservation previousObservation);
-
-	public int getTactile(int x, int y);
-	public Color getColor(int x, int y);
 	public IBundle getBundle(int x, int y);
 	
+	/**
+	 * Set the bundle in front of Ernest (coordinate (1,0) in the local map)
+	 * @param bundle The bundle to set in front of Ernest.
+	 */
 	void setFrontBundle(IBundle bundle);
 
 	/**
@@ -90,19 +101,24 @@ public interface IObservation
 	public void anticipate(IObservation previousObservation, IAct act);
 
 	public void setConfirmation(boolean confirmation);
+	public boolean getStatus();
 	
 	/**
 	 * @return true if the anticipation was confirmed, false if the anticipation was incorrect
 	 */
 	public boolean getConfirmation();
 	
-	public void setIcon(IIcon icon);
-	public IIcon getIcon();
+	public void setVisualSalience(ISalience salience);
+	public ISalience getVisualSalience();
 	
+	/**
+	 * Clear the local map in this observation 
+	 * (in case the adjustment of the anticipated map fails due to too much discrepancy) 
+	 */
 	public void clearMap();
 	
 	public void setDirection(int direction);
-	public int getDitection();
+	public int getDirection();
 	public void setPreviousDirection(int direction);
 	public int getPreviousDirection();
 	public void setAttractiveness(int attractiveness);
@@ -110,5 +126,12 @@ public interface IObservation
 	public void setPreviousAttractiveness(int attractiveness);
 	public int getPreviousAttractiveness();
 	
+	/**
+	 * Updates this observation's direction and attractiveness based on tactile information
+	 */
+	public void setTactileAttractiveness();
+	public void setTactileSalience();
+	public int getTactileDirection();
+	public int getTactileAttractiveness();
 	
 }

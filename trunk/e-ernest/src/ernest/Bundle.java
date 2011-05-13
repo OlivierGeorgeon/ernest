@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class Bundle implements IBundle {
 
-	IIcon m_visualIcon;
+	ISalience m_visualIcon;
 	IStimulation m_tactileStimulation;
 	IStimulation m_gustatoryStimulation;
 	IStimulation m_kinematicStimulation;
 
 	int m_lastTimeBundled;
 	
-	Bundle(IIcon visualIcon, IStimulation tactileStimulation)
+	Bundle(ISalience visualIcon, IStimulation tactileStimulation)
 	{
 		m_visualIcon = visualIcon;
 		m_tactileStimulation = tactileStimulation;
@@ -27,7 +27,7 @@ public class Bundle implements IBundle {
 		m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
 	}
 	
-	public IIcon getVisualIcon() 
+	public ISalience getVisualIcon() 
 	{
 		return m_visualIcon;
 	}

@@ -2,7 +2,7 @@ package ernest;
 
 import java.awt.Color;
 
-public class Icon implements IIcon 
+public class Salience implements ISalience 
 {
 	private int m_direction;
 	private int m_distance;
@@ -75,7 +75,7 @@ public class Icon implements IIcon
 			ret = false;
 		else
 		{
-			IIcon other = (IIcon)o;
+			ISalience other = (ISalience)o;
 			ret = other.getColor().equals(m_color);
 		}
 		

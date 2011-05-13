@@ -17,6 +17,8 @@ public interface IProposition extends Comparable<IProposition>
 	public int getExpectation();
 	
 	public ISchema getSchema();
+	
+	public IAct getAct();
 		
 	public boolean equals(Object o);
 	

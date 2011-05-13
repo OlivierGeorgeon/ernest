@@ -13,7 +13,7 @@ public interface IBundle
 	/**
 	 * @return This bundle's visual stimulation 
 	 */
-	IIcon getVisualIcon();
+	ISalience getVisualIcon();
 	IStimulation getTactileStimulation();
 	void setGustatoryStimulation(IStimulation  gustatoryStimulation); 
 	IStimulation getGustatoryStimulation();
