@@ -91,16 +91,16 @@ public class StaticSystem
 	 * @param tactileStimulation Second stimulation
 	 * @return the new bundle if created or the already existing landmark
 	 */
-	public IBundle addBundle(ISalience visualIcon, IStimulation tactileStimulation)
+	public IBundle addBundle(Color color, IStimulation tactileStimulation)
 	{
-		IBundle bundle = new Bundle(visualIcon,tactileStimulation);
+		IBundle bundle = new Bundle(color,tactileStimulation);
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
 		{
 			m_bundles.add(bundle);
 			Object b = m_tracer.addEventElement("bundle");
-			m_tracer.addSubelement(b, "color", bundle.getVisualIcon().getHexColor());
+			m_tracer.addSubelement(b, "color", bundle.getHexColor());
 			m_tracer.addSubelement(b, "tactile", bundle.getTactileStimulation().getValue() + "");
 		}
 		else 
@@ -144,7 +144,8 @@ public class StaticSystem
 	{
 		m_observation = m_anticipation;
 
-		List<ISalience> saliencies = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
+		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
+		Color frontColor = null;
 
 		// Create a List of the various saliences in the visual field
 
@@ -164,20 +165,101 @@ public class StaticSystem
 			salience.setDistance(visualCortex[i].getDistance());
 			salience.setSpan(nbDirection);
 			salience.setColor(visualCortex[i].getColor());
-			salience.setAttractiveness(attractiveness(visualCortex[i]) + 10 * nbDirection);
-			saliencies.add(salience);
+			salience.setAttractiveness(attractiveness(visualCortex[i]) + 5 * nbDirection );
+			saliences.add(salience);
+			if (salience.getDirection() >= 50 &&  salience.getDirection() <= 60 && sumDirection >= 3 )
+				frontColor = visualCortex[i].getColor();
 		}
+
+		// The somatotopic map
 		
-		// Find the most attractive salience in the visual field (There is at least a wall)
+		m_observation.setMap(tactileCortex);
+		m_observation.setTactileMap();
+		
+		// Add the various saliences in the local map to the list
+		boolean peripersonal = false;
+		if (m_observation.getBundle(1, 0) != null)
+		{
+			ISalience salience = new Salience();
+			salience.setDirection(55);
+			salience.setSpan(4);
+			salience.setColor(m_observation.getBundle(1, 0).getColor());
+			salience.setAttractiveness(m_observation.getBundle(1, 0).getAttractiveness(m_clock) + 20);
+			saliences.add(salience);
+			peripersonal = true;
+		}
+		else if (m_observation.getBundle(0, 0) != null)
+		{
+			ISalience salience = new Salience();
+			salience.setDirection(85);
+			salience.setSpan(4);
+			salience.setColor(m_observation.getBundle(0, 0).getColor());
+			salience.setAttractiveness(m_observation.getBundle(0, 0).getAttractiveness(m_clock) + 20);
+			saliences.add(salience);
+			peripersonal = true;
+		}
+		else if (m_observation.getBundle(2, 0) != null)
+		{
+			ISalience salience = new Salience();
+			salience.setDirection(25);
+			salience.setSpan(4);
+			salience.setColor(m_observation.getBundle(2, 0).getColor());
+			salience.setAttractiveness(m_observation.getBundle(2, 0).getAttractiveness(m_clock) + 20);
+			saliences.add(salience);
+			peripersonal = true;
+		}
+		else if (m_observation.getBundle(0, 1) != null)
+		{
+			ISalience salience = new Salience();
+			salience.setDirection(110);
+			salience.setSpan(4);
+			salience.setColor(m_observation.getBundle(0, 1).getColor());
+			salience.setAttractiveness(m_observation.getBundle(0, 1).getAttractiveness(m_clock) + 20);
+			saliences.add(salience);
+			peripersonal = true;
+		}
+		else if (m_observation.getBundle(2, 1) != null)
+		{
+			ISalience salience = new Salience();
+			salience.setDirection(0);
+			salience.setSpan(4);
+			salience.setColor(m_observation.getBundle(2, 1).getColor());
+			salience.setAttractiveness(m_observation.getBundle(2, 1).getAttractiveness(m_clock) + 20);
+			saliences.add(salience);
+			peripersonal = true;
+		}
+		else if (m_observation.getBundle(0, 2) != null)
+		{
+			ISalience salience = new Salience();
+			salience.setDirection(140);
+			salience.setSpan(4);
+			salience.setColor(m_observation.getBundle(0, 2).getColor());
+			salience.setAttractiveness(m_observation.getBundle(0, 2).getAttractiveness(m_clock) + 20);
+			saliences.add(salience);
+			peripersonal = true;
+		}
+		else if (m_observation.getBundle(2, 2) != null)
+		{
+			ISalience salience = new Salience();
+			salience.setDirection(-25);
+			salience.setSpan(4);
+			salience.setColor(m_observation.getBundle(2, 2).getColor());
+			salience.setAttractiveness(m_observation.getBundle(2, 2).getAttractiveness(m_clock) + 20);
+			saliences.add(salience);
+			peripersonal = true;
+		}
+		//m_observation.setPeripersonal(peripersonal);
+		
+		// Find the most attractive salience in the list (There is at least a wall)
 		
 		int maxAttractiveness = 0;
-		int visualDirection = 0;
-		for (ISalience salience : saliencies)
+		int direction = 0;
+		for (ISalience salience : saliences)
 			if (salience.getAttractiveness() > maxAttractiveness)
 			{
 				maxAttractiveness = salience.getAttractiveness();
-				visualDirection = salience.getDirection();
-				m_observation.setVisualSalience(salience);
+				direction = salience.getDirection();
+				m_observation.setSalience(salience);
 			}
 
 //		double x = 0;
@@ -192,12 +274,7 @@ public class StaticSystem
 //		visualDirection = (int)d;
 
 		m_observation.setAttractiveness(maxAttractiveness);
-		m_observation.setDirection(visualDirection);
-		
-		// The somatotopic map
-				
-		m_observation.setMap(tactileCortex);
-		m_observation.setTactileSalience();
+		m_observation.setDirection(direction);
 		
 		// Taste
 		
@@ -210,65 +287,35 @@ public class StaticSystem
 
 		// If bump, add the bump stimulation to the bundle where Ernest is standing 
 		
-		if (m_observation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP) && m_observation.getBundle(1, 1) != null) 
-			m_observation.getBundle(1, 1).setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
+		//if (m_observation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP) && m_observation.getBundle(1, 1) != null) 
+		//	m_observation.getBundle(1, 1).setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
 		
-		// If current stimulations does not match the anticipated local map then the local map is cleared.
+		// If the current stimulation does not match the anticipated local map then the local map is cleared.
 		// TODO The criteria for deciding whether the matching is correct or incorrect need to be learned ! 
 
 		if (m_observation.getBundle(1, 1) != null && m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
 			m_observation.clearMap();
 		
-		// Check from attractiveness and direction in the local map.
+		// Check peripersonal space.
 		
-		// Dynamic features from the local map would override dynamic features from vision.
-		
-		//if (m_observation.getBundle(1,0) != null && m_observation.getBundle(1,0).getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-			
-//		IBundle[] tactileBundles = new Bundle[5];
-//		tactileBundles[0] = m_observation.getBundle(2,1);
-//		tactileBundles[1] = m_observation.getBundle(2,0);
-//		tactileBundles[2] = m_observation.getBundle(1,0);
-//		tactileBundles[3] = m_observation.getBundle(0,0);
-//		tactileBundles[4] = m_observation.getBundle(0,1);
-
-//		for (int i = 0; i < 4; i++)
-//		{
-//			int nbDirection = 1;
-//			int sumDirection = i * 10;
-//			int j = i + 1;
-//			while ( j < 4 && tactileBundles[i].equals(tactileBundles[j]))
-//			{
-//				nbDirection++;
-//				sumDirection += j * 25 + 5;
-//				j++;
-//			}	
-//			IIcon icon = new Icon();
-//			icon.setDirection((int) (sumDirection / nbDirection + .5));
-//			icon.setSpan(nbDirection);
-//			icon.setColor(tactileBundles[i].getVisualIcon().getColor());
-//			icon.setAttractiveness(attractiveness(tactileBundles[i]) + 10 * nbDirection);
-//			icons.add(icon);
-//			
-//		}
-		
+		m_observation.setTactileMap();
+		//m_observation.peripersonalSpace(m_clock);
 
 		// Bundle the visual icon with the tactile stimulation in front
 		
-		if (visualDirection >= 50 &&  visualDirection <= 60 && m_observation.getVisualSalience().getSpan() >= 3 )
+		if (frontColor != null )
 		{
 			if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
 			{
-				IBundle bundle = addBundle(m_observation.getVisualSalience(), tactileCortex[1][0]);
+				IBundle bundle = addBundle(frontColor, tactileCortex[1][0]);
 				m_observation.setFrontBundle(bundle);
 			}
 		}
 		else
 			if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))		
 			{
-				ISalience blackIcon = new Salience();
-				blackIcon.setColor(Color.BLACK);
-				IBundle bundle = addBundle(blackIcon, Ernest.STIMULATION_TOUCH_WALL);
+				IBundle bundle = addBundle(Color.BLACK, Ernest.STIMULATION_TOUCH_WALL);
+				bundle.setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
 				m_observation.setFrontBundle(bundle);
 			}
 			
@@ -277,10 +324,10 @@ public class StaticSystem
 	}
 		
 	/**
-	 * TODO manage different bundles with the same stimulation and more than one visual stimulation
+	 * TODO manage different bundles with more than one visual salience 
 	 * @param stimulation The stimulation
 	 * @return The motivation value generated by this stimulation.
-	 * (Either the bundle's motivation or the base motivation is this stimulation evokes no bundle.
+	 * (Either the bundle's motivation or the base motivation if this stimulation evokes no bundle.
 	 */
 	private int attractiveness(IStimulation stimulation)
 	{
@@ -288,7 +335,7 @@ public class StaticSystem
 			return 0;
 		
 		for (IBundle bundle : m_bundles)
-			if (bundle.getVisualIcon().getColor().equals(stimulation.getColor()))
+			if (bundle.getColor().equals(stimulation.getColor()))
 				return bundle.getAttractiveness(m_clock);
 
 		return Ernest.BASE_MOTIVATION;
@@ -311,7 +358,7 @@ public class StaticSystem
 	 */
 	public IObservation getAnticipation()
 	{
-		return m_anticipation;
+		return m_observation;//m_anticipation;
 	}
 	
 	public void resetAnticipation()

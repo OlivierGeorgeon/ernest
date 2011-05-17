@@ -103,12 +103,20 @@ public class Ernest implements IErnest
 	/** Kinematic Stimulations turn left toward wall */
 	public static IStimulation STIMULATION_KINEMATIC_RIGHT_WALL = new Stimulation(STIMULATION_KINEMATIC, 5);
 		
-	/** Gustatory Stimulations */	
+	/** Gustatory Stimulation nothing */	
 	public static IStimulation STIMULATION_GUSTATORY_NOTHING = new Stimulation(STIMULATION_GUSTATORY, 0);
 
+	/** Gustatory Stimulation fish */	
 	public static IStimulation STIMULATION_GUSTATORY_FISH = new Stimulation(STIMULATION_GUSTATORY, 1);
 	
+	/** Circadian stimulation (daytime) */	
 	public static int STIMULATION_CIRCADIAN_DAY = 0;
+	
+	/** White bundle that can be attractive to avoid walls */	
+	public static IBundle BUNDLE_WHITE = new Bundle(Color.WHITE, STIMULATION_TOUCH_EMPTY);
+	
+	/** Gray bundle that can arise curiosity */	
+	public static IBundle BUNDLE_GRAY = new Bundle(COLOR_TOUCH_ALGA, STIMULATION_TOUCH_SOFT);
 	
 	/** Ernest's primitive schema currently enacted */
 	private IAct m_primitiveAct = null;
