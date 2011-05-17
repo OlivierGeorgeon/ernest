@@ -1,5 +1,6 @@
 package ernest;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,24 +13,31 @@ import java.util.List;
  */
 public class Bundle implements IBundle {
 
-	ISalience m_visualIcon;
+	Color m_color;
+	ISalience m_visualSalience;
 	IStimulation m_tactileStimulation;
 	IStimulation m_gustatoryStimulation;
 	IStimulation m_kinematicStimulation;
 
 	int m_lastTimeBundled;
 	
-	Bundle(ISalience visualIcon, IStimulation tactileStimulation)
+	Bundle(Color color, IStimulation tactileStimulation)
 	{
-		m_visualIcon = visualIcon;
+		m_color = color;
 		m_tactileStimulation = tactileStimulation;
-		m_gustatoryStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
+		m_gustatoryStimulation = Ernest.STIMULATION_GUSTATORY_NOTHING;
 		m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
 	}
 	
-	public ISalience getVisualIcon() 
+	public Color getColor() 
 	{
-		return m_visualIcon;
+		return m_color;
+	}
+	
+	public String getHexColor() 
+	{
+		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
+		return s;
 	}
 	
 	public IStimulation getTactileStimulation() 
@@ -65,13 +73,19 @@ public class Bundle implements IBundle {
 	/**
 	 * TOP_MOTIVATION (400) if this bundle's gustatory motivation is STIMULATION_TASTE_FISH.
 	 * Otherwise BASE_MOTIVATION (200) if this bundle has been forgotten,
+	 * BASE_MOTIVATION/2 (100) if this is the white bundle. 
 	 * or 0 if this bundle has just been visited.
 	 * @param clock Ernest's current clock value.
 	 * @return This bundle's attractiveness at the given time.
 	 */
 	public int getAttractiveness(int clock) 
 	{
-		if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
+		if (m_color.equals(Ernest.BUNDLE_WHITE.getColor()))
+			return Ernest.BASE_MOTIVATION / 2;
+		if (m_color.equals(Ernest.BUNDLE_GRAY.getColor()) && (clock - m_lastTimeBundled > Ernest.PERSISTENCE))
+			return Ernest.BASE_MOTIVATION;
+		
+		else if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 			return Ernest.TOP_MOTIVATION;
 		else if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
 			return Ernest.BASE_MOTIVATION;
@@ -96,7 +110,7 @@ public class Bundle implements IBundle {
 		else
 		{
 			IBundle other = (IBundle)o;
-			ret = other.getVisualIcon().equals(m_visualIcon) && 	
+			ret = other.getColor().equals(m_color) && 	
 				  other.getTactileStimulation().equals(m_tactileStimulation);
 		}
 		return ret;

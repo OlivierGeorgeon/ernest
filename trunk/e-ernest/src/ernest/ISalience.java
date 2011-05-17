@@ -59,8 +59,4 @@ public interface ISalience
 	 */
 	int getAttractiveness();
 
-	/**
-	 * @return The color of the salience for tracing
-	 */
-	String getHexColor();
 }

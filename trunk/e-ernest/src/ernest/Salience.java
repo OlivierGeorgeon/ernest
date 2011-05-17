@@ -81,9 +81,4 @@ public class Salience implements ISalience
 		
 		return ret;
 	}
-	public String getHexColor() 
-	{
-		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
-		return s;
-	}
 }

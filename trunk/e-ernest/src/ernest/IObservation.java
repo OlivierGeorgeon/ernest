@@ -108,8 +108,8 @@ public interface IObservation
 	 */
 	public boolean getConfirmation();
 	
-	public void setVisualSalience(ISalience salience);
-	public ISalience getVisualSalience();
+	public void setSalience(ISalience salience);
+	public ISalience getSalience();
 	
 	/**
 	 * Clear the local map in this observation 
@@ -123,15 +123,18 @@ public interface IObservation
 	public int getPreviousDirection();
 	public void setAttractiveness(int attractiveness);
 	public int getAttractiveness();
-	public void setPreviousAttractiveness(int attractiveness);
+	//public void setPreviousAttractiveness(int attractiveness);
 	public int getPreviousAttractiveness();
 	
+	public void setTactileMap();
+
+	
 	/**
-	 * Updates this observation's direction and attractiveness based on tactile information
+	 * Determine if there is an attractive object in Ernest's peripersonal space.
+	 * @param clock Ernest's clock.
 	 */
-	public void setTactileAttractiveness();
-	public void setTactileSalience();
-	public int getTactileDirection();
-	public int getTactileAttractiveness();
+	//public void peripersonalSpace(int clock);
+	public void setPeripersonal(boolean peripersonal);
+	public boolean getPeripersonal();
 	
 }

@@ -1,5 +1,7 @@
 package ernest;
 
+import java.awt.Color;
+
 /**
  * A bundle of sensory stimulations. 
  * So far, a bundle is defined by its visual and its tactile stimulation. 
@@ -13,7 +15,8 @@ public interface IBundle
 	/**
 	 * @return This bundle's visual stimulation 
 	 */
-	ISalience getVisualIcon();
+	//ISalience getVisualSalience();
+	Color getColor();
 	IStimulation getTactileStimulation();
 	void setGustatoryStimulation(IStimulation  gustatoryStimulation); 
 	IStimulation getGustatoryStimulation();
@@ -31,5 +34,9 @@ public interface IBundle
 
 	void setLastTimeBundled(int clock);
 	
-	
+	/**
+	 * @return The color of the bundle for tracing
+	 */
+	String getHexColor();
+
 }

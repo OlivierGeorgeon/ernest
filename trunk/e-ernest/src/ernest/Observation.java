@@ -12,8 +12,10 @@ import tracing.ITracer;
  * An element of Ernest's visual system.
  * @author Olivier
  */
-public class Observation implements IObservation {
+public class Observation implements IObservation 
+{
 
+	private int m_clock;
 	private int m_direction = Ernest.CENTER_RETINA;
 	private int m_previousDirection = Ernest.CENTER_RETINA;
 	private int m_attractiveness = 0;
@@ -26,26 +28,23 @@ public class Observation implements IObservation {
 	private String m_label = "no";
 
 	private boolean m_confirmation;
-	private ISalience m_icon;
+	private ISalience m_salience;
 	
-	private ISalience m_tactileSalience;
-	private int m_tactileDirection = Ernest.CENTER_RETINA;
-	private int m_previousTactileDirection = Ernest.CENTER_RETINA;
-	private int m_tactileAttractiveness = 0;
-	private int m_previousTactileAttractiveness = 0;
+	private boolean m_peripersonal = false;
+	private boolean m_previousPeripersonal = false;
 	
 	private boolean m_status;
 
 	// The map of tactile stimulations
-	IStimulation[][] m_tactileMatrix = new IStimulation[3][3];
+	IStimulation[][] m_tactileMap = new IStimulation[3][3];
 	
 	// The map of surrounding bundles 
 	IBundle[][] m_bundle = new IBundle[3][3];
 	
 	private String getHexColor() 
 	{
-		if (m_icon != null)
-			return m_icon.getHexColor();
+		if (m_salience != null)
+			return String.format("%06X", m_salience.getColor().getRGB()  & 0x00ffffff);
 		else
 			return "008000";
 	}
@@ -94,63 +93,133 @@ public class Observation implements IObservation {
 	{
 		Object e = tracer.addEventElement(element);
 
+		tracer.addSubelement(e, "space", (m_peripersonal ? "peripersonal" : "ambient"));
+		tracer.addSubelement(e, "previous_space", (m_previousPeripersonal ? "peripersonal" : "ambient"));
+
 		tracer.addSubelement(e, "color", getHexColor());
 		tracer.addSubelement(e, "dynamic_feature", m_dynamicFeature);
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
 		tracer.addSubelement(e, "direction", m_direction + "");
-		tracer.addSubelement(e, "tactile_attractiveness", m_tactileAttractiveness + "");
-		tracer.addSubelement(e, "tactile_direction", m_tactileDirection + "");
 		if (m_kinematicStimulation != null)
 			tracer.addSubelement(e, "kinematic", m_kinematicStimulation.getValue() + "");
 		if (m_gustatoryStimulation != null)
 			tracer.addSubelement(e, "gustatory", m_gustatoryStimulation.getValue() + "");
-		if (m_icon != null)
+		if (m_salience != null)
 		{
-			tracer.addSubelement(e, "distance", m_icon.getDistance() + "");
-			tracer.addSubelement(e, "attractiveness", m_icon.getAttractiveness() + "");
-			tracer.addSubelement(e, "span", m_icon.getSpan() + "");
+			tracer.addSubelement(e, "distance", m_salience.getDistance() + "");
+			tracer.addSubelement(e, "attractiveness", m_salience.getAttractiveness() + "");
+			tracer.addSubelement(e, "span", m_salience.getSpan() + "");
 		}
-		if (m_tactileSalience != null)
-		{
-			tracer.addSubelement(e, "tactile_span", m_tactileSalience.getSpan() + "");
-		}
+		
+		// Local map
+		
+		Object localMap = tracer.addSubelement(e, "local_map");
+		if (m_bundle[0][2] != null)
+			tracer.addSubelement(localMap, "position_0_2", m_bundle[0][2].getHexColor());
+		else 
+			tracer.addSubelement(localMap, "position_0_2", "808080");
+			
+		if (m_bundle[0][1] != null)
+			tracer.addSubelement(localMap, "position_0_1", m_bundle[0][1].getHexColor());
+		else 
+			tracer.addSubelement(localMap, "position_0_1", "808080");
+		
+		if (m_bundle[0][0] != null)
+			tracer.addSubelement(localMap, "position_0_0", m_bundle[0][0].getHexColor());
+		else
+			tracer.addSubelement(localMap, "position_0_0", "808080");
+			
+		if (m_bundle[1][0] != null)
+			tracer.addSubelement(localMap, "position_1_0", m_bundle[1][0].getHexColor());
+		else
+			tracer.addSubelement(localMap, "position_1_0", "808080");
+
+		if (m_bundle[2][0] != null)
+			tracer.addSubelement(localMap, "position_2_0", m_bundle[2][0].getHexColor());
+		else
+			tracer.addSubelement(localMap, "position_2_0", "808080");
+
+		if (m_bundle[2][1] != null)
+			tracer.addSubelement(localMap, "position_2_1", m_bundle[2][1].getHexColor());
+		else
+			tracer.addSubelement(localMap, "position_2_1", "808080");
+
+		if (m_bundle[2][2] != null)
+			tracer.addSubelement(localMap, "position_2_2", m_bundle[2][2].getHexColor());
+		else
+			tracer.addSubelement(localMap, "position_2_2", "808080");
+
+		if (m_bundle[1][2] != null)
+			tracer.addSubelement(localMap, "position_1_2", m_bundle[1][2].getHexColor());
+		else
+			tracer.addSubelement(localMap, "position_1_2", "808080");
+
+		if (m_bundle[1][1] != null)
+			tracer.addSubelement(localMap, "position_1_1", m_bundle[1][1].getHexColor());
+		else
+			tracer.addSubelement(localMap, "position_1_1", "808080");
 	}
 	
 	public void setDynamicFeature(IAct act)
 	{
 		
-		// Taste
-		if (m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH) && m_bundle[1][1] != null)
-		{
-			m_bundle[1][1].setGustatoryStimulation(m_gustatoryStimulation);
-			m_bundle[1][1] = null; // The fish disappears from the local map (into Ernest's stomach) !
-		}
-			
 		String dynamicFeature = "";
 		
 		int minFovea = Ernest.CENTER_RETINA - 30; // 25;
 		int maxFovea = Ernest.CENTER_RETINA + 30; // 85;
 		
-		// Attractiveness feature
-		if (m_previousAttractiveness > m_attractiveness)
-			// Farther
-			dynamicFeature = "-";		
-		else if (m_previousAttractiveness < m_attractiveness)
-			// Closer
-			dynamicFeature = "+";
-		else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) < Math.abs(m_direction - Ernest.CENTER_RETINA))
-			// More outward
-			dynamicFeature = "-";
-		else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
-			// More inward
-			dynamicFeature = "+";
-
 		int satisfaction = 0;
-		if (dynamicFeature.equals("-"))
-			satisfaction = -100;
-		if (dynamicFeature.equals("+"))
-			satisfaction = 20;
-		
+
+		if (!m_peripersonal)
+		{
+			// Attractiveness feature
+			if (m_previousAttractiveness > m_attractiveness)
+				// Farther
+				dynamicFeature = "-";		
+			else if (m_previousAttractiveness < m_attractiveness)
+				// Closer
+				dynamicFeature = "+";
+			else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) <= Math.abs(m_direction - Ernest.CENTER_RETINA))
+				// More outward (or same direction, therefore another salience)
+				dynamicFeature = "-";
+			else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
+				// More inward
+				dynamicFeature = "+";
+			//else 
+				// Same attractiveness, same direction, then it is necessarily a different salience
+				//dynamicFeature = "-";
+	
+			if (dynamicFeature.equals("-"))
+				satisfaction = -100;
+			if (dynamicFeature.equals("+"))
+				satisfaction = 20;
+		}
+		else
+		{
+			if (!m_previousPeripersonal)
+				// Entering peripersonal space
+				m_previousAttractiveness = 0;
+			
+			// Attractiveness feature
+			if (m_previousAttractiveness > m_attractiveness)
+				// Farther
+				dynamicFeature = "_";		
+			else if (m_previousAttractiveness < m_attractiveness)
+				// Closer
+				dynamicFeature = "*";
+			else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) < Math.abs(m_direction - Ernest.CENTER_RETINA))
+				// More outward
+				dynamicFeature = "_";
+			else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
+				// More inward
+				dynamicFeature = "*";
+	
+			if (dynamicFeature.equals("_"))
+				satisfaction = -100;
+			if (dynamicFeature.equals("*"))
+				satisfaction = 20;
+			
+		}
 		// Direction feature
 		
 		if (!dynamicFeature.equals(""))
@@ -161,62 +230,38 @@ public class Observation implements IObservation {
 				dynamicFeature = dynamicFeature + "|";
 		}		
 		
-		// Dynamic feature from the local map would override dynamic feature from vision.
-		if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-		{
-			// Attractiveness feature
-			if (m_previousTactileAttractiveness > m_tactileAttractiveness)
-				// more wall
-				dynamicFeature = "-";		
-			else if (m_previousTactileAttractiveness < m_tactileAttractiveness)
-				// less wall
-				dynamicFeature = "+";
-			else if (Math.abs(m_previousTactileDirection - Ernest.CENTER_RETINA ) < Math.abs(m_tactileDirection - Ernest.CENTER_RETINA))
-				// More outward
-				dynamicFeature = "+";
-			else if (Math.abs(m_previousTactileDirection - Ernest.CENTER_RETINA ) > Math.abs(m_tactileDirection - Ernest.CENTER_RETINA))
-				// More inward
-				dynamicFeature = "-";
-
-			satisfaction = 0;
-			if (dynamicFeature.equals("-"))
-				satisfaction = -100;
-			if (dynamicFeature.equals("+"))
-				satisfaction = 20;
-			
-			// Direction feature
-			
-			if (!dynamicFeature.equals(""))
-			{
-				if (minFovea >= m_tactileDirection)
-					dynamicFeature = "|" + dynamicFeature;
-				else if (m_tactileDirection >= maxFovea )
-					dynamicFeature = dynamicFeature + "|";
-			}		
-
-		}
-		
-		if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-		{
-			//dynamicFeature = "w";
-			//satisfaction = -20;			
-		}
-		
-
 		// Gustatory
 		
 		if (m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 		{
-			dynamicFeature = "*";
+			if (m_bundle[1][1] != null)
+			{
+				m_bundle[1][1].setGustatoryStimulation(m_gustatoryStimulation);
+				m_bundle[1][1] = null; // The fish disappears from the local map (into Ernest's stomach) !
+			}
+			dynamicFeature = "e";
 			satisfaction = 200;
+		}
+		
+		// White square
+		
+		if (m_bundle[1][1] != null && m_bundle[1][1].equals(Ernest.BUNDLE_WHITE))
+		{
+			m_bundle[1][1] = null;
+			//m_peripersonal = false;
+			dynamicFeature = "*";
+			satisfaction = 20;
 		}
 		
 		// Label
 		
-		boolean status = (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_FORWARD)
-				       || m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY)
-       	               || m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY));
+		// boolean status = (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_FORWARD)
+		//		       || m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY)
+       	//               || m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY));
 
+		boolean status = true;
+		if (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_BUMP)) status = false;
+		
 		String label = dynamicFeature;
 		if (act != null)
 		{
@@ -242,7 +287,7 @@ public class Observation implements IObservation {
 	{
 		for (int i = 0 ; i < 3; i++)
 			for (int j = 0 ; j < 3; j++)	
-				m_tactileMatrix[i][j] = tactileMatrix[i][j];
+				m_tactileMap[i][j] = tactileMatrix[i][j];
 	}
 	
 	public Color getColor(int x, int y)
@@ -250,15 +295,15 @@ public class Observation implements IObservation {
 		Color c = null;
 		if (m_bundle[x][y] == null)
 		{
-			if (m_tactileMatrix[x][y] != null)
+			if (m_tactileMap[x][y] != null)
 			{
-				int value = 140 - 70 * m_tactileMatrix[x][y].getValue();
+				int value = 140 - 70 * m_tactileMap[x][y].getValue();
 				c = new Color(value, value, value);
 			}
-			else c = Color.WHITE;
+			else c = Ernest.COLOR_TOUCH_EMPTY;//Color.WHITE;
 		}
 		else
-			c = m_bundle[x][y].getVisualIcon().getColor();
+			c = m_bundle[x][y].getColor();
 		
 		//if (x == 1 && y == 0 && Ernest.STIMULATION_KINEMATIC_FAIL.equals(m_kinematicStimulation))
 		//	c = Color.RED;
@@ -286,80 +331,6 @@ public class Observation implements IObservation {
 		m_bundle[2][0] = null;
 	}
 
-	/**
-	 * Duplicate the observation
-	 * TODO the observation transformations should be learned rather than hard coded (at least with the assumption that it is linear).
-	 * @param previousObservation The previous observation
-	 */
-	private void copy(IObservation previousObservation)
-	{
-		m_bundle[0][2] = previousObservation.getBundle(0,2);
-		m_bundle[1][2] = previousObservation.getBundle(1,2);
-		m_bundle[2][2] = previousObservation.getBundle(2,2);
-		
-		m_bundle[0][1] = previousObservation.getBundle(0,1);
-		m_bundle[1][1] = previousObservation.getBundle(1,1);
-		m_bundle[2][1] = previousObservation.getBundle(2,1);
-	
-		m_bundle[0][0] = previousObservation.getBundle(0,0);
-		m_bundle[1][0] = previousObservation.getBundle(1,0); // The front cell is updated when creating or recognizing a bundle
-		m_bundle[2][0] = previousObservation.getBundle(2,0);	
-	}
-
-	/**
-	 * Translate the observation
-	 * TODO the observation transformations should be learned rather than hard coded (at least with the assumption that it is linear).
-	 * @param previousObservation The previous observation
-	 */
-	private void forward(IObservation previousObservation)
-	{
-		m_bundle[0][2] = previousObservation.getBundle(0,1);
-		m_bundle[1][2] = previousObservation.getBundle(1,1);
-		m_bundle[2][2] = previousObservation.getBundle(2,1);
-		
-		m_bundle[0][1] = previousObservation.getBundle(0,0);
-		m_bundle[1][1] = previousObservation.getBundle(1,0);
-		m_bundle[2][1] = previousObservation.getBundle(2,0);
-	}
-	
-	/**
-	 * Rotate the observation counterclockwise when Ernest turns clockwise
-	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
-	 * @param previousObservation The previous observation
-	 */
-	private void turnRight(IObservation previousObservation)
-	{
-		m_bundle[0][0] = previousObservation.getBundle(1,0);
-		m_bundle[1][0] = previousObservation.getBundle(2,0);  // The front cell is updated when adjusting the observation
-		m_bundle[2][0] = previousObservation.getBundle(2,1);
-		m_bundle[2][1] = previousObservation.getBundle(2,2);
-		m_bundle[2][2] = previousObservation.getBundle(1,2);
-		m_bundle[1][2] = previousObservation.getBundle(0,2);
-		m_bundle[0][2] = previousObservation.getBundle(0,1);
-		m_bundle[0][1] = previousObservation.getBundle(0,0);
-
-		m_bundle[1][1] = previousObservation.getBundle(1,1);
-	}
-	
-	/**
-	 * Rotate the observation clockwise when Ernest turns counterclockwise
-	 * TODO the observation transformations should be learned rather than hard coded  (at least with the assumption that it is linear).
-	 * @param previousObservation The previous observation
-	 */
-	private void turnLeft(IObservation previousObservation)
-	{
-		m_bundle[0][0] = previousObservation.getBundle(0,1);
-		m_bundle[0][1] = previousObservation.getBundle(0,2);
-		m_bundle[0][2] = previousObservation.getBundle(1,2);
-		m_bundle[1][2] = previousObservation.getBundle(2,2);
-		m_bundle[2][2] = previousObservation.getBundle(2,1);
-		m_bundle[2][1] = previousObservation.getBundle(2,0);
-		m_bundle[2][0] = previousObservation.getBundle(1,0);
-		m_bundle[1][0] = previousObservation.getBundle(0,0); // The front cell is updated when adjusting the observation
-
-		m_bundle[1][1] = previousObservation.getBundle(1,1);
-	}
-
 	public void setFrontBundle(IBundle bundle)
 	{
 		m_bundle[1][0] = bundle;
@@ -373,17 +344,34 @@ public class Observation implements IObservation {
 			// Local map
 			if (schema.getLabel().equals(">"))
 			{
-				if (previousObservation.getBundle(1,0) == null || previousObservation.getBundle(1,0).getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD))
+				//if (previousObservation.getBundle(1,0) == null || previousObservation.getBundle(1,0).getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD))
+				if (previousObservation.getBundle(1,0) == null || !previousObservation.getBundle(1,0).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
 				{
 					// Move forward
-					forward(previousObservation);
+					m_bundle[0][2] = previousObservation.getBundle(0,1);
+					m_bundle[1][2] = previousObservation.getBundle(1,1);
+					m_bundle[2][2] = previousObservation.getBundle(2,1);
+					
+					m_bundle[0][1] = previousObservation.getBundle(0,0);
+					m_bundle[1][1] = previousObservation.getBundle(1,0);
+					m_bundle[2][1] = previousObservation.getBundle(2,0);
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
 					m_status = true;
 				}
 				else
 				{
 					// No change but bump
-					copy(previousObservation);
+					m_bundle[0][2] = previousObservation.getBundle(0,2);
+					m_bundle[1][2] = previousObservation.getBundle(1,2);
+					m_bundle[2][2] = previousObservation.getBundle(2,2);
+					
+					m_bundle[0][1] = previousObservation.getBundle(0,1);
+					m_bundle[1][1] = previousObservation.getBundle(1,1);
+					m_bundle[2][1] = previousObservation.getBundle(2,1);
+				
+					m_bundle[0][0] = previousObservation.getBundle(0,0);
+					m_bundle[1][0] = previousObservation.getBundle(1,0); // The front cell is updated when creating or recognizing a bundle
+					m_bundle[2][0] = previousObservation.getBundle(2,0);	
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_BUMP;
 					m_status = false;
 				}
@@ -391,7 +379,16 @@ public class Observation implements IObservation {
 			if (schema.getLabel().equals("^"))
 			{
 				// Turn left
-				turnLeft(previousObservation);
+				m_bundle[0][0] = previousObservation.getBundle(0,1);
+				m_bundle[0][1] = previousObservation.getBundle(0,2);
+				m_bundle[0][2] = previousObservation.getBundle(1,2);
+				m_bundle[1][2] = previousObservation.getBundle(2,2);
+				m_bundle[2][2] = previousObservation.getBundle(2,1);
+				m_bundle[2][1] = previousObservation.getBundle(2,0);
+				m_bundle[2][0] = previousObservation.getBundle(1,0);
+				m_bundle[1][0] = previousObservation.getBundle(0,0); // The front cell is updated when adjusting the observation
+
+				m_bundle[1][1] = previousObservation.getBundle(1,1);
 				
 				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD))
 				{
@@ -407,7 +404,16 @@ public class Observation implements IObservation {
 			if (schema.getLabel().equals("v"))
 			{
 				// Turn right 
-				turnRight(previousObservation);
+				m_bundle[0][0] = previousObservation.getBundle(1,0);
+				m_bundle[1][0] = previousObservation.getBundle(2,0);  // The front cell is updated when adjusting the observation
+				m_bundle[2][0] = previousObservation.getBundle(2,1);
+				m_bundle[2][1] = previousObservation.getBundle(2,2);
+				m_bundle[2][2] = previousObservation.getBundle(1,2);
+				m_bundle[1][2] = previousObservation.getBundle(0,2);
+				m_bundle[0][2] = previousObservation.getBundle(0,1);
+				m_bundle[0][1] = previousObservation.getBundle(0,0);
+
+				m_bundle[1][1] = previousObservation.getBundle(1,1);
 				
 				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD)) 
 				{
@@ -423,8 +429,7 @@ public class Observation implements IObservation {
 			
 		m_previousDirection = previousObservation.getDirection();
 		m_previousAttractiveness = previousObservation.getAttractiveness();
-		m_previousTactileDirection = previousObservation.getTactileDirection();
-		m_previousTactileAttractiveness = previousObservation.getTactileAttractiveness();
+		m_previousPeripersonal = previousObservation.getPeripersonal();
 		m_confirmation = (m_status == act.getStatus()); 
 		}		
 		
@@ -440,14 +445,14 @@ public class Observation implements IObservation {
 		m_confirmation = confirmation;
 	}
 
-	public void setVisualSalience(ISalience salience)
+	public void setSalience(ISalience salience)
 	{
-		m_icon = salience;
+		m_salience = salience;
 	}
 	
-	public ISalience getVisualSalience()
+	public ISalience getSalience()
 	{
-		return m_icon;
+		return m_salience;
 	}
 
 	public void setDirection(int direction) 
@@ -480,62 +485,14 @@ public class Observation implements IObservation {
 		return m_attractiveness;
 	}
 
-	public void setPreviousAttractiveness(int attractiveness) 
-	{
-		m_previousAttractiveness = attractiveness;
-	}
+//	public void setPreviousAttractiveness(int attractiveness) 
+//	{
+//		m_previousAttractiveness = attractiveness;
+//	}
 
 	public int getPreviousAttractiveness() 
 	{
 		return m_previousAttractiveness;
-	}
-
-	public void setTactileSalience()
-	{
-		
-		IStimulation[] tactileStimulations = new Stimulation[5];
-		tactileStimulations[0] = m_tactileMatrix[2][1];
-		tactileStimulations[1] = m_tactileMatrix[2][0];
-		tactileStimulations[2] = m_tactileMatrix[1][0];
-		tactileStimulations[3] = m_tactileMatrix[0][0];
-		tactileStimulations[4] = m_tactileMatrix[0][1];
-
-		List<ISalience> saliencies = new ArrayList<ISalience>(5);
-
-		// Create a List of the various saliences in the visual field
-
-		for (int i = 0 ; i < 5; i++)
-		{
-			int nbDirection = 1;
-			int sumDirection = i * 25 + 5;
-			int j = i + 1;
-			while ( j < 5 && tactileStimulations[i].equals(tactileStimulations[j]))
-			{
-				nbDirection++;
-				sumDirection += j * 25;
-				j++;
-			}	
-			ISalience salience = new Salience();
-			salience.setDirection((int) (sumDirection / nbDirection + .5));
-			salience.setSpan(nbDirection);
-			salience.setColor(tactileStimulations[i].getColor());
-			int attractiveness = 0;
-			if (tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
-				attractiveness = - Ernest.BASE_MOTIVATION  - 10 * nbDirection;
-			salience.setAttractiveness(attractiveness);
-			saliencies.add(salience);
-		}
-
-		// Find the most repulsive salience in the tactile field (There is at least a wall)
-		
-		m_tactileAttractiveness = 0;
-		for (ISalience salience : saliencies)
-			if (salience.getAttractiveness() < m_tactileAttractiveness)
-			{
-				m_tactileAttractiveness = salience.getAttractiveness();
-				m_tactileDirection = salience.getDirection();
-				m_tactileSalience = salience;
-			}
 	}
 
 	public void setTactileAttractiveness()
@@ -570,13 +527,70 @@ public class Observation implements IObservation {
 			}				
 		}
 	}
-	public int getTactileDirection()
+
+	public void setTactileMap()
 	{
-		return m_tactileDirection;
+		
+		// If Ernest is facing a wall then set a white bundle as a local target.
+		boolean whiteBundle = false;
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
+				if (m_bundle[i][j] != null && m_bundle[i][j].equals(Ernest.BUNDLE_WHITE)) 
+						whiteBundle = true;
+		
+		if (!whiteBundle && m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))
+		{
+			if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))
+				// If there is no wall on the left then attracted to the left
+				m_bundle[0][0] = Ernest.BUNDLE_WHITE;
+			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))
+				// If there is no wall on the right then attracted to the right
+				m_bundle[2][0] = Ernest.BUNDLE_WHITE;
+			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_EMPTY))
+				// if there is no wall on the left side then attracted to the left side
+				m_bundle[0][1] = Ernest.BUNDLE_WHITE;
+			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_EMPTY))
+				// if there is no wall on the right side then attracted to the right side
+				m_bundle[2][1] = Ernest.BUNDLE_WHITE;
+		}
+		
+		// Gray bundles will generate attractiveness due to curiosity.
+		boolean grayBundle = false;
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
+				if (m_bundle[i][j] != null && m_bundle[i][j].equals(Ernest.BUNDLE_GRAY)) 
+					grayBundle = true;
+		
+		if (!grayBundle)
+		{
+			if (m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_SOFT) && m_bundle[1][0] == null)
+				m_bundle[1][0] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_SOFT) && m_bundle[0][0] == null)
+				m_bundle[0][0] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_SOFT) && m_bundle[2][0] == null)
+				m_bundle[2][0] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_SOFT) && m_bundle[0][1] == null)
+				m_bundle[0][1] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_SOFT) && m_bundle[2][1] == null)
+				m_bundle[2][1] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[0][2].equals(Ernest.STIMULATION_TOUCH_SOFT) && m_bundle[0][2] == null)
+				m_bundle[0][2] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[2][2].equals(Ernest.STIMULATION_TOUCH_SOFT) && m_bundle[2][2] == null)
+				m_bundle[2][2] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[1][2].equals(Ernest.STIMULATION_TOUCH_SOFT) && m_bundle[1][2] == null)
+				m_bundle[1][2] = Ernest.BUNDLE_GRAY;
+		}
+		
 	}
-	public int getTactileAttractiveness()
+
+	public void setPeripersonal(boolean peripersonal)
 	{
-		return m_tactileAttractiveness;
+		m_peripersonal = peripersonal;
+	}
+	
+	public boolean getPeripersonal()
+	{
+		return m_peripersonal;
 	}
 
 }
