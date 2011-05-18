@@ -81,14 +81,14 @@ public class Bundle implements IBundle {
 	public int getAttractiveness(int clock) 
 	{
 		if (m_color.equals(Ernest.BUNDLE_WHITE.getColor()))
-			return Ernest.BASE_MOTIVATION / 2;
+			return Ernest.ATTRACTIVENESS_OF_UNKNOWN / 2;
 		if (m_color.equals(Ernest.BUNDLE_GRAY.getColor()) && (clock - m_lastTimeBundled > Ernest.PERSISTENCE))
-			return Ernest.BASE_MOTIVATION;
+			return Ernest.ATTRACTIVENESS_OF_UNKNOWN;
 		
 		else if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
-			return Ernest.TOP_MOTIVATION;
+			return Ernest.ATTRACTIVENESS_OF_FISH;
 		else if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
-			return Ernest.BASE_MOTIVATION;
+			return Ernest.ATTRACTIVENESS_OF_UNKNOWN;
 		else
 			return 0;
 	}

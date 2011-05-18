@@ -50,10 +50,13 @@ public class Ernest implements IErnest
 	public static int PERSISTENCE = 20; // (50 Ernest 9.3)
 	
 	/** 200 Base attractiveness of bundles that are not edible  */
-	public static int BASE_MOTIVATION =  200;
+	public static int ATTRACTIVENESS_OF_UNKNOWN =  200;
 
 	/** 400 Top attractiveness of bundles that are edible  */
-	public static int TOP_MOTIVATION  =  400;
+	public static int ATTRACTIVENESS_OF_FISH  =  400;
+	
+	/** 600 Attractiveness of empty square when facing a wall  */
+	public static int ATTRACTIVENESS_OF_EMPTY  =  600;
 	
 	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
 	public static int MATURITY = 1500; // not used currently.
