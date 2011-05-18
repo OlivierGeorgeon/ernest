@@ -170,65 +170,77 @@ public class Observation implements IObservation
 		
 		int satisfaction = 0;
 
-		if (!m_peripersonal)
+		if (m_attractiveness < Ernest.ATTRACTIVENESS_OF_EMPTY)
 		{
 			// Attractiveness feature
-			if (m_previousAttractiveness > m_attractiveness)
-				// Farther
-				dynamicFeature = "-";		
-			else if (m_previousAttractiveness < m_attractiveness)
-				// Closer
-				dynamicFeature = "+";
-			else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) <= Math.abs(m_direction - Ernest.CENTER_RETINA))
-				// More outward (or same direction, therefore another salience)
-				dynamicFeature = "-";
-			else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
-				// More inward
-				dynamicFeature = "+";
-			//else 
-				// Same attractiveness, same direction, then it is necessarily a different salience
-				//dynamicFeature = "-";
-	
-			if (dynamicFeature.equals("-"))
-				satisfaction = -100;
-			if (dynamicFeature.equals("+"))
+			if (m_previousAttractiveness == Ernest.ATTRACTIVENESS_OF_EMPTY)
+			{
+				// Reached the edge of a wall (can now move forward)
+				dynamicFeature = "_";
 				satisfaction = 20;
+			}
+			else
+			{
+				if (m_previousAttractiveness > m_attractiveness)
+					// Farther
+					dynamicFeature = "-";		
+				else if (m_previousAttractiveness < m_attractiveness)
+					// Closer
+					dynamicFeature = "+";
+				else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) < Math.abs(m_direction - Ernest.CENTER_RETINA))
+					// More outward (or same direction, therefore another salience)
+					dynamicFeature = "-";
+				else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
+					// More inward
+					dynamicFeature = "+";
+				//else 
+					// Same attractiveness, same direction, then it is necessarily a different salience
+					//dynamicFeature = "-";
+		
+				if (dynamicFeature.equals("-"))
+					satisfaction = -100;
+				if (dynamicFeature.equals("+"))
+					satisfaction = 20;
+	
+				// Direction feature
+				
+				if (!dynamicFeature.equals(""))
+				{
+					if (minFovea >= m_direction)
+						dynamicFeature = "|" + dynamicFeature;
+					else if (m_direction >= maxFovea )
+						dynamicFeature = dynamicFeature + "|";
+				}		
+			}
 		}
 		else
 		{
-			if (!m_previousPeripersonal)
-				// Entering peripersonal space
-				m_previousAttractiveness = 0;
-			
 			// Attractiveness feature
-			if (m_previousAttractiveness > m_attractiveness)
-				// Farther
-				dynamicFeature = "_";		
-			else if (m_previousAttractiveness < m_attractiveness)
-				// Closer
-				dynamicFeature = "*";
-			else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) < Math.abs(m_direction - Ernest.CENTER_RETINA))
-				// More outward
+			if (m_previousAttractiveness < Ernest.ATTRACTIVENESS_OF_EMPTY)
+				// A wall appeared with a part of it in front of Ernest
+				dynamicFeature = "*";		
+			else if (Math.abs(m_previousDirection - 30 ) < Math.abs(m_direction - 30))
+				// The wall went more outward (Ernest closer to the edge)
 				dynamicFeature = "_";
-			else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
-				// More inward
+			else if (Math.abs(m_previousDirection - 30 ) > Math.abs(m_direction - 30))
+				// The wall went more inward (Ernest farther to the edge)
 				dynamicFeature = "*";
 	
-			if (dynamicFeature.equals("_"))
-				satisfaction = -100;
 			if (dynamicFeature.equals("*"))
+				satisfaction = -100;
+			if (dynamicFeature.equals("_"))
 				satisfaction = 20;
 			
+			// Direction feature
+			
+			if (!dynamicFeature.equals(""))
+			{
+				if (30 > m_direction)
+					dynamicFeature = "|" + dynamicFeature;
+				else if (m_direction > 30 )
+					dynamicFeature = dynamicFeature + "|";
+			}		
 		}
-		// Direction feature
-		
-		if (!dynamicFeature.equals(""))
-		{
-			if (minFovea >= m_direction)
-				dynamicFeature = "|" + dynamicFeature;
-			else if (m_direction >= maxFovea )
-				dynamicFeature = dynamicFeature + "|";
-		}		
 		
 		// Gustatory
 		
@@ -495,6 +507,49 @@ public class Observation implements IObservation
 		return m_previousAttractiveness;
 	}
 
+    public ISalience getTactileSalience()
+    {
+    	ISalience salience = null;
+	
+        IStimulation[] tactileStimulations = new Stimulation[7];
+        tactileStimulations[0] = m_tactileMap[2][2];
+        tactileStimulations[1] = m_tactileMap[2][1];
+        tactileStimulations[2] = m_tactileMap[2][0];
+        tactileStimulations[3] = m_tactileMap[1][0];
+        tactileStimulations[4] = m_tactileMap[0][0];
+        tactileStimulations[5] = m_tactileMap[0][1];
+        tactileStimulations[6] = m_tactileMap[0][2];
+
+        for (int i = 0 ; i < 7; i++)
+        {
+        	if (tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
+        	{
+                int nbDirection = 0;//1;
+                int sumDirection = 0;//i * 10;
+                //int j = i + 1;
+                boolean front = false;//(i == 3);
+                while ( i < 7 && tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
+                {
+                	nbDirection++;
+                    sumDirection += i * 10;
+                    if (i == 3) // Ernest's front
+                    	front = true;
+                    i++;
+                }       
+                if (front)
+                {
+                	salience = new Salience();
+	                salience.setDirection((int) (sumDirection / nbDirection + .5));
+	                salience.setSpan(nbDirection);
+	                salience.setColor(Ernest.COLOR_TOUCH_WALL);
+	            	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
+                }
+        	}
+        }
+
+        return salience;
+    }
+
 	public void setTactileAttractiveness()
 	{
 		
@@ -505,25 +560,25 @@ public class Observation implements IObservation
 			if (m_bundle[0][0] == null || !m_bundle[0][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
 			{
 				m_direction = 90;
-				m_attractiveness = Ernest.BASE_MOTIVATION;
+				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
 			}
 			else if (m_bundle[2][0] == null || !m_bundle[2][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
 			{
 				// If there is no wall on the right then attracted to the right
 				m_direction = 20;
-				m_attractiveness = Ernest.BASE_MOTIVATION;
+				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
 			}
 			else if (m_bundle[0][1] == null || !m_bundle[0][1].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
 			{
 				// if there is no wall on the left side then attracted to the left side
 				m_direction = 110;
-				m_attractiveness = Ernest.BASE_MOTIVATION;
+				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
 			}
 			else
 			{
 				// else attracted to the right side
 				m_direction = 0;
-				m_attractiveness = Ernest.BASE_MOTIVATION;
+				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
 			}				
 		}
 	}
@@ -532,7 +587,7 @@ public class Observation implements IObservation
 	{
 		
 		// If Ernest is facing a wall then set a white bundle as a local target.
-		boolean whiteBundle = false;
+		boolean whiteBundle = true; // false - desactivated
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
 				if (m_bundle[i][j] != null && m_bundle[i][j].equals(Ernest.BUNDLE_WHITE)) 

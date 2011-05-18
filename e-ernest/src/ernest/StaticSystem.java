@@ -250,6 +250,10 @@ public class StaticSystem
 		}
 		//m_observation.setPeripersonal(peripersonal);
 		
+		ISalience tactileSalience = m_observation.getTactileSalience();
+		if (tactileSalience != null)
+			saliences.add(tactileSalience);
+		
 		// Find the most attractive salience in the list (There is at least a wall)
 		
 		int maxAttractiveness = 0;
@@ -338,7 +342,7 @@ public class StaticSystem
 			if (bundle.getColor().equals(stimulation.getColor()))
 				return bundle.getAttractiveness(m_clock);
 
-		return Ernest.BASE_MOTIVATION;
+		return Ernest.ATTRACTIVENESS_OF_UNKNOWN;
 	}
 
 	/**
