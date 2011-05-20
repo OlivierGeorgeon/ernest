@@ -129,14 +129,6 @@ public interface IObservation
 	public void setTactileMap();
 
 	
-	/**
-	 * Determine if there is an attractive object in Ernest's peripersonal space.
-	 * @param clock Ernest's clock.
-	 */
-	//public void peripersonalSpace(int clock);
-	public void setPeripersonal(boolean peripersonal);
-	public boolean getPeripersonal();
-	
     /**
      * @return the possible wall salience in front of Ernest 
      */

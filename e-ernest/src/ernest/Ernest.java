@@ -16,9 +16,9 @@ public class Ernest implements IErnest
 	/** Color of regular wall  */
 	public static Color COLOR_WALL   = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static Color COLOR_WATER  = new Color(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
-	public static Color COLOR_TOUCH_EMPTY  = new Color(140,140, 140); 
-	public static Color COLOR_TOUCH_ALGA   = new Color(70, 70, 70); 
-	public static Color COLOR_TOUCH_FISH  = new Color(70, 70, 70); 
+	public static Color COLOR_TOUCH_EMPTY  = new Color(200,200, 200); 
+	public static Color COLOR_TOUCH_ALGA   = new Color(100, 100, 100); 
+	public static Color COLOR_TOUCH_FISH  = new Color(100, 100, 100); 
 	public static Color COLOR_TOUCH_WALL  = new Color(0, 0, 0);
 	
 	/** Ernest's retina resolution  */
@@ -115,8 +115,8 @@ public class Ernest implements IErnest
 	/** Circadian stimulation (daytime) */	
 	public static int STIMULATION_CIRCADIAN_DAY = 0;
 	
-	/** White bundle that can be attractive to avoid walls */	
-	public static IBundle BUNDLE_WHITE = new Bundle(Color.WHITE, STIMULATION_TOUCH_EMPTY);
+	/** Black bundle made from a touch wall stimulation */	
+	//public static IBundle BUNDLE_BLACK = new Bundle(COLOR_TOUCH_WALL, STIMULATION_TOUCH_WALL);
 	
 	/** Gray bundle that can arise curiosity */	
 	public static IBundle BUNDLE_GRAY = new Bundle(COLOR_TOUCH_ALGA, STIMULATION_TOUCH_SOFT);
