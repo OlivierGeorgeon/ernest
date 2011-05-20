@@ -16,7 +16,7 @@ public class Ernest implements IErnest
 	/** Color of regular wall  */
 	public static Color COLOR_WALL   = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static Color COLOR_WATER  = new Color(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
-	public static Color COLOR_TOUCH_EMPTY  = new Color(200,200, 200); 
+	public static Color COLOR_TOUCH_EMPTY  = new Color(180,180, 180); 
 	public static Color COLOR_TOUCH_ALGA   = new Color(100, 100, 100); 
 	public static Color COLOR_TOUCH_FISH  = new Color(100, 100, 100); 
 	public static Color COLOR_TOUCH_WALL  = new Color(0, 0, 0);
