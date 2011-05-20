@@ -149,27 +149,46 @@ public class StaticSystem
 
 		// Create a List of the various saliences in the visual field
 
-		for (int i = 0 ; i < Ernest.RESOLUTION_RETINA; i++)
+		IStimulation stimulation = visualCortex[0];
+		int span = 1;
+		int sumDirection = 0;
+		for (int i = 1 ; i < Ernest.RESOLUTION_RETINA; i++)
 		{
-			int nbDirection = 1;
-			int sumDirection = i * 10;
-			int j = i + 1;
-			while ( j < Ernest.RESOLUTION_RETINA && visualCortex[i].equals(visualCortex[j]))
+			if (visualCortex[i].equals(stimulation))
 			{
-				nbDirection++;
-				sumDirection += j * 10;
-				j++;
-			}	
-			ISalience salience = new Salience();
-			salience.setDirection((int) (sumDirection / nbDirection + .5));
-			salience.setDistance(visualCortex[i].getDistance());
-			salience.setSpan(nbDirection);
-			salience.setColor(visualCortex[i].getColor());
-			salience.setAttractiveness(attractiveness(visualCortex[i]) + 5 * nbDirection );
-			saliences.add(salience);
-			if (salience.getDirection() >= 50 &&  salience.getDirection() <= 60 && sumDirection >= 3 )
-				frontColor = visualCortex[i].getColor();
+				// measure the salience span and average direction
+				span++;
+				sumDirection += i * 10;
+			}
+			else 
+			{	
+				// record the previous salience
+				ISalience salience = new Salience();
+				salience.setDirection((int) (sumDirection / span + .5));
+				salience.setDistance(stimulation.getDistance());
+				salience.setSpan(span);
+				salience.setColor(stimulation.getColor());
+				salience.setAttractiveness(attractiveness(stimulation) + 5 * span );
+				saliences.add(salience);
+				if (salience.getDirection() >= 50 &&  salience.getDirection() <= 60 && sumDirection >= 3 )
+					frontColor = stimulation.getColor();
+
+				// look for the next salience
+				stimulation = visualCortex[i];
+				span = 1;
+				sumDirection = i * 10;
+			}
 		}
+		// record the last salience
+		ISalience last = new Salience();
+		last.setDirection((int) (sumDirection / span + .5));
+		last.setDistance(stimulation.getDistance());
+		last.setSpan(span);
+		last.setColor(stimulation.getColor());
+		last.setAttractiveness(attractiveness(stimulation) + 5 * span );
+		saliences.add(last);
+		if (last.getDirection() >= 50 &&  last.getDirection() <= 60 && sumDirection >= 3 )
+			frontColor = stimulation.getColor();
 
 		// The somatotopic map
 		
@@ -248,7 +267,6 @@ public class StaticSystem
 			saliences.add(salience);
 			peripersonal = true;
 		}
-		//m_observation.setPeripersonal(peripersonal);
 		
 		ISalience tactileSalience = m_observation.getTactileSalience();
 		if (tactileSalience != null)

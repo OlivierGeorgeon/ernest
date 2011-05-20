@@ -30,9 +30,6 @@ public class Observation implements IObservation
 	private boolean m_confirmation;
 	private ISalience m_salience;
 	
-	private boolean m_peripersonal = false;
-	private boolean m_previousPeripersonal = false;
-	
 	private boolean m_status;
 
 	// The map of tactile stimulations
@@ -49,6 +46,10 @@ public class Observation implements IObservation
 			return "008000";
 	}
 
+	private String getHexColor(int x, int y) 
+	{
+		return String.format("%06X", getColor(x, y).getRGB()  & 0x00ffffff);
+	}
 	public String getDynamicFeature() 
 	{
 		return m_dynamicFeature;
@@ -93,9 +94,6 @@ public class Observation implements IObservation
 	{
 		Object e = tracer.addEventElement(element);
 
-		tracer.addSubelement(e, "space", (m_peripersonal ? "peripersonal" : "ambient"));
-		tracer.addSubelement(e, "previous_space", (m_previousPeripersonal ? "peripersonal" : "ambient"));
-
 		tracer.addSubelement(e, "color", getHexColor());
 		tracer.addSubelement(e, "dynamic_feature", m_dynamicFeature);
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
@@ -112,52 +110,15 @@ public class Observation implements IObservation
 		}
 		
 		// Local map
-		
+
 		Object localMap = tracer.addSubelement(e, "local_map");
-		if (m_bundle[0][2] != null)
-			tracer.addSubelement(localMap, "position_0_2", m_bundle[0][2].getHexColor());
-		else 
-			tracer.addSubelement(localMap, "position_0_2", "808080");
-			
-		if (m_bundle[0][1] != null)
-			tracer.addSubelement(localMap, "position_0_1", m_bundle[0][1].getHexColor());
-		else 
-			tracer.addSubelement(localMap, "position_0_1", "808080");
-		
-		if (m_bundle[0][0] != null)
-			tracer.addSubelement(localMap, "position_0_0", m_bundle[0][0].getHexColor());
-		else
-			tracer.addSubelement(localMap, "position_0_0", "808080");
-			
-		if (m_bundle[1][0] != null)
-			tracer.addSubelement(localMap, "position_1_0", m_bundle[1][0].getHexColor());
-		else
-			tracer.addSubelement(localMap, "position_1_0", "808080");
-
-		if (m_bundle[2][0] != null)
-			tracer.addSubelement(localMap, "position_2_0", m_bundle[2][0].getHexColor());
-		else
-			tracer.addSubelement(localMap, "position_2_0", "808080");
-
-		if (m_bundle[2][1] != null)
-			tracer.addSubelement(localMap, "position_2_1", m_bundle[2][1].getHexColor());
-		else
-			tracer.addSubelement(localMap, "position_2_1", "808080");
-
-		if (m_bundle[2][2] != null)
-			tracer.addSubelement(localMap, "position_2_2", m_bundle[2][2].getHexColor());
-		else
-			tracer.addSubelement(localMap, "position_2_2", "808080");
-
-		if (m_bundle[1][2] != null)
-			tracer.addSubelement(localMap, "position_1_2", m_bundle[1][2].getHexColor());
-		else
-			tracer.addSubelement(localMap, "position_1_2", "808080");
-
-		if (m_bundle[1][1] != null)
-			tracer.addSubelement(localMap, "position_1_1", m_bundle[1][1].getHexColor());
-		else
-			tracer.addSubelement(localMap, "position_1_1", "808080");
+		tracer.addSubelement(localMap, "position_6", getHexColor(0,2));
+		tracer.addSubelement(localMap, "position_5", getHexColor(0,1));
+		tracer.addSubelement(localMap, "position_4", getHexColor(0,0));
+		tracer.addSubelement(localMap, "position_3", getHexColor(1,0));
+		tracer.addSubelement(localMap, "position_2", getHexColor(2,0));
+		tracer.addSubelement(localMap, "position_1", getHexColor(2,1));
+		tracer.addSubelement(localMap, "position_0", getHexColor(2,2));
 	}
 	
 	public void setDynamicFeature(IAct act)
@@ -252,17 +213,7 @@ public class Observation implements IObservation
 				m_bundle[1][1] = null; // The fish disappears from the local map (into Ernest's stomach) !
 			}
 			dynamicFeature = "e";
-			satisfaction = 200;
-		}
-		
-		// White square
-		
-		if (m_bundle[1][1] != null && m_bundle[1][1].equals(Ernest.BUNDLE_WHITE))
-		{
-			m_bundle[1][1] = null;
-			//m_peripersonal = false;
-			dynamicFeature = "*";
-			satisfaction = 20;
+			satisfaction = 100;
 		}
 		
 		// Label
@@ -305,21 +256,30 @@ public class Observation implements IObservation
 	public Color getColor(int x, int y)
 	{
 		Color c = null;
-		if (m_bundle[x][y] == null)
-		{
-			if (m_tactileMap[x][y] != null)
-			{
-				int value = 140 - 70 * m_tactileMap[x][y].getValue();
-				c = new Color(value, value, value);
-			}
-			else c = Ernest.COLOR_TOUCH_EMPTY;//Color.WHITE;
-		}
+		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation) && (x == 1) && (y == 0))
+			c = Color.RED;
 		else
-			c = m_bundle[x][y].getColor();
-		
-		//if (x == 1 && y == 0 && Ernest.STIMULATION_KINEMATIC_FAIL.equals(m_kinematicStimulation))
-		//	c = Color.RED;
-		
+		{
+			if (m_bundle[x][y] == null)
+			{
+				if (m_tactileMap[x][y] == null)
+				{
+					// at startup, the tactile map is not yet initialized
+					c = Ernest.COLOR_TOUCH_EMPTY;
+				}
+				else
+				{
+					if (m_tactileMap[x][y].equals(Ernest.STIMULATION_TOUCH_EMPTY))
+						c = Ernest.COLOR_TOUCH_EMPTY;//Ernest.COLOR_TOUCH_EMPTY;
+					if (m_tactileMap[x][y].equals(Ernest.STIMULATION_TOUCH_SOFT))
+						c = Ernest.COLOR_TOUCH_ALGA;
+					if (m_tactileMap[x][y].equals(Ernest.STIMULATION_TOUCH_WALL))
+						c = Ernest.COLOR_TOUCH_WALL;
+				}
+			}
+			else
+				c = m_bundle[x][y].getColor();
+		}		
 		return c;
 	}
 	
@@ -441,7 +401,6 @@ public class Observation implements IObservation
 			
 		m_previousDirection = previousObservation.getDirection();
 		m_previousAttractiveness = previousObservation.getAttractiveness();
-		m_previousPeripersonal = previousObservation.getPeripersonal();
 		m_confirmation = (m_status == act.getStatus()); 
 		}		
 		
@@ -520,31 +479,45 @@ public class Observation implements IObservation
         tactileStimulations[5] = m_tactileMap[0][1];
         tactileStimulations[6] = m_tactileMap[0][2];
 
+        int span = 0;
+        int sumDirection = 0;
+        boolean front = false;
         for (int i = 0 ; i < 7; i++)
         {
         	if (tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
         	{
-                int nbDirection = 0;//1;
-                int sumDirection = 0;//i * 10;
-                //int j = i + 1;
-                boolean front = false;//(i == 3);
-                while ( i < 7 && tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
-                {
-                	nbDirection++;
-                    sumDirection += i * 10;
-                    if (i == 3) // Ernest's front
-                    	front = true;
-                    i++;
-                }       
-                if (front)
-                {
-                	salience = new Salience();
-	                salience.setDirection((int) (sumDirection / nbDirection + .5));
-	                salience.setSpan(nbDirection);
-	                salience.setColor(Ernest.COLOR_TOUCH_WALL);
-	            	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
-                }
+				// measure the salience span and average direction
+        		span++;
+                sumDirection += i * 10;
+                if (i == 3) // Ernest's front
+                	front = true;
         	}
+        	else
+        	{
+        		// record the previous salience if it is frontal
+        		if (front)
+		        {
+		        	salience = new Salience();
+		            salience.setDirection((int) (sumDirection / span + .5));
+		            salience.setSpan(span);
+		            salience.setColor(Ernest.COLOR_TOUCH_EMPTY); 
+		        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
+		        }
+        		
+        		// look for the next salience
+        		front = false;
+        		span = 0;
+        		sumDirection = 0;
+        	}
+        }
+		// record the last salience if it is frontal
+		if (front)
+        {
+        	salience = new Salience();
+            salience.setDirection((int) (sumDirection / span + .5));
+            salience.setSpan(span);
+            salience.setColor(Ernest.COLOR_TOUCH_EMPTY); 
+        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
         }
 
         return salience;
@@ -586,29 +559,6 @@ public class Observation implements IObservation
 	public void setTactileMap()
 	{
 		
-		// If Ernest is facing a wall then set a white bundle as a local target.
-		boolean whiteBundle = true; // false - desactivated
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-				if (m_bundle[i][j] != null && m_bundle[i][j].equals(Ernest.BUNDLE_WHITE)) 
-						whiteBundle = true;
-		
-		if (!whiteBundle && m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))
-		{
-			if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))
-				// If there is no wall on the left then attracted to the left
-				m_bundle[0][0] = Ernest.BUNDLE_WHITE;
-			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))
-				// If there is no wall on the right then attracted to the right
-				m_bundle[2][0] = Ernest.BUNDLE_WHITE;
-			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_EMPTY))
-				// if there is no wall on the left side then attracted to the left side
-				m_bundle[0][1] = Ernest.BUNDLE_WHITE;
-			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_EMPTY))
-				// if there is no wall on the right side then attracted to the right side
-				m_bundle[2][1] = Ernest.BUNDLE_WHITE;
-		}
-		
 		// Gray bundles will generate attractiveness due to curiosity.
 		boolean grayBundle = false;
 		for (int i = 0; i < 3; i++)
@@ -636,16 +586,6 @@ public class Observation implements IObservation
 				m_bundle[1][2] = Ernest.BUNDLE_GRAY;
 		}
 		
-	}
-
-	public void setPeripersonal(boolean peripersonal)
-	{
-		m_peripersonal = peripersonal;
-	}
-	
-	public boolean getPeripersonal()
-	{
-		return m_peripersonal;
 	}
 
 }
