@@ -127,6 +127,7 @@ public interface IObservation
 	public int getPreviousAttractiveness();
 	
 	public void setTactileMap();
+	public IStimulation getTactileStimulation(int x, int y);
 
 	
     /**
