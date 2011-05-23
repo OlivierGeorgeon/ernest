@@ -47,7 +47,7 @@ public class Ernest implements IErnest
 	public static int SCHEMA_MAX_LENGTH = INFINITE;
 	
 	/** The duration during which checked landmarks remain not motivating  */
-	public static int PERSISTENCE = 20; // (50 Ernest 9.3)
+	public static int PERSISTENCE = 30; // (50 Ernest 9.3)
 	
 	/** 200 Base attractiveness of bundles that are not edible  */
 	public static int ATTRACTIVENESS_OF_UNKNOWN =  200;
@@ -87,6 +87,9 @@ public class Ernest implements IErnest
 	
 	/** Touch hard */
 	public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(STIMULATION_TACTILE, 2);
+	
+	/** Touch fish */
+	public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(STIMULATION_TACTILE, 3);
 	
 	/** Kinematic Stimulation succeed */	
 	public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 0);

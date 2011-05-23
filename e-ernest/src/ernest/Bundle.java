@@ -80,8 +80,8 @@ public class Bundle implements IBundle {
 	 */
 	public int getAttractiveness(int clock) 
 	{
-		if (m_color.equals(Ernest.BUNDLE_GRAY.getColor()) && (clock - m_lastTimeBundled > Ernest.PERSISTENCE))
-			return Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+		if (m_color.equals(Ernest.BUNDLE_GRAY.getColor()))
+			return Ernest.ATTRACTIVENESS_OF_FISH + 10;
 		
 		else if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 			return Ernest.ATTRACTIVENESS_OF_FISH;

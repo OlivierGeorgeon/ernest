@@ -380,7 +380,8 @@ public class StaticSystem
 	 */
 	public IObservation getAnticipation()
 	{
-		return m_observation;//m_anticipation;
+		//return m_observation;
+		return m_anticipation;
 	}
 	
 	public void resetAnticipation()
