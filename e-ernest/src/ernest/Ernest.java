@@ -118,9 +118,6 @@ public class Ernest implements IErnest
 	/** Circadian stimulation (daytime) */	
 	public static int STIMULATION_CIRCADIAN_DAY = 0;
 	
-	/** Black bundle made from a touch wall stimulation */	
-	//public static IBundle BUNDLE_BLACK = new Bundle(COLOR_TOUCH_WALL, STIMULATION_TOUCH_WALL);
-	
 	/** Gray bundle that can arise curiosity */	
 	public static IBundle BUNDLE_GRAY = new Bundle(COLOR_TOUCH_ALGA, STIMULATION_TOUCH_SOFT);
 	

@@ -87,7 +87,7 @@ public class StaticSystem
 	
 	/**
 	 * Add a bundle to static memory if it does not already exist
-	 * @param visualStimulation First stimulation
+	 * @param color The bundle's color
 	 * @param tactileStimulation Second stimulation
 	 * @return the new bundle if created or the already existing landmark
 	 */
@@ -113,7 +113,7 @@ public class StaticSystem
 	}
 	
 	/**
-	 * Add a stimulation to episodic memory if it does not already exist
+	 * Add a stimulation to static memory if it does not already exist
 	 * @param type The stimulation's type
 	 * @param value The stimulation's value
 	 * @return the new landmark if created or the already existing landmark
@@ -196,7 +196,6 @@ public class StaticSystem
 		m_observation.setTactileMap();
 		
 		// Add the various saliences in the local map to the list
-		boolean peripersonal = false;
 		if (m_observation.getBundle(1, 0) != null)
 		{
 			ISalience salience = new Salience();
@@ -205,7 +204,6 @@ public class StaticSystem
 			salience.setColor(m_observation.getBundle(1, 0).getColor());
 			salience.setAttractiveness(m_observation.getBundle(1, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
-			peripersonal = true;
 		}
 		else if (m_observation.getBundle(0, 0) != null)
 		{
@@ -215,7 +213,6 @@ public class StaticSystem
 			salience.setColor(m_observation.getBundle(0, 0).getColor());
 			salience.setAttractiveness(m_observation.getBundle(0, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
-			peripersonal = true;
 		}
 		else if (m_observation.getBundle(2, 0) != null)
 		{
@@ -225,7 +222,6 @@ public class StaticSystem
 			salience.setColor(m_observation.getBundle(2, 0).getColor());
 			salience.setAttractiveness(m_observation.getBundle(2, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
-			peripersonal = true;
 		}
 		else if (m_observation.getBundle(0, 1) != null)
 		{
@@ -235,7 +231,6 @@ public class StaticSystem
 			salience.setColor(m_observation.getBundle(0, 1).getColor());
 			salience.setAttractiveness(m_observation.getBundle(0, 1).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
-			peripersonal = true;
 		}
 		else if (m_observation.getBundle(2, 1) != null)
 		{
@@ -245,7 +240,6 @@ public class StaticSystem
 			salience.setColor(m_observation.getBundle(2, 1).getColor());
 			salience.setAttractiveness(m_observation.getBundle(2, 1).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
-			peripersonal = true;
 		}
 		else if (m_observation.getBundle(0, 2) != null)
 		{
@@ -255,7 +249,6 @@ public class StaticSystem
 			salience.setColor(m_observation.getBundle(0, 2).getColor());
 			salience.setAttractiveness(m_observation.getBundle(0, 2).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
-			peripersonal = true;
 		}
 		else if (m_observation.getBundle(2, 2) != null)
 		{
@@ -265,7 +258,6 @@ public class StaticSystem
 			salience.setColor(m_observation.getBundle(2, 2).getColor());
 			salience.setAttractiveness(m_observation.getBundle(2, 2).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
-			peripersonal = true;
 		}
 		
 		ISalience tactileSalience = m_observation.getTactileSalience();
@@ -284,17 +276,6 @@ public class StaticSystem
 				m_observation.setSalience(salience);
 			}
 
-//		double x = 0;
-//		double y = 0;
-//		//for (IIcon icon : icons)
-//		IIcon icon = m_observation.getIcon();
-//		{
-//			x += icon.getAttractiveness() * Math.cos(Math.PI * (icon.getDirection() - Ernest.CENTER_RETINA) / Ernest.CENTER_RETINA / 2);
-//			y += icon.getAttractiveness() * Math.sin(Math.PI * (icon.getDirection() - Ernest.CENTER_RETINA) / Ernest.CENTER_RETINA / 2);
-//		}
-//		double d = Math.atan(y/x) * Ernest.CENTER_RETINA * 2 / Math.PI  + Ernest.CENTER_RETINA;
-//		visualDirection = (int)d;
-
 		m_observation.setAttractiveness(maxAttractiveness);
 		m_observation.setDirection(direction);
 		
@@ -307,11 +288,6 @@ public class StaticSystem
 		m_observation.setConfirmation(kinematicStimulation.equals(m_observation.getKinematic()));
 		m_observation.setKinematic(kinematicStimulation);
 
-		// If bump, add the bump stimulation to the bundle where Ernest is standing 
-		
-		//if (m_observation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP) && m_observation.getBundle(1, 1) != null) 
-		//	m_observation.getBundle(1, 1).setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
-		
 		// If the current stimulation does not match the anticipated local map then the local map is cleared.
 		// TODO The criteria for deciding whether the matching is correct or incorrect need to be learned ! 
 
@@ -321,7 +297,6 @@ public class StaticSystem
 		// Check peripersonal space.
 		
 		m_observation.setTactileMap();
-		//m_observation.peripersonalSpace(m_clock);
 
 		// Bundle the visual icon with the tactile stimulation in front
 		
@@ -340,8 +315,7 @@ public class StaticSystem
 				bundle.setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
 				m_observation.setFrontBundle(bundle);
 			}
-			
-		
+				
 		return m_observation;
 	}
 		
@@ -384,6 +358,9 @@ public class StaticSystem
 		return m_anticipation;
 	}
 	
+	/**
+	 * 
+	 */
 	public void resetAnticipation()
 	{
 		m_anticipation = m_observation;
