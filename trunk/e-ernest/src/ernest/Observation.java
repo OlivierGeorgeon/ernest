@@ -30,8 +30,6 @@ public class Observation implements IObservation
 	private boolean m_confirmation;
 	private ISalience m_salience;
 	
-	private boolean m_status;
-
 	// The map of tactile stimulations
 	IStimulation[][] m_tactileMap = new IStimulation[3][3];
 	
@@ -85,11 +83,6 @@ public class Observation implements IObservation
 		return m_label;
 	}
 
-	public boolean getStatus()
-	{
-		return m_status;
-	}
-	
 	public void trace(ITracer tracer, String element) 
 	{
 		Object e = tracer.addEventElement(element);
@@ -322,6 +315,7 @@ public class Observation implements IObservation
 	{
 		if (act != null)
 		{
+			boolean status = false;
 			ISchema schema = act.getSchema();
 			// Local map
 			if (schema.getLabel().equals(">"))
@@ -351,7 +345,7 @@ public class Observation implements IObservation
 					//else 
 					//	m_bundle[2][1] = null;
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
-					m_status = true;
+					status = true;
 				}
 				else
 				{
@@ -368,7 +362,7 @@ public class Observation implements IObservation
 					m_bundle[1][0] = previousObservation.getBundle(1,0); // The front cell is updated when creating or recognizing a bundle
 					m_bundle[2][0] = previousObservation.getBundle(2,0);	
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_BUMP;
-					m_status = false;
+					status = false;
 				}
 			}
 			if (schema.getLabel().equals("^"))
@@ -392,12 +386,12 @@ public class Observation implements IObservation
 				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD))
 				{
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY;
-					m_status = true;
+					status = true;
 				}
 				else
 				{
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_LEFT_WALL;
-					m_status = false;
+					status = false;
 				}
 			}
 			if (schema.getLabel().equals("v"))
@@ -420,18 +414,18 @@ public class Observation implements IObservation
 				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD)) 
 				{
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY;
-					m_status = true;
+					status = true;
 				}
 				else
 				{
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_RIGHT_WALL;
-					m_status = false;
+					status = false;
 				}
 			}
 			
 		m_previousDirection = previousObservation.getDirection();
 		m_previousAttractiveness = previousObservation.getAttractiveness();
-		m_confirmation = (m_status == act.getStatus()); 
+		m_confirmation = (status == act.getStatus()); 
 		}		
 		
 	}
@@ -553,49 +547,50 @@ public class Observation implements IObservation
         return salience;
     }
 
-	public void setTactileAttractiveness()
-	{
-		
-		// If Ernest is facing a wall
-		if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-		{
-			// If there is no wall on the left then attracted to the left
-			if (m_bundle[0][0] == null || !m_bundle[0][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-			{
-				m_direction = 90;
-				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
-			}
-			else if (m_bundle[2][0] == null || !m_bundle[2][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-			{
-				// If there is no wall on the right then attracted to the right
-				m_direction = 20;
-				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
-			}
-			else if (m_bundle[0][1] == null || !m_bundle[0][1].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-			{
-				// if there is no wall on the left side then attracted to the left side
-				m_direction = 110;
-				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
-			}
-			else
-			{
-				// else attracted to the right side
-				m_direction = 0;
-				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
-			}				
-		}
-	}
+//	public void setTactileAttractiveness()
+//	{
+//		
+//		// If Ernest is facing a wall
+//		if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
+//		{
+//			// If there is no wall on the left then attracted to the left
+//			if (m_bundle[0][0] == null || !m_bundle[0][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
+//			{
+//				m_direction = 90;
+//				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+//			}
+//			else if (m_bundle[2][0] == null || !m_bundle[2][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
+//			{
+//				// If there is no wall on the right then attracted to the right
+//				m_direction = 20;
+//				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+//			}
+//			else if (m_bundle[0][1] == null || !m_bundle[0][1].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
+//			{
+//				// if there is no wall on the left side then attracted to the left side
+//				m_direction = 110;
+//				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+//			}
+//			else
+//			{
+//				// else attracted to the right side
+//				m_direction = 0;
+//				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+//			}				
+//		}
+//	}
 
 	public void setTactileMap()
 	{
 		
-		// Gray bundles will generate attractiveness due to curiosity.
+		// Check for existing gray bundles.
 		boolean grayBundle = false;
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
 				if (m_bundle[i][j] != null && m_bundle[i][j].equals(Ernest.BUNDLE_GRAY)) 
 					grayBundle = true;
 		
+		// If there is no gray bundle yet, then create a gray bundle if a fish is touched.
 		if (!grayBundle)
 		{
 			if (m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[1][0] == null)

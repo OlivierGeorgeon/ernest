@@ -5,19 +5,18 @@ import java.awt.Color;
 import tracing.ITracer;
 
 /**
- * An element of Ernest's visual system.
+ * The main construct that represents Ernest's current observation of its situation.
  * @author Olivier
  */
 public interface IObservation 
 {
 	/**
-	 * Computes the observation's dynamic features used to generte the enacted act.
-	 * @return The changes in this focus over the last interaction cycle.
+	 * @return This observation's dynamic feature: reflect the changes in the salience of attention over the last interaction cycle.
 	 */
 	String getDynamicFeature();
 	
 	/**
-	 * @param satisfaction
+	 * @param satisfaction The satisfaction of the enacted act
 	 */
 	void setSatisfaction(int satisfaction);
 	
@@ -35,12 +34,10 @@ public interface IObservation
 	void trace(ITracer tracer, String element);
 	
 	/**
-	 * Computes the observation's dynamic features
+	 * Computes the observation's dynamic features used to generate the enacted act.
 	 * @param act
-	 * @param previousObservation
 	 */
 	void setDynamicFeature(IAct act);
-	
 	
 	/**
 	 * @param kinematicStimulation
@@ -85,30 +82,39 @@ public interface IObservation
 	public IBundle getBundle(int x, int y);
 	
 	/**
-	 * Set the bundle in front of Ernest (coordinate (1,0) in the local map)
+	 * Set the bundle in front of Ernest (coordinate (1,0) in the peripersonal map)
 	 * @param bundle The bundle to set in front of Ernest.
 	 */
 	void setFrontBundle(IBundle bundle);
 
 	/**
-	 * Predicts the consequences of an intention on the current observation.
-	 * So far, only predicts the local map. 
+	 * Initialize this observation by anticipating the consequences of the intended act on the previous observation.
 	 * Does not predict the square in front (leave it unchanged).
+	 * TODO Anticipation should be refined using visual information.
 	 * @param previousObservation The previous observation on which we construct the anticipated observation.
-	 * @param schema The intention schema.
-	 * @return Whether the schema is expected to succeed or fail.
+	 * @param act The intention act.
 	 */
 	public void anticipate(IObservation previousObservation, IAct act);
 
+	/**
+	 * @param confirmation True If and only if the adjusted observation matches the anticipated observation
+	 * (the criteria used to evaluate whether there is a match need to be define by the modeler)
+	 */
 	public void setConfirmation(boolean confirmation);
-	public boolean getStatus();
 	
 	/**
 	 * @return true if the anticipation was confirmed, false if the anticipation was incorrect
 	 */
 	public boolean getConfirmation();
 	
+	/**
+	 * @param salience The salience of current attention
+	 */
 	public void setSalience(ISalience salience);
+	
+	/**
+	 * @return The salience of current attention 
+	 */
 	public ISalience getSalience();
 	
 	/**
@@ -117,23 +123,58 @@ public interface IObservation
 	 */
 	public void clearMap();
 	
+	/**
+	 * @param direction The direction of the salience of current attention
+	 */
 	public void setDirection(int direction);
+	
+	/**
+	 * @return The direction of the salience of current attention
+	 */
 	public int getDirection();
+	/**
+	 * @param direction The direction of the salience of previous attention
+	 */
 	public void setPreviousDirection(int direction);
+	
+	/**
+	 * @return The direction of the salience of previous attention 
+	 */
 	public int getPreviousDirection();
+	
+	/**
+	 * @param attractiveness The attractiveness of the salience of current attention
+	 */
 	public void setAttractiveness(int attractiveness);
+	
+	/**
+	 * @return The attractiveness of the salience of current attention
+	 */
 	public int getAttractiveness();
-	//public void setPreviousAttractiveness(int attractiveness);
+	
+	/**
+	 * @return The attractiveness of the salience of previous attention 
+	 */
 	public int getPreviousAttractiveness();
 	
+	/**
+	 * Test if Ernest touches a fish
+	 * Creates a gray bundle in the peripersonal map if Ernest touches a fish (no more than one gray bundle)
+	 */
 	public void setTactileMap();
+	
+	/**
+	 * Get a stimulation in the tactile map
+	 * @param x X coordinate in the tactile map (left to right)
+	 * @param y Y coordinate in the tactile map (top to bottom)
+	 * @return the tactile stimulation perceived in the tactile map
+	 */
 	public IStimulation getTactileStimulation(int x, int y);
 
-	
     /**
-     * @return the possible wall salience in front of Ernest 
+     * Check from salient tactile features in Ernest's tactile map. 
+     * @return the possible tactile salience that indicates a wall in front of Ernest. Null if no wall in front of Ernest. 
      */
     public ISalience getTactileSalience();
 
-	
 }

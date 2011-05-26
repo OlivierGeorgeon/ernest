@@ -71,9 +71,9 @@ public class Bundle implements IBundle {
 	}
 
 	/**
-	 * TOP_MOTIVATION (400) if this bundle's gustatory motivation is STIMULATION_TASTE_FISH.
-	 * Otherwise BASE_MOTIVATION (200) if this bundle has been forgotten,
-	 * BASE_MOTIVATION/2 (100) if this is the white bundle. 
+	 * ATTRACTIVENESS_OF_FISH (400) if this bundle's gustatory stimulation is STIMULATION_TASTE_FISH.
+	 * ATTRACTIVENESS_OF_FISH + 10 (410) if the fish is touched.
+	 * Otherwise ATTRACTIVENESS_OF_UNKNOWN (200) if this bundle has been forgotten,
 	 * or 0 if this bundle has just been visited.
 	 * @param clock Ernest's current clock value.
 	 * @return This bundle's attractiveness at the given time.
@@ -92,8 +92,8 @@ public class Bundle implements IBundle {
 	}
 
 	/**
-	 * Bundles are equal if they have the same visual and tactile stimulations. 
-	 * TODO More than 3 stimulations.
+	 * Bundles are equal if they have the same color and tactile stimulations. 
+	 * TODO also test other stimulations.
 	 */
 	public boolean equals(Object o)
 	{

@@ -55,10 +55,22 @@ public interface IErnest
 	 * @return The next primitive schema to enact.
 	 */
 	public String step(boolean status);
+	
+	/**
+	 * Run Ernest one step.
+	 * @param matrix The matrix of stimuli received from the environment.
+	 * @return The next primitive schema to enact.
+	 */
 	public String step(int[][] matrix);
 	
+	/**
+	 * @return Ernest observation used to draw the local map in the environment 
+	 */
 	public IObservation getObservation();
 	
+	/**
+	 * @return a pointer to Ernest's static system to be used by other modules
+	 */
 	public StaticSystem getStaticSystem();
 
 }
