@@ -1,6 +1,5 @@
 package ernest;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
  */
 public class Bundle implements IBundle {
 
-	Color m_color;
+	EColor m_color;
 	ISalience m_visualSalience;
 	IStimulation m_tactileStimulation;
 	IStimulation m_gustatoryStimulation;
@@ -21,7 +20,7 @@ public class Bundle implements IBundle {
 
 	int m_lastTimeBundled;
 	
-	Bundle(Color color, IStimulation tactileStimulation)
+	Bundle(EColor color, IStimulation tactileStimulation)
 	{
 		m_color = color;
 		m_tactileStimulation = tactileStimulation;
@@ -29,14 +28,15 @@ public class Bundle implements IBundle {
 		m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
 	}
 	
-	public Color getColor() 
+	public EColor getColor() 
 	{
 		return m_color;
 	}
 	
 	public String getHexColor() 
 	{
-		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
+//		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
+		String s = m_color.getHexCode();
 		return s;
 	}
 	

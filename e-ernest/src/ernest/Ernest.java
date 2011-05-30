@@ -1,7 +1,5 @@
 package ernest;
 
-import java.awt.Color;
-
 import tracing.ITracer;
 
 /**
@@ -14,12 +12,12 @@ public class Ernest implements IErnest
 	public static final int INFINITE = 1000;
 	
 	/** Color of regular wall  */
-	public static Color COLOR_WALL   = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
-	public static Color COLOR_WATER  = new Color(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
-	public static Color COLOR_TOUCH_EMPTY  = new Color(180,180, 180); 
-	public static Color COLOR_TOUCH_ALGA   = new Color(100, 100, 100); 
-	public static Color COLOR_TOUCH_FISH  = new Color(100, 100, 100); 
-	public static Color COLOR_TOUCH_WALL  = new Color(0, 0, 0);
+	public static EColor COLOR_WALL   = new EColor(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	public static EColor COLOR_WATER  = new EColor(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	public static EColor COLOR_TOUCH_EMPTY  = new EColor(180,180, 180); 
+	public static EColor COLOR_TOUCH_ALGA   = new EColor(100, 100, 100); 
+	public static EColor COLOR_TOUCH_FISH  = new EColor(100, 100, 100); 
+	public static EColor COLOR_TOUCH_WALL  = new EColor(0, 0, 0);
 	
 	/** Ernest's retina resolution  */
 	public static int RESOLUTION_RETINA = 12;

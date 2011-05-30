@@ -1,7 +1,5 @@
 package ernest;
 
-import java.awt.Color;
-
 import org.w3c.dom.Element;
 
 /**
@@ -22,21 +20,27 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 			visualCortex[i] = m_staticSystem.addStimulation(stimuli[i][1], stimuli[i][2], stimuli[i][3], stimuli[i][0]);
 
-		Object retinaElmt = m_tracer.addEventElement("retina");
-		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
-		{
-			m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, visualCortex[i].getHexColor());
+		if (m_tracer != null) {
+			Object retinaElmt = m_tracer.addEventElement("retina");
+
+			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
+			{
+				m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, visualCortex[i].getHexColor());
+			}
 		}
 		
 		// Touch =====
 		
-		Object s = m_tracer.addEventElement("tactile");
+		Object s = null;
+		if (m_tracer != null)
+			s = m_tracer.addEventElement("tactile");
 		IStimulation [][] somatoCortex = new IStimulation[3][3];
 		for (int j = 0; j < 3; j++)
 			for (int i = 0; i < 3; i++)
 			{
 				somatoCortex[i][j] = m_staticSystem.addStimulation(Ernest.STIMULATION_TACTILE, stimuli[i][9 + j]);
-				m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getValue() + "");
+				if (m_tracer != null)
+					m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getValue() + "");
 			}
 		
 		// Kinematic ====
@@ -50,7 +54,8 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		// Circadian ====
 		
 		IStimulation circadianStimulation = m_staticSystem.addStimulation(Ernest.STIMULATION_CIRCADIAN, stimuli[2][8]); 
-		m_tracer.addEventElement("circadian", circadianStimulation.getValue() + "");
+		if (m_tracer != null)
+			m_tracer.addEventElement("circadian", circadianStimulation.getValue() + "");
 		
 		// Adjust the current observation ====
 		
@@ -73,7 +78,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 			enactedAct = act;
 		}
 		
-		if (act != null) m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
+		if (act != null && m_tracer != null) m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
 
 		return enactedAct;
 	}

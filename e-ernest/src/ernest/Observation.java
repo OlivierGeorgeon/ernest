@@ -1,6 +1,5 @@
 package ernest;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,14 +38,16 @@ public class Observation implements IObservation
 	private String getHexColor() 
 	{
 		if (m_salience != null)
-			return String.format("%06X", m_salience.getColor().getRGB()  & 0x00ffffff);
+//			return String.format("%06X", m_salience.getColor().getRGB()  & 0x00ffffff);
+			return m_salience.getColor().getHexCode();
 		else
 			return "008000";
 	}
 
 	private String getHexColor(int x, int y) 
 	{
-		return String.format("%06X", getColor(x, y).getRGB()  & 0x00ffffff);
+//		return String.format("%06X", getColor(x, y).getRGB()  & 0x00ffffff);
+		return m_salience.getColor().getHexCode();
 	}
 	public String getDynamicFeature() 
 	{
@@ -85,6 +86,8 @@ public class Observation implements IObservation
 
 	public void trace(ITracer tracer, String element) 
 	{
+		if (tracer == null)
+			return;
 		Object e = tracer.addEventElement(element);
 
 		tracer.addSubelement(e, "color", getHexColor());
@@ -246,11 +249,11 @@ public class Observation implements IObservation
 				m_tactileMap[i][j] = tactileMatrix[i][j];
 	}
 	
-	public Color getColor(int x, int y)
+	public EColor getColor(int x, int y)
 	{
-		Color c = null;
+		EColor c = null;
 		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation) && (x == 1) && (y == 0))
-			c = Color.RED;
+			c = EColor.RED;
 		else
 		{
 			if (m_bundle[x][y] == null)

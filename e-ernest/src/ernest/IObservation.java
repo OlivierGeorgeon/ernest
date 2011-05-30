@@ -1,7 +1,5 @@
 package ernest;
 
-import java.awt.Color;
-
 import tracing.ITracer;
 
 /**
@@ -71,7 +69,7 @@ public interface IObservation
 	 * @param y y coordinate in the local map
 	 * @return the cell's color in the local map
 	 */
-	public Color getColor(int x, int y);
+	public EColor getColor(int x, int y);
 	
 	/**
 	 * Get the bundle in a specific cell in the local map

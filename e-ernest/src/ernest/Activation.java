@@ -84,7 +84,8 @@ public class Activation implements IActivation
 	 */
 	public String toString()
 	{
-		String s = String.format("%s w=%s", m_act , m_weight);  
+//		String s = String.format("%s w=%s", m_act , m_weight);  
+		String s = m_act + " w=" + m_weight;
 		return s;
 	}
 	
