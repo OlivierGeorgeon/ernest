@@ -9,6 +9,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
 
+import ernest.ITracer;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.io.IOException;

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;
 
-import tracing.ITracer;
 
 /**
  * Ernest's static system contains all the landmarks ever created.
@@ -329,11 +328,11 @@ public class StaticSystem
 	 */
 	private int attractiveness(IStimulation stimulation)
 	{
-		if (stimulation.getColor().equals(Ernest.COLOR_WALL))
+		if (stimulation.getColor().getRGB() == Ernest.COLOR_WALL.getRGB())
 			return 0;
 		
 		for (IBundle bundle : m_bundles)
-			if (bundle.getColor().equals(stimulation.getColor()))
+			if (bundle.getColor().getRGB() == stimulation.getColor().getRGB())
 				return bundle.getAttractiveness(m_clock);
 
 		return Ernest.ATTRACTIVENESS_OF_UNKNOWN;

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
-import tracing.ITracer;
 
 /**
  * An element of Ernest's visual system.
@@ -47,7 +46,7 @@ public class Observation implements IObservation
 	private String getHexColor(int x, int y) 
 	{
 //		return String.format("%06X", getColor(x, y).getRGB()  & 0x00ffffff);
-		return m_salience.getColor().getHexCode();
+		return getColor(x,y).getHexCode();
 	}
 	public String getDynamicFeature() 
 	{

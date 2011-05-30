@@ -1,6 +1,5 @@
 package ernest;
 
-import tracing.ITracer;
 
 /**
  * The main construct that represents Ernest's current observation of its situation.

@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import org.w3c.dom.Element;
 
+import ernest.ITracer;
+
 
 /**
  * This tracer logs the trace into a text file.
