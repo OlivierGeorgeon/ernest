@@ -1,7 +1,5 @@
 package ernest;
 
-import java.awt.Color;
-
 /**
  * A set of sensory stimulations that are salient as a whole.
  * (contiguous visual stimulations with the same color, or contiguous tactile stimulations with the same feeling)
@@ -27,7 +25,7 @@ public interface ISalience
 	/**
 	 * @param color The color for display in the environment
 	 */
-	void setColor(Color color);
+	void setColor(EColor color);
 	
 	/**
 	 * @param attractiveness The salience's attractiveness
@@ -52,7 +50,7 @@ public interface ISalience
 	/**
 	 * @return The color of the salience for display in the environment
 	 */
-	Color getColor();
+	EColor getColor();
 
 	/**
 	 * @return The salience's attractiveness

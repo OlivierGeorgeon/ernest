@@ -1,6 +1,5 @@
 package ernest;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -165,8 +164,10 @@ public class AttentionalSystem implements IAttentionalSystem {
 
 		if (m_primitiveIntention != null)
 		{
-			m_tracer.addEventElement("primitive_intended_act", m_primitiveIntention.getLabel());
-			m_tracer.addEventElement("primitive_enacted_act", primitiveEnaction.getLabel());
+			if (m_tracer != null) {
+				m_tracer.addEventElement("primitive_intended_act", m_primitiveIntention.getLabel());
+				m_tracer.addEventElement("primitive_enacted_act", primitiveEnaction.getLabel());
+			}
 			// Compute the actually enacted act
 			
 			enactedAct = enactedAct(m_primitiveIntention.getSchema(), primitiveEnaction);
@@ -239,13 +240,17 @@ public class AttentionalSystem implements IAttentionalSystem {
 		
 		// Log the activation list and the learned count for debug
 		System.out.println("Activation context list: ");
-		Object activation = m_tracer.addEventElement("activation_context_acts");
+		Object activation = null;
+		if (m_tracer != null)
+			activation = m_tracer.addEventElement("activation_context_acts");
 		for (IAct a : m_activationList)	
 		{	
-			m_tracer.addSubelement(activation, "act", a.getLabel());
+			if (m_tracer != null)
+				m_tracer.addSubelement(activation, "act", a.getLabel());
 			System.out.println(a);
 		}
-		m_tracer.addEventElement("learn_count", m_episodicMemory.getLearnCount() + "");
+		if (m_tracer != null)
+			m_tracer.addEventElement("learn_count", m_episodicMemory.getLearnCount() + "");
 		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
 			
 		// If we don't have an ongoing intention then we choose a new intention.
@@ -256,8 +261,10 @@ public class AttentionalSystem implements IAttentionalSystem {
 			m_intentionAct = intentionAct;
 		}
 		
-		m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
-		m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
+		if (m_tracer != null) {
+			m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
+			m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
+		}
 		
 		// Spread the selected intention's activation to primitive acts.
 		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)
@@ -270,7 +277,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 		IAct nextPrimitiveAct = selectAct(activePrimitiveActs);		
 		m_primitiveIntention = nextPrimitiveAct;
 		
-		m_tracer.addEventElement("next_primitive_intention", nextPrimitiveAct.getLabel());
+		if (m_tracer != null)
+			m_tracer.addEventElement("next_primitive_intention", nextPrimitiveAct.getLabel());
 		
 		// Anticipate the next observation
 //		IObservation nextObservation = m_staticSystem.anticipate(nextPrimitiveAct.getSchema());
@@ -332,7 +340,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 		{
 			if (prescribedAct == enactedAct)
 			{
-				m_tracer.addEventElement("intention_correct", prescribedAct.getLabel());
+				if (m_tracer != null)
+					m_tracer.addEventElement("intention_correct", prescribedAct.getLabel());
 				// Correctly enacted
 				if (prescriberSchema.getPointer() == 0)
 				{
@@ -351,14 +360,15 @@ public class AttentionalSystem implements IAttentionalSystem {
 			}
 			else
 			{
-				m_tracer.addEventElement("intention_incorrect", prescribedAct.getLabel());
+				if (m_tracer != null)
+					m_tracer.addEventElement("intention_incorrect", prescribedAct.getLabel());
 				// move to prescriber act with a failure status
 				IAct prescriberAct = prescriberSchema.getPrescriberAct();
 				nextAct = nextAct(prescriberAct, prescriberSchema.getFailingAct());				
 			}
 		}
 		
-		if (nextAct !=null)
+		if (nextAct !=null && m_tracer != null)
 			m_tracer.addEventElement("composite_intention", nextAct.getLabel());
 
 		return nextAct;
@@ -417,7 +427,8 @@ public class AttentionalSystem implements IAttentionalSystem {
 			primitiveAct = spreadActivation(subact);
 		}
 		
-		m_tracer.addEventElement("prescribed_intention", primitiveAct.getLabel());
+		if (m_tracer != null)
+			m_tracer.addEventElement("prescribed_intention", primitiveAct.getLabel());
 		
 		return primitiveAct;
 	}

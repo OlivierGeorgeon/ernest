@@ -1,6 +1,5 @@
 package ernest;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;
@@ -47,7 +46,8 @@ public class StaticSystem
 	 */
 	public void tick()
 	{
-		m_tracer.addEventElement("clock", m_clock + "");
+		if (m_tracer != null)
+			m_tracer.addEventElement("clock", m_clock + "");
 		
 		m_clock++;
 	}
@@ -91,7 +91,7 @@ public class StaticSystem
 	 * @param tactileStimulation Second stimulation
 	 * @return the new bundle if created or the already existing landmark
 	 */
-	public IBundle addBundle(Color color, IStimulation tactileStimulation)
+	public IBundle addBundle(EColor color, IStimulation tactileStimulation)
 	{
 		IBundle bundle = new Bundle(color,tactileStimulation);
 		
@@ -99,9 +99,11 @@ public class StaticSystem
 		if (i == -1)
 		{
 			m_bundles.add(bundle);
-			Object b = m_tracer.addEventElement("bundle");
-			m_tracer.addSubelement(b, "color", bundle.getHexColor());
-			m_tracer.addSubelement(b, "tactile", bundle.getTactileStimulation().getValue() + "");
+			if (m_tracer != null) {
+				Object b = m_tracer.addEventElement("bundle");
+				m_tracer.addSubelement(b, "color", bundle.getHexColor());
+				m_tracer.addSubelement(b, "tactile", bundle.getTactileStimulation().getValue() + "");
+			}
 		}
 		else 
 			// The bundle already exists: return a pointer to it.
@@ -145,7 +147,7 @@ public class StaticSystem
 		m_observation = m_anticipation;
 
 		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
-		Color frontColor = null;
+		EColor frontColor = null;
 
 		// Create a List of the various saliences in the visual field
 
@@ -311,7 +313,7 @@ public class StaticSystem
 		else
 			if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))		
 			{
-				IBundle bundle = addBundle(Color.BLACK, Ernest.STIMULATION_TOUCH_WALL);
+				IBundle bundle = addBundle(EColor.BLACK, Ernest.STIMULATION_TOUCH_WALL);
 				bundle.setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
 				m_observation.setFrontBundle(bundle);
 			}

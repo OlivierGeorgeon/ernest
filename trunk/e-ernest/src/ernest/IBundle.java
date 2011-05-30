@@ -1,7 +1,5 @@
 package ernest;
 
-import java.awt.Color;
-
 /**
  * A bundle of sensory stimulations. 
  * So far, a bundle is defined by its visual and its tactile stimulation. 
@@ -15,7 +13,7 @@ public interface IBundle
 	/**
 	 * @return The bundle's color for visualization in the environment.
 	 */
-	Color getColor();
+	EColor getColor();
 	
 	/**
 	 * @return The bundle's color  for tracing.

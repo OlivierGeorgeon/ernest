@@ -214,7 +214,9 @@ public class EpisodicMemory
 		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
 		// Browse all the existing schemas 
-		Object activations = m_tracer.addEventElement("activations", false);
+		Object activations = null;
+		if (m_tracer != null)
+			activations = m_tracer.addEventElement("activations", false);
 		for (ISchema s : m_schemas)
 		{
 			if (!s.isPrimitive())
@@ -226,7 +228,8 @@ public class EpisodicMemory
 					if (s.getContextAct().equals(contextAct))
 					{
 						activated = true;
-						m_tracer.addSubelement(activations, "activation", s + " s=" + s.getIntentionAct().getSatisfaction());
+						if (m_tracer != null)
+							m_tracer.addSubelement(activations, "activation", s + " s=" + s.getIntentionAct().getSatisfaction());
 						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
@@ -293,10 +296,13 @@ public class EpisodicMemory
 		}
 
 		System.out.println("Propose: ");
-		Object proposalElmt = m_tracer.addEventElement("proposals", false);
+		Object proposalElmt = null;
+		if (m_tracer != null)
+			proposalElmt = m_tracer.addEventElement("proposals", false);
 		for (IProposition p : proposals)
 		{
-			m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
+			if (m_tracer != null)
+				m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
 			//System.out.println(p);
 		}
 		

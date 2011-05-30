@@ -1,13 +1,11 @@
 package ernest;
 
-import java.awt.Color;
-
 public class Salience implements ISalience 
 {
 	private int m_direction;
 	private int m_distance;
 	private int m_span;
-	private Color m_color;
+	private EColor m_color;
 	private int m_attractiveness;
 	
 	public void setDirection(int direction) 
@@ -25,12 +23,12 @@ public class Salience implements ISalience
 		m_span = span;
 	}
 
-	public void setColor(Color color) 
+	public void setColor(EColor color) 
 	{
 		m_color = color;
 	}
 
-	public Color getColor() 
+	public EColor getColor() 
 	{
 		return m_color;
 	}

@@ -110,7 +110,8 @@ public class Proposition implements IProposition
 		if (m_expectation >= 0) satisfaction = m_schema.getSucceedingAct().getSatisfaction();
 		else satisfaction = m_schema.getFailingAct().getSatisfaction();
 			
-		String s = String.format("%s w=%s e=%s s=%s", m_schema , m_weight, m_expectation, satisfaction);  
+//		String s = String.format("%s w=%s e=%s s=%s", m_schema , m_weight, m_expectation, satisfaction);  
+		String s = m_schema + " w=" + m_weight + " e=" + m_expectation + " s=" + satisfaction;
 		return s;
 	}
 	

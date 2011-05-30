@@ -1,7 +1,5 @@
 package ernest;
 
-import java.awt.Color;
-
 /**
  * An element of Ernest's sensory state.
  * @author Olivier
@@ -11,7 +9,7 @@ public interface IStimulation
 	/**
 	 * @return The stimulation's color. Used for visualisation in the trace. 
 	 */
-	Color getColor();
+	EColor getColor();
 	
 	/**
 	 * @return The hexadecimal color of the stimulation's color

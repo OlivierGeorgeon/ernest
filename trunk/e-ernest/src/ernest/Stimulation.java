@@ -1,10 +1,8 @@
 package ernest;
 
-import java.awt.Color;
-
 public class Stimulation implements IStimulation 
 {
-	private Color m_color;
+	private EColor m_color;
 	private int m_distance = 0;
 	private int m_type;
 	private int m_value;
@@ -18,7 +16,7 @@ public class Stimulation implements IStimulation
 	 */
 	public Stimulation(int red, int green, int blue, int distance)
 	{
-		m_color= new Color(red, green, blue);
+		m_color= new EColor(red, green, blue);
 		m_distance = distance;
 		m_type = Ernest.STIMULATION_VISUAL;
 		m_value = m_color.getRGB(); 
@@ -47,7 +45,7 @@ public class Stimulation implements IStimulation
 		m_value = value; 		
 	}
 	
-	public Color getColor() 
+	public EColor getColor() 
 	{
 		return m_color;
 	}
@@ -74,7 +72,8 @@ public class Stimulation implements IStimulation
 
 	public String getHexColor()
 	{
-		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
+//		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
+		String s = m_color.getHexCode();
 		return s;
 	}
 
