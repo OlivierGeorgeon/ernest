@@ -1,6 +1,5 @@
 package ernest;
 
-import tracing.ITracer;
 
 /**
  * The main Ernest class used to create an Ernest agent in the environment.

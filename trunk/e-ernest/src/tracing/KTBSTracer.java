@@ -42,6 +42,8 @@ import org.jrdf.writer.ntriples.NTriplesWriterImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import ernest.ITracer;
+
 import utils.Strings;
 
 /**

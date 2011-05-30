@@ -2,7 +2,6 @@ package ernest;
 
 import java.awt.Color;
 
-import tracing.ITracer;
 
 /**
  * The interface through which the environment can use an Ernest agent. 

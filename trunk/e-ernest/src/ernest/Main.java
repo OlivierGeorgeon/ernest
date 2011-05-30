@@ -1,6 +1,5 @@
 package ernest;
 
-import tracing.ITracer;
 import tracing.KTBSTracer;
 
 /**

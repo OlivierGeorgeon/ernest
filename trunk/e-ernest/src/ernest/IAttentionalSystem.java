@@ -2,7 +2,6 @@ package ernest;
 
 import java.awt.Color;
 
-import tracing.ITracer;
 
 /**
  * Ernest's attentional system.

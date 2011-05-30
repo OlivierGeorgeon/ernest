@@ -74,7 +74,8 @@ public class Salience implements ISalience
 		else
 		{
 			ISalience other = (ISalience)o;
-			ret = other.getColor().equals(m_color);
+			//ret = other.getColor().equals(m_color);
+			ret = other.getColor().getRGB() == m_color.getRGB();
 		}
 		
 		return ret;

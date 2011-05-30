@@ -2,7 +2,6 @@ package ernest;
 
 import java.awt.Color;
 
-import tracing.ITracer;
 
 /**
  * The binary sensorymotor system can only sense a binary feedback from the environment.

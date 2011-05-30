@@ -7,7 +7,6 @@ import java.util.Random;
 
 import org.w3c.dom.Element;
 
-import tracing.ITracer;
 
 /**
  * Ernest's episodic memory contains all the schemas and acts ever created.
