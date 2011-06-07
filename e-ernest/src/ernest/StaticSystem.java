@@ -270,7 +270,7 @@ public class StaticSystem
 		int maxAttractiveness = 0;
 		int direction = 0;
 		for (ISalience salience : saliences)
-			if (salience.getAttractiveness() > maxAttractiveness)
+			if (Math.abs(salience.getAttractiveness()) > Math.abs(maxAttractiveness))
 			{
 				maxAttractiveness = salience.getAttractiveness();
 				direction = salience.getDirection();

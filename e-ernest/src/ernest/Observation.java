@@ -126,17 +126,19 @@ public class Observation implements IObservation
 		
 		int satisfaction = 0;
 
-		if (m_attractiveness < Ernest.ATTRACTIVENESS_OF_EMPTY)
+		if (m_attractiveness >= 0)
+		//if (m_attractiveness != Ernest.ATTRACTIVENESS_OF_EMPTY)
 		{
-			// Attractiveness feature
-			if (m_previousAttractiveness == Ernest.ATTRACTIVENESS_OF_EMPTY)
+//			if (m_previousAttractiveness == Ernest.ATTRACTIVENESS_OF_EMPTY)
+//			{
+//				// Reached the edge of a wall (can now move forward)
+//				// (We need a transitional step otherwise we would be comparing direction of repulsiveness with direction of attractiveness)
+//				dynamicFeature = "_";
+//				satisfaction = 20;
+//			}
+//			else
 			{
-				// Reached the edge of a wall (can now move forward)
-				dynamicFeature = "_";
-				satisfaction = 20;
-			}
-			else
-			{
+				// Attractiveness feature
 				if (m_previousAttractiveness > m_attractiveness)
 					// Farther
 					dynamicFeature = "-";		
@@ -172,7 +174,8 @@ public class Observation implements IObservation
 		else
 		{
 			// Attractiveness feature
-			if (m_previousAttractiveness < Ernest.ATTRACTIVENESS_OF_EMPTY)
+			if (m_previousAttractiveness >= 0)
+			//if (m_previousAttractiveness != Ernest.ATTRACTIVENESS_OF_EMPTY)
 				// A wall appeared with a part of it in front of Ernest
 				dynamicFeature = "*";		
 			else if (Math.abs(m_previousDirection - 30 ) < Math.abs(m_direction - 30))
@@ -191,7 +194,7 @@ public class Observation implements IObservation
 			
 			if (!dynamicFeature.equals(""))
 			{
-				if (30 > m_direction)
+				if (30 > m_direction) // (30 is the center in the tactile referential)
 					dynamicFeature = "|" + dynamicFeature;
 				else if (m_direction > 30 )
 					dynamicFeature = dynamicFeature + "|";
@@ -526,7 +529,7 @@ public class Observation implements IObservation
 		        	salience = new Salience();
 		            salience.setDirection((int) (sumDirection / span + .5));
 		            salience.setSpan(span);
-		            salience.setColor(Ernest.COLOR_TOUCH_EMPTY); 
+		            salience.setColor(Ernest.COLOR_TOUCH_WALL); 
 		        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
 		        }
         		
@@ -542,7 +545,7 @@ public class Observation implements IObservation
         	salience = new Salience();
             salience.setDirection((int) (sumDirection / span + .5));
             salience.setSpan(span);
-            salience.setColor(Ernest.COLOR_TOUCH_EMPTY); 
+            salience.setColor(Ernest.COLOR_TOUCH_WALL); 
         	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
         }
 
