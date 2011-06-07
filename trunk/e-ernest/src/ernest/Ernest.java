@@ -53,7 +53,7 @@ public class Ernest implements IErnest
 	public static int ATTRACTIVENESS_OF_FISH  =  400;
 	
 	/** 600 Attractiveness of empty square when facing a wall  */
-	public static int ATTRACTIVENESS_OF_EMPTY  =  600;
+	public static int ATTRACTIVENESS_OF_EMPTY  =  -600;
 	
 	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
 	public static int MATURITY = 1500; // not used currently.
