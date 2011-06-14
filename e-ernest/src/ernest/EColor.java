@@ -24,6 +24,10 @@ public class EColor {
 		color = mRed*65536 + mGreen*256 + mBlue;
 		return color;
 	}
+	
+	public boolean equals(EColor color) {
+		return this.getRGB()==color.getRGB();
+	}
 
 	private String format(int i)
 	{
