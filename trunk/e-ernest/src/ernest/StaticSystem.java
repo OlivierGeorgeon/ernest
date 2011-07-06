@@ -328,13 +328,16 @@ public class StaticSystem
 	 */
 	private int attractiveness(IStimulation stimulation)
 	{
-		if (stimulation.getColor().getRGB() == Ernest.COLOR_WALL.getRGB())
+		// Walls are never attractive
+		if (stimulation.getColor().equals(Ernest.COLOR_WALL))
 			return 0;
 		
+		// Recognized bundles return their attractiveness (depends on time elapsed since last check)
 		for (IBundle bundle : m_bundles)
-			if (bundle.getColor().getRGB() == stimulation.getColor().getRGB())
+			if (bundle.getColor().equals(stimulation.getColor()))
 				return bundle.getAttractiveness(m_clock);
 
+		// Stimulations not recognized get the attractiveness of unknown.
 		return Ernest.ATTRACTIVENESS_OF_UNKNOWN;
 	}
 

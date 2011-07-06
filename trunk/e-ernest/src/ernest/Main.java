@@ -1,6 +1,7 @@
 package ernest;
 
 import tracing.KTBSTracer;
+import tracing.Tracer;
 
 /**
  * The main program.  
@@ -22,6 +23,7 @@ public class Main
 		IErnest ernest = new Ernest();
 		BinarySensorymotorSystem sms = new BinarySensorymotorSystem();
 		ITracer tracer = new KTBSTracer("http://localhost:8001/IDEAL/", "http://salade.dyndns.org/nomodel#");
+		//ITracer tracer = new Tracer(null);
 		
 		// Initialize the Ernest 
 		
