@@ -26,9 +26,11 @@ public class EColor {
 	}
 	
 	public boolean equals(EColor color) {
-		return this.getRGB()==color.getRGB();
+		return this.getRGB() == color.getRGB();
+		//return false;
 	}
 
+	
 	private String format(int i)
 	{
 		if (i == 0)
