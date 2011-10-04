@@ -86,7 +86,7 @@ public class Bundle implements IBundle {
 		else if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 			return Ernest.ATTRACTIVENESS_OF_FISH;
 		else if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
-			return Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+			return Ernest.ATTRACTIVENESS_OF_UNKNOWN ;
 		else
 			return 0;
 	}
@@ -112,6 +112,21 @@ public class Bundle implements IBundle {
 				  other.getTactileStimulation().equals(m_tactileStimulation);
 		}
 		return ret;
+	}
+
+	/**
+	 * Traces the bundle 
+	 */
+	public void trace(ITracer tracer, String label)
+	{
+		Object element = tracer.addEventElement(label);
+		tracer.addSubelement(element, "color", getHexColor());
+		tracer.addSubelement(element, "tactile", getTactileStimulation().getValue() + "");
+		if (getKinematicStimulation() != null)
+			tracer.addSubelement(element, "kinematic", getKinematicStimulation().getValue() + "");
+		if (getGustatoryStimulation() != null)
+			tracer.addSubelement(element, "gustatory", getGustatoryStimulation().getValue() + "");
+		
 	}
 
 }

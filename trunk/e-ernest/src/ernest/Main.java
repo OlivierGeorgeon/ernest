@@ -22,8 +22,8 @@ public class Main
 		
 		IErnest ernest = new Ernest();
 		BinarySensorymotorSystem sms = new BinarySensorymotorSystem();
-		ITracer tracer = new KTBSTracer("http://localhost:8001/IDEAL/", "http://salade.dyndns.org/nomodel#");
-		//ITracer tracer = new Tracer(null);
+		//ITracer tracer = new KTBSTracer("http://localhost:8001/IDEAL/", "http://salade.dyndns.org/nomodel#");
+		ITracer tracer = new Tracer(null);
 		
 		// Initialize the Ernest 
 		

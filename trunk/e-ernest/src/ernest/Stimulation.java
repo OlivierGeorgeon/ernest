@@ -72,8 +72,10 @@ public class Stimulation implements IStimulation
 
 	public String getHexColor()
 	{
-//		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
-		String s = m_color.getHexCode();
+		String s = "000000";
+//		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff);
+		if (m_color !=null)
+			s = m_color.getHexCode();
 		return s;
 	}
 

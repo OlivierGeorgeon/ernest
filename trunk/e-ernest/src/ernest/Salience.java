@@ -7,6 +7,7 @@ public class Salience implements ISalience
 	private int m_span;
 	private EColor m_color;
 	private int m_attractiveness;
+	private IBundle m_bundle;
 	
 	public void setDirection(int direction) 
 	{
@@ -38,6 +39,11 @@ public class Salience implements ISalience
 		m_attractiveness = attractiveness;
 	}
 
+	public void setBundle(IBundle bundle) 
+	{
+		m_bundle = bundle;
+	}
+
 	public int getDirection() 
 	{
 		return m_direction;
@@ -56,6 +62,11 @@ public class Salience implements ISalience
 	public int getAttractiveness() 
 	{
 		return m_attractiveness;
+	}
+	
+	public IBundle getBundle() 
+	{
+		return m_bundle;
 	}
 	
 	/**

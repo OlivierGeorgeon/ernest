@@ -99,9 +99,7 @@ public class StaticSystem
 		{
 			m_bundles.add(bundle);
 			if (m_tracer != null) {
-				Object b = m_tracer.addEventElement("bundle");
-				m_tracer.addSubelement(b, "color", bundle.getHexColor());
-				m_tracer.addSubelement(b, "tactile", bundle.getTactileStimulation().getValue() + "");
+				bundle.trace(m_tracer, "bundle");
 			}
 		}
 		else 
@@ -134,7 +132,7 @@ public class StaticSystem
 	}
 	
 	/**
-	 * Update the current Observation based on the anticiapted observatio and on to the sensory stimulations.
+	 * Update the current Observation based on the anticipated observation and on to the sensory stimulations.
 	 * @param visualCortex The set of visual stimulations in the visual cortex.
 	 * @param tactileCortex The set of tactile stimulations in the tactile cortex.
 	 * @param kinematicStimulation The kinematic stimulation.
@@ -170,10 +168,10 @@ public class StaticSystem
 				salience.setSpan(span);
 				salience.setColor(stimulation.getColor());
 				salience.setAttractiveness(attractiveness(stimulation) + 5 * span );
+				salience.setBundle(bundle(stimulation));
 				saliences.add(salience);
-				if (salience.getDirection() >= 50 &&  salience.getDirection() <= 60 && sumDirection >= 3 )
+				if (salience.getDirection() >= 50 &&  salience.getDirection() <= 60 && span >= 3 )
 					frontColor = stimulation.getColor();
-
 				// look for the next salience
 				stimulation = visualCortex[i];
 				span = 1;
@@ -188,7 +186,7 @@ public class StaticSystem
 		last.setColor(stimulation.getColor());
 		last.setAttractiveness(attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
-		if (last.getDirection() >= 50 &&  last.getDirection() <= 60 && sumDirection >= 3 )
+		if (last.getDirection() >= 50 &&  last.getDirection() <= 60 && span >= 3 )
 			frontColor = stimulation.getColor();
 
 		// The somatotopic map
@@ -275,6 +273,7 @@ public class StaticSystem
 				maxAttractiveness = salience.getAttractiveness();
 				direction = salience.getDirection();
 				m_observation.setSalience(salience);
+				m_observation.setFocusBundle(salience.getBundle());
 			}
 
 		m_observation.setAttractiveness(maxAttractiveness);
@@ -283,6 +282,14 @@ public class StaticSystem
 		// Taste
 		
 		m_observation.setGustatory(gustatoryStimulation);
+		if (gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
+		{
+			if (m_observation.getBundle(1, 1) != null && !m_observation.getBundle(1, 1).getGustatoryStimulation().equals(Ernest.STIMULATION_GUSTATORY_FISH))
+			{
+				m_observation.getBundle(1, 1).setGustatoryStimulation(gustatoryStimulation);
+				m_observation.getBundle(1, 1).trace(m_tracer, "bundle");				
+			}
+		}
 		
 		// Kinematic
 		
@@ -309,13 +316,13 @@ public class StaticSystem
 				m_observation.setFrontBundle(bundle);
 			}
 		}
-		else
-			if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))		
-			{
-				IBundle bundle = addBundle(EColor.BLACK, Ernest.STIMULATION_TOUCH_WALL);
-				bundle.setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
-				m_observation.setFrontBundle(bundle);
-			}
+//		else
+//			if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL) && m_observation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP))		
+//			{
+//				IBundle bundle = addBundle(EColor.BLACK, Ernest.STIMULATION_TOUCH_WALL);
+//				bundle.setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
+//				m_observation.setFrontBundle(bundle);
+//			}
 				
 		return m_observation;
 	}
@@ -339,6 +346,21 @@ public class StaticSystem
 
 		// Stimulations not recognized get the attractiveness of unknown.
 		return Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+	}
+
+	/**
+	 * TODO manage different bundles with more than one visual salience 
+	 * @param stimulation The stimulation
+	 * @return The bundle that match this stimulation.
+	 */
+	private IBundle bundle(IStimulation stimulation)
+	{
+		// Recognized bundles return their attractiveness (depends on time elapsed since last check)
+		for (IBundle bundle : m_bundles)
+			if (bundle.getColor().equals(stimulation.getColor()))
+				return bundle;
+
+		return null;
 	}
 
 	/**

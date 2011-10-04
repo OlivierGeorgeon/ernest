@@ -11,8 +11,8 @@ public class Ernest implements IErnest
 	public static final int INFINITE = 1000;
 	
 	/** Color of regular wall  */
-//	public static EColor COLOR_WALL   = new EColor(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
-	public static EColor COLOR_WALL   = new EColor(72, 104, 88); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	public static EColor COLOR_WALL   = new EColor(0, 128, 0); // For Ernest 10 in Vacuum 
+//	public static EColor COLOR_WALL   = new EColor(72, 104, 88); // For Ernest 10 in Seca
 //	public static EColor COLOR_WATER  = new EColor(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static EColor COLOR_TOUCH_EMPTY  = new EColor(180,180, 180); 
 	public static EColor COLOR_TOUCH_ALGA   = new EColor(100, 100, 100); 

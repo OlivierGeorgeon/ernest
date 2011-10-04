@@ -78,6 +78,8 @@ public interface IObservation
 	 */
 	public IBundle getBundle(int x, int y);
 	
+	public IBundle getFocusBundle();
+	
 	/**
 	 * Set the bundle in front of Ernest (coordinate (1,0) in the peripersonal map)
 	 * @param bundle The bundle to set in front of Ernest.
@@ -108,6 +110,11 @@ public interface IObservation
 	 * @param salience The salience of current attention
 	 */
 	public void setSalience(ISalience salience);
+	
+	/**
+	 * Set this observation's focu bundle
+	 */
+	public void setFocusBundle(IBundle bundle);
 	
 	/**
 	 * @return The salience of current attention 
