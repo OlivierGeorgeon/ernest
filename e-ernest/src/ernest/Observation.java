@@ -18,6 +18,7 @@ public class Observation implements IObservation
 	private int m_previousDirection = Ernest.CENTER_RETINA;
 	private int m_attractiveness = 0;
 	private int m_previousAttractiveness = 0;
+	private IBundle m_previousFocusBundle = null;
 
 	private String m_dynamicFeature  = "";
 	private int m_satisfaction = 0;
@@ -27,12 +28,13 @@ public class Observation implements IObservation
 
 	private boolean m_confirmation;
 	private ISalience m_salience;
+	private IBundle m_focusBundle;
 	
 	// The map of tactile stimulations
 	IStimulation[][] m_tactileMap = new IStimulation[3][3];
 	
 	// The map of surrounding bundles 
-	IBundle[][] m_bundle = new IBundle[3][3];
+	IBundle[][] m_bundleMap = new IBundle[3][3];
 	
 	private String getHexColor() 
 	{
@@ -102,6 +104,11 @@ public class Observation implements IObservation
 			tracer.addSubelement(e, "distance", m_salience.getDistance() + "");
 			tracer.addSubelement(e, "attractiveness", m_salience.getAttractiveness() + "");
 			tracer.addSubelement(e, "span", m_salience.getSpan() + "");
+		}
+		
+		if (m_focusBundle !=null && !m_focusBundle.equals(m_previousFocusBundle))
+		{
+			m_focusBundle.trace(tracer, "focus");
 		}
 		
 		// Local map
@@ -205,10 +212,11 @@ public class Observation implements IObservation
 		
 		if (m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 		{
-			if (m_bundle[1][1] != null)
+			if (m_bundleMap[1][1] != null)
 			{
-				m_bundle[1][1].setGustatoryStimulation(m_gustatoryStimulation);
-				m_bundle[1][1] = null; // The fish disappears from the local map (into Ernest's stomach) !
+				//m_bundleMap[1][1].setGustatoryStimulation(m_gustatoryStimulation);
+				m_bundleMap[1][1] = null; // The fish disappears from the local map (into Ernest's stomach) !
+				
 			}
 			dynamicFeature = "e";
 			satisfaction = 100;
@@ -258,7 +266,7 @@ public class Observation implements IObservation
 			c = EColor.RED;
 		else
 		{
-			if (m_bundle[x][y] == null)
+			if (m_bundleMap[x][y] == null)
 			{
 				if (m_tactileMap[x][y] == null)
 				{
@@ -278,14 +286,14 @@ public class Observation implements IObservation
 				}
 			}
 			else
-				c = m_bundle[x][y].getColor();
+				c = m_bundleMap[x][y].getColor();
 		}		
 		return c;
 	}
 	
 	public IBundle getBundle(int x, int y)
 	{
-		return m_bundle[x][y];
+		return m_bundleMap[x][y];
 	}
 	
 	public IStimulation getTactileStimulation(int x, int y)
@@ -298,22 +306,22 @@ public class Observation implements IObservation
 	
 	public void clearMap()
 	{
-		m_bundle[0][2] = null;
-		m_bundle[1][2] = null;
-		m_bundle[2][2] = null;
+		m_bundleMap[0][2] = null;
+		m_bundleMap[1][2] = null;
+		m_bundleMap[2][2] = null;
 		
-		m_bundle[0][1] = null;
-		m_bundle[1][1] = null;
-		m_bundle[2][1] = null;
+		m_bundleMap[0][1] = null;
+		m_bundleMap[1][1] = null;
+		m_bundleMap[2][1] = null;
 	
-		m_bundle[0][0] = null;
-		m_bundle[1][0] = null; // The front cell is updated when creating or recognizing a bundle
-		m_bundle[2][0] = null;
+		m_bundleMap[0][0] = null;
+		m_bundleMap[1][0] = null; // The front cell is updated when creating or recognizing a bundle
+		m_bundleMap[2][0] = null;
 	}
 
 	public void setFrontBundle(IBundle bundle)
 	{
-		m_bundle[1][0] = bundle;
+		m_bundleMap[1][0] = bundle;
 	}
 	
 	public void anticipate(IObservation previousObservation, IAct act)
@@ -331,22 +339,22 @@ public class Observation implements IObservation
 				{
 					// Move forward
 					if (!getTactileStimulation(0,2).equals(Ernest.STIMULATION_TOUCH_EMPTY))
-						m_bundle[0][2] = previousObservation.getBundle(0,1);
+						m_bundleMap[0][2] = previousObservation.getBundle(0,1);
 					else 
-						m_bundle[0][2] = null;
-					m_bundle[1][2] = previousObservation.getBundle(1,1);
+						m_bundleMap[0][2] = null;
+					m_bundleMap[1][2] = previousObservation.getBundle(1,1);
 					if (!getTactileStimulation(2,2).equals(Ernest.STIMULATION_TOUCH_EMPTY))
-						m_bundle[2][2] = previousObservation.getBundle(2,1);
+						m_bundleMap[2][2] = previousObservation.getBundle(2,1);
 					else 
-						m_bundle[2][2] = null;
+						m_bundleMap[2][2] = null;
 					
 					//if (!getTactileStimulation(0,1).equals(Ernest.STIMULATION_TOUCH_EMPTY))
-						m_bundle[0][1] = previousObservation.getBundle(0,0);
+					m_bundleMap[0][1] = previousObservation.getBundle(0,0);
 					//else 
 					//	m_bundle[0][1] = null;
-					m_bundle[1][1] = previousObservation.getBundle(1,0);
+					m_bundleMap[1][1] = previousObservation.getBundle(1,0);
 					//if (!getTactileStimulation(2,1).equals(Ernest.STIMULATION_TOUCH_EMPTY))
-						m_bundle[2][1] = previousObservation.getBundle(2,0);
+					m_bundleMap[2][1] = previousObservation.getBundle(2,0);
 					//else 
 					//	m_bundle[2][1] = null;
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
@@ -355,17 +363,17 @@ public class Observation implements IObservation
 				else
 				{
 					// No change but bump
-					m_bundle[0][2] = previousObservation.getBundle(0,2);
-					m_bundle[1][2] = previousObservation.getBundle(1,2);
-					m_bundle[2][2] = previousObservation.getBundle(2,2);
+					m_bundleMap[0][2] = previousObservation.getBundle(0,2);
+					m_bundleMap[1][2] = previousObservation.getBundle(1,2);
+					m_bundleMap[2][2] = previousObservation.getBundle(2,2);
 					
-					m_bundle[0][1] = previousObservation.getBundle(0,1);
-					m_bundle[1][1] = previousObservation.getBundle(1,1);
-					m_bundle[2][1] = previousObservation.getBundle(2,1);
+					m_bundleMap[0][1] = previousObservation.getBundle(0,1);
+					m_bundleMap[1][1] = previousObservation.getBundle(1,1);
+					m_bundleMap[2][1] = previousObservation.getBundle(2,1);
 				
-					m_bundle[0][0] = previousObservation.getBundle(0,0);
-					m_bundle[1][0] = previousObservation.getBundle(1,0); // The front cell is updated when creating or recognizing a bundle
-					m_bundle[2][0] = previousObservation.getBundle(2,0);	
+					m_bundleMap[0][0] = previousObservation.getBundle(0,0);
+					m_bundleMap[1][0] = previousObservation.getBundle(1,0); // The front cell is updated when creating or recognizing a bundle
+					m_bundleMap[2][0] = previousObservation.getBundle(2,0);	
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_BUMP;
 					status = false;
 				}
@@ -373,22 +381,22 @@ public class Observation implements IObservation
 			if (schema.getLabel().equals("^"))
 			{
 				// Turn left
-				m_bundle[0][0] = previousObservation.getBundle(0,1);
-				m_bundle[0][1] = previousObservation.getBundle(0,2);
-				m_bundle[0][2] = previousObservation.getBundle(1,2);
+				m_bundleMap[0][0] = previousObservation.getBundle(0,1);
+				m_bundleMap[0][1] = previousObservation.getBundle(0,2);
+				m_bundleMap[0][2] = previousObservation.getBundle(1,2);
 				
 				if (!getTactileStimulation(1,2).equals(Ernest.STIMULATION_TOUCH_EMPTY))
-					m_bundle[1][2] = previousObservation.getBundle(2,2);
+					m_bundleMap[1][2] = previousObservation.getBundle(2,2);
 				else
-					m_bundle[1][2] = null;
-				m_bundle[2][2] = previousObservation.getBundle(2,1);
-				m_bundle[2][1] = previousObservation.getBundle(2,0);
-				m_bundle[2][0] = previousObservation.getBundle(1,0);
-				m_bundle[1][0] = previousObservation.getBundle(0,0); // The front cell is updated when adjusting the observation
+					m_bundleMap[1][2] = null;
+				m_bundleMap[2][2] = previousObservation.getBundle(2,1);
+				m_bundleMap[2][1] = previousObservation.getBundle(2,0);
+				m_bundleMap[2][0] = previousObservation.getBundle(1,0);
+				m_bundleMap[1][0] = previousObservation.getBundle(0,0); // The front cell is updated when adjusting the observation
 
-				m_bundle[1][1] = previousObservation.getBundle(1,1);
+				m_bundleMap[1][1] = previousObservation.getBundle(1,1);
 				
-				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD))
+				if (m_bundleMap[1][0] == null || m_bundleMap[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD))
 				{
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY;
 					status = true;
@@ -402,21 +410,21 @@ public class Observation implements IObservation
 			if (schema.getLabel().equals("v"))
 			{
 				// Turn right 
-				m_bundle[0][0] = previousObservation.getBundle(1,0);
-				m_bundle[1][0] = previousObservation.getBundle(2,0);  // The front cell is updated when adjusting the observation
-				m_bundle[2][0] = previousObservation.getBundle(2,1);
-				m_bundle[2][1] = previousObservation.getBundle(2,2);
-				m_bundle[2][2] = previousObservation.getBundle(1,2);
+				m_bundleMap[0][0] = previousObservation.getBundle(1,0);
+				m_bundleMap[1][0] = previousObservation.getBundle(2,0);  // The front cell is updated when adjusting the observation
+				m_bundleMap[2][0] = previousObservation.getBundle(2,1);
+				m_bundleMap[2][1] = previousObservation.getBundle(2,2);
+				m_bundleMap[2][2] = previousObservation.getBundle(1,2);
 				if (!getTactileStimulation(1,2).equals(Ernest.STIMULATION_TOUCH_EMPTY))
-					m_bundle[1][2] = previousObservation.getBundle(0,2);
+					m_bundleMap[1][2] = previousObservation.getBundle(0,2);
 				else
-					m_bundle[1][2] = null;
-				m_bundle[0][2] = previousObservation.getBundle(0,1);
-				m_bundle[0][1] = previousObservation.getBundle(0,0);
+					m_bundleMap[1][2] = null;
+				m_bundleMap[0][2] = previousObservation.getBundle(0,1);
+				m_bundleMap[0][1] = previousObservation.getBundle(0,0);
 
-				m_bundle[1][1] = previousObservation.getBundle(1,1);
+				m_bundleMap[1][1] = previousObservation.getBundle(1,1);
 				
-				if (m_bundle[1][0] == null || m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD)) 
+				if (m_bundleMap[1][0] == null || m_bundleMap[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_FORWARD)) 
 				{
 					m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY;
 					status = true;
@@ -430,6 +438,7 @@ public class Observation implements IObservation
 			
 		m_previousDirection = previousObservation.getDirection();
 		m_previousAttractiveness = previousObservation.getAttractiveness();
+		m_previousFocusBundle = previousObservation.getFocusBundle();
 		m_confirmation = (status == act.getStatus()); 
 		}		
 		
@@ -453,6 +462,16 @@ public class Observation implements IObservation
 	public ISalience getSalience()
 	{
 		return m_salience;
+	}
+
+	public void setFocusBundle(IBundle bundle)
+	{
+		m_focusBundle = bundle;
+	}
+	
+	public IBundle getFocusBundle()
+	{
+		return m_focusBundle;
 	}
 
 	public void setDirection(int direction) 
@@ -592,28 +611,28 @@ public class Observation implements IObservation
 		boolean grayBundle = false;
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
-				if (m_bundle[i][j] != null && m_bundle[i][j].equals(Ernest.BUNDLE_GRAY)) 
+				if (m_bundleMap[i][j] != null && m_bundleMap[i][j].equals(Ernest.BUNDLE_GRAY)) 
 					grayBundle = true;
 		
 		// If there is no gray bundle yet, then create a gray bundle if a fish is touched.
 		if (!grayBundle)
 		{
-			if (m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[1][0] == null)
-				m_bundle[1][0] = Ernest.BUNDLE_GRAY;
-			else if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[0][0] == null)
-				m_bundle[0][0] = Ernest.BUNDLE_GRAY;
-			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[2][0] == null)
-				m_bundle[2][0] = Ernest.BUNDLE_GRAY;
-			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[0][1] == null)
-				m_bundle[0][1] = Ernest.BUNDLE_GRAY;
-			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[2][1] == null)
-				m_bundle[2][1] = Ernest.BUNDLE_GRAY;
-			else if (m_tactileMap[0][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[0][2] == null)
-				m_bundle[0][2] = Ernest.BUNDLE_GRAY;
-			else if (m_tactileMap[2][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[2][2] == null)
-				m_bundle[2][2] = Ernest.BUNDLE_GRAY;
-			else if (m_tactileMap[1][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundle[1][2] == null)
-				m_bundle[1][2] = Ernest.BUNDLE_GRAY;
+			if (m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][0] == null)
+				m_bundleMap[1][0] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][0] == null)
+				m_bundleMap[0][0] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][0] == null)
+				m_bundleMap[2][0] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][1] == null)
+				m_bundleMap[0][1] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][1] == null)
+				m_bundleMap[2][1] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[0][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][2] == null)
+				m_bundleMap[0][2] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[2][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][2] == null)
+				m_bundleMap[2][2] = Ernest.BUNDLE_GRAY;
+			else if (m_tactileMap[1][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][2] == null)
+				m_bundleMap[1][2] = Ernest.BUNDLE_GRAY;
 		}
 		
 	}

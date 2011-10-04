@@ -62,4 +62,11 @@ public interface IBundle
 	 */
 	void setLastTimeBundled(int clock);
 	
+	/**
+	 * Trace this bundle.
+	 * @param tracer The tracer.
+	 * @param label The label of the element that contains the bundle's data in the trace. 
+	 */
+	void trace(ITracer tracer, String label);
+	
 }

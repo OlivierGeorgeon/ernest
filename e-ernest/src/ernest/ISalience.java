@@ -33,6 +33,11 @@ public interface ISalience
 	void setAttractiveness(int attractiveness);
 
 	/**
+	 * @param The bundle evoked by this salience
+	 */
+	void setBundle(IBundle bundle);
+
+	/**
 	 * @return The central direction of the salience in retinotopic coordinates
 	 */
 	int getDirection();
@@ -56,5 +61,10 @@ public interface ISalience
 	 * @return The salience's attractiveness
 	 */
 	int getAttractiveness();
+
+	/**
+	 * @return The bundle evoked by this salience
+	 */
+	IBundle getBundle();
 
 }
