@@ -1,5 +1,10 @@
 package ernest;
 
+import imos.EpisodicMemory;
+import imos.IAct;
+import imos.IImos;
+import imos.ISchema;
+
 import java.awt.Color;
 
 
@@ -11,16 +16,14 @@ import java.awt.Color;
  */
 public class BinarySensorymotorSystem implements ISensorymotorSystem 
 {
-	protected EpisodicMemory m_episodicMemory;
 	protected StaticSystem m_staticSystem;
-	protected IAttentionalSystem m_attentionalSystem;
+	protected IImos m_imos;
 	protected ITracer m_tracer;
 
-	public void init(EpisodicMemory episodicMemory, StaticSystem staticSystem, IAttentionalSystem attentionalSystem, ITracer tracer)
+	public void init(StaticSystem staticSystem, IImos imos, ITracer tracer)
 	{
-		m_episodicMemory = episodicMemory;
 		m_staticSystem = staticSystem;
-		m_attentionalSystem = attentionalSystem;
+		m_imos = imos;
 		m_tracer = tracer;
 		// TODO clean this up.
 		if (tracer == null) System.out.println("The method Ernest.setTracer() must be called before the method Ernest.setSensorymotorSystem.");
@@ -28,22 +31,7 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	
 	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction) 
 	{
-		IAct a = null;
-		ISchema s =  m_episodicMemory.addPrimitiveSchema(schemaLabel);
-		
-		if (status)
-		{
-			a = m_episodicMemory.addAct("(" + schemaLabel + ")", s, status,  satisfaction,  Ernest.RELIABLE);
-			s.setSucceedingAct(a);
-		}
-		else 
-		{
-			a = m_episodicMemory.addAct("[" + schemaLabel + "]", s, status,  satisfaction,  Ernest.RELIABLE);
-			s.setFailingAct(a);
-		}
-		
-		System.out.println("Primitive schema " + s);
-		return a;
+		return m_imos.addPrimitiveAct(schemaLabel, status, satisfaction);
 	}
 
 	/**
@@ -67,7 +55,7 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 			label = "[" + label + "]";
 			
 		// Create the act in episodic memory if it does not exist.	
-		IAct enactedAct = m_episodicMemory.addAct(label, act.getSchema(), status, 0, Ernest.RELIABLE);
+		IAct enactedAct = m_imos.addAct(label, act.getSchema(), status, 0, Ernest.RELIABLE);
 		
 		return enactedAct;
 	}

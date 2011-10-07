@@ -1,4 +1,5 @@
-package ernest;
+package imos;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,6 +7,12 @@ import java.util.List;
 import java.util.Random;
 
 import org.w3c.dom.Element;
+
+import ernest.Ernest;
+import ernest.IErnest;
+import ernest.IObservation;
+import ernest.ITracer;
+import ernest.StaticSystem;
 
 
 /**
@@ -16,30 +23,34 @@ import org.w3c.dom.Element;
  */
 public class EpisodicMemory 
 {
-	/** The reference to Ernest */
-	private IErnest m_ernest;
-	
 	/** The tracer */
 	private ITracer m_tracer;
+	
+	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
+	private int m_regularitySensibilityThreshold;
+
+	/** Maximum length of a schema (For the schema to be chosen as an intention) */
+	private int m_maxSchemaLength;
 	
 	/** A list of all the schemas ever created ... */
 	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
 
 	/** A list of all the acts ever created. */
-	public List<IAct> m_acts = new ArrayList<IAct>(2000);
+	private List<IAct> m_acts = new ArrayList<IAct>(2000);
 	
+	/** If true then the IMOS does not use random */
+	public static boolean DETERMINISTIC = true; 
+
 	/** Random generator used to break a tie when selecting a schema... */
 	private static Random m_rand = new Random(); 
 	
-	/** If true then Ernest does not use random */
-	public static boolean DETERMINISTIC = true; 
-
 	/** Counter of learned schemas for tracing */
 	private int m_learnCount = 0;
 	
-	EpisodicMemory(IErnest ernest)
+	public EpisodicMemory(int regularitySensibilityThreshold, int maxShemaLength)
 	{
-		m_ernest = ernest;
+		m_regularitySensibilityThreshold = regularitySensibilityThreshold;
+		m_maxSchemaLength = maxShemaLength;
 	}
 	
 	/**
@@ -49,6 +60,23 @@ public class EpisodicMemory
 	{
 		m_tracer = tracer;
 	}
+
+	/**
+	 * @param threshold The regularity sensibility threshold
+	 */
+	public void setRegularitySensibilityThreshold(int threshold)
+	{
+		m_regularitySensibilityThreshold = threshold;
+	}
+	
+	/**
+	 * @param length The maximum length of a schema
+	 */
+	public void setMaxSchemaLength(int length)
+	{
+		m_maxSchemaLength = length;
+	}
+	
 	/**
 	 * @return the number of schema learned since the last reset
 	 */
@@ -184,7 +212,7 @@ public class EpisodicMemory
 			{
 				// Build a new schema with the context act and the intention act 
 				ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
-				newSchema.incWeight();
+				newSchema.incWeight(m_regularitySensibilityThreshold);
 				//System.out.println("learned " + newSchema.getLabel());
 				
 					// Created acts are part of the context 
@@ -244,7 +272,8 @@ public class EpisodicMemory
 					// If primitive act then simulate it in the local map
 					if (s.getIntentionAct().getSchema().isPrimitive())
 					{
-						IObservation anticipation = m_ernest.getStaticSystem().anticipate(s.getIntentionAct());
+						//IObservation anticipation = m_simulationSystem.anticipate(s.getIntentionAct());
+						//IObservation anticipation = m_ernest.getStaticSystem().anticipate(s.getIntentionAct());
 						// If disagreement 
 						//if (anticipation.getStatus() != s.getIntentionAct().getStatus())
 						//if (!anticipation.getStatus())
@@ -254,7 +283,7 @@ public class EpisodicMemory
 					
 					// If the intention is reliable
 					if ((s.getIntentionAct().getConfidence() == Ernest.RELIABLE ) &&						 
-						(s.getIntentionAct().getSchema().getLength() <= Ernest.SCHEMA_MAX_LENGTH ))
+						(s.getIntentionAct().getSchema().getLength() <= m_maxSchemaLength ))
 					{
 						IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
 	
@@ -309,7 +338,7 @@ public class EpisodicMemory
 
 		for (IProposition p : proposals)
 		{
-			IObservation anticipation = m_ernest.getStaticSystem().anticipate(p.getAct());
+			//IObservation anticipation = m_ernest.getStaticSystem().anticipate(p.getAct());
 			// Adjust the proposition's weight based on the anticipation in the local map 
 		}
 		

@@ -1,5 +1,8 @@
 package ernest;
 
+import imos.IAct;
+import imos.ISchema;
+
 import java.util.ArrayList;
 import java.util.List;
 

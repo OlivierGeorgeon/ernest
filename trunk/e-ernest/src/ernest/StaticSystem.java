@@ -1,5 +1,7 @@
 package ernest;
 
+import imos.IAct;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;

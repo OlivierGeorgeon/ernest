@@ -1,5 +1,9 @@
 package ernest;
 
+import imos.EpisodicMemory;
+import imos.IAct;
+import imos.IImos;
+
 import java.awt.Color;
 
 
@@ -16,10 +20,11 @@ public interface ISensorymotorSystem
 	 * Initialize the sensorymotor system with the connection to episodic memory and to the attentional system
 	 * @param episodicMemory Ernest's episodic memory.
 	 * @param staticSystem Ernest's static system.
-	 * @param attentionalSystem Ernest's attentional system.
+	 * @param imos Ernest's motivational system.
 	 * @param tracer Ernest's tracer.
 	 */
-	public void init(EpisodicMemory episodicMemory, StaticSystem staticSystem, IAttentionalSystem attentionalSystem , ITracer tracer);
+	//public void init(EpisodicMemory episodicMemory, StaticSystem staticSystem, IImos attentionalSystem , ITracer tracer);
+	public void init(StaticSystem staticSystem, IImos imos , ITracer tracer);
 
 	/**
 	 * Used by the environment to set the primitive binary sensorymotor acts.
@@ -37,6 +42,7 @@ public interface ISensorymotorSystem
 	 * @return The enacted act
 	 */
 	public IAct enactedAct(IAct act, boolean status);
+	
 	public IAct enactedAct(IAct act, int[][] matrix);
 	
 }
