@@ -1,5 +1,7 @@
 package ernest;
 
+import imos.EpisodicMemory;
+
 import java.awt.Color;
 
 
@@ -17,7 +19,7 @@ public interface IErnest
 	 * @param activationThreshold The Activation Threshold.
 	 * @param schemaMaxLength The Maximum Schema Length.
 	 */
-	public void setParameters(Integer regularityThreshold, Integer activationThreshold, Integer schemaMaxLength); 
+	public void setParameters(int regularityThreshold, int activationThreshold, int schemaMaxLength); 
 	
 	/**
 	 * Set Ernest's sensorymotor system.
@@ -33,13 +35,6 @@ public interface IErnest
 	 */
 	public void setTracer(ITracer tracer);
 
-	/**
-	 * Provide access to Ernest's episodic memory
-	 * (The environment can populate Ernest's episodic memory with inborn composite schemas) 
-	 * @return Ernest's episodic memory. 
-	 */
-    public EpisodicMemory getEpisodicMemory();
-    
 	/**
 	 * Get a description of Ernest's internal state.
 	 * (This is used to display Ernest's internal state in the environment)

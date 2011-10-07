@@ -21,14 +21,12 @@ public interface ITracer<EventElement> {
 	
 	/**
 	 * Closes the current event.
-	 * @param t the time stamp
 	 */
 	public void finishEvent();
 	
 	/**
 	 * Add a new property to the current event
 	 * @param name The property's name
-	 * @param value The property's value
 	 */
 	public EventElement addEventElement(String name);
 	

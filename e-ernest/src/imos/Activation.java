@@ -1,4 +1,5 @@
-package ernest;
+package imos;
+
 
 /**
  * An activation consists of the activated act and a weight that determines the strength of the activation.

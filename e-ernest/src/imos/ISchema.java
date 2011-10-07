@@ -1,4 +1,5 @@
-package ernest;
+package imos;
+
 
 /**
  * A Schema is a sequence of interaction between Ernest and its environment.
@@ -106,11 +107,11 @@ public interface ISchema
 	/**
 	 * Increment the schema's weight (add 1).
 	 */
-	public void incWeight();
+	public void incWeight(int regularitySensibilityThreshold);
 
 	/**
 	 * @param weight The schema's weight.
 	 */
-	public void setWeight(int weight);
+	//public void setWeight(int weight);
 	
 }

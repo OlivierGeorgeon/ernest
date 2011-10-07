@@ -1,4 +1,5 @@
-package ernest;
+package imos;
+
 
 /**
  * A proposal that Ernest enacts a schema.  A proposal consists of 

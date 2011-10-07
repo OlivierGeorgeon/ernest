@@ -1,4 +1,5 @@
-package ernest;
+package imos;
+
 
 /**
  * Represents a proposal for enacting a Schema. 

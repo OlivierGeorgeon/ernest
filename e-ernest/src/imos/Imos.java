@@ -1,4 +1,5 @@
-package ernest;
+package imos;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,16 +8,32 @@ import java.util.Random;
 
 import org.w3c.dom.Element;
 
+import ernest.Ernest;
+import ernest.ITracer;
+import ernest.StaticSystem;
+
 
 /**
- * Ernest's attentional system.
+ * The Intrinsic Motivation System.
  * Maintain lists of acts that represent Ernest's current situation.
  * Control the current enaction.
  * @author ogeorgeon
  */
 
-public class AttentionalSystem implements IAttentionalSystem {
-	
+public class Imos implements IImos 
+{	
+	/** Default regularity sensibility threshold (The weight threshold for an act to become reliable). */
+	public final int REG_SENS_THRESH = 5;
+
+	/** Default Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
+	public final int ACTIVATION_THRESH = 1;
+
+	/** Default maximum length of a schema (For the schema to be chosen as an intention) */
+	public final int SCHEMA_MAX_LENGTH = 100;
+
+	/** Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
+	private int m_activationThreshold = 1;
+
 	/**
 	 * Pointer to Ernest's episodic memory
 	 */
@@ -62,18 +79,24 @@ public class AttentionalSystem implements IAttentionalSystem {
 	private IAct m_primitiveIntention = null;
 
 	/**
-	 * Constructor for the attentional system.
+	 * Constructor for the motivational system.
 	 * Initialize the pointer to episodic memory.
+	 * @param staticSystem The agent's static system.
+	 * @param regularitySensibilityThreshold  The regularity sensibility threshold.
+	 * @param activationThreshold The activation threshold.
+	 * @param maxShemaLength The maximum length of schemas.
 	 */
-	protected AttentionalSystem(EpisodicMemory episodicMemory, StaticSystem staticSystem)
+	public Imos(StaticSystem staticSystem, int regularitySensibilityThreshold, int activationThreshold, int maxShemaLength)
 	{
-		m_episodicMemory = episodicMemory;
+		m_episodicMemory = new EpisodicMemory(regularitySensibilityThreshold, maxShemaLength);
 		m_staticSystem   = staticSystem;
+		m_activationThreshold = activationThreshold;
 	}
 	
 	public void setTracer(ITracer tracer)
 	{
 		m_tracer = tracer;
+		m_episodicMemory.setTracer(tracer);
 	}
 	
 	/**
@@ -83,6 +106,38 @@ public class AttentionalSystem implements IAttentionalSystem {
 	public String getInternalState()
 	{
 		return m_internalState;
+	}
+
+	/**
+	 * Used by the environment to set the primitive binary sensorymotor acts.
+	 * @param schemaLabel The schema's label that is interpreted by the environment.
+	 * @param status The act's succeed or fail status 
+	 * @param satisfaction The act's satisfaction 
+	 * @return the created primitive act
+	 */
+	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction) 
+	{
+		IAct a = null;
+		ISchema s =  m_episodicMemory.addPrimitiveSchema(schemaLabel);
+		
+		if (status)
+		{
+			a = m_episodicMemory.addAct("(" + schemaLabel + ")", s, status,  satisfaction,  Ernest.RELIABLE);
+			s.setSucceedingAct(a);
+		}
+		else 
+		{
+			a = m_episodicMemory.addAct("[" + schemaLabel + "]", s, status,  satisfaction,  Ernest.RELIABLE);
+			s.setFailingAct(a);
+		}
+		
+		System.out.println("Primitive schema " + s);
+		return a;
+	}
+
+	public IAct addAct(String label, ISchema schema, boolean status, int satisfaction, int confidence)
+	{
+		return m_episodicMemory.addAct(label, schema, status, satisfaction, confidence);
 	}
 
 	/**
@@ -212,7 +267,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 			 {
 				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
 				 System.out.println("Streaming " + streamAct);
-				 if (streamAct.getSchema().getWeight() > Ernest.ACTIVATION_THRESH)
+				 if (streamAct.getSchema().getWeight() > m_activationThreshold)
 					 m_episodicMemory.record(m_baseContextList, streamAct);
 			 }
 
@@ -226,7 +281,7 @@ public class AttentionalSystem implements IAttentionalSystem {
 				{
 					IAct streamAct2 = streamContextList2.get(0);
 					System.out.println("Streaming2 " + streamAct2 );
-					if (streamAct2.getSchema().getWeight() > Ernest.ACTIVATION_THRESH)
+					if (streamAct2.getSchema().getWeight() > m_activationThreshold)
 						m_episodicMemory.record(m_baseContextList, streamAct2);
 				}
 			}			

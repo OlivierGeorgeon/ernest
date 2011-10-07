@@ -1,5 +1,7 @@
 package ernest;
 
+import imos.IAct;
+
 
 /**
  * The main construct that represents Ernest's current observation of its situation.

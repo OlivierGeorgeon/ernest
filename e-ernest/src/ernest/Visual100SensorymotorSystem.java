@@ -1,5 +1,7 @@
 package ernest;
 
+import imos.IAct;
+
 import org.w3c.dom.Element;
 
 /**
@@ -68,7 +70,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 			if (act != null)
 			{
 				observation.setDynamicFeature(act);
-				enactedAct = m_episodicMemory.addAct(observation.getLabel(), act.getSchema(), observation.getConfirmation(), observation.getSatisfaction(), Ernest.RELIABLE);
+				enactedAct = m_imos.addAct(observation.getLabel(), act.getSchema(), observation.getConfirmation(), observation.getSatisfaction(), Ernest.RELIABLE);
 			}
 			observation.trace(m_tracer, "current_observation");
 		}

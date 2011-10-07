@@ -1,4 +1,6 @@
-package ernest;
+package imos;
+
+import ernest.Ernest;
 
 /**
  * A Schema is a sequence of interaction between Ernest and its environment.
@@ -140,20 +142,20 @@ public class Schema implements ISchema
 		return m_pointer; 
 	}
 	
-	public void setWeight(int weight)    
-	{ 
-		m_weight = weight; 
-		if (m_weight > Ernest.REG_SENS_THRESH)
-		{
-			getSucceedingAct().setConfidence(Ernest.RELIABLE);
-			// (The failing act is created RELIABLE)
-		}
-	}
+//	public void setWeight(int weight)    
+//	{ 
+//		m_weight = weight; 
+//		if (m_weight > Imos.REG_SENS_THRESH)
+//		{
+//			getSucceedingAct().setConfidence(Ernest.RELIABLE);
+//			// (The failing act is created RELIABLE)
+//		}
+//	}
 	
-	public void incWeight()              
+	public void incWeight(int regularitySensibilityThreshold)              
 	{ 
 		m_weight++;
-		if (m_weight > Ernest.REG_SENS_THRESH)
+		if (m_weight > regularitySensibilityThreshold)
 			getSucceedingAct().setConfidence(Ernest.RELIABLE);
 			// (The failing act is created RELIABLE)
 	}

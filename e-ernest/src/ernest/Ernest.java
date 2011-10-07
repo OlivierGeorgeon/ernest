@@ -1,5 +1,9 @@
 package ernest;
 
+import imos.IAct;
+import imos.IImos;
+import imos.Imos;
+
 
 /**
  * The main Ernest class used to create an Ernest agent in the environment.
@@ -34,15 +38,6 @@ public class Ernest implements IErnest
 
 	/** Reliable act (Can be chosen as an intention and can support higher-level learning). */
 	public static final int RELIABLE = 2;
-
-	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
-	public static int REG_SENS_THRESH = 5;
-
-	/** Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
-	public static int ACTIVATION_THRESH = 1;
-
-	/** Maximum length of a schema (For the schema to be chosen as an intention) */
-	public static int SCHEMA_MAX_LENGTH = INFINITE;
 	
 	/** The duration during which checked landmarks remain not motivating  */
 	public static int PERSISTENCE = 30; // (50 Ernest 9.3)
@@ -125,14 +120,12 @@ public class Ernest implements IErnest
 	/** Ernest's intention is being inhibited by the anticipated observation */
 	private boolean m_inhibited = false;
 	
-	/** Ernest's episodic memory. */
-	private EpisodicMemory m_episodicMemory = new EpisodicMemory(this);
-
 	/** Ernest's static system. */
 	private StaticSystem m_staticSystem = new StaticSystem();
 
-	/** Ernest's attentional system. */
-	private IAttentionalSystem m_attentionalSystem = new AttentionalSystem(m_episodicMemory, m_staticSystem);
+	/** Ernest's motivational system. */
+	//private IImos m_imos = new Imos(m_episodicMemory, m_staticSystem);
+	private IImos m_imos ;
 	
 	/** Ernest's sensorymotor system. */
 	private ISensorymotorSystem m_sensorymotorSystem;
@@ -142,21 +135,13 @@ public class Ernest implements IErnest
 
 	/**
 	 * Set Ernest's fundamental learning parameters.
-	 * Use null to leave a value unchanged.
 	 * @param regularityThreshold The Regularity Sensibility Threshold.
 	 * @param activationThreshold The Activation Threshold.
 	 * @param schemaMaxLength The Maximum Schema Length
 	 */
-	public void setParameters(Integer regularityThreshold, Integer activationThreshold, Integer schemaMaxLength) 
+	public void setParameters(int regularityThreshold, int activationThreshold, int schemaMaxLength) 
 	{
-		if (regularityThreshold != null)
-			REG_SENS_THRESH = regularityThreshold.intValue();
-		
-		if (activationThreshold != null)
-			ACTIVATION_THRESH = activationThreshold.intValue();
-		
-		if (schemaMaxLength != null)
-			SCHEMA_MAX_LENGTH = schemaMaxLength.intValue();
+		m_imos = new Imos(m_staticSystem, regularityThreshold,activationThreshold, schemaMaxLength);
 	}
 
 	/**
@@ -166,7 +151,7 @@ public class Ernest implements IErnest
 	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
 	{
 		m_sensorymotorSystem = sensor;
-		m_sensorymotorSystem.init(m_episodicMemory, m_staticSystem, m_attentionalSystem, m_tracer);
+		m_sensorymotorSystem.init(m_staticSystem, m_imos, m_tracer);
 	};
 	
 	/**
@@ -176,20 +161,9 @@ public class Ernest implements IErnest
 	public void setTracer(ITracer tracer) 
 	{ 
 		m_tracer = tracer;
-		m_attentionalSystem.setTracer(m_tracer); 
-		m_episodicMemory.setTracer(m_tracer);
+		m_imos.setTracer(m_tracer); 
 		m_staticSystem.setTracer(m_tracer);
 	}
-
-	/**
-	 * Provide access to Ernest's episodic memory
-	 * (The environment can populate Ernest's episodic memory with inborn composite schemas) 
-	 * @return Ernest's episodic memory. 
-	 */
-    public EpisodicMemory getEpisodicMemory()
-    {
-    	return m_episodicMemory;
-    }
 
 	/**
 	 * Get a description of Ernest's internal state (to display in the environment).
@@ -197,7 +171,7 @@ public class Ernest implements IErnest
 	 */
 	public String internalState() 
 	{
-		return m_attentionalSystem.getInternalState();
+		return m_imos.getInternalState();
 	}
 		
 	/**
@@ -214,7 +188,7 @@ public class Ernest implements IErnest
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
-		m_primitiveAct = m_attentionalSystem.step(enactedPrimitiveAct);
+		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
 		// Return the schema to enact.
 		
@@ -244,7 +218,7 @@ public class Ernest implements IErnest
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
-		m_primitiveAct = m_attentionalSystem.step(enactedPrimitiveAct);
+		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
 		// Anticipate the next observation
 		

@@ -1,4 +1,6 @@
-package ernest;
+package imos;
+
+import ernest.Ernest;
 
 /**
  * An act is the association of a schema with the feedback the agent receives 
