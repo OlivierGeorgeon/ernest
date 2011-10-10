@@ -47,15 +47,16 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		// The schema is null during the first cycle
 		if (act == null) return null;
 		
-		String label = act.getSchema().getLabel();
+		String actLabel;
 		
 		if (status)
-			label = "(" + label + ")";
+			actLabel = "(" + act.getSchema().getLabel() + ")";
 		else 
-			label = "[" + label + "]";
+			actLabel = "[" + act.getSchema().getLabel() + "]";
 			
 		// Create the act in episodic memory if it does not exist.	
-		IAct enactedAct = m_imos.addAct(label, act.getSchema(), status, 0, Ernest.RELIABLE);
+		//IAct enactedAct = m_imos.addAct(label, act.getSchema(), status, 0, Ernest.RELIABLE);
+		IAct enactedAct = m_imos.constructInteraction(act.getSchema().getLabel(), actLabel, status, 0);
 		
 		return enactedAct;
 	}

@@ -156,7 +156,7 @@ public class Schema implements ISchema
 	{ 
 		m_weight++;
 		if (m_weight > regularitySensibilityThreshold)
-			getSucceedingAct().setConfidence(Ernest.RELIABLE);
+			getSucceedingAct().setConfidence(Imos.RELIABLE);
 			// (The failing act is created RELIABLE)
 	}
 

@@ -218,8 +218,8 @@ public class EpisodicMemory
 					// Created acts are part of the context 
 					// if their context and intention have passed the regularity
 					// if they are based on reliable no�mes
-				if ((contextAct.getConfidence() == Ernest.RELIABLE) &&
-  				   (intentionAct.getConfidence() == Ernest.RELIABLE))
+				if ((contextAct.getConfidence() == Imos.RELIABLE) &&
+  				   (intentionAct.getConfidence() == Imos.RELIABLE))
 				{
 					newContextList.add(newSchema.getSucceedingAct());
 					// System.out.println("Reliable schema " + newSchema);
@@ -282,7 +282,7 @@ public class EpisodicMemory
 					}
 					
 					// If the intention is reliable
-					if ((s.getIntentionAct().getConfidence() == Ernest.RELIABLE ) &&						 
+					if ((s.getIntentionAct().getConfidence() == Imos.RELIABLE ) &&						 
 						(s.getIntentionAct().getSchema().getLength() <= m_maxSchemaLength ))
 					{
 						IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);

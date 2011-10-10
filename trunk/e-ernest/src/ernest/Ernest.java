@@ -33,12 +33,6 @@ public class Ernest implements IErnest
 	/** Ernest's number of rows in the retina */
 	public static int ROW_RETINA = 1;
 	
-	/** Hypothetical act (Cannot be chosen as an intention. Cannot support higher-level learning). */
-	public static final int HYPOTHETICAL = 1;
-
-	/** Reliable act (Can be chosen as an intention and can support higher-level learning). */
-	public static final int RELIABLE = 2;
-	
 	/** The duration during which checked landmarks remain not motivating  */
 	public static int PERSISTENCE = 30; // (50 Ernest 9.3)
 	
@@ -136,12 +130,11 @@ public class Ernest implements IErnest
 	/**
 	 * Set Ernest's fundamental learning parameters.
 	 * @param regularityThreshold The Regularity Sensibility Threshold.
-	 * @param activationThreshold The Activation Threshold.
 	 * @param schemaMaxLength The Maximum Schema Length
 	 */
-	public void setParameters(int regularityThreshold, int activationThreshold, int schemaMaxLength) 
+	public void setParameters(int regularityThreshold, int schemaMaxLength) 
 	{
-		m_imos = new Imos(m_staticSystem, regularityThreshold,activationThreshold, schemaMaxLength);
+		m_imos = new Imos(regularityThreshold, schemaMaxLength);
 	}
 
 	/**
@@ -188,6 +181,7 @@ public class Ernest implements IErnest
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
+		m_staticSystem.tick();
 		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
 		// Return the schema to enact.
@@ -218,6 +212,7 @@ public class Ernest implements IErnest
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
+		m_staticSystem.tick();
 		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
 		// Anticipate the next observation
