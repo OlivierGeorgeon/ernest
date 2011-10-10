@@ -26,7 +26,7 @@ public class Act implements IAct
 	private String m_label = "";
 	
 	/** Ernest's confidence in this act. Only RELIABLE acts generate higher-level learning  */
-	private int m_confidence = Ernest.HYPOTHETICAL;
+	private int m_confidence = Imos.HYPOTHETICAL;
 	
 	/** The act is activated for enaction  */
 	private int m_activation = 0;
@@ -51,7 +51,7 @@ public class Act implements IAct
 			String label = "(" + s.getLabel() +")";
 			int satisfaction = s.getContextAct().getSatisfaction() + s.getIntentionAct().getSatisfaction();
 		
-			return new Act(label, s, true, satisfaction, Ernest.HYPOTHETICAL);
+			return new Act(label, s, true, satisfaction, Imos.HYPOTHETICAL);
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class Act implements IAct
 			String label = "[" + s.getLabel() +"]";
 			// The failing act is RELIABLE because its schema had to be reliable to be enacted and 
 			// making it possible to experience its failure.
-			return new Act(label, s, false, satisfaction, Ernest.RELIABLE);
+			return new Act(label, s, false, satisfaction, Imos.RELIABLE);
 		}
 	}
 	

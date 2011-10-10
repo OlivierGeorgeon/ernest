@@ -16,10 +16,9 @@ public interface IErnest
 	 * Set Ernest's fundamental learning parameters.
 	 * Use null to leave a value unchanged.
 	 * @param regularityThreshold The Regularity Sensibility Threshold.
-	 * @param activationThreshold The Activation Threshold.
 	 * @param schemaMaxLength The Maximum Schema Length.
 	 */
-	public void setParameters(int regularityThreshold, int activationThreshold, int schemaMaxLength); 
+	public void setParameters(int regularityThreshold, int schemaMaxLength); 
 	
 	/**
 	 * Set Ernest's sensorymotor system.

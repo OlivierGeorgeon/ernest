@@ -27,7 +27,7 @@ public class Main
 		
 		// Initialize the Ernest 
 		
-		ernest.setParameters(6, 1, 6);
+		ernest.setParameters(6, 6);
 		ernest.setTracer(tracer);
 		ernest.setSensorymotorSystem(sms);
 

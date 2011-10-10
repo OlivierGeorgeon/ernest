@@ -3,9 +3,7 @@ package imos;
 import ernest.ITracer;
 
 /**
- * The Intrinsic Motivation System.
- * Maintain lists of acts that represent the agent's current situation
- * Control the current enaction.
+ * The Intrinsically Motivated Schema mechanism.
  * @author ogeorgeon
  */
 public interface IImos 
@@ -20,6 +18,26 @@ public interface IImos
 	public IAct step(IAct primitiveEnaction); 
 
 	/**
+	 * Create a primitive act and a primitive schema.
+	 * @param actionLabel The schema's label that is interpreted by the environment.
+	 * @param status The act's succeed or fail status 
+	 * @param satisfaction The act's satisfaction 
+	 * @return the created primitive act.
+	 */
+	public IAct addPrimitiveAct(String actionLabel, boolean status, int satisfaction); 
+	
+	/**
+	 * Constructs a new new interaction in episodic memory based on an existing schema.
+	 * or retrieve the the interaction if it already exists.
+	 * @param actionLabel The interaction's action label in the environment.
+	 * @param actLabel The act's label.
+	 * @param status The act's status.
+	 * @param satisfaction The act's satisfaction.
+	 * @return The act that was created or that already existed.
+	 */
+	public IAct constructInteraction(String actionLabel, String actLabel, boolean status, int satisfaction); 
+
+	/**
 	 * @param tracer The tracer used to generate the activity traces
 	 */
 	public void setTracer(ITracer tracer);
@@ -29,25 +47,5 @@ public interface IImos
 	 * @return A representation of Ernest's internal state
 	 */
 	public String getInternalState();
-	
-	/**
-	 * Create a primitive act and a primitive schema.
-	 * @param schemaLabel The schema's label that is interpreted by the environment.
-	 * @param status The act's succeed or fail status 
-	 * @param satisfaction The act's satisfaction 
-	 * @return the created primitive act.
-	 */
-	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction); 
-	
-	/**
-	 * Create a new act in episodic memory based on an existing schema.
-	 * @param label The act's label.
-	 * @param schema The act's schema.
-	 * @param status Thea act's status.
-	 * @param satisfaction The act's satisfaction.
-	 * @param confidence The act's confidence.
-	 * @return The act that was created or that already existed.
-	 */
-	public IAct addAct(String label, ISchema schema, boolean status, int satisfaction, int confidence);
 	
 }

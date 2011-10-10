@@ -4,19 +4,10 @@ package imos;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-
-import org.w3c.dom.Element;
-
-import ernest.Ernest;
 import ernest.ITracer;
-import ernest.StaticSystem;
-
 
 /**
- * The Intrinsic Motivation System.
- * Maintain lists of acts that represent Ernest's current situation.
- * Control the current enaction.
+ * The Intrinsically Motivated Schema mechanism.
  * @author ogeorgeon
  */
 
@@ -25,29 +16,27 @@ public class Imos implements IImos
 	/** Default regularity sensibility threshold (The weight threshold for an act to become reliable). */
 	public final int REG_SENS_THRESH = 5;
 
-	/** Default Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
-	public final int ACTIVATION_THRESH = 1;
-
 	/** Default maximum length of a schema (For the schema to be chosen as an intention) */
 	public final int SCHEMA_MAX_LENGTH = 100;
 
-	/** Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
-	private int m_activationThreshold = 1;
+	/** Default Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
+	public final int ACTIVATION_THRESH = 1;
 
+	/** Hypothetical act (Cannot be chosen as an intention. Cannot support higher-level learning). */
+	public static final int HYPOTHETICAL = 1;
+
+	/** Reliable act (Can be chosen as an intention and can support higher-level learning). */
+	public static final int RELIABLE = 2;
+	
 	/**
-	 * Pointer to Ernest's episodic memory
+	 * The episodic memory
 	 */
 	private EpisodicMemory m_episodicMemory;
-
-	/**
-	 * Pointer to Ernest's static system
-	 */
-	private StaticSystem m_staticSystem;
 
 	/** The Tracer. */
 	private ITracer m_tracer = null; //new Tracer("trace.txt");
 
-	/** A representation of Ernest's internal state. */
+	/** A representation of the internal state for display in the environment. */
 	private String m_internalState = "";
 	
 	/** Random generator used to break a tie when selecting a schema... */
@@ -81,16 +70,12 @@ public class Imos implements IImos
 	/**
 	 * Constructor for the motivational system.
 	 * Initialize the pointer to episodic memory.
-	 * @param staticSystem The agent's static system.
 	 * @param regularitySensibilityThreshold  The regularity sensibility threshold.
-	 * @param activationThreshold The activation threshold.
 	 * @param maxShemaLength The maximum length of schemas.
 	 */
-	public Imos(StaticSystem staticSystem, int regularitySensibilityThreshold, int activationThreshold, int maxShemaLength)
+	public Imos(int regularitySensibilityThreshold, int maxShemaLength)
 	{
 		m_episodicMemory = new EpisodicMemory(regularitySensibilityThreshold, maxShemaLength);
-		m_staticSystem   = staticSystem;
-		m_activationThreshold = activationThreshold;
 	}
 	
 	public void setTracer(ITracer tracer)
@@ -122,12 +107,12 @@ public class Imos implements IImos
 		
 		if (status)
 		{
-			a = m_episodicMemory.addAct("(" + schemaLabel + ")", s, status,  satisfaction,  Ernest.RELIABLE);
+			a = m_episodicMemory.addAct("(" + schemaLabel + ")", s, status,  satisfaction,  RELIABLE);
 			s.setSucceedingAct(a);
 		}
 		else 
 		{
-			a = m_episodicMemory.addAct("[" + schemaLabel + "]", s, status,  satisfaction,  Ernest.RELIABLE);
+			a = m_episodicMemory.addAct("[" + schemaLabel + "]", s, status,  satisfaction,  RELIABLE);
 			s.setFailingAct(a);
 		}
 		
@@ -135,9 +120,20 @@ public class Imos implements IImos
 		return a;
 	}
 
-	public IAct addAct(String label, ISchema schema, boolean status, int satisfaction, int confidence)
+	public IAct constructInteraction(String actionLabel, String actLabel, boolean status, int satisfaction)
 	{
-		return m_episodicMemory.addAct(label, schema, status, satisfaction, confidence);
+		IAct a = null;
+		ISchema s =  m_episodicMemory.addPrimitiveSchema(actionLabel);
+		
+		a = m_episodicMemory.addAct(actLabel, s, status,  satisfaction,  RELIABLE);
+		
+		// TODO find out what effect the status of constructed interaction will have.
+		//if (status) s.setSucceedingAct(a);
+		//else s.setFailingAct(a);
+
+		System.out.println("Primitive schema " + s);
+		return a;
+		
 	}
 
 	/**
@@ -209,7 +205,6 @@ public class Imos implements IImos
 	public IAct step(IAct primitiveEnaction) 
 	{
 		m_internalState= "";
-		m_staticSystem.tick();
 
 		IAct intentionAct = null;
 		IAct enactedAct = null;
@@ -267,7 +262,7 @@ public class Imos implements IImos
 			 {
 				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
 				 System.out.println("Streaming " + streamAct);
-				 if (streamAct.getSchema().getWeight() > m_activationThreshold)
+				 if (streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
 					 m_episodicMemory.record(m_baseContextList, streamAct);
 			 }
 
@@ -281,7 +276,7 @@ public class Imos implements IImos
 				{
 					IAct streamAct2 = streamContextList2.get(0);
 					System.out.println("Streaming2 " + streamAct2 );
-					if (streamAct2.getSchema().getWeight() > m_activationThreshold)
+					if (streamAct2.getSchema().getWeight() > ACTIVATION_THRESH)
 						m_episodicMemory.record(m_baseContextList, streamAct2);
 				}
 			}			
