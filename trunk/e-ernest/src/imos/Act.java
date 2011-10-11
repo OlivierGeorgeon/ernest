@@ -1,10 +1,9 @@
 package imos;
 
-import ernest.Ernest;
-
 /**
  * An act is the association of a schema with the feedback the agent receives 
- * when trying to enact that schema.    
+ * when trying to enact that schema.  
+ * The term Act and the term interaction are used indifferently.  
  * @author mcohen
  * @author ogeorgeon
  */

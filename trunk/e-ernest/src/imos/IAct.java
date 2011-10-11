@@ -4,6 +4,7 @@ package imos;
 /**
  * An act is the association of a schema with the feedback the agent receives 
  * when trying to enact that schema.    
+ * The term Act and the term interaction are used indifferently.  
  * @author mcohen
  * @author ogeorgeon
  */
@@ -60,12 +61,12 @@ public interface IAct  extends Comparable<IAct>
 	public int getConfidence();
 
 	/**
-	 * @return The noème's activation value.
+	 * @return The act's activation value.
 	 */
 	public int getActivation();
 
 	/**
-	 * @return The noème's lenght (eigher its schema's length or 1 if the noème has no schema).
+	 * @return The act's lenght (eigher its schema's length or 1 if the noème has no schema).
 	 */
 	public int getLength();
 }
