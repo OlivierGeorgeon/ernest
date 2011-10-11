@@ -28,6 +28,7 @@ public class Observation implements IObservation
 	private IStimulation m_kinematicStimulation;
 	private IStimulation m_gustatoryStimulation;
 	private String m_label = "no";
+	private String m_stimuli = "";
 
 	private boolean m_confirmation;
 	private ISalience m_salience;
@@ -86,6 +87,11 @@ public class Observation implements IObservation
 	public String getLabel()
 	{
 		return m_label;
+	}
+
+	public String getStimuli()
+	{
+		return m_stimuli;
 	}
 
 	public void trace(ITracer tracer, String element) 
@@ -241,6 +247,7 @@ public class Observation implements IObservation
 			label = act.getSchema().getLabel() + dynamicFeature;
 		}
 		
+		m_stimuli = dynamicFeature;
 		// Label
 		
 		if (status)

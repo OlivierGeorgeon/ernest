@@ -38,7 +38,6 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	 * Determine the enacted act 
 	 * This implementation does not assume that the resulting act already exists
 	 * If the resulting act did not exist then it is created with a satisfaction value of 0.
-	 * @param schema The enacted primitive schema
 	 * @param status The status returned as a feedback from the enacted schema
 	 * @return The enacted act
 	 */
@@ -56,7 +55,7 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 			
 		// Create the act in episodic memory if it does not exist.	
 		//IAct enactedAct = m_imos.addAct(label, act.getSchema(), status, 0, Ernest.RELIABLE);
-		IAct enactedAct = m_imos.constructInteraction(act.getSchema().getLabel(), actLabel, status, 0);
+		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), "", status, 0);
 		
 		return enactedAct;
 	}
