@@ -42,7 +42,7 @@ public interface IImos
 	/**
 	 * @param tracer The tracer used to generate the activity traces
 	 */
-	public void setTracer(ITracer tracer);
+	public void setTracer(ITracer<Object> tracer);
 	
 	/**
 	 * Get a description of the agent's internal state. (for visualization in the environment).

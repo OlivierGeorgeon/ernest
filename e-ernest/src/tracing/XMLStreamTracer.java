@@ -24,7 +24,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 
 /**
- * This tracer logs the trace by sendin it to a remote php script.
+ * This tracer logs the trace by sending it to a remote php script.
  */
 public class XMLStreamTracer implements ITracer<Element>
 {
@@ -54,7 +54,8 @@ public class XMLStreamTracer implements ITracer<Element>
 	
 	/**
 	 * Initialize the tracer.
-	 * @param fileName The name of the trace file
+	 * @param url The URL of AbstractLite where to send the trace.
+	 * @param cookie The cookie of the user of AbstractLite.
 	 */
 	public XMLStreamTracer(String url, String cookie)
 	{
@@ -323,7 +324,6 @@ public class XMLStreamTracer implements ITracer<Element>
 	/**
 	 * Add a new element to the current event
 	 * @param name The element's name
-	 * @param textContent The element's textual content
 	 * @return a pointer to the element that can be used to add sub elements.
 	 */
 	public Element addEventElement(String name)

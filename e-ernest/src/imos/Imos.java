@@ -34,7 +34,7 @@ public class Imos implements IImos
 	private EpisodicMemory m_episodicMemory;
 
 	/** The Tracer. */
-	private ITracer m_tracer = null; //new Tracer("trace.txt");
+	private ITracer<Object> m_tracer = null; //new Tracer("trace.txt");
 
 	/** A representation of the internal state for display in the environment. */
 	private String m_internalState = "";
@@ -86,7 +86,10 @@ public class Imos implements IImos
 		m_episodicMemory = new EpisodicMemory(regularitySensibilityThreshold, maxShemaLength);
 	}
 
-	public void setTracer(ITracer tracer)
+	/**
+	 * @param tracer The tracer.
+	 */
+	public void setTracer(ITracer<Object> tracer)
 	{
 		m_tracer = tracer;
 		m_episodicMemory.setTracer(tracer);
@@ -103,7 +106,7 @@ public class Imos implements IImos
 
 	/**
 	 * Used by the environment to set the primitive binary sensorymotor acts.
-	 * @param schemaLabel The schema's label that is interpreted by the environment.
+	 * @param actionLabel The schema's label that is interpreted by the environment.
 	 * @param status The act's succeed or fail status 
 	 * @param satisfaction The act's satisfaction 
 	 * @return the created primitive act
@@ -153,8 +156,8 @@ public class Imos implements IImos
 		
 		a = m_episodicMemory.addAct(actLabel, s, status,  satisfaction,  RELIABLE);
 		
-		// TODO find out what effect the status of constructed interaction will have.
-		
+		// Only acts that have no stimuli are the succeeding or the failing act of a schema.
+		// TODO see how to change that.
 		if (stimuliLabel == null || stimuliLabel.equals(""))
 		{
 			if (status) s.setSucceedingAct(a);
