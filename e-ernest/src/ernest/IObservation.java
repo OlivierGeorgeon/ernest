@@ -1,5 +1,7 @@
 package ernest;
 
+import persistence.IBundle;
+import persistence.IStimulation;
 import imos.IAct;
 
 

@@ -4,6 +4,8 @@ import imos.EpisodicMemory;
 
 import java.awt.Color;
 
+import persistence.PersistenceSystem;
+
 
 /**
  * The interface through which the environment can use an Ernest agent. 
@@ -64,6 +66,6 @@ public interface IErnest
 	/**
 	 * @return a pointer to Ernest's static system to be used by other modules
 	 */
-	public StaticSystem getStaticSystem();
+	public PersistenceSystem getStaticSystem();
 
 }

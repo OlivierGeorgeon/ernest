@@ -12,8 +12,8 @@ package imos;
 public class Proposition implements IProposition
 {
 	private ISchema m_schema = null;
-	private Integer m_weight = null;
-	private Integer m_expectation = null;
+	private int m_weight = 0; 
+	private int m_expectation = 0;
 	
 	/**
 	 * Constructor. 
@@ -45,7 +45,7 @@ public class Proposition implements IProposition
 	 */
 	public int getWeight()
 	{
-		return m_weight.intValue();
+		return m_weight;
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class Proposition implements IProposition
 	 */
 	public int getExpectation()
 	{
-		return m_expectation.intValue();
+		return m_expectation;
 	}
 
 	/**
@@ -69,6 +69,7 @@ public class Proposition implements IProposition
 	public IAct getAct()
 	{
 		return (m_expectation >= 0 ? m_schema.getSucceedingAct() : m_schema.getFailingAct());
+		//return m_schema.getSucceedingAct();
 	}
 	
 	/**

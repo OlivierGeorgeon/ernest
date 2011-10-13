@@ -1,5 +1,7 @@
 package ernest;
 
+import persistence.IBundle;
+
 public class Salience implements ISalience 
 {
 	private int m_direction;

@@ -2,11 +2,10 @@ package ernest;
 
 import imos.IAct;
 import imos.ISchema;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.w3c.dom.Element;
+import persistence.IBundle;
+import persistence.IStimulation;
+import persistence.PersistenceSystem;
+import persistence.Stimulation;
 
 
 /**
@@ -16,7 +15,6 @@ import org.w3c.dom.Element;
 public class Observation implements IObservation 
 {
 
-	private int m_clock;
 	private int m_direction = Ernest.CENTER_RETINA;
 	private int m_previousDirection = Ernest.CENTER_RETINA;
 	private int m_attractiveness = 0;
@@ -621,28 +619,28 @@ public class Observation implements IObservation
 		boolean grayBundle = false;
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
-				if (m_bundleMap[i][j] != null && m_bundleMap[i][j].equals(Ernest.BUNDLE_GRAY)) 
+				if (m_bundleMap[i][j] != null && m_bundleMap[i][j].equals(PersistenceSystem.BUNDLE_GRAY)) 
 					grayBundle = true;
 		
 		// If there is no gray bundle yet, then create a gray bundle if a fish is touched.
 		if (!grayBundle)
 		{
 			if (m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][0] == null)
-				m_bundleMap[1][0] = Ernest.BUNDLE_GRAY;
+				m_bundleMap[1][0] = PersistenceSystem.BUNDLE_GRAY;
 			else if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][0] == null)
-				m_bundleMap[0][0] = Ernest.BUNDLE_GRAY;
+				m_bundleMap[0][0] = PersistenceSystem.BUNDLE_GRAY;
 			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][0] == null)
-				m_bundleMap[2][0] = Ernest.BUNDLE_GRAY;
+				m_bundleMap[2][0] = PersistenceSystem.BUNDLE_GRAY;
 			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][1] == null)
-				m_bundleMap[0][1] = Ernest.BUNDLE_GRAY;
+				m_bundleMap[0][1] = PersistenceSystem.BUNDLE_GRAY;
 			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][1] == null)
-				m_bundleMap[2][1] = Ernest.BUNDLE_GRAY;
+				m_bundleMap[2][1] = PersistenceSystem.BUNDLE_GRAY;
 			else if (m_tactileMap[0][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][2] == null)
-				m_bundleMap[0][2] = Ernest.BUNDLE_GRAY;
+				m_bundleMap[0][2] = PersistenceSystem.BUNDLE_GRAY;
 			else if (m_tactileMap[2][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][2] == null)
-				m_bundleMap[2][2] = Ernest.BUNDLE_GRAY;
+				m_bundleMap[2][2] = PersistenceSystem.BUNDLE_GRAY;
 			else if (m_tactileMap[1][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][2] == null)
-				m_bundleMap[1][2] = Ernest.BUNDLE_GRAY;
+				m_bundleMap[1][2] = PersistenceSystem.BUNDLE_GRAY;
 		}
 		
 	}

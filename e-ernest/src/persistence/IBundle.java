@@ -1,4 +1,7 @@
-package ernest;
+package persistence;
+
+import ernest.EColor;
+import ernest.ITracer;
 
 /**
  * A bundle of sensory stimulations. 

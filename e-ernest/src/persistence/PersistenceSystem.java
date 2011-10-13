@@ -1,23 +1,31 @@
-package ernest;
+package persistence;
 
 import imos.IAct;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.w3c.dom.Element;
-
+import ernest.EColor;
+import ernest.Ernest;
+import ernest.IObservation;
+import ernest.ISalience;
+import ernest.ITracer;
+import ernest.Observation;
+import ernest.Salience;
 
 /**
- * Ernest's static system contains all the landmarks ever created.
- * It offers methods to record and refresh new landmarks.
+ * The Persistence System contains all the bundles ever created.
+ * It offers methods to record and refresh new bundles.
  * @author ogeorgeon
  */
-public class StaticSystem 
+public class PersistenceSystem 
 {
 
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
 
+	/** Gray bundle that can arise curiosity */	
+	public static IBundle BUNDLE_GRAY = new Bundle(Ernest.COLOR_TOUCH_ALGA, Ernest.STIMULATION_TOUCH_SOFT);
+	
 	/** Ernest's internal clock  */
 	private int m_clock;
 

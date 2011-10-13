@@ -1,5 +1,7 @@
 package ernest;
 
+import persistence.IBundle;
+
 /**
  * A set of sensory stimulations that are salient as a whole.
  * (contiguous visual stimulations with the same color, or contiguous tactile stimulations with the same feeling)

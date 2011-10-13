@@ -1,5 +1,10 @@
 package ernest;
 
+import persistence.Bundle;
+import persistence.IBundle;
+import persistence.IStimulation;
+import persistence.PersistenceSystem;
+import persistence.Stimulation;
 import imos.IAct;
 import imos.IImos;
 import imos.Imos;
@@ -105,9 +110,6 @@ public class Ernest implements IErnest
 	/** Circadian stimulation (daytime) */	
 	public static int STIMULATION_CIRCADIAN_DAY = 0;
 	
-	/** Gray bundle that can arise curiosity */	
-	public static IBundle BUNDLE_GRAY = new Bundle(COLOR_TOUCH_ALGA, STIMULATION_TOUCH_SOFT);
-	
 	/** Ernest's primitive schema currently enacted */
 	private IAct m_primitiveAct = null;
 	
@@ -115,7 +117,7 @@ public class Ernest implements IErnest
 	private boolean m_inhibited = false;
 	
 	/** Ernest's static system. */
-	private StaticSystem m_staticSystem = new StaticSystem();
+	private PersistenceSystem m_staticSystem = new PersistenceSystem();
 
 	/** Ernest's motivational system. */
 	//private IImos m_imos = new Imos(m_episodicMemory, m_staticSystem);
@@ -237,7 +239,7 @@ public class Ernest implements IErnest
 		return m_staticSystem.getAnticipation();
 	}
 
-	public StaticSystem getStaticSystem()
+	public PersistenceSystem getStaticSystem()
 	{
 		return m_staticSystem;
 	}

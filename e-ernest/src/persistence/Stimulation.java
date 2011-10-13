@@ -1,4 +1,7 @@
-package ernest;
+package persistence;
+
+import ernest.EColor;
+import ernest.Ernest;
 
 public class Stimulation implements IStimulation 
 {

@@ -1,4 +1,6 @@
-package ernest;
+package persistence;
+
+import ernest.EColor;
 
 /**
  * An element of Ernest's sensory state.
@@ -7,7 +9,7 @@ package ernest;
 public interface IStimulation 
 {
 	/**
-	 * @return The stimulation's color. Used for visualisation in the trace. 
+	 * @return The stimulation's color. Used for visualization in the trace. 
 	 */
 	EColor getColor();
 	
@@ -20,15 +22,19 @@ public interface IStimulation
 	 * @return The stimulation's distance. The visual system is assumed to get a sense of distance.
 	 */
 	int getDistance();
+	
+	/**
+	 * @param distance
+	 */
 	void setDistance(int distance);
 	
 	/**
-	 * @returns The type of the stimulus 
+	 * @return The type of the stimulus 
 	 */
 	int getType();
 
 	/**
-	 * @returns The value of the stimulus 
+	 * @return The value of the stimulus 
 	 */
 	int getValue();
 	

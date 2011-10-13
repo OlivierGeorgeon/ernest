@@ -1,7 +1,12 @@
-package ernest;
+package persistence;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ernest.EColor;
+import ernest.Ernest;
+import ernest.ISalience;
+import ernest.ITracer;
 
 /**
  * A bundle of sensory stimulations. 
@@ -80,7 +85,7 @@ public class Bundle implements IBundle {
 	 */
 	public int getAttractiveness(int clock) 
 	{
-		if (m_color.equals(Ernest.BUNDLE_GRAY.getColor()))
+		if (m_color.equals(PersistenceSystem.BUNDLE_GRAY.getColor()))
 			return Ernest.ATTRACTIVENESS_OF_FISH + 10;
 		
 		else if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
