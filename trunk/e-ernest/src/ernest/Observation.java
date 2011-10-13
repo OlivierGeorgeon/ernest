@@ -241,7 +241,12 @@ public class Observation implements IObservation
 		String label = dynamicFeature;
 		if (act != null)
 		{
-			satisfaction = satisfaction + act.getSchema().resultingAct(status).getSatisfaction();
+			if (act.getSchema().getLabel().equals(">"))
+				satisfaction = satisfaction + (status ? 20 : -100);
+			else
+				satisfaction = satisfaction + (status ? -10 : -20);
+				
+			//satisfaction = satisfaction + act.getSchema().resultingAct(status).getSatisfaction();
 			label = act.getSchema().getLabel() + dynamicFeature;
 		}
 		
