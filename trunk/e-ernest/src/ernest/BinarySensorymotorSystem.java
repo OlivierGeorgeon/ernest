@@ -7,6 +7,8 @@ import imos.ISchema;
 
 import java.awt.Color;
 
+import persistence.PersistenceSystem;
+
 
 /**
  * The binary sensorymotor system can only sense a binary feedback from the environment.
@@ -16,11 +18,11 @@ import java.awt.Color;
  */
 public class BinarySensorymotorSystem implements ISensorymotorSystem 
 {
-	protected StaticSystem m_staticSystem;
+	protected PersistenceSystem m_staticSystem;
 	protected IImos m_imos;
 	protected ITracer m_tracer;
 
-	public void init(StaticSystem staticSystem, IImos imos, ITracer tracer)
+	public void init(PersistenceSystem staticSystem, IImos imos, ITracer tracer)
 	{
 		m_staticSystem = staticSystem;
 		m_imos = imos;

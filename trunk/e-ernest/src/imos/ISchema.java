@@ -106,6 +106,8 @@ public interface ISchema
 
 	/**
 	 * Increment the schema's weight (add 1).
+	 * @param regularitySensibilityThreshold The regularity sensibility threshold
+	 * that tells if the schema's act will become reliable. 
 	 */
 	public void incWeight(int regularitySensibilityThreshold);
 

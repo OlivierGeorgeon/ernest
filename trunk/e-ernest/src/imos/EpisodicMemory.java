@@ -8,11 +8,12 @@ import java.util.Random;
 
 import org.w3c.dom.Element;
 
+import persistence.PersistenceSystem;
+
 import ernest.Ernest;
 import ernest.IErnest;
 import ernest.IObservation;
 import ernest.ITracer;
-import ernest.StaticSystem;
 
 
 /**
@@ -327,12 +328,13 @@ public class EpisodicMemory
 		Object proposalElmt = null;
 		if (m_tracer != null)
 			proposalElmt = m_tracer.addEventElement("proposals", false);
-		for (IProposition p : proposals)
-		{
-			if (m_tracer != null)
-				m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
-			//System.out.println(p);
-		}
+		
+//		for (IProposition p : proposals)
+//		{
+//			if (m_tracer != null)
+//				m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
+//			//System.out.println(p);
+//		}
 		
 		// TODO Update the expected satisfaction of each proposed schema based on the local map anticipation
 

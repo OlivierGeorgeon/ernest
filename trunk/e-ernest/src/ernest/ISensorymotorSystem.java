@@ -6,6 +6,8 @@ import imos.IImos;
 
 import java.awt.Color;
 
+import persistence.PersistenceSystem;
+
 
 /**
  * Generic interface for Ernest's sensorymotor system
@@ -24,7 +26,7 @@ public interface ISensorymotorSystem
 	 * @param tracer Ernest's tracer.
 	 */
 	//public void init(EpisodicMemory episodicMemory, StaticSystem staticSystem, IImos attentionalSystem , ITracer tracer);
-	public void init(StaticSystem staticSystem, IImos imos , ITracer tracer);
+	public void init(PersistenceSystem staticSystem, IImos imos , ITracer tracer);
 
 	/**
 	 * Used by the environment to set the primitive binary sensorymotor acts.
