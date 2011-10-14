@@ -36,6 +36,11 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return m_imos.addPrimitiveAct(schemaLabel, status, satisfaction);
 	}
 
+	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
+	{
+		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+	}
+
 	/**
 	 * Determine the enacted act 
 	 * This implementation does not assume that the resulting act already exists
@@ -57,7 +62,7 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 			
 		// Create the act in episodic memory if it does not exist.	
 		//IAct enactedAct = m_imos.addAct(label, act.getSchema(), status, 0, Ernest.RELIABLE);
-		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), "", status, 0);
+		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), (status ? "t" : "f"), 0);
 		
 		return enactedAct;
 	}

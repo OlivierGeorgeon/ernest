@@ -258,20 +258,21 @@ public class EpisodicMemory
 						activated = true;
 						if (m_tracer != null)
 							m_tracer.addSubelement(activations, "activation", s + " s=" + s.getIntentionAct().getSatisfaction());
-						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
+						System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
 				
 				// Activated schemas propose their intention
 				if (activated)
 				{
+					IAct proposedAct = s.getIntentionAct();
 					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
-					int w = s.getWeight() * s.getIntentionAct().getSatisfaction();
-					// The expectation is the proposing schema's weight signed with the proposed act's status  
-					int e = s.getWeight() * (s.getIntentionAct().getStatus() ? 1 : -1);
+					int w = s.getWeight() * proposedAct.getSatisfaction();
+                    // The expectation is the proposing schema's weight signed with the proposed act's status  
+                    int e = s.getWeight() * (s.getIntentionAct().getStatus() ? 1 : -1);
 					
 					// If primitive act then simulate it in the local map
-					if (s.getIntentionAct().getSchema().isPrimitive())
+					if (proposedAct.getSchema().isPrimitive())
 					{
 						//IObservation anticipation = m_simulationSystem.anticipate(s.getIntentionAct());
 						//IObservation anticipation = m_ernest.getStaticSystem().anticipate(s.getIntentionAct());
@@ -283,8 +284,8 @@ public class EpisodicMemory
 					}
 					
 					// If the intention is reliable
-					if ((s.getIntentionAct().getConfidence() == Imos.RELIABLE ) &&						 
-						(s.getIntentionAct().getSchema().getLength() <= m_maxSchemaLength ))
+					if ((proposedAct.getConfidence() == Imos.RELIABLE ) &&						 
+						(proposedAct.getSchema().getLength() <= m_maxSchemaLength ))
 					{
 						IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
 	
@@ -298,12 +299,12 @@ public class EpisodicMemory
 					// the activation is propagated to the intention's schema's context
 					else
 					{
-						if (!s.getIntentionAct().getSchema().isPrimitive())
+						if (!proposedAct.getSchema().isPrimitive())
 						{
 							// only if the intention's intention is positive (this is some form of positive anticipation)
-							if (s.getIntentionAct().getSchema().getIntentionAct().getSatisfaction() > 0)
+							if (proposedAct.getSchema().getIntentionAct().getSatisfaction() > 0)
 							{
-								IProposition p = new Proposition(s.getIntentionAct().getSchema().getContextAct().getSchema(), w, e);
+								IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
 								int i = proposals.indexOf(p);
 								if (i == -1)
 									proposals.add(p);
@@ -340,6 +341,7 @@ public class EpisodicMemory
 
 		for (IProposition p : proposals)
 		{
+			System.out.println(p);
 			//IObservation anticipation = m_ernest.getStaticSystem().anticipate(p.getAct());
 			// Adjust the proposition's weight based on the anticipation in the local map 
 		}
@@ -368,7 +370,8 @@ public class EpisodicMemory
 		
 		ISchema s = p.getSchema();
 		
-		IAct a = p.getAct();
+		//IAct a = p.getAct();
+		IAct a = anticipateInteraction(p.getSchema(), p.getExpectation());
 		
 		// Activate the selected act in Episodic memory.
 		// (The act's activation is set equal to its proposition's weight)
@@ -380,5 +383,33 @@ public class EpisodicMemory
 
 		return a ;
 	}
+
+	/**
+	 * Tells the interaction that is likely to result from the enaction of this schema.
+	 * If the schema has no succeeding or failing act defined, 
+	 * then pick a random interaction attached to this schema.
+	 * TODO Simulate the action to get a better anticipation.
+	 * @param s The schema. 
+	 * @return The anticipated resulting interaction.
+	 */
+	private IAct anticipateInteraction(ISchema s, int e)
+	{
+		IAct anticipateInteraction = null;
+		boolean status = (e >= 0);
+		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
+		
+		// if the schema has no succeeding or failing act, then pick an act randomly
+		if (anticipateInteraction==null)
+		{
+			for (IAct a : m_acts)
+			{
+				//if (a.getSchema().equals(s) && (a.getStatus() == true))
+				if (a.getSchema().equals(s) )
+					anticipateInteraction = a;
+			}
+		}
+		return anticipateInteraction;
+	}
+
 
 }
