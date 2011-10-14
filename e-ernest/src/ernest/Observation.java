@@ -21,12 +21,10 @@ public class Observation implements IObservation
 	private int m_previousAttractiveness = 0;
 	private IBundle m_previousFocusBundle = null;
 
-	private String m_dynamicFeature  = "";
+	private String m_stimuli  = "";
 	private int m_satisfaction = 0;
 	private IStimulation m_kinematicStimulation;
 	private IStimulation m_gustatoryStimulation;
-	private String m_label = "no";
-	private String m_stimuli = "";
 
 	private boolean m_confirmation;
 	private ISalience m_salience;
@@ -52,9 +50,9 @@ public class Observation implements IObservation
 //		return String.format("%06X", getColor(x, y).getRGB()  & 0x00ffffff);
 		return getColor(x,y).getHexCode();
 	}
-	public String getDynamicFeature() 
+	public String getStimuli() 
 	{
-		return m_dynamicFeature;
+		return m_stimuli;
 	}
 
 	public void setSatisfaction(int satisfaction) 
@@ -82,15 +80,13 @@ public class Observation implements IObservation
 		m_gustatoryStimulation = gustatoryStimulation;
 	}
 
-	public String getLabel()
-	{
-		return m_label;
-	}
-
-	public String getStimuli()
-	{
-		return m_stimuli;
-	}
+	/**
+	 * @return
+	 */
+//	public String getStimuli()
+//	{
+//		return m_stimuli;
+//	}
 
 	public void trace(ITracer tracer, String element) 
 	{
@@ -99,7 +95,7 @@ public class Observation implements IObservation
 		Object e = tracer.addEventElement(element);
 
 		tracer.addSubelement(e, "color", getHexColor());
-		tracer.addSubelement(e, "dynamic_feature", m_dynamicFeature);
+		tracer.addSubelement(e, "stimuli", m_stimuli);
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
 		tracer.addSubelement(e, "direction", m_direction + "");
 		if (m_kinematicStimulation != null)
@@ -238,7 +234,7 @@ public class Observation implements IObservation
 		boolean status = true;
 		if (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_BUMP)) status = false;
 		
-		String label = dynamicFeature;
+		dynamicFeature = (status ? "t" : "f") + dynamicFeature;
 		if (act != null)
 		{
 			if (act.getSchema().getLabel().equals(">"))
@@ -247,18 +243,16 @@ public class Observation implements IObservation
 				satisfaction = satisfaction + (status ? -10 : -20);
 				
 			//satisfaction = satisfaction + act.getSchema().resultingAct(status).getSatisfaction();
-			label = act.getSchema().getLabel() + dynamicFeature;
 		}
 		
-		m_stimuli = dynamicFeature;
 		// Label
 		
-		if (status)
-			m_label = "(" + label + ")";
-		else 
-			m_label = "[" + label + "]";
+//		if (status)
+//			m_label = "t" + label;// + ")";
+//		else 
+//			m_label = "f" + label;// + "]";
 		
-		m_dynamicFeature = dynamicFeature;
+		m_stimuli = dynamicFeature;
 		m_satisfaction = satisfaction;
 		
 		if (act != null) m_confirmation = (status == act.getStatus());

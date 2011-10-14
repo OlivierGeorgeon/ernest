@@ -14,6 +14,7 @@ public class Proposition implements IProposition
 	private ISchema m_schema = null;
 	private int m_weight = 0; 
 	private int m_expectation = 0;
+	//private IAct m_act = null;
 	
 	/**
 	 * Constructor. 
@@ -26,6 +27,7 @@ public class Proposition implements IProposition
 		m_schema = s;
 		m_weight = w;
 		m_expectation = e;
+		//m_act = a;
 	}
 
 	/**
@@ -37,6 +39,7 @@ public class Proposition implements IProposition
 	{
 		m_weight += w;
 		m_expectation += e;
+		
 	}
 
 	/**
@@ -48,14 +51,6 @@ public class Proposition implements IProposition
 		return m_weight;
 	}
 
-	/**
-	 * Get the proposal's expectation.
-	 * @return The proposal's expectation.
-	 */
-	public int getExpectation()
-	{
-		return m_expectation;
-	}
 
 	/**
 	 * Get the proposal's schema.
@@ -66,10 +61,14 @@ public class Proposition implements IProposition
 		return m_schema;
 	}
 
-	public IAct getAct()
+//	public IAct getAct()
+//	{
+//		//return (m_expectation >= 0 ? m_schema.getSucceedingAct() : m_schema.getFailingAct());
+//		return m_act;
+//	}
+	public int getExpectation()
 	{
-		return (m_expectation >= 0 ? m_schema.getSucceedingAct() : m_schema.getFailingAct());
-		//return m_schema.getSucceedingAct();
+		return m_expectation;
 	}
 	
 	/**
@@ -108,12 +107,8 @@ public class Proposition implements IProposition
 	 */
 	public String toString()
 	{
-		int satisfaction = 0;
-		if (m_expectation >= 0) satisfaction = m_schema.getSucceedingAct().getSatisfaction();
-		else satisfaction = m_schema.getFailingAct().getSatisfaction();
 			
-//		String s = String.format("%s w=%s e=%s s=%s", m_schema , m_weight, m_expectation, satisfaction);  
-		String s = m_schema + " w=" + m_weight + " e=" + m_expectation + " s=" + satisfaction;
+		String s = m_schema + " w=" + m_weight;
 		return s;
 	}
 	

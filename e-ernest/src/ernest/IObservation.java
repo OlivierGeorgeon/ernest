@@ -14,7 +14,7 @@ public interface IObservation
 	/**
 	 * @return This observation's dynamic feature: reflect the changes in the salience of attention over the last interaction cycle.
 	 */
-	String getDynamicFeature();
+	String getStimuli();
 	
 	/**
 	 * @param satisfaction The satisfaction of the enacted act
@@ -54,11 +54,6 @@ public interface IObservation
 	 * @param taste
 	 */
 	void setGustatory(IStimulation taste);
-	
-	/**
-	 * @return The label of the enacted act
-	 */
-	String getLabel();
 	
 	/**
 	 * Set this observation's somatotopic map

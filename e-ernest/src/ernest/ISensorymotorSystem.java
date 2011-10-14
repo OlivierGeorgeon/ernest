@@ -37,6 +37,8 @@ public interface ISensorymotorSystem
 	 */
 	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction); 
 
+	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction); 
+
 	/**
 	 * Determine the enacted act 
 	 * @param schema The enacted primitive schema

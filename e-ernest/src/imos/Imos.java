@@ -117,7 +117,7 @@ public class Imos implements IImos
 	 */
 	public IAct addPrimitiveAct(String actionLabel, boolean status, int satisfaction) 
 	{
-		return addInteraction( actionLabel, "",  status,  satisfaction);
+		return addInteraction( actionLabel, "",  satisfaction);
 //		IAct a = null;
 //		ISchema s =  m_episodicMemory.addPrimitiveSchema(schemaLabel);
 //		
@@ -147,27 +147,27 @@ public class Imos implements IImos
 	 * yet declared in imos).
 	 * @return The act that was created or that already existed.
 	 */
-	public IAct addInteraction(String actionLabel, String stimuliLabel, boolean status, int satisfaction)
+	public IAct addInteraction(String actionLabel, String stimuliLabel, int satisfaction)
 	{
 		IAct a = null;
 		String actLabel = actionLabel + stimuliLabel;
 		ISchema s =  m_episodicMemory.addPrimitiveSchema(actionLabel);
 		
-		if (status)
-			actLabel = "(" + actLabel + ")";
-		else 
-			actLabel = "[" + actLabel + "]";
+//		if (status)
+//			actLabel = "(" + actLabel + ")";
+//		else 
+//			actLabel = "[" + actLabel + "]";
 		
-		a = m_episodicMemory.addAct(actLabel, s, status,  satisfaction,  RELIABLE);
+		a = m_episodicMemory.addAct(actLabel, s, true,  satisfaction,  RELIABLE);
 		
 		// Only acts that have no stimuli are the succeeding or the failing act of a schema.
 		// TODO see how to change that.
-		if (stimuliLabel == null || stimuliLabel.equals(""))
-		{
-			if (status) 
-				s.setSucceedingAct(a);
-			else s.setFailingAct(a);
-		}
+		//if (stimuliLabel == null || stimuliLabel.equals(""))
+//		{
+//			if (status) 
+//				s.setSucceedingAct(a);
+//			else s.setFailingAct(a);
+//		}
 		
 		System.out.println("Primitive schema " + s);
 		return a;

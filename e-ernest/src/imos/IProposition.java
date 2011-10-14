@@ -11,15 +11,26 @@ package imos;
  */
 public interface IProposition extends Comparable<IProposition> 
 {
+	/**
+	 * @return The proposition's weight.
+	 */
 	public int getWeight();
 	
+	/**
+	 * @param w The weight to add to the proposition.
+	 */
 	public void update(int w, int e);
 
-	public int getExpectation();
-	
+	/**
+	 * @return The proposition's schema.
+	 */
 	public ISchema getSchema();
 	
-	public IAct getAct();
+	/**
+	 * @return The proposition's act
+	 */
+	//public IAct getAct();
+	public int getExpectation();
 		
 	public boolean equals(Object o);
 	

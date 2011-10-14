@@ -74,7 +74,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 			{
 				observation.setDynamicFeature(act);
 				//enactedAct = m_imos.addAct(act.getSchema(), observation.getLabel(), observation.getConfirmation(), observation.getSatisfaction());
-				enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), observation.getDynamicFeature(), observation.getConfirmation(), observation.getSatisfaction());
+				enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), observation.getStimuli(), observation.getSatisfaction());
 			}
 			observation.trace(m_tracer, "current_observation");
 		}
