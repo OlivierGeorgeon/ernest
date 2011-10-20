@@ -8,7 +8,7 @@ import persistence.IStimulation;
 import persistence.Stimulation;
 
 /**
- * Implement Ernest 10.0's sensorymotor system.
+ * Implement Ernest 10.0's sensorimotor system.
  * Ernest 10.0 has a visual resolution of 2x12 pixels and a kinesthetic resolution of 3x3 pixels.
  * @author ogeorgeon
  */

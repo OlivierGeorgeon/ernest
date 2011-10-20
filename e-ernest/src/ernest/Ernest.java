@@ -120,7 +120,6 @@ public class Ernest implements IErnest
 	private PersistenceSystem m_staticSystem = new PersistenceSystem();
 
 	/** Ernest's motivational system. */
-	//private IImos m_imos = new Imos(m_episodicMemory, m_staticSystem);
 	private IImos m_imos ;
 	
 	/** Ernest's sensorymotor system. */
@@ -243,5 +242,11 @@ public class Ernest implements IErnest
 	{
 		return m_staticSystem;
 	}
+
+	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
+	{
+		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+	}
+
 
 }

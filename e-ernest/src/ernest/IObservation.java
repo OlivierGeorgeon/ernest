@@ -35,8 +35,11 @@ public interface IObservation
 	void trace(ITracer tracer, String element);
 	
 	/**
-	 * Computes the observation's dynamic features used to generate the enacted act.
-	 * @param act
+	 * Generate the stimuli for imos.
+	 * The stimuli come from: 
+	 * - The kinematic feature.
+	 * - The variation in attractiveness and in direction of the object of interest. 
+	 * @param act The enacted act.
 	 */
 	void setDynamicFeature(IAct act);
 	
