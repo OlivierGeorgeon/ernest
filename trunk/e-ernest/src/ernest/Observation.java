@@ -80,14 +80,6 @@ public class Observation implements IObservation
 		m_gustatoryStimulation = gustatoryStimulation;
 	}
 
-	/**
-	 * @return
-	 */
-//	public String getStimuli()
-//	{
-//		return m_stimuli;
-//	}
-
 	public void trace(ITracer tracer, String element) 
 	{
 		if (tracer == null)
@@ -126,6 +118,13 @@ public class Observation implements IObservation
 		tracer.addSubelement(localMap, "position_0", getHexColor(2,2));
 	}
 	
+	/**
+	 * Generate the stimuli for imos.
+	 * The stimuli come from: 
+	 * - The kinematic feature.
+	 * - The variation in attractiveness and in direction of the object of interest. 
+	 * @param act The enacted act.
+	 */
 	public void setDynamicFeature(IAct act)
 	{
 		
@@ -137,18 +136,10 @@ public class Observation implements IObservation
 		int satisfaction = 0;
 
 		if (m_attractiveness >= 0)
-		//if (m_attractiveness != Ernest.ATTRACTIVENESS_OF_EMPTY)
 		{
-//			if (m_previousAttractiveness == Ernest.ATTRACTIVENESS_OF_EMPTY)
-//			{
-//				// Reached the edge of a wall (can now move forward)
-//				// (We need a transitional step otherwise we would be comparing direction of repulsiveness with direction of attractiveness)
-//				dynamicFeature = "_";
-//				satisfaction = 20;
-//			}
-//			else
+			// Positive attractiveness
 			{
-				// Attractiveness feature
+				// Attractiveness
 				if (m_previousAttractiveness > m_attractiveness)
 					// Farther
 					dynamicFeature = "-";		
@@ -161,16 +152,13 @@ public class Observation implements IObservation
 				else if (Math.abs(m_previousDirection - Ernest.CENTER_RETINA ) > Math.abs(m_direction - Ernest.CENTER_RETINA))
 					// More inward
 					dynamicFeature = "+";
-				//else 
-					// Same attractiveness, same direction, then it is necessarily a different salience
-					//dynamicFeature = "-";
 		
 				if (dynamicFeature.equals("-"))
 					satisfaction = -100;
 				if (dynamicFeature.equals("+"))
 					satisfaction = 20;
 	
-				// Direction feature
+				// Direction
 				
 				if (!dynamicFeature.equals(""))
 				{
@@ -183,9 +171,10 @@ public class Observation implements IObservation
 		}
 		else
 		{
-			// Attractiveness feature
+			// Negative attractiveness (repulsion)
+			
+			// Variation in attractiveness
 			if (m_previousAttractiveness >= 0)
-			//if (m_previousAttractiveness != Ernest.ATTRACTIVENESS_OF_EMPTY)
 				// A wall appeared with a part of it in front of Ernest
 				dynamicFeature = "*";		
 			else if (Math.abs(m_previousDirection - 30 ) < Math.abs(m_direction - 30))
@@ -225,33 +214,20 @@ public class Observation implements IObservation
 			satisfaction = 100;
 		}
 		
-		// Label
+		// Kinematic
 		
-		// boolean status = (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_FORWARD)
-		//		       || m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY)
-       	//               || m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY));
-
 		boolean status = true;
 		if (m_kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_BUMP)) status = false;
 		
-		dynamicFeature = (status ? "t" : "f") + dynamicFeature;
+		dynamicFeature = (status ? "w" : " ") + dynamicFeature;
 		if (act != null)
 		{
 			if (act.getSchema().getLabel().equals(">"))
 				satisfaction = satisfaction + (status ? 20 : -100);
 			else
 				satisfaction = satisfaction + (status ? -10 : -20);
-				
-			//satisfaction = satisfaction + act.getSchema().resultingAct(status).getSatisfaction();
 		}
-		
-		// Label
-		
-//		if (status)
-//			m_label = "t" + label;// + ")";
-//		else 
-//			m_label = "f" + label;// + "]";
-		
+				
 		m_stimuli = dynamicFeature;
 		m_satisfaction = satisfaction;
 		

@@ -1,9 +1,6 @@
 package ernest;
 
-import imos.EpisodicMemory;
-
-import java.awt.Color;
-
+import imos.IAct;
 import persistence.PersistenceSystem;
 
 
@@ -67,5 +64,13 @@ public interface IErnest
 	 * @return a pointer to Ernest's static system to be used by other modules
 	 */
 	public PersistenceSystem getStaticSystem();
+	
+	/**
+	 * @param schemaLabel The action label in the environment.
+	 * @param stimuliLabel The stimuli.
+	 * @param satisfaction The satisfaction.
+	 * @return The created or already existing act.
+	 */
+	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
 
 }

@@ -156,7 +156,9 @@ public class Imos implements IImos
 //		else 
 //			actLabel = "[" + actLabel + "]";
 		
-		a = m_episodicMemory.addAct(actLabel, s, true,  satisfaction,  RELIABLE);
+		// Primitive satisfactions are multiplied by 10 internally for rounding issues.   
+		// (this value does not impact the agent's behavior)
+		a = m_episodicMemory.addAct(actLabel, s, true,  satisfaction * 10,  RELIABLE);
 		
 		// Only acts that have no stimuli are the succeeding or the failing act of a schema.
 		// TODO see how to change that.
