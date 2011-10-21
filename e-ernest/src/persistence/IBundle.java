@@ -1,6 +1,5 @@
 package persistence;
 
-import ernest.EColor;
 import ernest.ITracer;
 
 /**
@@ -14,9 +13,9 @@ public interface IBundle
 {
 	
 	/**
-	 * @return The bundle's color for visualization in the environment.
+	 * @return The bundle's visual stimulation.
 	 */
-	EColor getColor();
+	IStimulation getVisualStimulation(); 
 	
 	/**
 	 * @return The bundle's color  for tracing.

@@ -70,7 +70,7 @@ public interface IObservation
 	 * @param y y coordinate in the local map
 	 * @return the cell's color in the local map
 	 */
-	public EColor getColor(int x, int y);
+	public int getColor(int x, int y);
 	
 	/**
 	 * Get the bundle in a specific cell in the local map

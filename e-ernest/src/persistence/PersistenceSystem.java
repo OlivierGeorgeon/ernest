@@ -4,7 +4,6 @@ import imos.IAct;
 
 import java.util.ArrayList;
 import java.util.List;
-import ernest.EColor;
 import ernest.Ernest;
 import ernest.IObservation;
 import ernest.ISalience;
@@ -24,7 +23,7 @@ public class PersistenceSystem
 	private ITracer m_tracer = null; 
 
 	/** Gray bundle that can arise curiosity */	
-	public static IBundle BUNDLE_GRAY = new Bundle(Ernest.COLOR_TOUCH_ALGA, Ernest.STIMULATION_TOUCH_SOFT);
+	public static IBundle BUNDLE_GRAY_FISH = new Bundle(Ernest.STIMULATION_VISUAL_TOUCH_FISH, Ernest.STIMULATION_TOUCH_SOFT);
 	
 	/** Ernest's internal clock  */
 	private int m_clock;
@@ -96,13 +95,13 @@ public class PersistenceSystem
 	
 	/**
 	 * Add a bundle to static memory if it does not already exist
-	 * @param color The bundle's color
-	 * @param tactileStimulation Second stimulation
-	 * @return the new bundle if created or the already existing landmark
+	 * @param visualStimulation The bundle's visual stimulation.
+	 * @param tactileStimulation The bundle's tactile stimulation.
+	 * @return the new bundle if created or the already existing bundle.
 	 */
-	public IBundle addBundle(EColor color, IStimulation tactileStimulation)
+	public IBundle addBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
 	{
-		IBundle bundle = new Bundle(color,tactileStimulation);
+		IBundle bundle = new Bundle(visualStimulation,tactileStimulation);
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
@@ -154,8 +153,9 @@ public class PersistenceSystem
 		m_observation = m_anticipation;
 
 		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
-		EColor frontColor = null;
-
+		//EColor frontColor = null;
+		IStimulation frontVisualStimulation = null;
+		
 		// Create a List of the various saliences in the visual field
 
 		IStimulation stimulation = visualCortex[0];
@@ -176,12 +176,13 @@ public class PersistenceSystem
 				salience.setDirection((int) (sumDirection / span + .5));
 				salience.setDistance(stimulation.getDistance());
 				salience.setSpan(span);
-				salience.setColor(stimulation.getColor());
+				//salience.setColor(stimulation.getColor());
+				salience.setBundle(seeBundle(stimulation));
 				salience.setAttractiveness(attractiveness(stimulation) + 5 * span );
-				salience.setBundle(bundle(stimulation));
 				saliences.add(salience);
 				if (salience.getDirection() >= 50 &&  salience.getDirection() <= 60 && span >= 3 )
-					frontColor = stimulation.getColor();
+					//frontColor = stimulation.getColor();
+					frontVisualStimulation = stimulation;
 				// look for the next salience
 				stimulation = visualCortex[i];
 				span = 1;
@@ -193,11 +194,13 @@ public class PersistenceSystem
 		last.setDirection((int) (sumDirection / span + .5));
 		last.setDistance(stimulation.getDistance());
 		last.setSpan(span);
-		last.setColor(stimulation.getColor());
+		//last.setColor(stimulation.getColor());
+		last.setBundle(seeBundle(stimulation));
 		last.setAttractiveness(attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
 		if (last.getDirection() >= 50 &&  last.getDirection() <= 60 && span >= 3 )
-			frontColor = stimulation.getColor();
+			frontVisualStimulation = stimulation;
+			//frontColor = stimulation.getColor();
 
 		// The somatotopic map
 		
@@ -210,7 +213,8 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(55);
 			salience.setSpan(4);
-			salience.setColor(m_observation.getBundle(1, 0).getColor());
+			//salience.setColor(m_observation.getBundle(1, 0).getColor());
+			salience.setBundle(m_observation.getBundle(1, 0));
 			salience.setAttractiveness(m_observation.getBundle(1, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
@@ -219,7 +223,8 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(85);
 			salience.setSpan(4);
-			salience.setColor(m_observation.getBundle(0, 0).getColor());
+			//salience.setColor(m_observation.getBundle(0, 0).getColor());
+			salience.setBundle(m_observation.getBundle(0, 0));
 			salience.setAttractiveness(m_observation.getBundle(0, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
@@ -228,7 +233,8 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(25);
 			salience.setSpan(4);
-			salience.setColor(m_observation.getBundle(2, 0).getColor());
+			//salience.setColor(m_observation.getBundle(2, 0).getColor());
+			salience.setBundle(m_observation.getBundle(2, 0));
 			salience.setAttractiveness(m_observation.getBundle(2, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
@@ -237,7 +243,8 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(110);
 			salience.setSpan(4);
-			salience.setColor(m_observation.getBundle(0, 1).getColor());
+			//salience.setColor(m_observation.getBundle(0, 1).getColor());
+			salience.setBundle(m_observation.getBundle(0, 1));
 			salience.setAttractiveness(m_observation.getBundle(0, 1).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
@@ -246,7 +253,8 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(0);
 			salience.setSpan(4);
-			salience.setColor(m_observation.getBundle(2, 1).getColor());
+			//salience.setColor(m_observation.getBundle(2, 1).getColor());
+			salience.setBundle(m_observation.getBundle(2, 1));
 			salience.setAttractiveness(m_observation.getBundle(2, 1).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
@@ -255,7 +263,8 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(140);
 			salience.setSpan(4);
-			salience.setColor(m_observation.getBundle(0, 2).getColor());
+			//salience.setColor(m_observation.getBundle(0, 2).getColor());
+			salience.setBundle(m_observation.getBundle(0, 2));
 			salience.setAttractiveness(m_observation.getBundle(0, 2).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
@@ -264,7 +273,8 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(-25);
 			salience.setSpan(4);
-			salience.setColor(m_observation.getBundle(2, 2).getColor());
+			//salience.setColor(m_observation.getBundle(2, 2).getColor());
+			salience.setBundle(m_observation.getBundle(2, 2));
 			salience.setAttractiveness(m_observation.getBundle(2, 2).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
@@ -318,11 +328,11 @@ public class PersistenceSystem
 
 		// Bundle the visual icon with the tactile stimulation in front
 		
-		if (frontColor != null )
+		if (frontVisualStimulation != null )
 		{
 			if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
 			{
-				IBundle bundle = addBundle(frontColor, tactileCortex[1][0]);
+				IBundle bundle = addBundle(frontVisualStimulation, tactileCortex[1][0]);
 				m_observation.setFrontBundle(bundle);
 			}
 		}
@@ -346,12 +356,12 @@ public class PersistenceSystem
 	private int attractiveness(IStimulation stimulation)
 	{
 		// Walls are never attractive
-		if (stimulation.getColor().equals(Ernest.COLOR_WALL))
+		if (stimulation.equals(Ernest.STIMULATION_VISUAL_WALL))
 			return 0;
 		
 		// Recognized bundles return their attractiveness (depends on time elapsed since last check)
 		for (IBundle bundle : m_bundles)
-			if (bundle.getColor().equals(stimulation.getColor()))
+			if (bundle.getVisualStimulation().equals(stimulation))
 				return bundle.getAttractiveness(m_clock);
 
 		// Stimulations not recognized get the attractiveness of unknown.
@@ -359,15 +369,15 @@ public class PersistenceSystem
 	}
 
 	/**
-	 * TODO manage different bundles with more than one visual salience 
-	 * @param stimulation The stimulation
+	 * TODO manage bundles that have no visual stimulations.
+	 * TODO manage different bundles with more than one visual salience. 
+	 * @param stimulation The visual stimulation.
 	 * @return The bundle that match this stimulation.
 	 */
-	private IBundle bundle(IStimulation stimulation)
+	private IBundle seeBundle(IStimulation stimulation)
 	{
-		// Recognized bundles return their attractiveness (depends on time elapsed since last check)
 		for (IBundle bundle : m_bundles)
-			if (bundle.getColor().equals(stimulation.getColor()))
+			if (bundle.getVisualStimulation().equals(stimulation))
 				return bundle;
 
 		return null;
@@ -375,7 +385,7 @@ public class PersistenceSystem
 
 	/**
 	 * Generate the anticipated observation from the previous observation and the current intention.
-	 * @param schema The schema whose effects we want to anticipate.
+	 * @param act The act whose effects we want to anticipate.
 	 * @return A pointer to the anticipated observation.
 	 */
 	public IObservation anticipate(IAct act)

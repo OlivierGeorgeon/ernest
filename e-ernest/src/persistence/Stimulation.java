@@ -1,11 +1,14 @@
 package persistence;
 
-import ernest.EColor;
 import ernest.Ernest;
 
+/**
+ * A sensory stimulation.
+ * @author Olivier
+ */
 public class Stimulation implements IStimulation 
 {
-	private EColor m_color;
+	//private EColor m_color;
 	private int m_distance = 0;
 	private int m_type;
 	private int m_value;
@@ -19,10 +22,12 @@ public class Stimulation implements IStimulation
 	 */
 	public Stimulation(int red, int green, int blue, int distance)
 	{
-		m_color= new EColor(red, green, blue);
+		//m_color= new EColor(red, green, blue);
 		m_distance = distance;
 		m_type = Ernest.STIMULATION_VISUAL;
-		m_value = m_color.getRGB(); 
+		//m_value = m_color.getRGB();
+		m_value = red*65536 + green*256 + blue;
+
 	}
 
 	/**
@@ -32,26 +37,14 @@ public class Stimulation implements IStimulation
 	 */
 	public Stimulation(int type, int value)
 	{
-		//if (type == Ernest.STIMULATION_GUSTATORY)
-			//if (value == Ernest.STIMULATION_GUSTATORY_FISH.getValue())
-			//	m_color= Ernest.COLOR_WATER;
-//		if (type == Ernest.STIMULATION_TACTILE)
-//		{
-//			if (value == Ernest.STIMULATION_TOUCH_EMPTY)
-//				m_color= Ernest.COLOR_TOUCH_EMPTY;
-//			if (value == Ernest.STIMULATION_TOUCH_SOFT)
-//				m_color= Ernest.COLOR_TOUCH_ALGA;
-//			if (value == Ernest.STIMULATION_TOUCH_WALL)
-//				m_color= Ernest.COLOR_TOUCH_WALL;
-//		}
 		m_type = type;
 		m_value = value; 		
 	}
 	
-	public EColor getColor() 
-	{
-		return m_color;
-	}
+//	public EColor getColor() 
+//	{
+//		return m_color;
+//	}
 
 	public void setDistance(int distance) 
 	{
@@ -73,13 +66,33 @@ public class Stimulation implements IStimulation
 		return m_value;
 	}
 
-	public String getHexColor()
+//	public String getHexColor()
+//	{
+//		String s = "000000";
+////		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff);
+//		if (m_color !=null)
+//			s = m_color.getHexCode();
+//		return s;
+//	}
+
+	public String getHexColor() 
 	{
-		String s = "000000";
-//		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff);
-		if (m_color !=null)
-			s = m_color.getHexCode();
+		int r = m_value/65536;
+		int g = (m_value - r * 65536)/256;
+		int b = m_value - r * 65536 - g * 256;
+		String s = format(r) + format(g) + format(b);
+
 		return s;
+	}
+	
+	private String format(int i)
+	{
+		if (i == 0)
+			return "00";
+		else if (i < 16)
+			return "0" + Integer.toString(i, 16).toUpperCase();
+		else
+			return Integer.toString(i, 16).toUpperCase();
 	}
 
 	/**
