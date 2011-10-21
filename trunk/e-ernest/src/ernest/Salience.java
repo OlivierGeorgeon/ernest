@@ -7,7 +7,6 @@ public class Salience implements ISalience
 	private int m_direction;
 	private int m_distance;
 	private int m_span;
-	private EColor m_color;
 	private int m_attractiveness;
 	private IBundle m_bundle;
 	
@@ -24,16 +23,6 @@ public class Salience implements ISalience
 	public void setSpan(int span) 
 	{
 		m_span = span;
-	}
-
-	public void setColor(EColor color) 
-	{
-		m_color = color;
-	}
-
-	public EColor getColor() 
-	{
-		return m_color;
 	}
 
 	public void setAttractiveness(int attractiveness) 
@@ -72,7 +61,8 @@ public class Salience implements ISalience
 	}
 	
 	/**
-	 * Icons are equal if they have the same color. 
+	 * Saliences are equal if they have the same bundle. 
+	 * This is not used. TODO find the right criteria of it is ever used. 
 	 */
 	public boolean equals(Object o)
 	{
@@ -88,7 +78,7 @@ public class Salience implements ISalience
 		{
 			ISalience other = (ISalience)o;
 			//ret = other.getColor().equals(m_color);
-			ret = other.getColor().getRGB() == m_color.getRGB();
+			ret = other.getBundle().equals(m_bundle);
 		}
 		
 		return ret;

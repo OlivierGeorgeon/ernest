@@ -27,7 +27,7 @@ public interface ISalience
 	/**
 	 * @param color The color for display in the environment
 	 */
-	void setColor(EColor color);
+	//void setColor(EColor color);
 	
 	/**
 	 * @param attractiveness The salience's attractiveness
@@ -35,7 +35,7 @@ public interface ISalience
 	void setAttractiveness(int attractiveness);
 
 	/**
-	 * @param The bundle evoked by this salience
+	 * @param bundle The bundle evoked by this salience.
 	 */
 	void setBundle(IBundle bundle);
 
@@ -57,7 +57,7 @@ public interface ISalience
 	/**
 	 * @return The color of the salience for display in the environment
 	 */
-	EColor getColor();
+	//EColor getColor();
 
 	/**
 	 * @return The salience's attractiveness

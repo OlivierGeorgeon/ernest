@@ -19,14 +19,14 @@ public class Ernest implements IErnest
 	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
 	
-	/** Color of regular wall  */
-	public static EColor COLOR_WALL   = new EColor(0, 128, 0); // For Ernest 10 in Vacuum 
+	//public static EColor COLOR_WALL   = new EColor(0, 128, 0); // For Ernest 10 in Vacuum 
 //	public static EColor COLOR_WALL   = new EColor(72, 104, 88); // For Ernest 10 in Seca
 //	public static EColor COLOR_WATER  = new EColor(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
-	public static EColor COLOR_TOUCH_EMPTY  = new EColor(180,180, 180); 
-	public static EColor COLOR_TOUCH_ALGA   = new EColor(100, 100, 100); 
-	public static EColor COLOR_TOUCH_FISH  = new EColor(100, 100, 100); 
-	public static EColor COLOR_TOUCH_WALL  = new EColor(0, 0, 0);
+	//public static EColor COLOR_TOUCH_EMPTY  = new EColor(180,180, 180); 
+	//public static EColor COLOR_TOUCH_ALGA   = new EColor(100, 100, 100); 
+
+	//public static EColor COLOR_TOUCH_FISH  = new EColor(100, 100, 100); 
+	//public static EColor COLOR_TOUCH_WALL  = new EColor(0, 0, 0);
 	
 	/** Ernest's retina resolution  */
 	public static int RESOLUTION_RETINA = 12;
@@ -71,17 +71,23 @@ public class Ernest implements IErnest
 	/** The taste of food */
 	public static int STIMULATION_FOOD = 2;
 	
+	/** Stimulation of seeing a regular wall  */
+	public static IStimulation STIMULATION_VISUAL_WALL = new Stimulation(0, 128, 0, 0);
+
+	/** Visual stimulation of touching an alga */
+	public static IStimulation STIMULATION_VISUAL_TOUCH_FISH = new Stimulation(100, 100, 100, 0);
+
 	/** Touch empty */
-	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(STIMULATION_TACTILE, 0);
+	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(STIMULATION_TACTILE, 180 * 65536 + 180 * 256 + 180);
 	
 	/** Touch soft */
-	public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(STIMULATION_TACTILE, 1);
+	public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(STIMULATION_TACTILE, 100 * 65536 + 100 * 256 + 100);
 	
 	/** Touch hard */
-	public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(STIMULATION_TACTILE, 2);
+	public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(STIMULATION_TACTILE, 0);
 	
 	/** Touch fish */
-	public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(STIMULATION_TACTILE, 3);
+	public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(STIMULATION_TACTILE, 100 * 65536 + 100 * 256 + 101);
 	
 	/** Kinematic Stimulation succeed */	
 	public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 0);

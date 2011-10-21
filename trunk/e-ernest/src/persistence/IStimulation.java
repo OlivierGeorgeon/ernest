@@ -1,6 +1,5 @@
 package persistence;
 
-import ernest.EColor;
 
 /**
  * An element of Ernest's sensory state.
@@ -11,7 +10,7 @@ public interface IStimulation
 	/**
 	 * @return The stimulation's color. Used for visualization in the trace. 
 	 */
-	EColor getColor();
+	//EColor getColor();
 	
 	/**
 	 * @return The hexadecimal color of the stimulation's color

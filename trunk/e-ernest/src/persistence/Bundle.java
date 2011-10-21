@@ -2,8 +2,6 @@ package persistence;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import ernest.EColor;
 import ernest.Ernest;
 import ernest.ISalience;
 import ernest.ITracer;
@@ -17,39 +15,38 @@ import ernest.ITracer;
  */
 public class Bundle implements IBundle {
 
-	EColor m_color;
 	ISalience m_visualSalience;
+	IStimulation m_visualStimulation;
 	IStimulation m_tactileStimulation;
 	IStimulation m_gustatoryStimulation;
 	IStimulation m_kinematicStimulation;
 
 	int m_lastTimeBundled;
 	
-	Bundle(EColor color, IStimulation tactileStimulation)
+	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation)
 	{
-		m_color = color;
+		m_visualStimulation = visualStimulation;
 		m_tactileStimulation = tactileStimulation;
 		m_gustatoryStimulation = Ernest.STIMULATION_GUSTATORY_NOTHING;
 		m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
 	}
 	
-	public EColor getColor() 
-	{
-		return m_color;
-	}
-	
 	public String getHexColor() 
 	{
 //		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
-		String s = m_color.getHexCode();
+		String s = m_visualStimulation.getHexColor();
 		return s;
+	}
+	
+	public IStimulation getVisualStimulation() 
+	{
+		return m_visualStimulation;
 	}
 	
 	public IStimulation getTactileStimulation() 
 	{
 		return m_tactileStimulation;
 	}
-	
 	public void setGustatoryStimulation(IStimulation  gustatoryStimulation) 
 	{
 		m_gustatoryStimulation = gustatoryStimulation;
@@ -85,9 +82,10 @@ public class Bundle implements IBundle {
 	 */
 	public int getAttractiveness(int clock) 
 	{
-		if (m_color.equals(PersistenceSystem.BUNDLE_GRAY.getColor()))
+		// The bundle of touching a fish
+		if (m_visualStimulation.equals(PersistenceSystem.BUNDLE_GRAY_FISH.getVisualStimulation()))
 			return Ernest.ATTRACTIVENESS_OF_FISH + 10;
-		
+		// The bundle 
 		else if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 			return Ernest.ATTRACTIVENESS_OF_FISH;
 		else if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
@@ -113,7 +111,7 @@ public class Bundle implements IBundle {
 		else
 		{
 			IBundle other = (IBundle)o;
-			ret = other.getColor().equals(m_color) && 	
+			ret = other.getVisualStimulation().equals(m_visualStimulation) && 	
 				  other.getTactileStimulation().equals(m_tactileStimulation);
 		}
 		return ret;
