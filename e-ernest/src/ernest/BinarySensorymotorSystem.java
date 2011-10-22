@@ -7,7 +7,8 @@ import imos.ISchema;
 
 import java.awt.Color;
 
-import persistence.PersistenceSystem;
+import spas.ISpas;
+import spas.PersistenceMemory;
 
 
 /**
@@ -18,11 +19,11 @@ import persistence.PersistenceSystem;
  */
 public class BinarySensorymotorSystem implements ISensorymotorSystem 
 {
-	protected PersistenceSystem m_staticSystem;
+	protected ISpas m_staticSystem;
 	protected IImos m_imos;
 	protected ITracer m_tracer;
 
-	public void init(PersistenceSystem staticSystem, IImos imos, ITracer tracer)
+	public void init(ISpas staticSystem, IImos imos, ITracer tracer)
 	{
 		m_staticSystem = staticSystem;
 		m_imos = imos;
