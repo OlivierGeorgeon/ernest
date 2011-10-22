@@ -23,7 +23,7 @@ public class PersistenceSystem
 	private ITracer m_tracer = null; 
 
 	/** Gray bundle that can arise curiosity */	
-	public static IBundle BUNDLE_GRAY_FISH = new Bundle(Ernest.STIMULATION_VISUAL_TOUCH_FISH, Ernest.STIMULATION_TOUCH_SOFT);
+	public static IBundle BUNDLE_TOUCH_FISH = Bundle.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);
 	
 	/** Ernest's internal clock  */
 	private int m_clock;
@@ -101,7 +101,7 @@ public class PersistenceSystem
 	 */
 	public IBundle addBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
 	{
-		IBundle bundle = new Bundle(visualStimulation,tactileStimulation);
+		IBundle bundle = Bundle.createVisioTactileBundle(visualStimulation,tactileStimulation);
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
@@ -176,7 +176,7 @@ public class PersistenceSystem
 				salience.setDirection((int) (sumDirection / span + .5));
 				salience.setDistance(stimulation.getDistance());
 				salience.setSpan(span);
-				//salience.setColor(stimulation.getColor());
+				salience.setValue(stimulation.getValue());
 				salience.setBundle(seeBundle(stimulation));
 				salience.setAttractiveness(attractiveness(stimulation) + 5 * span );
 				saliences.add(salience);
@@ -194,7 +194,7 @@ public class PersistenceSystem
 		last.setDirection((int) (sumDirection / span + .5));
 		last.setDistance(stimulation.getDistance());
 		last.setSpan(span);
-		//last.setColor(stimulation.getColor());
+		last.setValue(stimulation.getValue());
 		last.setBundle(seeBundle(stimulation));
 		last.setAttractiveness(attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
@@ -202,18 +202,29 @@ public class PersistenceSystem
 			frontVisualStimulation = stimulation;
 			//frontColor = stimulation.getColor();
 
-		// The somatotopic map
+		// Tactile salience of fish 
+		// Generates fictitious bundles when touching a fish (this helps).
+		// TODO use touch fish-eat bundles
 		
 		m_observation.setMap(tactileCortex);
 		m_observation.setTactileMap();
 		
+		// Tactile salience of walls.
+		
+		ISalience tactileSalience = m_observation.getTactileSalience();
+		if (tactileSalience != null)
+			saliences.add(tactileSalience);
+		
+
 		// Add the various saliences in the local map to the list
+		// Each bundle in the local map creates a salience.
+		
 		if (m_observation.getBundle(1, 0) != null)
 		{
 			ISalience salience = new Salience();
 			salience.setDirection(55);
 			salience.setSpan(4);
-			//salience.setColor(m_observation.getBundle(1, 0).getColor());
+			salience.setValue(m_observation.getBundle(1, 0).getValue());
 			salience.setBundle(m_observation.getBundle(1, 0));
 			salience.setAttractiveness(m_observation.getBundle(1, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
@@ -223,7 +234,7 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(85);
 			salience.setSpan(4);
-			//salience.setColor(m_observation.getBundle(0, 0).getColor());
+			salience.setValue(m_observation.getBundle(0, 0).getValue());
 			salience.setBundle(m_observation.getBundle(0, 0));
 			salience.setAttractiveness(m_observation.getBundle(0, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
@@ -233,7 +244,7 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(25);
 			salience.setSpan(4);
-			//salience.setColor(m_observation.getBundle(2, 0).getColor());
+			salience.setValue(m_observation.getBundle(2, 0).getValue());
 			salience.setBundle(m_observation.getBundle(2, 0));
 			salience.setAttractiveness(m_observation.getBundle(2, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
@@ -243,7 +254,7 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(110);
 			salience.setSpan(4);
-			//salience.setColor(m_observation.getBundle(0, 1).getColor());
+			salience.setValue(m_observation.getBundle(0, 1).getValue());
 			salience.setBundle(m_observation.getBundle(0, 1));
 			salience.setAttractiveness(m_observation.getBundle(0, 1).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
@@ -253,7 +264,7 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(0);
 			salience.setSpan(4);
-			//salience.setColor(m_observation.getBundle(2, 1).getColor());
+			salience.setValue(m_observation.getBundle(2, 1).getValue());
 			salience.setBundle(m_observation.getBundle(2, 1));
 			salience.setAttractiveness(m_observation.getBundle(2, 1).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
@@ -263,7 +274,7 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(140);
 			salience.setSpan(4);
-			//salience.setColor(m_observation.getBundle(0, 2).getColor());
+			salience.setValue(m_observation.getBundle(0, 2).getValue());
 			salience.setBundle(m_observation.getBundle(0, 2));
 			salience.setAttractiveness(m_observation.getBundle(0, 2).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
@@ -273,15 +284,11 @@ public class PersistenceSystem
 			ISalience salience = new Salience();
 			salience.setDirection(-25);
 			salience.setSpan(4);
-			//salience.setColor(m_observation.getBundle(2, 2).getColor());
+			salience.setValue(m_observation.getBundle(2, 2).getValue());
 			salience.setBundle(m_observation.getBundle(2, 2));
 			salience.setAttractiveness(m_observation.getBundle(2, 2).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
-		
-		ISalience tactileSalience = m_observation.getTactileSalience();
-		if (tactileSalience != null)
-			saliences.add(tactileSalience);
 		
 		// Find the most attractive salience in the list (There is at least a wall)
 		
@@ -378,6 +385,19 @@ public class PersistenceSystem
 	{
 		for (IBundle bundle : m_bundles)
 			if (bundle.getVisualStimulation().equals(stimulation))
+				return bundle;
+
+		return null;
+	}
+
+	/**
+	 * @param stimulation The visual stimulation.
+	 * @return The bundle that match this stimulation.
+	 */
+	private IBundle touchBundle(IStimulation stimulation)
+	{
+		for (IBundle bundle : m_bundles)
+			if (bundle.getTactileStimulation().equals(stimulation))
 				return bundle;
 
 		return null;

@@ -25,9 +25,9 @@ public interface ISalience
 	void setSpan(int span);
 	
 	/**
-	 * @param color The color for display in the environment
+	 * @param value The salience's value
 	 */
-	//void setColor(EColor color);
+	void setValue(int value);
 	
 	/**
 	 * @param attractiveness The salience's attractiveness
@@ -55,9 +55,9 @@ public interface ISalience
 	int getSpan();
 	
 	/**
-	 * @return The color of the salience for display in the environment
+	 * @return The value of the salience for display in the trace
 	 */
-	//EColor getColor();
+	int getValue();
 
 	/**
 	 * @return The salience's attractiveness

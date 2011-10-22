@@ -22,6 +22,10 @@ public interface IBundle
 	 */
 	String getHexColor();
 
+	/**
+	 * @return The value of the visual stimulation if any, or of the tactile stimulation
+	 */
+	int getValue();
 	
 	/**
 	 * @return The bundle's tactile stimulation.

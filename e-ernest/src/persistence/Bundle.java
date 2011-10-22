@@ -23,18 +23,55 @@ public class Bundle implements IBundle {
 
 	int m_lastTimeBundled;
 	
-	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation)
+	/**
+	 * Create a bundle with a visual and a tactile stimulation.
+	 * @param visualStimulation The visual stimulation.
+	 * @param tactileStimulation The tactile stimulation.
+	 * @return The bundle.
+	 */
+	public static IBundle createVisioTactileBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
+	{
+		return new Bundle(visualStimulation, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+	}
+	
+	/**
+	 * Create a bundle with a tactile and a gustatory stimulation.
+	 * @param tactileStimulation The tactile stimulation.
+	 * @param gustatoryStimulation The gustatory stimulation.
+	 * @return The bundle
+	 */
+	public static IBundle createTactoGustatoryBundle(IStimulation tactileStimulation, IStimulation gustatoryStimulation)
+	{
+		return new Bundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryStimulation);
+	}
+	
+	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
 	{
 		m_visualStimulation = visualStimulation;
 		m_tactileStimulation = tactileStimulation;
-		m_gustatoryStimulation = Ernest.STIMULATION_GUSTATORY_NOTHING;
-		m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
+		m_kinematicStimulation = kinematicStimulation;//Ernest.STIMULATION_KINEMATIC_FORWARD;
+		m_gustatoryStimulation = gustatoryStimulation; //Ernest.STIMULATION_GUSTATORY_NOTHING;
+	}
+	
+	public int getValue()
+	{
+		int value = 0;
+		if (m_visualStimulation.equals(Ernest.STIMULATION_VISUAL_UNSEEN))
+			value = m_tactileStimulation.getValue();
+		else 
+			value = m_visualStimulation.getValue();
+		
+		return value;
 	}
 	
 	public String getHexColor() 
 	{
-//		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff); 
-		String s = m_visualStimulation.getHexColor();
+		String s = "";
+		if (m_visualStimulation.equals(Ernest.STIMULATION_VISUAL_UNSEEN))
+			s = m_tactileStimulation.getHexColor();
+		else 
+			s = m_visualStimulation.getHexColor();
+			
 		return s;
 	}
 	
@@ -82,20 +119,34 @@ public class Bundle implements IBundle {
 	 */
 	public int getAttractiveness(int clock) 
 	{
+		// Bundles where Ernest bumps are not attractive.
+		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation))
+			return 0;
+
 		// The bundle of touching a fish
-		if (m_visualStimulation.equals(PersistenceSystem.BUNDLE_GRAY_FISH.getVisualStimulation()))
-			return Ernest.ATTRACTIVENESS_OF_FISH + 10;
+		//if (m_visualStimulation.equals(PersistenceSystem.BUNDLE_GRAY_FISH.getVisualStimulation()))
+		//	return Ernest.ATTRACTIVENESS_OF_FISH + 10;
+		
 		// The bundle 
-		else if (m_gustatoryStimulation != null && m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
-			return Ernest.ATTRACTIVENESS_OF_FISH;
+		else if (Ernest.STIMULATION_GUSTATORY_FISH.equals(m_gustatoryStimulation))
+		{
+			if (m_visualStimulation.equals(Ernest.STIMULATION_VISUAL_UNSEEN))
+				// Fish that are touched are more attractive 
+				// TODO see how to change that.
+				return Ernest.ATTRACTIVENESS_OF_FISH + 10;
+			else
+				return Ernest.ATTRACTIVENESS_OF_FISH;
+		}
+		
 		else if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
 			return Ernest.ATTRACTIVENESS_OF_UNKNOWN ;
+		
 		else
 			return 0;
 	}
 
 	/**
-	 * Bundles are equal if they have the same color and tactile stimulations. 
+	 * Bundles are equal if they have the same visual and tactile stimulations. 
 	 * TODO also test other stimulations.
 	 */
 	public boolean equals(Object o)

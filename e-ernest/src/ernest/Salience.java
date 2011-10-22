@@ -9,6 +9,7 @@ public class Salience implements ISalience
 	private int m_span;
 	private int m_attractiveness;
 	private IBundle m_bundle;
+	private int m_value;
 	
 	public void setDirection(int direction) 
 	{
@@ -82,5 +83,14 @@ public class Salience implements ISalience
 		}
 		
 		return ret;
+	}
+	
+	public void setValue(int value)
+	{
+		m_value = value;
+	}
+	public int getValue()
+	{
+		return m_value;
 	}
 }
