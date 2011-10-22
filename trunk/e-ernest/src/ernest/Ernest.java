@@ -1,10 +1,10 @@
 package ernest;
 
-import persistence.Bundle;
-import persistence.IBundle;
-import persistence.IStimulation;
-import persistence.PersistenceSystem;
-import persistence.Stimulation;
+import spas.IObservation;
+import spas.ISpas;
+import spas.IStimulation;
+import spas.Spas;
+import spas.Stimulation;
 import imos.IAct;
 import imos.IImos;
 import imos.Imos;
@@ -123,7 +123,7 @@ public class Ernest implements IErnest
 	private boolean m_inhibited = false;
 	
 	/** Ernest's static system. */
-	private PersistenceSystem m_staticSystem = new PersistenceSystem();
+	private ISpas m_staticSystem = new Spas();
 
 	/** Ernest's motivational system. */
 	private IImos m_imos ;
@@ -244,10 +244,10 @@ public class Ernest implements IErnest
 		return m_staticSystem.getAnticipation();
 	}
 
-	public PersistenceSystem getStaticSystem()
-	{
-		return m_staticSystem;
-	}
+//	public ISpas getStaticSystem()
+//	{
+//		return m_staticSystem;
+//	}
 
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{

@@ -1,7 +1,7 @@
 package ernest;
 
 import imos.IAct;
-import persistence.PersistenceSystem;
+import spas.IObservation;
 
 
 /**
@@ -59,11 +59,6 @@ public interface IErnest
 	 * @return Ernest observation used to draw the local map in the environment 
 	 */
 	public IObservation getObservation();
-	
-	/**
-	 * @return a pointer to Ernest's static system to be used by other modules
-	 */
-	public PersistenceSystem getStaticSystem();
 	
 	/**
 	 * @param schemaLabel The action label in the environment.

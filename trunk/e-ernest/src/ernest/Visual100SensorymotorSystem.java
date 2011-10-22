@@ -1,11 +1,11 @@
 package ernest;
 
 import imos.IAct;
-
 import org.w3c.dom.Element;
 
-import persistence.IStimulation;
-import persistence.Stimulation;
+import spas.IObservation;
+import spas.IStimulation;
+import spas.Stimulation;
 
 /**
  * Implement Ernest 10.0's sensorimotor system.
