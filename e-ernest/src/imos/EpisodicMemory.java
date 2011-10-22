@@ -8,11 +8,11 @@ import java.util.Random;
 
 import org.w3c.dom.Element;
 
-import persistence.PersistenceSystem;
+import spas.IObservation;
+import spas.PersistenceMemory;
 
 import ernest.Ernest;
 import ernest.IErnest;
-import ernest.IObservation;
 import ernest.ITracer;
 
 
