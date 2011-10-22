@@ -179,7 +179,8 @@ public interface IObservation
 
     /**
      * Check from salient tactile features in Ernest's tactile map. 
-     * @return the possible tactile salience that indicates a wall in front of Ernest. Null if no wall in front of Ernest. 
+     * @return the possible tactile salience that indicates a wall in front of Ernest. 
+     * Null if no wall in front of Ernest. 
      */
     public ISalience getTactileSalience();
 

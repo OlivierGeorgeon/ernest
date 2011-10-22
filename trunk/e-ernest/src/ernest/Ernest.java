@@ -75,7 +75,7 @@ public class Ernest implements IErnest
 	public static IStimulation STIMULATION_VISUAL_WALL = new Stimulation(0, 128, 0, 0);
 
 	/** Visual stimulation of touching an alga */
-	public static IStimulation STIMULATION_VISUAL_TOUCH_FISH = new Stimulation(100, 100, 100, 0);
+	public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(0, 0, 0, 0);
 
 	/** Touch empty */
 	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(STIMULATION_TACTILE, 180 * 65536 + 180 * 256 + 180);

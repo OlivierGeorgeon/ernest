@@ -41,11 +41,6 @@ public class Stimulation implements IStimulation
 		m_value = value; 		
 	}
 	
-//	public EColor getColor() 
-//	{
-//		return m_color;
-//	}
-
 	public void setDistance(int distance) 
 	{
 		m_distance = distance;
@@ -66,15 +61,6 @@ public class Stimulation implements IStimulation
 		return m_value;
 	}
 
-//	public String getHexColor()
-//	{
-//		String s = "000000";
-////		String s = String.format("%06X", m_color.getRGB()  & 0x00ffffff);
-//		if (m_color !=null)
-//			s = m_color.getHexCode();
-//		return s;
-//	}
-
 	public String getHexColor() 
 	{
 		int r = m_value/65536;
@@ -94,7 +80,6 @@ public class Stimulation implements IStimulation
 		else
 			return Integer.toString(i, 16).toUpperCase();
 	}
-
 	/**
 	 * Stimulations are equal if they have the same type and value. 
 	 */

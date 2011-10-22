@@ -22,6 +22,7 @@ public class Observation implements IObservation
 	private IBundle m_previousFocusBundle = null;
 
 	private String m_stimuli  = "";
+	private String m_visualStimuli  = "";
 	private int m_satisfaction = 0;
 	private IStimulation m_kinematicStimulation;
 	private IStimulation m_gustatoryStimulation;
@@ -38,17 +39,21 @@ public class Observation implements IObservation
 	
 	private String getHexColor() 
 	{
-		if (m_salience != null && m_salience.getBundle() != null)
-//			return String.format("%06X", m_salience.getColor().getRGB()  & 0x00ffffff);
-			return m_salience.getBundle().getVisualStimulation().getHexColor();
+		// Return the salient bundle's color
+		if (m_salience != null)
+			return getHexColor(m_salience.getValue());
 		else
-			return "008000";
+			// Return white if there is no salience.
+			return "FFFFFF";
 	}
 
 	private String getHexColor(int x, int y) 
 	{
-//		return String.format("%06X", getColor(x, y).getRGB()  & 0x00ffffff);
-		int rgb = getColor(x,y);
+		return getHexColor(getColor(x,y));
+	}
+	
+	private String getHexColor(int rgb) 
+	{
 		int r = rgb/65536;
 		int g = (rgb - r * 65536)/256;
 		int b = rgb - r * 65536 - g * 256;
@@ -105,6 +110,8 @@ public class Observation implements IObservation
 
 		tracer.addSubelement(e, "color", getHexColor());
 		tracer.addSubelement(e, "stimuli", m_stimuli);
+		tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
+		
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
 		tracer.addSubelement(e, "direction", m_direction + "");
 		if (m_kinematicStimulation != null)
@@ -231,6 +238,8 @@ public class Observation implements IObservation
 			satisfaction = 100;
 		}
 		
+		m_visualStimuli = dynamicFeature;
+		
 		// Kinematic
 		
 		boolean status = true;
@@ -262,29 +271,17 @@ public class Observation implements IObservation
 	public int getColor(int x, int y)
 	{
 		int c = 0;
-		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation) && (x == 1) && (y == 0))
-			c = 255 * 65535; // red
+		if (m_kinematicStimulation != null && Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation) && (x == 1) && (y == 0))
+			c = 255 * 65536; // red
 		else
 		{
 			if (m_bundleMap[x][y] == null)
 			{
 				if (m_tactileMap[x][y] == null)
-				{
 					// at startup, the tactile map is not yet initialized
 					c = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
-				}
 				else
-				{
-//					if (m_tactileMap[x][y].equals(Ernest.STIMULATION_TOUCH_EMPTY))
-//						c = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
-//					if (m_tactileMap[x][y].equals(Ernest.STIMULATION_TOUCH_SOFT))
-//						c = Ernest.STIMULATION_TOUCH_SOFT.getValue();
-//					if (m_tactileMap[x][y].equals(Ernest.STIMULATION_TOUCH_WALL))
-//						c = Ernest.STIMULATION_TOUCH_WALL.getValue();
-//					if (m_tactileMap[x][y].equals(Ernest.STIMULATION_TOUCH_FISH))
-//						c = Ernest.STIMULATION_TOUCH_FISH.getValue();
 					c = m_tactileMap[x][y].getValue();
-				}
 			}
 			else
 				c = m_bundleMap[x][y].getVisualStimulation().getValue();
@@ -549,7 +546,7 @@ public class Observation implements IObservation
 		        	salience = new Salience();
 		            salience.setDirection((int) (sumDirection / span + .5));
 		            salience.setSpan(span);
-		            //salience.setColor(Ernest.COLOR_TOUCH_WALL); 
+		            salience.setValue(Ernest.STIMULATION_TOUCH_WALL.getValue()); 
 		        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
 		        }
         		
@@ -565,7 +562,7 @@ public class Observation implements IObservation
         	salience = new Salience();
             salience.setDirection((int) (sumDirection / span + .5));
             salience.setSpan(span);
-            //salience.setColor(Ernest.COLOR_TOUCH_WALL); 
+            salience.setValue(Ernest.STIMULATION_TOUCH_WALL.getValue()); 
         	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
         }
 
@@ -612,28 +609,28 @@ public class Observation implements IObservation
 		boolean grayBundle = false;
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
-				if (m_bundleMap[i][j] != null && m_bundleMap[i][j].equals(PersistenceSystem.BUNDLE_GRAY_FISH)) 
+				if (m_bundleMap[i][j] != null && m_bundleMap[i][j].equals(PersistenceSystem.BUNDLE_TOUCH_FISH)) 
 					grayBundle = true;
 		
 		// If there is no gray bundle yet, then create a gray bundle if a fish is touched.
 		if (!grayBundle)
 		{
 			if (m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][0] == null)
-				m_bundleMap[1][0] = PersistenceSystem.BUNDLE_GRAY_FISH;
+				m_bundleMap[1][0] = PersistenceSystem.BUNDLE_TOUCH_FISH;
 			else if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][0] == null)
-				m_bundleMap[0][0] = PersistenceSystem.BUNDLE_GRAY_FISH;
+				m_bundleMap[0][0] = PersistenceSystem.BUNDLE_TOUCH_FISH;
 			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][0] == null)
-				m_bundleMap[2][0] = PersistenceSystem.BUNDLE_GRAY_FISH;
+				m_bundleMap[2][0] = PersistenceSystem.BUNDLE_TOUCH_FISH;
 			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][1] == null)
-				m_bundleMap[0][1] = PersistenceSystem.BUNDLE_GRAY_FISH;
+				m_bundleMap[0][1] = PersistenceSystem.BUNDLE_TOUCH_FISH;
 			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][1] == null)
-				m_bundleMap[2][1] = PersistenceSystem.BUNDLE_GRAY_FISH;
+				m_bundleMap[2][1] = PersistenceSystem.BUNDLE_TOUCH_FISH;
 			else if (m_tactileMap[0][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][2] == null)
-				m_bundleMap[0][2] = PersistenceSystem.BUNDLE_GRAY_FISH;
+				m_bundleMap[0][2] = PersistenceSystem.BUNDLE_TOUCH_FISH;
 			else if (m_tactileMap[2][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][2] == null)
-				m_bundleMap[2][2] = PersistenceSystem.BUNDLE_GRAY_FISH;
+				m_bundleMap[2][2] = PersistenceSystem.BUNDLE_TOUCH_FISH;
 			else if (m_tactileMap[1][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][2] == null)
-				m_bundleMap[1][2] = PersistenceSystem.BUNDLE_GRAY_FISH;
+				m_bundleMap[1][2] = PersistenceSystem.BUNDLE_TOUCH_FISH;
 		}
 		
 	}
