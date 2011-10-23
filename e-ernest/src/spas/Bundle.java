@@ -17,32 +17,10 @@ public class Bundle implements IBundle {
 	ISalience m_visualSalience;
 	IStimulation m_visualStimulation;
 	IStimulation m_tactileStimulation;
-	IStimulation m_gustatoryStimulation;
 	IStimulation m_kinematicStimulation;
+	IStimulation m_gustatoryStimulation;
 
 	int m_lastTimeBundled;
-	
-	/**
-	 * Create a bundle with a visual and a tactile stimulation.
-	 * @param visualStimulation The visual stimulation.
-	 * @param tactileStimulation The tactile stimulation.
-	 * @return The bundle.
-	 */
-	public static IBundle createVisioTactileBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
-	{
-		return new Bundle(visualStimulation, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-	}
-	
-	/**
-	 * Create a bundle with a tactile and a gustatory stimulation.
-	 * @param tactileStimulation The tactile stimulation.
-	 * @param gustatoryStimulation The gustatory stimulation.
-	 * @return The bundle
-	 */
-	public static IBundle createTactoGustatoryBundle(IStimulation tactileStimulation, IStimulation gustatoryStimulation)
-	{
-		return new Bundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryStimulation);
-	}
 	
 	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
 	{
@@ -172,12 +150,14 @@ public class Bundle implements IBundle {
 	public void trace(ITracer tracer, String label)
 	{
 		Object element = tracer.addEventElement(label);
-		tracer.addSubelement(element, "color", getHexColor());
-		tracer.addSubelement(element, "tactile", getTactileStimulation().getValue() + "");
-		if (getKinematicStimulation() != null)
-			tracer.addSubelement(element, "kinematic", getKinematicStimulation().getValue() + "");
-		if (getGustatoryStimulation() != null)
-			tracer.addSubelement(element, "gustatory", getGustatoryStimulation().getValue() + "");
+		//if (m_visualStimulation != null)
+			tracer.addSubelement(element, "visual", m_visualStimulation.getHexColor());
+		//if (m_tactileStimulation != null)
+			tracer.addSubelement(element, "tactile", m_tactileStimulation.getHexColor());
+		//if (m_kinematicStimulation != null)
+			tracer.addSubelement(element, "kinematic", m_kinematicStimulation.getHexColor());
+		//if (m_gustatoryStimulation != null)
+			tracer.addSubelement(element, "gustatory", m_gustatoryStimulation.getHexColor());
 		
 	}
 

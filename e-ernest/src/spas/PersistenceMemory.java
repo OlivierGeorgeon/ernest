@@ -90,14 +90,45 @@ public class PersistenceMemory
 	}
 	
 	/**
+	 * Create a bundle with a visual and a tactile stimulation.
+	 * @param visualStimulation The visual stimulation.
+	 * @param tactileStimulation The tactile stimulation.
+	 * @return The bundle.
+	 */
+	public IBundle createVisioTactileBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
+	{
+		return addBundle(visualStimulation, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+	}
+	
+	/**
+	 * Create a bundle with a tactile and a gustatory stimulation.
+	 * @param tactileStimulation The tactile stimulation.
+	 * @param gustatoryStimulation The gustatory stimulation.
+	 * @return The bundle
+	 */
+	public IBundle createTactoGustatoryBundle(IStimulation tactileStimulation, IStimulation gustatoryStimulation)
+	{
+		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryStimulation);
+	}
+	/**
+	 * Create a bundle with a tactile and a gustatory stimulation.
+	 * @param tactileStimulation The tactile stimulation.
+	 * @param gustatoryStimulation The gustatory stimulation.
+	 * @return The bundle
+	 */
+	public IBundle createTactoKinematicBundle(IStimulation tactileStimulation, IStimulation kinematicStimulation)
+	{
+		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, kinematicStimulation, Ernest.STIMULATION_GUSTATORY_NOTHING);
+	}
+	/**
 	 * Add a bundle to static memory if it does not already exist
 	 * @param visualStimulation The bundle's visual stimulation.
 	 * @param tactileStimulation The bundle's tactile stimulation.
 	 * @return the new bundle if created or the already existing bundle.
 	 */
-	public IBundle addBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
+	private IBundle addBundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
 	{
-		IBundle bundle = Bundle.createVisioTactileBundle(visualStimulation,tactileStimulation);
+		IBundle bundle = new Bundle(visualStimulation, tactileStimulation, kinematicStimulation, gustatoryStimulation);
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
@@ -138,9 +169,9 @@ public class PersistenceMemory
 	}
 
 	/**
-	 * Find a bundle form a visual salience.
+	 * Returns the first bundle found form a visual stimulation.
 	 * TODO manage different bundles that have the same color.
-	 * TODO manage different bundles with more than one visual salience. 
+	 * TODO manage different bundles with more than one visual stimulation. 
 	 * @param stimulation The visual stimulation.
 	 * @return The bundle that match this stimulation.
 	 */
@@ -154,7 +185,7 @@ public class PersistenceMemory
 	}
 
 	/**
-	 * Find a bundle form a tactile salience.
+	 * Returns the first bundle found form a tactile stimulation.
 	 * @param stimulation The visual stimulation.
 	 * @return The bundle that match this stimulation.
 	 */
@@ -166,5 +197,6 @@ public class PersistenceMemory
 
 		return null;
 	}
+	
 }
 	

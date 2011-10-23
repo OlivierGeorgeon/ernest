@@ -45,7 +45,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 			{
 				somatoCortex[i][j] = m_staticSystem.addStimulation(Ernest.STIMULATION_TACTILE, stimuli[i][9 + j]);
 				if (m_tracer != null)
-					m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getValue() + "");
+					m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getHexColor());
 			}
 		
 		// Kinematic ====

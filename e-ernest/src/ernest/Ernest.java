@@ -19,15 +19,6 @@ public class Ernest implements IErnest
 	/** A big value that can represent infinite for diverse purpose. */
 	public static final int INFINITE = 1000;
 	
-	//public static EColor COLOR_WALL   = new EColor(0, 128, 0); // For Ernest 10 in Vacuum 
-//	public static EColor COLOR_WALL   = new EColor(72, 104, 88); // For Ernest 10 in Seca
-//	public static EColor COLOR_WATER  = new EColor(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
-	//public static EColor COLOR_TOUCH_EMPTY  = new EColor(180,180, 180); 
-	//public static EColor COLOR_TOUCH_ALGA   = new EColor(100, 100, 100); 
-
-	//public static EColor COLOR_TOUCH_FISH  = new EColor(100, 100, 100); 
-	//public static EColor COLOR_TOUCH_WALL  = new EColor(0, 0, 0);
-	
 	/** Ernest's retina resolution  */
 	public static int RESOLUTION_RETINA = 12;
 	public static int CENTER_RETINA = 55;
@@ -75,7 +66,7 @@ public class Ernest implements IErnest
 	public static IStimulation STIMULATION_VISUAL_WALL = new Stimulation(0, 128, 0, 0);
 
 	/** Visual stimulation of touching an alga */
-	public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(0, 0, 0, 0);
+	public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(255, 255, 255, 0);
 
 	/** Touch empty */
 	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(STIMULATION_TACTILE, 180 * 65536 + 180 * 256 + 180);
@@ -90,10 +81,10 @@ public class Ernest implements IErnest
 	public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(STIMULATION_TACTILE, 100 * 65536 + 100 * 256 + 101);
 	
 	/** Kinematic Stimulation succeed */	
-	public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 0);
+	public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536 + 255 * 256 + 255);
 
 	/** Kinematic Stimulations fail*/
-	public static IStimulation STIMULATION_KINEMATIC_BUMP = new Stimulation(STIMULATION_KINEMATIC, 1);
+	public static IStimulation STIMULATION_KINEMATIC_BUMP = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536);
 		
 	/** Kinematic Stimulations turn left toward empty square */
 	public static IStimulation STIMULATION_KINEMATIC_LEFT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 2);
@@ -108,10 +99,10 @@ public class Ernest implements IErnest
 	public static IStimulation STIMULATION_KINEMATIC_RIGHT_WALL = new Stimulation(STIMULATION_KINEMATIC, 5);
 		
 	/** Gustatory Stimulation nothing */	
-	public static IStimulation STIMULATION_GUSTATORY_NOTHING = new Stimulation(STIMULATION_GUSTATORY, 0);
+	public static IStimulation STIMULATION_GUSTATORY_NOTHING = new Stimulation(STIMULATION_GUSTATORY, 255 * 65536 + 255 * 256 + 255);
 
 	/** Gustatory Stimulation fish */	
-	public static IStimulation STIMULATION_GUSTATORY_FISH = new Stimulation(STIMULATION_GUSTATORY, 1);
+	public static IStimulation STIMULATION_GUSTATORY_FISH = new Stimulation(STIMULATION_GUSTATORY, 255 * 65536 + 255 * 256);
 	
 	/** Circadian stimulation (daytime) */	
 	public static int STIMULATION_CIRCADIAN_DAY = 0;
