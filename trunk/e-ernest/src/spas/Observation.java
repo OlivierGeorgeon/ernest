@@ -613,35 +613,35 @@ public class Observation implements IObservation
 //		}
 //	}
 
-	public void setTactileMap()
+	public void setTactileMap(IBundle bundleFish)
 	{
 		
-		// Check for existing gray bundles.
+		// Check if there is already a fish bundle in the local map.
 		boolean grayBundle = false;
 		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
-				if (m_bundleMap[i][j] != null && m_bundleMap[i][j].equals(Spas.BUNDLE_TOUCH_FISH)) 
+				if (m_bundleMap[i][j] != null && m_bundleMap[i][j].getGustatoryStimulation().equals(Ernest.STIMULATION_GUSTATORY_FISH)) 
 					grayBundle = true;
 		
 		// If there is no gray bundle yet, then create a gray bundle if a fish is touched.
 		if (!grayBundle)
 		{
 			if (m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][0] == null)
-				m_bundleMap[1][0] = Spas.BUNDLE_TOUCH_FISH;
+				m_bundleMap[1][0] = bundleFish;
 			else if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][0] == null)
-				m_bundleMap[0][0] = Spas.BUNDLE_TOUCH_FISH;
+				m_bundleMap[0][0] = bundleFish;
 			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][0] == null)
-				m_bundleMap[2][0] = Spas.BUNDLE_TOUCH_FISH;
+				m_bundleMap[2][0] = bundleFish;
 			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][1] == null)
-				m_bundleMap[0][1] = Spas.BUNDLE_TOUCH_FISH;
+				m_bundleMap[0][1] = bundleFish;
 			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][1] == null)
-				m_bundleMap[2][1] = Spas.BUNDLE_TOUCH_FISH;
+				m_bundleMap[2][1] = bundleFish;
 			else if (m_tactileMap[0][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][2] == null)
-				m_bundleMap[0][2] = Spas.BUNDLE_TOUCH_FISH;
+				m_bundleMap[0][2] = bundleFish;
 			else if (m_tactileMap[2][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][2] == null)
-				m_bundleMap[2][2] = Spas.BUNDLE_TOUCH_FISH;
+				m_bundleMap[2][2] = bundleFish;
 			else if (m_tactileMap[1][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][2] == null)
-				m_bundleMap[1][2] = Spas.BUNDLE_TOUCH_FISH;
+				m_bundleMap[1][2] = bundleFish;
 		}
 		
 	}

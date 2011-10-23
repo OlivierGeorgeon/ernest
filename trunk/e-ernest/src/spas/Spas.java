@@ -10,9 +10,6 @@ import ernest.ITracer;
 public class Spas implements ISpas 
 {
 	
-	/** Gray bundle that can arise curiosity */	
-	public static IBundle BUNDLE_TOUCH_FISH = Bundle.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);
-	
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
 
@@ -31,6 +28,7 @@ public class Spas implements ISpas
 	public void setTracer(ITracer tracer) 
 	{
 		m_tracer = tracer;
+		m_persistenceMemory.setTracer(tracer);
 	}
 
 	public void tick() 
@@ -131,7 +129,9 @@ public class Spas implements ISpas
 		// TODO use touch fish-eat bundles
 		
 		m_observation.setMap(tactileCortex);
-		m_observation.setTactileMap();
+		IBundle bundleFish = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_FISH);
+		m_observation.setTactileMap(bundleFish);
+		//m_observation.setTactileMap(BUNDLE_TOUCH_FISH);
 		
 		// Tactile salience of walls.
 		
@@ -233,37 +233,45 @@ public class Spas implements ISpas
 		// Taste
 		
 		m_observation.setGustatory(gustatoryStimulation);
-		if (gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
-		{
-			if (m_observation.getBundle(1, 1) != null && !m_observation.getBundle(1, 1).getGustatoryStimulation().equals(Ernest.STIMULATION_GUSTATORY_FISH))
-			{
-				m_observation.getBundle(1, 1).setGustatoryStimulation(gustatoryStimulation);
-				m_observation.getBundle(1, 1).trace(m_tracer, "bundle");				
-			}
-		}
-		
+
 		// Kinematic
 		
 		m_observation.setConfirmation(kinematicStimulation.equals(m_observation.getKinematic()));
 		m_observation.setKinematic(kinematicStimulation);
+		
+		// Bundle the tactile stimulation with the kinematic stimulation
+		
+		if (kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_BUMP))
+		{
+			m_persistenceMemory.createTactoKinematicBundle(tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP);				
+		}
 
+		// Bundle the tactile stimulation with the gustatory stimulation
+		
+		if (gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
+		{
+			if (m_observation.getBundle(1, 1) == null)
+				m_persistenceMemory.createTactoGustatoryBundle(tactileCortex[1][1], Ernest.STIMULATION_GUSTATORY_FISH);				
+			else
+			{
+				m_observation.getBundle(1, 1).setGustatoryStimulation(gustatoryStimulation);
+				m_observation.getBundle(1, 1).trace(m_tracer, "bundle");
+			}
+		}
+		
 		// If the current stimulation does not match the anticipated local map then the local map is cleared.
 		// TODO The criteria for deciding whether the matching is correct or incorrect need to be learned ! 
 
 		if (m_observation.getBundle(1, 1) != null && m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
 			m_observation.clearMap();
-		
-		// Check peripersonal space.
-		
-		m_observation.setTactileMap();
 
-		// Bundle the visual icon with the tactile stimulation in front
+		// Bundle the visual stimulation with the tactile stimulation in front
 		
 		if (frontVisualStimulation != null )
 		{
 			if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
 			{
-				IBundle bundle = m_persistenceMemory.addBundle(frontVisualStimulation, tactileCortex[1][0]);
+				IBundle bundle = m_persistenceMemory.createVisioTactileBundle(frontVisualStimulation, tactileCortex[1][0]);
 				m_observation.setFrontBundle(bundle);
 			}
 		}
@@ -277,5 +285,5 @@ public class Spas implements ISpas
 				
 		return m_observation;
 	}
-
+	
 }

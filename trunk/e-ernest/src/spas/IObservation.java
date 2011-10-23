@@ -166,7 +166,7 @@ public interface IObservation
 	 * Test if Ernest touches a fish
 	 * Creates a gray bundle in the peripersonal map if Ernest touches a fish (no more than one gray bundle)
 	 */
-	public void setTactileMap();
+	public void setTactileMap(IBundle bundleFish);
 	
 	/**
 	 * Get a stimulation in the tactile map
