@@ -147,6 +147,33 @@ public class PersistenceMemory
 		return bundle;
 	}
 	
+	public void addVisualStimulation(IBundle bundle, IStimulation stimulation)
+	{
+		if (!bundle.getVisualStimulation().equals(stimulation))
+		{
+			bundle.setVisualStimulation(stimulation);
+			bundle.trace(m_tracer, "bundle");
+		}
+	}
+	
+	public void addKinematicStimulation(IBundle bundle, IStimulation stimulation)
+	{
+		if (!bundle.getKinematicStimulation().equals(stimulation))
+		{
+			bundle.setKinematicStimulation(stimulation);
+			bundle.trace(m_tracer, "bundle");
+		}
+	}
+	
+	public void addGustatoryStimulation(IBundle bundle, IStimulation stimulation)
+	{
+		if (!bundle.getGustatoryStimulation().equals(stimulation))
+		{
+			bundle.setGustatoryStimulation(stimulation);
+			bundle.trace(m_tracer, "bundle");
+		}
+	}
+	
 	/**
 	 * TODO manage different bundles with more than one visual salience 
 	 * @param stimulation The stimulation

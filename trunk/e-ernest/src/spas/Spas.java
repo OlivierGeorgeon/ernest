@@ -243,7 +243,14 @@ public class Spas implements ISpas
 		
 		if (kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_BUMP))
 		{
-			m_persistenceMemory.createTactoKinematicBundle(tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP);				
+			if (m_observation.getBundle(1, 0) == null)
+				m_persistenceMemory.createTactoKinematicBundle(tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP);
+			else
+			{
+				m_persistenceMemory.addKinematicStimulation(m_observation.getBundle(1, 0), kinematicStimulation);
+				//m_observation.getBundle(1, 0).setKinematicStimulation(kinematicStimulation);
+				//m_observation.getBundle(1, 0).trace(m_tracer, "bundle");
+			}
 		}
 
 		// Bundle the tactile stimulation with the gustatory stimulation
@@ -254,8 +261,9 @@ public class Spas implements ISpas
 				m_persistenceMemory.createTactoGustatoryBundle(tactileCortex[1][1], Ernest.STIMULATION_GUSTATORY_FISH);				
 			else
 			{
-				m_observation.getBundle(1, 1).setGustatoryStimulation(gustatoryStimulation);
-				m_observation.getBundle(1, 1).trace(m_tracer, "bundle");
+				m_persistenceMemory.addGustatoryStimulation(m_observation.getBundle(1, 1), gustatoryStimulation);
+				//m_observation.getBundle(1, 1).setGustatoryStimulation(gustatoryStimulation);
+				//m_observation.getBundle(1, 1).trace(m_tracer, "bundle");
 			}
 		}
 		
@@ -269,10 +277,19 @@ public class Spas implements ISpas
 		
 		if (frontVisualStimulation != null )
 		{
-			if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
+			if (m_observation.getBundle(1, 0) == null)
 			{
-				IBundle bundle = m_persistenceMemory.createVisioTactileBundle(frontVisualStimulation, tactileCortex[1][0]);
-				m_observation.setFrontBundle(bundle);
+				if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
+				{
+					IBundle bundle = m_persistenceMemory.createVisioTactileBundle(frontVisualStimulation, tactileCortex[1][0]);
+					m_observation.setFrontBundle(bundle);
+				}
+			}
+			else
+			{
+				m_persistenceMemory.addVisualStimulation(m_observation.getBundle(1, 0), frontVisualStimulation);
+				//m_observation.getBundle(1, 0).setVisualStimulation(frontVisualStimulation);
+				//m_observation.getBundle(1, 0).trace(m_tracer, "bundle");
 			}
 		}
 //		else

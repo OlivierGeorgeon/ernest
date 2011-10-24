@@ -18,6 +18,11 @@ public interface IBundle
 	IStimulation getVisualStimulation(); 
 	
 	/**
+	 * @param stimulation The visual stimulation.
+	 */
+	public void setVisualStimulation(IStimulation stimulation); 
+	
+	/**
 	 * @return The bundle's color  for tracing.
 	 */
 	String getHexColor();

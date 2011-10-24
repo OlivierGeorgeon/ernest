@@ -63,6 +63,27 @@ public class Observation implements IObservation
 		return getHexColor(getColor(x,y));
 	}
 	
+	public int getColor(int x, int y)
+	{
+		int c = 0;
+//		if (m_kinematicStimulation != null && Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation) && (x == 1) && (y == 0))
+//			c = 255 * 65536; // red
+//		else
+//		{
+			if (m_bundleMap[x][y] == null)
+			{
+				if (m_tactileMap[x][y] == null)
+					// at startup, the tactile map is not yet initialized
+					c = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
+				else
+					c = m_tactileMap[x][y].getValue();
+			}
+			else
+				c = m_bundleMap[x][y].getVisualStimulation().getValue();
+//		}		
+		return c;
+	}
+	
 	private String getHexColor(int rgb) 
 	{
 		int r = rgb/65536;
@@ -277,27 +298,6 @@ public class Observation implements IObservation
 		for (int i = 0 ; i < 3; i++)
 			for (int j = 0 ; j < 3; j++)	
 				m_tactileMap[i][j] = tactileMatrix[i][j];
-	}
-	
-	public int getColor(int x, int y)
-	{
-		int c = 0;
-		if (m_kinematicStimulation != null && Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation) && (x == 1) && (y == 0))
-			c = 255 * 65536; // red
-		else
-		{
-			if (m_bundleMap[x][y] == null)
-			{
-				if (m_tactileMap[x][y] == null)
-					// at startup, the tactile map is not yet initialized
-					c = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
-				else
-					c = m_tactileMap[x][y].getValue();
-			}
-			else
-				c = m_bundleMap[x][y].getVisualStimulation().getValue();
-		}		
-		return c;
 	}
 	
 	public IBundle getBundle(int x, int y)
