@@ -57,6 +57,11 @@ public class Bundle implements IBundle {
 		return m_visualStimulation;
 	}
 	
+	public void setVisualStimulation(IStimulation stimulation) 
+	{
+		m_visualStimulation = stimulation;
+	}
+	
 	public IStimulation getTactileStimulation() 
 	{
 		return m_tactileStimulation;
