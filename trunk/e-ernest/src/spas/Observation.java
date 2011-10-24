@@ -126,9 +126,9 @@ public class Observation implements IObservation
 		tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
 		tracer.addSubelement(e, "direction", m_direction + "");
 		if (m_kinematicStimulation != null)
-			tracer.addSubelement(e, "kinematic", m_kinematicStimulation.getValue() + "");
+			tracer.addSubelement(e, "kinematic", m_kinematicStimulation.getHexColor());
 		if (m_gustatoryStimulation != null)
-			tracer.addSubelement(e, "gustatory", m_gustatoryStimulation.getValue() + "");
+			tracer.addSubelement(e, "gustatory", m_gustatoryStimulation.getHexColor());
 		if (m_salience != null)
 		{
 			tracer.addSubelement(e, "distance", m_salience.getDistance() + "");
