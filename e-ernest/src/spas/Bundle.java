@@ -150,15 +150,24 @@ public class Bundle implements IBundle {
 	public void trace(ITracer tracer, String label)
 	{
 		Object element = tracer.addEventElement(label);
-		//if (m_visualStimulation != null)
-			tracer.addSubelement(element, "visual", m_visualStimulation.getHexColor());
-		//if (m_tactileStimulation != null)
-			tracer.addSubelement(element, "tactile", m_tactileStimulation.getHexColor());
-		//if (m_kinematicStimulation != null)
-			tracer.addSubelement(element, "kinematic", m_kinematicStimulation.getHexColor());
-		//if (m_gustatoryStimulation != null)
-			tracer.addSubelement(element, "gustatory", m_gustatoryStimulation.getHexColor());
 		
+		// Visual stimulation
+		tracer.addSubelement(element, "visual", m_visualStimulation.getHexColor());
+		
+		// Only trace fish gustatory stimulations.
+		if (Ernest.STIMULATION_GUSTATORY_FISH.equals(m_gustatoryStimulation))
+			tracer.addSubelement(element, "gustatory", m_gustatoryStimulation.getHexColor());
+		else
+			tracer.addSubelement(element, "gustatory", m_visualStimulation.getHexColor());
+		
+		// Tactile stimulation
+		tracer.addSubelement(element, "tactile", m_tactileStimulation.getHexColor());
+
+		// Only trace bump kinematic stimulation.
+		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation))
+			tracer.addSubelement(element, "kinematic", m_kinematicStimulation.getHexColor());
+		else
+			tracer.addSubelement(element, "kinematic", m_tactileStimulation.getHexColor());
 	}
 
 }
