@@ -190,8 +190,11 @@ public class Observation implements IObservation
 		
 		String dynamicFeature = "";
 		
-		int minFovea = Ernest.CENTER_RETINA - 30; // 25;
-		int maxFovea = Ernest.CENTER_RETINA + 30; // 85;
+		//int minFovea = Ernest.CENTER_RETINA - 30; // 25;
+		//int maxFovea = Ernest.CENTER_RETINA + 30; // 85;
+		
+		float minFovea =  - (float)Math.PI / 4 + 0.01f;
+		float maxFovea =    (float)Math.PI / 4 - 0.01f;
 		
 		int satisfaction = 0;
 
@@ -222,7 +225,7 @@ public class Observation implements IObservation
 				
 				if (!dynamicFeature.equals(""))
 				{
-					if (minFovea >= m_direction)
+					if (m_direction <= minFovea)
 						dynamicFeature = "|" + dynamicFeature;
 					else if (m_direction >= maxFovea )
 						dynamicFeature = dynamicFeature + "|";
@@ -237,10 +240,10 @@ public class Observation implements IObservation
 			if (m_previousAttractiveness >= 0)
 				// A wall appeared with a part of it in front of Ernest
 				dynamicFeature = "*";		
-			else if (Math.abs(m_previousDirection - 30 ) < Math.abs(m_direction - 30))
+			else if (Math.abs(m_previousDirection) < Math.abs(m_direction))
 				// The wall went more outward (Ernest closer to the edge)
 				dynamicFeature = "_";
-			else if (Math.abs(m_previousDirection - 30 ) > Math.abs(m_direction - 30))
+			else if (Math.abs(m_previousDirection) > Math.abs(m_direction))
 				// The wall went more inward (Ernest farther to the edge)
 				dynamicFeature = "*";
 	
@@ -253,9 +256,9 @@ public class Observation implements IObservation
 			
 			if (!dynamicFeature.equals(""))
 			{
-				if (30 > m_direction) // (30 is the center in the tactile referential)
+				if (m_direction < -0.1f ) // (30 is the center in the tactile referential)
 					dynamicFeature = "|" + dynamicFeature;
-				else if (m_direction > 30 )
+				else if (m_direction > 0.1f )
 					dynamicFeature = dynamicFeature + "|";
 			}		
 		}
