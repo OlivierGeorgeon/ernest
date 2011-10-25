@@ -554,10 +554,10 @@ public class Observation implements IObservation
         		// record the previous salience if it is frontal
         		if (front)
 		        {
-		        	salience = new Salience();
-		            salience.setDirection((int) (sumDirection / span + .5));
-		            salience.setSpan(span);
-		            salience.setValue(Ernest.STIMULATION_TOUCH_WALL.getValue()); 
+		        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
+		            //salience.setDirection((int) (sumDirection / span + .5));
+		            //salience.setSpan(span);
+		            //salience.setValue(Ernest.STIMULATION_TOUCH_WALL.getValue()); 
 		        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
 		        }
         		
@@ -570,10 +570,10 @@ public class Observation implements IObservation
 		// record the last salience if it is frontal
 		if (front)
         {
-        	salience = new Salience();
-            salience.setDirection((int) (sumDirection / span + .5));
-            salience.setSpan(span);
-            salience.setValue(Ernest.STIMULATION_TOUCH_WALL.getValue()); 
+        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
+            //salience.setDirection((int) (sumDirection / span + .5));
+            //salience.setSpan(span);
+            //salience.setValue(Ernest.STIMULATION_TOUCH_WALL.getValue()); 
         	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
         }
 

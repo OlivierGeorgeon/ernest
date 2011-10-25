@@ -9,7 +9,28 @@ public class Salience implements ISalience
 	private int m_attractiveness;
 	private IBundle m_bundle;
 	private int m_value;
+	private int m_type;
+	private float m_theta;
+	private float m_distancef;
+	private float m_spanf;
 	
+	Salience(int value, int type, float theta, float distance, float span)
+	{
+		m_value = value;
+		m_type = type;
+		m_theta = theta;
+		m_distancef = distance;
+		m_spanf = span;
+	}
+	
+	Salience(int value, int direction, int span)
+	{
+		m_value = value;
+		m_type = 0;
+		m_direction = direction;
+		m_span = span;
+	}
+
 	public void setDirection(int direction) 
 	{
 		m_direction = direction;
@@ -61,8 +82,8 @@ public class Salience implements ISalience
 	}
 	
 	/**
-	 * Saliences are equal if they have the same bundle. 
-	 * This is not used. TODO find the right criteria of it is ever used. 
+	 * Saliences are equal if they have the same value and the same type. 
+	 * This is not used.  
 	 */
 	public boolean equals(Object o)
 	{
@@ -77,8 +98,7 @@ public class Salience implements ISalience
 		else
 		{
 			ISalience other = (ISalience)o;
-			//ret = other.getColor().equals(m_color);
-			ret = other.getBundle().equals(m_bundle);
+			ret = (m_value == other.getValue()) || (m_type == other.getType());
 		}
 		
 		return ret;
@@ -91,5 +111,15 @@ public class Salience implements ISalience
 	public int getValue()
 	{
 		return m_value;
+	}
+
+	public void setType(int type) 
+	{
+		m_type = type;
+	}
+
+	public int getType() 
+	{
+		return m_type;
 	}
 }
