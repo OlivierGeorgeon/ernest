@@ -98,11 +98,8 @@ public class Spas implements ISpas
 			}
 			else 
 			{	
-				// record the previous salience
-				ISalience salience = new Salience(stimulation.getValue(), (int) (sumDirection / span + .5), span);
-				salience.setDistance(stimulation.getDistance());
-				salience.setDirection(sumDirectionf / span);
-				salience.setSpan(spanf);
+				// Record the previous salience
+				ISalience salience = new Salience(stimulation.getValue(), 0, sumDirectionf / span, stimulation.getDistance(), spanf);
 				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
 				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 				saliences.add(salience);
@@ -117,10 +114,7 @@ public class Spas implements ISpas
 			}
 		}
 		// record the last salience
-		ISalience last = new Salience(stimulation.getValue(), (int) (sumDirection / span + .5), span);
-		last.setDistance(stimulation.getDistance());
-		last.setDirection(sumDirectionf / span);
-		last.setSpan(spanf);
+		ISalience last = new Salience(stimulation.getValue(), 0, sumDirectionf / span, stimulation.getDistance(), spanf);
 		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
 		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
@@ -152,7 +146,7 @@ public class Spas implements ISpas
 			if (Math.abs(salience.getAttractiveness()) > Math.abs(maxAttractiveness))
 			{
 				maxAttractiveness = salience.getAttractiveness();
-				direction = salience.getDirectionf();
+				direction = salience.getDirection();
 				m_observation.setSalience(salience);
 				m_observation.setFocusBundle(salience.getBundle());
 			}
@@ -276,7 +270,7 @@ public class Spas implements ISpas
         		// record the previous salience if it is frontal
         		if (front)
 		        {
-		        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
+    				salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), 0, sumDirectionf / span, 0, spanf);
 					IBundle b = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_WALL);
 					salience.setDirection(sumDirectionf / span);
 					salience.setSpan(spanf);
@@ -302,7 +296,7 @@ public class Spas implements ISpas
 		// record the last salience if it is frontal
 		if (front)
         {
-        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
+			salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), 0, sumDirectionf / span, 0, spanf);
 			IBundle b = m_persistenceMemory.touchBundle(tactileStimulations[6]);
 			salience.setDirection(sumDirectionf / spanf);
 			salience.setSpan(spanf);

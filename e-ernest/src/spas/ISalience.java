@@ -9,11 +9,6 @@ package spas;
 public interface ISalience 
 {
 	/**
-	 * @param direction The central direction of the salience in retinotopic coordinates
-	 */
-	void setDirection(int direction);
-	
-	/**
 	 * @param distance The distance of the salience (not used anymore except for debug)
 	 */
 	void setDistance(int distance);
@@ -39,19 +34,14 @@ public interface ISalience
 	void setBundle(IBundle bundle);
 
 	/**
-	 * @return The central direction of the salience in retinotopic coordinates
-	 */
-	int getDirection();
-	
-	/**
 	 * @return The distance of the salience (not used anymore except for debug)
 	 */
-	int getDistance();
+	float getDistance();
 	
 	/**
 	 * @return The span of the salience (number of pixels or of tactile cells)
 	 */
-	int getSpan();
+	float getSpan();
 	
 	/**
 	 * @return The value of the salience for display in the trace
@@ -74,10 +64,8 @@ public interface ISalience
 	
 	void setDirection(float direction);
 	
+	float getDirection();
+
 	void setSpan(float span);
 	
-	float getDirectionf();
-	
-	float getSpanf();
-
 }
