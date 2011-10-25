@@ -71,5 +71,13 @@ public interface ISalience
 	void setType(int type);
 	
 	int getType();
+	
+	void setDirection(float direction);
+	
+	void setSpan(float span);
+	
+	float getDirectionf();
+	
+	float getSpanf();
 
 }

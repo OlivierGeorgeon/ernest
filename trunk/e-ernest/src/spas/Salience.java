@@ -122,4 +122,24 @@ public class Salience implements ISalience
 	{
 		return m_type;
 	}
+
+	public void setDirection(float direction) 
+	{
+		m_theta = direction;
+	}
+
+	public void setSpan(float span) 
+	{
+		m_spanf = span;
+	}
+
+	public float getDirectionf()
+	{
+		return m_theta;
+	}
+
+	public float getSpanf() 
+	{
+		return m_spanf;
+	}
 }

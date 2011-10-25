@@ -38,8 +38,11 @@ public class Ernest implements IErnest
 	/** 400 Top attractiveness of bundles that are edible  */
 	public static int ATTRACTIVENESS_OF_FISH  =  400;
 	
-	/** 600 Attractiveness of empty square when facing a wall  */
-	public static int ATTRACTIVENESS_OF_EMPTY  =  -600;
+	/** -600 Attractiveness of bumping in a wall  */
+	public static int ATTRACTIVENESS_OF_BUMP  =  -500;
+	
+	/** -300 Attractiveness of hard  */
+	public static int ATTRACTIVENESS_OF_HARD  =  -200;
 	
 	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
 	public static int MATURITY = 1500; // not used currently.
