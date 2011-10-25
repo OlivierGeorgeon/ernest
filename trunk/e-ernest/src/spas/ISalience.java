@@ -67,5 +67,9 @@ public interface ISalience
 	 * @return The bundle evoked by this salience
 	 */
 	IBundle getBundle();
+	
+	void setType(int type);
+	
+	int getType();
 
 }

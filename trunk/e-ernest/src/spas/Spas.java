@@ -94,11 +94,11 @@ public class Spas implements ISpas
 			else 
 			{	
 				// record the previous salience
-				ISalience salience = new Salience();
-				salience.setDirection((int) (sumDirection / span + .5));
+				ISalience salience = new Salience(stimulation.getValue(), (int) (sumDirection / span + .5), span);
+				//salience.setDirection((int) (sumDirection / span + .5));
 				salience.setDistance(stimulation.getDistance());
-				salience.setSpan(span);
-				salience.setValue(stimulation.getValue());
+				//salience.setSpan(span);
+				//salience.setValue(stimulation.getValue());
 				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
 				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 				saliences.add(salience);
@@ -112,11 +112,11 @@ public class Spas implements ISpas
 			}
 		}
 		// record the last salience
-		ISalience last = new Salience();
-		last.setDirection((int) (sumDirection / span + .5));
+		ISalience last = new Salience(stimulation.getValue(), (int) (sumDirection / span + .5), span);
+		//last.setDirection((int) (sumDirection / span + .5));
 		last.setDistance(stimulation.getDistance());
-		last.setSpan(span);
-		last.setValue(stimulation.getValue());
+		//last.setSpan(span);
+		//last.setValue(stimulation.getValue());
 		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
 		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
@@ -145,70 +145,70 @@ public class Spas implements ISpas
 		
 		if (m_observation.getBundle(1, 0) != null)
 		{
-			ISalience salience = new Salience();
-			salience.setDirection(55);
-			salience.setSpan(4);
-			salience.setValue(m_observation.getBundle(1, 0).getValue());
+			ISalience salience = new Salience(m_observation.getBundle(1, 0).getValue(), 55, 4);
+			//salience.setDirection(55);
+			//salience.setSpan(4);
+			//salience.setValue(m_observation.getBundle(1, 0).getValue());
 			salience.setBundle(m_observation.getBundle(1, 0));
 			salience.setAttractiveness(m_observation.getBundle(1, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
 		else if (m_observation.getBundle(0, 0) != null)
 		{
-			ISalience salience = new Salience();
-			salience.setDirection(85);
-			salience.setSpan(4);
-			salience.setValue(m_observation.getBundle(0, 0).getValue());
+			ISalience salience = new Salience(m_observation.getBundle(0, 0).getValue(), 85, 4);
+			//salience.setDirection(85);
+			//salience.setSpan(4);
+			//salience.setValue(m_observation.getBundle(0, 0).getValue());
 			salience.setBundle(m_observation.getBundle(0, 0));
 			salience.setAttractiveness(m_observation.getBundle(0, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
 		else if (m_observation.getBundle(2, 0) != null)
 		{
-			ISalience salience = new Salience();
-			salience.setDirection(25);
-			salience.setSpan(4);
-			salience.setValue(m_observation.getBundle(2, 0).getValue());
+			ISalience salience = new Salience(m_observation.getBundle(2, 0).getValue(), 25, 4);
+			//salience.setDirection(25);
+			//salience.setSpan(4);
+			//salience.setValue(m_observation.getBundle(2, 0).getValue());
 			salience.setBundle(m_observation.getBundle(2, 0));
 			salience.setAttractiveness(m_observation.getBundle(2, 0).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
 		else if (m_observation.getBundle(0, 1) != null)
 		{
-			ISalience salience = new Salience();
-			salience.setDirection(110);
-			salience.setSpan(4);
-			salience.setValue(m_observation.getBundle(0, 1).getValue());
+			ISalience salience = new Salience(m_observation.getBundle(0, 1).getValue(), 110, 4);
+			//salience.setDirection(110);
+			//salience.setSpan(4);
+			//salience.setValue(m_observation.getBundle(0, 1).getValue());
 			salience.setBundle(m_observation.getBundle(0, 1));
 			salience.setAttractiveness(m_observation.getBundle(0, 1).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
 		else if (m_observation.getBundle(2, 1) != null)
 		{
-			ISalience salience = new Salience();
-			salience.setDirection(0);
-			salience.setSpan(4);
-			salience.setValue(m_observation.getBundle(2, 1).getValue());
+			ISalience salience = new Salience(m_observation.getBundle(2, 1).getValue(), 0, 4);
+			//salience.setDirection(0);
+			//salience.setSpan(4);
+			//salience.setValue(m_observation.getBundle(2, 1).getValue());
 			salience.setBundle(m_observation.getBundle(2, 1));
 			salience.setAttractiveness(m_observation.getBundle(2, 1).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
 		else if (m_observation.getBundle(0, 2) != null)
 		{
-			ISalience salience = new Salience();
-			salience.setDirection(140);
-			salience.setSpan(4);
-			salience.setValue(m_observation.getBundle(0, 2).getValue());
+			ISalience salience = new Salience(m_observation.getBundle(0, 2).getValue(), 140, 4);
+			//salience.setDirection(140);
+			//salience.setSpan(4);
+			//salience.setValue(m_observation.getBundle(0, 2).getValue());
 			salience.setBundle(m_observation.getBundle(0, 2));
 			salience.setAttractiveness(m_observation.getBundle(0, 2).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
 		}
 		else if (m_observation.getBundle(2, 2) != null)
 		{
-			ISalience salience = new Salience();
-			salience.setDirection(-25);
-			salience.setSpan(4);
-			salience.setValue(m_observation.getBundle(2, 2).getValue());
+			ISalience salience = new Salience(m_observation.getBundle(2, 2).getValue(), -25, 4);
+			//salience.setDirection(-25);
+			//salience.setSpan(4);
+			//salience.setValue(m_observation.getBundle(2, 2).getValue());
 			salience.setBundle(m_observation.getBundle(2, 2));
 			salience.setAttractiveness(m_observation.getBundle(2, 2).getAttractiveness(m_clock) + 20);
 			saliences.add(salience);
