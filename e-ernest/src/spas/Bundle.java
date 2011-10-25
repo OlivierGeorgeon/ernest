@@ -101,15 +101,19 @@ public class Bundle implements IBundle {
 	 */
 	public int getAttractiveness(int clock) 
 	{
-		// Bundles where Ernest bumps are not attractive.
+		// If the bundle has a kinematic stimulation of bump.
 		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation))
-			return 0;
+			return Ernest.ATTRACTIVENESS_OF_BUMP;
+
+		// If the bundle has a tactile stimulation of hard.
+		if (Ernest.STIMULATION_TOUCH_WALL.equals(m_tactileStimulation))
+			return Ernest.ATTRACTIVENESS_OF_HARD - 10; // prefer a bundle salience than a mere touch salience.
 
 		// The bundle of touching a fish
 		//if (m_visualStimulation.equals(PersistenceSystem.BUNDLE_GRAY_FISH.getVisualStimulation()))
 		//	return Ernest.ATTRACTIVENESS_OF_FISH + 10;
 		
-		// The bundle 
+		// If the bundle has a gustatory stimulation of fish 
 		else if (Ernest.STIMULATION_GUSTATORY_FISH.equals(m_gustatoryStimulation))
 		{
 			if (m_visualStimulation.equals(Ernest.STIMULATION_VISUAL_UNSEEN))
@@ -173,6 +177,8 @@ public class Bundle implements IBundle {
 			tracer.addSubelement(element, "kinematic", m_kinematicStimulation.getHexColor());
 		else
 			tracer.addSubelement(element, "kinematic", m_tactileStimulation.getHexColor());
+		
+		//tracer.addSubelement(element, "attractiveness", getAttractiveness(m_clock) + "");
 	}
 
 }

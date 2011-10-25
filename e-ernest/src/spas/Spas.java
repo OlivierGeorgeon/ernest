@@ -75,7 +75,6 @@ public class Spas implements ISpas
 		m_observation = m_anticipation;
 
 		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
-		//EColor frontColor = null;
 		IStimulation frontVisualStimulation = null;
 		
 		// Create a List of the various saliences in the visual field
@@ -83,6 +82,9 @@ public class Spas implements ISpas
 		IStimulation stimulation = visualCortex[0];
 		int span = 1;
 		int sumDirection = 0;
+        float theta = - 23 * (float)Math.PI / 96; 
+        float sumDirectionf = 0;
+        float spanf = 0;
 		for (int i = 1 ; i < Ernest.RESOLUTION_RETINA; i++)
 		{
 			if (visualCortex[i].equals(stimulation))
@@ -90,37 +92,38 @@ public class Spas implements ISpas
 				// measure the salience span and average direction
 				span++;
 				sumDirection += i * 10;
+                sumDirectionf += theta;
+                spanf += (float)Math.PI / 24;
 			}
 			else 
 			{	
 				// record the previous salience
 				ISalience salience = new Salience(stimulation.getValue(), (int) (sumDirection / span + .5), span);
-				//salience.setDirection((int) (sumDirection / span + .5));
 				salience.setDistance(stimulation.getDistance());
-				//salience.setSpan(span);
-				//salience.setValue(stimulation.getValue());
+				salience.setDirection(sumDirectionf / spanf);
+				salience.setSpan(spanf);
 				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
 				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 				saliences.add(salience);
-				if (salience.getDirection() >= 50 &&  salience.getDirection() <= 60 && span >= 3 )
-					//frontColor = stimulation.getColor();
+				if (salience.getValue() == visualCortex[5].getValue() && salience.getValue() == visualCortex[6].getValue())
 					frontVisualStimulation = stimulation;
 				// look for the next salience
 				stimulation = visualCortex[i];
 				span = 1;
 				sumDirection = i * 10;
+        		spanf = 0;
+        		sumDirectionf = 0;
 			}
 		}
 		// record the last salience
 		ISalience last = new Salience(stimulation.getValue(), (int) (sumDirection / span + .5), span);
-		//last.setDirection((int) (sumDirection / span + .5));
 		last.setDistance(stimulation.getDistance());
-		//last.setSpan(span);
-		//last.setValue(stimulation.getValue());
+		last.setDirection(sumDirectionf / spanf);
+		last.setSpan(spanf);
 		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
 		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
-		if (last.getDirection() >= 50 &&  last.getDirection() <= 60 && span >= 3 )
+		if (last.getValue() == visualCortex[5].getValue() && last.getValue() == visualCortex[6].getValue())
 			frontVisualStimulation = stimulation;
 			//frontColor = stimulation.getColor();
 
@@ -131,90 +134,16 @@ public class Spas implements ISpas
 		m_observation.setMap(tactileCortex);
 		IBundle bundleFish = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_FISH);
 		m_observation.setTactileMap(bundleFish);
-		//m_observation.setTactileMap(BUNDLE_TOUCH_FISH);
 		
 		// Tactile salience of walls.
 		
-		ISalience tactileSalience = m_observation.getTactileSalience();
+		//ISalience tactileSalience = m_observation.getTactileSalience();
+		ISalience tactileSalience = getTactileSalience(tactileCortex);
 		if (tactileSalience != null)
 			saliences.add(tactileSalience);
 		
 
-		// Add the various saliences in the local map to the list
-		// Each bundle in the local map creates a salience.
-		
-		if (m_observation.getBundle(1, 0) != null)
-		{
-			ISalience salience = new Salience(m_observation.getBundle(1, 0).getValue(), 55, 4);
-			//salience.setDirection(55);
-			//salience.setSpan(4);
-			//salience.setValue(m_observation.getBundle(1, 0).getValue());
-			salience.setBundle(m_observation.getBundle(1, 0));
-			salience.setAttractiveness(m_observation.getBundle(1, 0).getAttractiveness(m_clock) + 20);
-			saliences.add(salience);
-		}
-		else if (m_observation.getBundle(0, 0) != null)
-		{
-			ISalience salience = new Salience(m_observation.getBundle(0, 0).getValue(), 85, 4);
-			//salience.setDirection(85);
-			//salience.setSpan(4);
-			//salience.setValue(m_observation.getBundle(0, 0).getValue());
-			salience.setBundle(m_observation.getBundle(0, 0));
-			salience.setAttractiveness(m_observation.getBundle(0, 0).getAttractiveness(m_clock) + 20);
-			saliences.add(salience);
-		}
-		else if (m_observation.getBundle(2, 0) != null)
-		{
-			ISalience salience = new Salience(m_observation.getBundle(2, 0).getValue(), 25, 4);
-			//salience.setDirection(25);
-			//salience.setSpan(4);
-			//salience.setValue(m_observation.getBundle(2, 0).getValue());
-			salience.setBundle(m_observation.getBundle(2, 0));
-			salience.setAttractiveness(m_observation.getBundle(2, 0).getAttractiveness(m_clock) + 20);
-			saliences.add(salience);
-		}
-		else if (m_observation.getBundle(0, 1) != null)
-		{
-			ISalience salience = new Salience(m_observation.getBundle(0, 1).getValue(), 110, 4);
-			//salience.setDirection(110);
-			//salience.setSpan(4);
-			//salience.setValue(m_observation.getBundle(0, 1).getValue());
-			salience.setBundle(m_observation.getBundle(0, 1));
-			salience.setAttractiveness(m_observation.getBundle(0, 1).getAttractiveness(m_clock) + 20);
-			saliences.add(salience);
-		}
-		else if (m_observation.getBundle(2, 1) != null)
-		{
-			ISalience salience = new Salience(m_observation.getBundle(2, 1).getValue(), 0, 4);
-			//salience.setDirection(0);
-			//salience.setSpan(4);
-			//salience.setValue(m_observation.getBundle(2, 1).getValue());
-			salience.setBundle(m_observation.getBundle(2, 1));
-			salience.setAttractiveness(m_observation.getBundle(2, 1).getAttractiveness(m_clock) + 20);
-			saliences.add(salience);
-		}
-		else if (m_observation.getBundle(0, 2) != null)
-		{
-			ISalience salience = new Salience(m_observation.getBundle(0, 2).getValue(), 140, 4);
-			//salience.setDirection(140);
-			//salience.setSpan(4);
-			//salience.setValue(m_observation.getBundle(0, 2).getValue());
-			salience.setBundle(m_observation.getBundle(0, 2));
-			salience.setAttractiveness(m_observation.getBundle(0, 2).getAttractiveness(m_clock) + 20);
-			saliences.add(salience);
-		}
-		else if (m_observation.getBundle(2, 2) != null)
-		{
-			ISalience salience = new Salience(m_observation.getBundle(2, 2).getValue(), -25, 4);
-			//salience.setDirection(-25);
-			//salience.setSpan(4);
-			//salience.setValue(m_observation.getBundle(2, 2).getValue());
-			salience.setBundle(m_observation.getBundle(2, 2));
-			salience.setAttractiveness(m_observation.getBundle(2, 2).getAttractiveness(m_clock) + 20);
-			saliences.add(salience);
-		}
-		
-		// Find the most attractive salience in the list (There is at least a wall)
+		// Find the most attractive salience in the list (abs value) (There is at least a wall)
 		
 		int maxAttractiveness = 0;
 		int direction = 0;
@@ -258,7 +187,7 @@ public class Spas implements ISpas
 		if (gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 		{
 			if (m_observation.getBundle(1, 1) == null)
-				m_persistenceMemory.createTactoGustatoryBundle(tactileCortex[1][1], Ernest.STIMULATION_GUSTATORY_FISH);				
+				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);				
 			else
 			{
 				m_persistenceMemory.addGustatoryStimulation(m_observation.getBundle(1, 1), gustatoryStimulation);
@@ -303,4 +232,89 @@ public class Spas implements ISpas
 		return m_observation;
 	}
 	
+    /**
+     * Check from salient tactile features in Ernest's tactile map. 
+     * So far, only detects walls.
+     * TODO: more general tactile salience map.
+     * @param tactileMap The tactile cortex.
+     * @return The tactile salience. Null if no wall in front of Ernest. 
+     */
+   public ISalience getTactileSalience(IStimulation[][] tactileMap)
+    {
+    	ISalience salience = null;
+	
+        IStimulation[] tactileStimulations = new Stimulation[7];
+        tactileStimulations[0] = tactileMap[2][2];
+        tactileStimulations[1] = tactileMap[2][1];
+        tactileStimulations[2] = tactileMap[2][0];
+        tactileStimulations[3] = tactileMap[1][0];
+        tactileStimulations[4] = tactileMap[0][0];
+        tactileStimulations[5] = tactileMap[0][1];
+        tactileStimulations[6] = tactileMap[0][2];
+
+        int span = 0;
+        int sumDirection = 0;
+        float theta = - 3 * (float)Math.PI /4; 
+        float sumDirectionf = 0;
+        float spanf = 0;
+        boolean front = false;
+        for (int i = 0 ; i < 7; i++)
+        {
+        	if (tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
+        	{
+				// measure the salience span and average direction
+        		span++;
+                sumDirection += i * 10;
+                sumDirectionf += theta;
+                spanf += (float)Math.PI / 4;
+                if (i == 3) // Ernest's front
+                	front = true;
+        	}
+        	else
+        	{
+        		// record the previous salience if it is frontal
+        		if (front)
+		        {
+		        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
+					IBundle b = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_WALL);
+					salience.setDirection(sumDirectionf / spanf);
+					salience.setSpan(spanf);
+					if (b != null)
+					{
+						salience.setBundle(b);
+						salience.setAttractiveness(b.getAttractiveness(m_clock));
+						salience.setValue(b.getValue());
+					}
+					else
+						salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
+		        }
+        		
+        		// look for the next salience
+        		front = false;
+        		span = 0;
+        		sumDirection = 0;
+        		spanf = 0;
+        		sumDirectionf = 0;
+        	}
+        	theta += (float)Math.PI / 4;
+        }
+		// record the last salience if it is frontal
+		if (front)
+        {
+        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
+			IBundle b = m_persistenceMemory.touchBundle(tactileStimulations[6]);
+			salience.setDirection(sumDirectionf / spanf);
+			salience.setSpan(spanf);
+			if (b != null)
+			{
+				salience.setBundle(b);
+				salience.setAttractiveness(b.getAttractiveness(m_clock));
+				salience.setValue(b.getValue());
+			}
+			else
+				salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
+        }
+        return salience;
+    }
+
 }

@@ -26,8 +26,8 @@ public class Observation implements IObservation
 	/** Ernest's persistence memory  */
 	//private PersistenceSystem m_persistenceMemory = new PersistenceSystem();
 	
-	private int m_direction = Ernest.CENTER_RETINA;
-	private int m_previousDirection = Ernest.CENTER_RETINA;
+	private float m_direction = Ernest.CENTER_RETINA;
+	private float m_previousDirection = Ernest.CENTER_RETINA;
 	private int m_attractiveness = 0;
 	private int m_previousAttractiveness = 0;
 	private IBundle m_previousFocusBundle = null;
@@ -50,7 +50,7 @@ public class Observation implements IObservation
 	
 	private String getHexColor() 
 	{
-		// Return the salient bundle's color
+		// Return the salience's color
 		if (m_salience != null)
 			return getHexColor(m_salience.getValue());
 		else
@@ -141,6 +141,10 @@ public class Observation implements IObservation
 		Object e = tracer.addEventElement(element);
 
 		tracer.addSubelement(e, "color", getHexColor());
+		
+		if (getFocusBundle() != null)
+			getFocusBundle().trace(tracer, "focus_bundle");
+		
 		tracer.addSubelement(e, "stimuli", m_stimuli);
 		tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
 		
@@ -483,22 +487,22 @@ public class Observation implements IObservation
 		return m_focusBundle;
 	}
 
-	public void setDirection(int direction) 
+	public void setDirection(float direction) 
 	{
 		m_direction = direction;
 	}
 
-	public int getDirection() 
+	public float getDirection() 
 	{
 		return m_direction;
 	}
 
-	public void setPreviousDirection(int direction) 
+	public void setPreviousDirection(float direction) 
 	{
 		m_previousDirection = direction;		
 	}
 
-	public int getPreviousDirection() 
+	public float getPreviousDirection() 
 	{
 		return m_previousDirection;
 	}
@@ -523,95 +527,55 @@ public class Observation implements IObservation
 		return m_previousAttractiveness;
 	}
 
-    public ISalience getTactileSalience()
-    {
-    	ISalience salience = null;
-	
-        IStimulation[] tactileStimulations = new Stimulation[7];
-        tactileStimulations[0] = m_tactileMap[2][2];
-        tactileStimulations[1] = m_tactileMap[2][1];
-        tactileStimulations[2] = m_tactileMap[2][0];
-        tactileStimulations[3] = m_tactileMap[1][0];
-        tactileStimulations[4] = m_tactileMap[0][0];
-        tactileStimulations[5] = m_tactileMap[0][1];
-        tactileStimulations[6] = m_tactileMap[0][2];
-
-        int span = 0;
-        int sumDirection = 0;
-        boolean front = false;
-        for (int i = 0 ; i < 7; i++)
-        {
-        	if (tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
-        	{
-				// measure the salience span and average direction
-        		span++;
-                sumDirection += i * 10;
-                if (i == 3) // Ernest's front
-                	front = true;
-        	}
-        	else
-        	{
-        		// record the previous salience if it is frontal
-        		if (front)
-		        {
-		        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
-		            //salience.setDirection((int) (sumDirection / span + .5));
-		            //salience.setSpan(span);
-		            //salience.setValue(Ernest.STIMULATION_TOUCH_WALL.getValue()); 
-		        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
-		        }
-        		
-        		// look for the next salience
-        		front = false;
-        		span = 0;
-        		sumDirection = 0;
-        	}
-        }
-		// record the last salience if it is frontal
-		if (front)
-        {
-        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
-            //salience.setDirection((int) (sumDirection / span + .5));
-            //salience.setSpan(span);
-            //salience.setValue(Ernest.STIMULATION_TOUCH_WALL.getValue()); 
-        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
-        }
-
-        return salience;
-    }
-
-//	public void setTactileAttractiveness()
-//	{
-//		
-//		// If Ernest is facing a wall
-//		if (m_bundle[1][0] != null && m_bundle[1][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-//		{
-//			// If there is no wall on the left then attracted to the left
-//			if (m_bundle[0][0] == null || !m_bundle[0][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-//			{
-//				m_direction = 90;
-//				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
-//			}
-//			else if (m_bundle[2][0] == null || !m_bundle[2][0].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-//			{
-//				// If there is no wall on the right then attracted to the right
-//				m_direction = 20;
-//				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
-//			}
-//			else if (m_bundle[0][1] == null || !m_bundle[0][1].getKinematicStimulation().equals(Ernest.STIMULATION_KINEMATIC_BUMP))
-//			{
-//				// if there is no wall on the left side then attracted to the left side
-//				m_direction = 110;
-//				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
-//			}
-//			else
-//			{
-//				// else attracted to the right side
-//				m_direction = 0;
-//				m_attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
-//			}				
-//		}
-//	}
+//    public ISalience getTactileSalience()
+//    {
+//    	ISalience salience = null;
+//	
+//        IStimulation[] tactileStimulations = new Stimulation[7];
+//        tactileStimulations[0] = m_tactileMap[2][2];
+//        tactileStimulations[1] = m_tactileMap[2][1];
+//        tactileStimulations[2] = m_tactileMap[2][0];
+//        tactileStimulations[3] = m_tactileMap[1][0];
+//        tactileStimulations[4] = m_tactileMap[0][0];
+//        tactileStimulations[5] = m_tactileMap[0][1];
+//        tactileStimulations[6] = m_tactileMap[0][2];
+//
+//        int span = 0;
+//        int sumDirection = 0;
+//        boolean front = false;
+//        for (int i = 0 ; i < 7; i++)
+//        {
+//        	if (tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
+//        	{
+//				// measure the salience span and average direction
+//        		span++;
+//                sumDirection += i * 10;
+//                if (i == 3) // Ernest's front
+//                	front = true;
+//        	}
+//        	else
+//        	{
+//        		// record the previous salience if it is frontal
+//        		if (front)
+//		        {
+//		        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
+//		        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
+//		        }
+//        		
+//        		// look for the next salience
+//        		front = false;
+//        		span = 0;
+//        		sumDirection = 0;
+//        	}
+//        }
+//		// record the last salience if it is frontal
+//		if (front)
+//        {
+//        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
+//        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
+//        }
+//        return salience;
+//    }
 
 	public void setTactileMap(IBundle bundleFish)
 	{
@@ -645,208 +609,4 @@ public class Observation implements IObservation
 		}
 		
 	}
-
-	/**
-	 * Update the current spatial system based on the anticipated spatial system and on to the sensory stimulations.
-	 * @param visualCortex The set of visual stimulations in the visual cortex.
-	 * @param tactileCortex The set of tactile stimulations in the tactile cortex.
-	 * @param kinematicStimulation The kinematic stimulation.
-	 * @param gustatoryStimulation The gustatory stimulation.
-	 * @return A pointer to the current observation that has been updated.
-	 */
-//	public void adjust(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
-//	{
-//		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
-//		//EColor frontColor = null;
-//		IStimulation frontVisualStimulation = null;
-//		
-//		// Create a List of the various saliences in the visual field
-//
-//		IStimulation stimulation = visualCortex[0];
-//		int span = 1;
-//		int sumDirection = 0;
-//		for (int i = 1 ; i < Ernest.RESOLUTION_RETINA; i++)
-//		{
-//			if (visualCortex[i].equals(stimulation))
-//			{
-//				// measure the salience span and average direction
-//				span++;
-//				sumDirection += i * 10;
-//			}
-//			else 
-//			{	
-//				// record the previous salience
-//				ISalience salience = new Salience();
-//				salience.setDirection((int) (sumDirection / span + .5));
-//				salience.setDistance(stimulation.getDistance());
-//				salience.setSpan(span);
-//				salience.setValue(stimulation.getValue());
-//				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
-//				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
-//				saliences.add(salience);
-//				if (salience.getDirection() >= 50 &&  salience.getDirection() <= 60 && span >= 3 )
-//					//frontColor = stimulation.getColor();
-//					frontVisualStimulation = stimulation;
-//				// look for the next salience
-//				stimulation = visualCortex[i];
-//				span = 1;
-//				sumDirection = i * 10;
-//			}
-//		}
-//		// record the last salience
-//		ISalience last = new Salience();
-//		last.setDirection((int) (sumDirection / span + .5));
-//		last.setDistance(stimulation.getDistance());
-//		last.setSpan(span);
-//		last.setValue(stimulation.getValue());
-//		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
-//		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
-//		saliences.add(last);
-//		if (last.getDirection() >= 50 &&  last.getDirection() <= 60 && span >= 3 )
-//			frontVisualStimulation = stimulation;
-//			//frontColor = stimulation.getColor();
-//
-//		// Tactile salience of fish 
-//		// Generates fictitious bundles when touching a fish (this helps).
-//		// TODO use touch fish-eat bundles
-//		
-//		setMap(tactileCortex);
-//		setTactileMap();
-//		
-//		// Tactile salience of walls.
-//		
-//		ISalience tactileSalience = getTactileSalience();
-//		if (tactileSalience != null)
-//			saliences.add(tactileSalience);
-//		
-//
-//		// Add the various saliences in the local map to the list
-//		// Each bundle in the local map creates a salience.
-//		
-//		if (getBundle(1, 0) != null)
-//		{
-//			ISalience salience = new Salience();
-//			salience.setDirection(55);
-//			salience.setSpan(4);
-//			salience.setValue(getBundle(1, 0).getValue());
-//			salience.setBundle(getBundle(1, 0));
-//			salience.setAttractiveness(getBundle(1, 0).getAttractiveness(m_clock) + 20);
-//			saliences.add(salience);
-//		}
-//		else if (getBundle(0, 0) != null)
-//		{
-//			ISalience salience = new Salience();
-//			salience.setDirection(85);
-//			salience.setSpan(4);
-//			salience.setValue(getBundle(0, 0).getValue());
-//			salience.setBundle(getBundle(0, 0));
-//			salience.setAttractiveness(getBundle(0, 0).getAttractiveness(m_clock) + 20);
-//			saliences.add(salience);
-//		}
-//		else if (getBundle(2, 0) != null)
-//		{
-//			ISalience salience = new Salience();
-//			salience.setDirection(25);
-//			salience.setSpan(4);
-//			salience.setValue(getBundle(2, 0).getValue());
-//			salience.setBundle(getBundle(2, 0));
-//			salience.setAttractiveness(getBundle(2, 0).getAttractiveness(m_clock) + 20);
-//			saliences.add(salience);
-//		}
-//		else if (getBundle(0, 1) != null)
-//		{
-//			ISalience salience = new Salience();
-//			salience.setDirection(110);
-//			salience.setSpan(4);
-//			salience.setValue(getBundle(0, 1).getValue());
-//			salience.setBundle(getBundle(0, 1));
-//			salience.setAttractiveness(getBundle(0, 1).getAttractiveness(m_clock) + 20);
-//			saliences.add(salience);
-//		}
-//		else if (getBundle(2, 1) != null)
-//		{
-//			ISalience salience = new Salience();
-//			salience.setDirection(0);
-//			salience.setSpan(4);
-//			salience.setValue(getBundle(2, 1).getValue());
-//			salience.setBundle(getBundle(2, 1));
-//			salience.setAttractiveness(getBundle(2, 1).getAttractiveness(m_clock) + 20);
-//			saliences.add(salience);
-//		}
-//		else if (getBundle(0, 2) != null)
-//		{
-//			ISalience salience = new Salience();
-//			salience.setDirection(140);
-//			salience.setSpan(4);
-//			salience.setValue(getBundle(0, 2).getValue());
-//			salience.setBundle(getBundle(0, 2));
-//			salience.setAttractiveness(getBundle(0, 2).getAttractiveness(m_clock) + 20);
-//			saliences.add(salience);
-//		}
-//		else if (getBundle(2, 2) != null)
-//		{
-//			ISalience salience = new Salience();
-//			salience.setDirection(-25);
-//			salience.setSpan(4);
-//			salience.setValue(getBundle(2, 2).getValue());
-//			salience.setBundle(getBundle(2, 2));
-//			salience.setAttractiveness(getBundle(2, 2).getAttractiveness(m_clock) + 20);
-//			saliences.add(salience);
-//		}
-//		
-//		// Find the most attractive salience in the list (There is at least a wall)
-//		
-//		int maxAttractiveness = 0;
-//		int direction = 0;
-//		for (ISalience salience : saliences)
-//			if (Math.abs(salience.getAttractiveness()) > Math.abs(maxAttractiveness))
-//			{
-//				maxAttractiveness = salience.getAttractiveness();
-//				direction = salience.getDirection();
-//				setSalience(salience);
-//				setFocusBundle(salience.getBundle());
-//			}
-//
-//		setAttractiveness(maxAttractiveness);
-//		setDirection(direction);
-//		
-//		// Taste
-//		
-//		setGustatory(gustatoryStimulation);
-//		if (gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
-//		{
-//			if (getBundle(1, 1) != null && !getBundle(1, 1).getGustatoryStimulation().equals(Ernest.STIMULATION_GUSTATORY_FISH))
-//			{
-//				getBundle(1, 1).setGustatoryStimulation(gustatoryStimulation);
-//				getBundle(1, 1).trace(m_tracer, "bundle");				
-//			}
-//		}
-//		
-//		// Kinematic
-//		
-//		setConfirmation(kinematicStimulation.equals(getKinematic()));
-//		setKinematic(kinematicStimulation);
-//
-//		// If the current stimulation does not match the anticipated local map then the local map is cleared.
-//		// TODO The criteria for deciding whether the matching is correct or incorrect need to be learned ! 
-//
-//		if (getBundle(1, 1) != null && getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
-//			clearMap();
-//		
-//		// Check peripersonal space.
-//		
-//		setTactileMap();
-//
-//		// Bundle the visual icon with the tactile stimulation in front
-//		
-//		if (frontVisualStimulation != null )
-//		{
-//			if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
-//			{
-//				IBundle bundle = m_persistenceMemory.addBundle(frontVisualStimulation, tactileCortex[1][0]);
-//				setFrontBundle(bundle);
-//			}
-//		}
-//	}
-
 }

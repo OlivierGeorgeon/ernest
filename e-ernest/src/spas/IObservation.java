@@ -79,6 +79,9 @@ public interface IObservation
 	 */
 	public IBundle getBundle(int x, int y);
 	
+	/**
+	 * @return The bundle of current interest.
+	 */
 	public IBundle getFocusBundle();
 	
 	/**
@@ -131,21 +134,21 @@ public interface IObservation
 	/**
 	 * @param direction The direction of the salience of current attention
 	 */
-	public void setDirection(int direction);
+	public void setDirection(float direction);
 	
 	/**
 	 * @return The direction of the salience of current attention
 	 */
-	public int getDirection();
+	public float getDirection();
 	/**
 	 * @param direction The direction of the salience of previous attention
 	 */
-	public void setPreviousDirection(int direction);
+	public void setPreviousDirection(float direction);
 	
 	/**
 	 * @return The direction of the salience of previous attention 
 	 */
-	public int getPreviousDirection();
+	public float getPreviousDirection();
 	
 	/**
 	 * @param attractiveness The attractiveness of the salience of current attention
@@ -175,12 +178,5 @@ public interface IObservation
 	 * @return the tactile stimulation perceived in the tactile map
 	 */
 	public IStimulation getTactileStimulation(int x, int y);
-
-    /**
-     * Check from salient tactile features in Ernest's tactile map. 
-     * @return the possible tactile salience that indicates a wall in front of Ernest. 
-     * Null if no wall in front of Ernest. 
-     */
-    public ISalience getTactileSalience();
 
 }
