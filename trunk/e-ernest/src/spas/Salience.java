@@ -1,41 +1,30 @@
 package spas;
 
 
+/**
+ * A set of sensory stimulations that are salient as a whole.
+ * (contiguous visual stimulations with the same color, or contiguous tactile stimulations with the same feeling).
+ * @author Olivier
+ */
 public class Salience implements ISalience 
 {
-	private int m_direction;
-	private int m_distance;
-	private int m_span;
-	private int m_attractiveness;
-	private IBundle m_bundle;
 	private int m_value;
 	private int m_type;
-	private float m_theta;
-	private float m_distancef;
-	private float m_spanf;
+	private float m_direction;
+	private float m_distance;
+	private float m_span;
+	private int m_attractiveness;
+	private IBundle m_bundle;
 	
-	Salience(int value, int type, float theta, float distance, float span)
+	Salience(int value, int type, float direction, float distance, float span)
 	{
 		m_value = value;
 		m_type = type;
-		m_theta = theta;
-		m_distancef = distance;
-		m_spanf = span;
-	}
-	
-	Salience(int value, int direction, int span)
-	{
-		m_value = value;
-		m_type = 0;
 		m_direction = direction;
+		m_distance = distance;
 		m_span = span;
 	}
-
-	public void setDirection(int direction) 
-	{
-		m_direction = direction;
-	}
-
+	
 	public void setDistance(int distance) 
 	{
 		m_distance = distance;
@@ -56,17 +45,17 @@ public class Salience implements ISalience
 		m_bundle = bundle;
 	}
 
-	public int getDirection() 
-	{
-		return m_direction;
-	}
-
-	public int getDistance() 
+	public float getDistance() 
 	{
 		return m_distance;
 	}
 
-	public int getSpan() 
+	public float getDirection() 
+	{
+		return m_direction;
+	}
+
+	public float getSpan() 
 	{
 		return m_span;
 	}
@@ -125,21 +114,12 @@ public class Salience implements ISalience
 
 	public void setDirection(float direction) 
 	{
-		m_theta = direction;
+		m_direction = direction;
 	}
 
 	public void setSpan(float span) 
 	{
-		m_spanf = span;
+		m_span = span;
 	}
 
-	public float getDirectionf()
-	{
-		return m_theta;
-	}
-
-	public float getSpanf() 
-	{
-		return m_spanf;
-	}
 }
