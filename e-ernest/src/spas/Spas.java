@@ -82,25 +82,26 @@ public class Spas implements ISpas
 		IStimulation stimulation = visualCortex[0];
 		int span = 1;
 		int sumDirection = 0;
-        float theta = - 23 * (float)Math.PI / 96; 
-        float sumDirectionf = 0;
-        float spanf = 0;
+        float theta = - 11 * (float)Math.PI / 24; 
+        float sumDirectionf = theta;
+        float spanf = (float)Math.PI / 12;
 		for (int i = 1 ; i < Ernest.RESOLUTION_RETINA; i++)
 		{
+			theta += (float)Math.PI / 12;
 			if (visualCortex[i].equals(stimulation))
 			{
 				// measure the salience span and average direction
 				span++;
 				sumDirection += i * 10;
                 sumDirectionf += theta;
-                spanf += (float)Math.PI / 24;
+                spanf += (float)Math.PI / 12;
 			}
 			else 
 			{	
 				// record the previous salience
 				ISalience salience = new Salience(stimulation.getValue(), (int) (sumDirection / span + .5), span);
 				salience.setDistance(stimulation.getDistance());
-				salience.setDirection(sumDirectionf / spanf);
+				salience.setDirection(sumDirectionf / span);
 				salience.setSpan(spanf);
 				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
 				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
@@ -111,14 +112,14 @@ public class Spas implements ISpas
 				stimulation = visualCortex[i];
 				span = 1;
 				sumDirection = i * 10;
-        		spanf = 0;
-        		sumDirectionf = 0;
+        		spanf = (float)Math.PI / 12;
+        		sumDirectionf = theta;
 			}
 		}
 		// record the last salience
 		ISalience last = new Salience(stimulation.getValue(), (int) (sumDirection / span + .5), span);
 		last.setDistance(stimulation.getDistance());
-		last.setDirection(sumDirectionf / spanf);
+		last.setDirection(sumDirectionf / span);
 		last.setSpan(spanf);
 		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
 		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
@@ -146,12 +147,12 @@ public class Spas implements ISpas
 		// Find the most attractive salience in the list (abs value) (There is at least a wall)
 		
 		int maxAttractiveness = 0;
-		int direction = 0;
+		float direction = 0;
 		for (ISalience salience : saliences)
 			if (Math.abs(salience.getAttractiveness()) > Math.abs(maxAttractiveness))
 			{
 				maxAttractiveness = salience.getAttractiveness();
-				direction = salience.getDirection();
+				direction = salience.getDirectionf();
 				m_observation.setSalience(salience);
 				m_observation.setFocusBundle(salience.getBundle());
 			}
@@ -277,7 +278,7 @@ public class Spas implements ISpas
 		        {
 		        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
 					IBundle b = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_WALL);
-					salience.setDirection(sumDirectionf / spanf);
+					salience.setDirection(sumDirectionf / span);
 					salience.setSpan(spanf);
 					if (b != null)
 					{
