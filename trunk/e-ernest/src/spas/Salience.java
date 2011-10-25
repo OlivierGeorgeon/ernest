@@ -16,7 +16,7 @@ public class Salience implements ISalience
 	private int m_attractiveness;
 	private IBundle m_bundle;
 	
-	Salience(int value, int type, float direction, float distance, float span)
+	public Salience(int value, int type, float direction, float distance, float span)
 	{
 		m_value = value;
 		m_type = type;
