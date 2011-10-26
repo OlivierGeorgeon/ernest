@@ -9,17 +9,17 @@ package spas;
 public class Salience implements ISalience 
 {
 	private int m_value;
-	private int m_type;
+	private int m_modality;
 	private float m_direction;
 	private float m_distance;
 	private float m_span;
 	private int m_attractiveness;
 	private IBundle m_bundle;
 	
-	public Salience(int value, int type, float direction, float distance, float span)
+	public Salience(int value, int modality, float direction, float distance, float span)
 	{
 		m_value = value;
-		m_type = type;
+		m_modality = modality;
 		m_direction = direction;
 		m_distance = distance;
 		m_span = span;
@@ -87,7 +87,7 @@ public class Salience implements ISalience
 		else
 		{
 			ISalience other = (ISalience)o;
-			ret = (m_value == other.getValue()) || (m_type == other.getType());
+			ret = (m_value == other.getValue()) || (m_modality == other.getType());
 		}
 		
 		return ret;
@@ -102,14 +102,14 @@ public class Salience implements ISalience
 		return m_value;
 	}
 
-	public void setType(int type) 
+	public void setType(int modality) 
 	{
-		m_type = type;
+		m_modality = modality;
 	}
 
 	public int getType() 
 	{
-		return m_type;
+		return m_modality;
 	}
 
 	public void setDirection(float direction) 

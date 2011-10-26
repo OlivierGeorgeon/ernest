@@ -1,7 +1,10 @@
 package ernest;
 
+import java.util.ArrayList;
+
 import imos.IAct;
 import spas.IObservation;
+import spas.ISalience;
 
 
 /**
@@ -68,4 +71,9 @@ public interface IErnest
 	 */
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
 
+	/**
+	 * @param salienceList The list of salience in Ernest's colliculus.
+	 */
+	public void setSalienceList(ArrayList<ISalience> salienceList);
+	
 }

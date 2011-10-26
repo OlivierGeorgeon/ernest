@@ -1,5 +1,7 @@
 package spas;
 
+import java.util.ArrayList;
+
 import ernest.ITracer;
 import spas.IBundle;
 import spas.IStimulation;
@@ -69,5 +71,10 @@ public interface ISpas
 	 * @return A pointer to the current observation that has been updated.
 	 */
 	public IObservation adjust(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
+
+	/**
+	 * @param salienceList The list of salience in Ernest's colliculus.
+	 */
+	public void setSalienceList(ArrayList<ISalience> salienceList);
 
 }
