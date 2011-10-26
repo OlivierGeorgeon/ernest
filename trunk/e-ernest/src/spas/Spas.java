@@ -7,6 +7,11 @@ import imos.IAct;
 import ernest.Ernest;
 import ernest.ITracer;
 
+/**
+ * The spatial system.
+ * Maintains the local space map and the persistence memory.
+ * @author Olivier
+ */
 public class Spas implements ISpas 
 {
 	
@@ -24,6 +29,9 @@ public class Spas implements ISpas
 
 	/** The anticipated local map  */
 	private IObservation m_anticipation = new Observation();;
+	
+	/** The visual stimulation in front of Ernest  */
+	IStimulation m_frontVisualStimulation;
 
 	public void setTracer(ITracer tracer) 
 	{
@@ -75,68 +83,10 @@ public class Spas implements ISpas
 		m_observation = m_anticipation;
 
 		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
-		IStimulation frontVisualStimulation = null;
 		
-		// Create a List of the various saliences in the visual field
-
-		IStimulation stimulation = visualCortex[0];
-		int span = 1;
-		int sumDirection = 0;
-        float theta = - 11 * (float)Math.PI / 24; 
-        float sumDirectionf = theta;
-        float spanf = (float)Math.PI / 12;
-		for (int i = 1 ; i < Ernest.RESOLUTION_RETINA; i++)
-		{
-			theta += (float)Math.PI / 12;
-			if (visualCortex[i].equals(stimulation))
-			{
-				// measure the salience span and average direction
-				span++;
-				sumDirection += i * 10;
-                sumDirectionf += theta;
-                spanf += (float)Math.PI / 12;
-			}
-			else 
-			{	
-				// Record the previous salience
-				ISalience salience = new Salience(stimulation.getValue(), 0, sumDirectionf / span, stimulation.getDistance(), spanf);
-				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
-				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
-				saliences.add(salience);
-				if (salience.getValue() == visualCortex[5].getValue() && salience.getValue() == visualCortex[6].getValue())
-					frontVisualStimulation = stimulation;
-				// look for the next salience
-				stimulation = visualCortex[i];
-				span = 1;
-				sumDirection = i * 10;
-        		spanf = (float)Math.PI / 12;
-        		sumDirectionf = theta;
-			}
-		}
-		// record the last salience
-		ISalience last = new Salience(stimulation.getValue(), 0, sumDirectionf / span, stimulation.getDistance(), spanf);
-		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
-		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
-		saliences.add(last);
-		if (last.getValue() == visualCortex[5].getValue() && last.getValue() == visualCortex[6].getValue())
-			frontVisualStimulation = stimulation;
-			//frontColor = stimulation.getColor();
-
-		// Tactile salience of fish 
-		// Generates fictitious bundles when touching a fish (this helps).
-		// TODO use touch fish-eat bundles
+		// Get the list of saliences. 
 		
-		m_observation.setMap(tactileCortex);
-		IBundle bundleFish = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_FISH);
-		m_observation.setTactileMap(bundleFish);
-		
-		// Tactile salience of walls.
-		
-		//ISalience tactileSalience = m_observation.getTactileSalience();
-		ISalience tactileSalience = getTactileSalience(tactileCortex);
-		if (tactileSalience != null)
-			saliences.add(tactileSalience);
-		
+		saliences = getSaliences(visualCortex, tactileCortex);
 
 		// Find the most attractive salience in the list (abs value) (There is at least a wall)
 		
@@ -163,70 +113,139 @@ public class Spas implements ISpas
 		m_observation.setConfirmation(kinematicStimulation.equals(m_observation.getKinematic()));
 		m_observation.setKinematic(kinematicStimulation);
 		
-		// Bundle the tactile stimulation with the kinematic stimulation
+		// Bundle the tactile stimulation with the kinematic stimulation.
 		
-		if (kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_BUMP))
+		if (kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_BUMP) )
 		{
 			if (m_observation.getBundle(1, 0) == null)
-				m_persistenceMemory.createTactoKinematicBundle(tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP);
-			else
 			{
-				m_persistenceMemory.addKinematicStimulation(m_observation.getBundle(1, 0), kinematicStimulation);
-				//m_observation.getBundle(1, 0).setKinematicStimulation(kinematicStimulation);
-				//m_observation.getBundle(1, 0).trace(m_tracer, "bundle");
+				if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))
+				{
+					if (m_frontVisualStimulation == null)
+						m_persistenceMemory.createTactoKinematicBundle(tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP);
+					else
+						m_persistenceMemory.addBundle(m_frontVisualStimulation, tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP, Ernest.STIMULATION_GUSTATORY_NOTHING);
+				}
 			}
+			else if (m_observation.getBundle(1, 0).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
+				m_persistenceMemory.addKinematicStimulation(m_observation.getBundle(1, 0), kinematicStimulation);
 		}
 
 		// Bundle the tactile stimulation with the gustatory stimulation
 		
 		if (gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 		{
+			// Discrete environment.
 			if (m_observation.getBundle(1, 1) == null)
 				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);				
-			else
-			{
+			else if (m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
 				m_persistenceMemory.addGustatoryStimulation(m_observation.getBundle(1, 1), gustatoryStimulation);
-				//m_observation.getBundle(1, 1).setGustatoryStimulation(gustatoryStimulation);
-				//m_observation.getBundle(1, 1).trace(m_tracer, "bundle");
-			}
+			// Continuous environment.
+			if (m_observation.getBundle(1, 0) == null) // Continuous environment. 
+				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);				
+			else if (m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
+				m_persistenceMemory.addGustatoryStimulation(m_observation.getBundle(1, 0), gustatoryStimulation);
 		}
 		
 		// If the current stimulation does not match the anticipated local map then the local map is cleared.
-		// TODO The criteria for deciding whether the matching is correct or incorrect need to be learned ! 
+		// TODO The criteria to decide whether the matching is correct or incorrect need to be learned ! 
 
-		if (m_observation.getBundle(1, 1) != null && m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
+		if ((m_observation.getBundle(1, 1) != null && m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL)) ||
+			(m_observation.getBundle(1, 0) != null && !m_observation.getBundle(1, 0).getTactileStimulation().equals(tactileCortex[1][0])))
 			m_observation.clearMap();
 
-		// Bundle the visual stimulation with the tactile stimulation in front
+		// Bundle the visual stimulation with the tactile stimulation.
 		
-		if (frontVisualStimulation != null )
+		if (m_frontVisualStimulation != null )
 		{
 			if (m_observation.getBundle(1, 0) == null)
 			{
 				if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
 				{
-					IBundle bundle = m_persistenceMemory.createVisioTactileBundle(frontVisualStimulation, tactileCortex[1][0]);
+					IBundle bundle = m_persistenceMemory.createVisioTactileBundle(m_frontVisualStimulation, tactileCortex[1][0]);
 					m_observation.setFrontBundle(bundle);
 				}
 			}
 			else
-			{
-				m_persistenceMemory.addVisualStimulation(m_observation.getBundle(1, 0), frontVisualStimulation);
-				//m_observation.getBundle(1, 0).setVisualStimulation(frontVisualStimulation);
-				//m_observation.getBundle(1, 0).trace(m_tracer, "bundle");
-			}
+				m_persistenceMemory.addVisualStimulation(m_observation.getBundle(1, 0), m_frontVisualStimulation);
 		}
-//		else
-//			if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL) && m_observation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP))		
-//			{
-//				IBundle bundle = addBundle(EColor.BLACK, Ernest.STIMULATION_TOUCH_WALL);
-//				bundle.setKinematicStimulation(Ernest.STIMULATION_KINEMATIC_BUMP);
-//				m_observation.setFrontBundle(bundle);
-//			}
-				
+		m_frontVisualStimulation = null;		
 		return m_observation;
 	}
 	
+	/**
+	 * Get the list of the saliences in the environment.
+	 * @param visualCortex The visual cortex.
+	 * @param tactileCortex The tactile cortex.
+	 * @return The salience list.
+	 */
+	private List<ISalience> getSaliences(IStimulation[] visualCortex,
+				IStimulation[][] tactileCortex)
+	   {
+		// Create a List of the various saliences in the visual field
+
+		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
+
+		IStimulation stimulation = visualCortex[0];
+		int span = 1;
+		int sumDirection = 0;
+		float theta = - 11 * (float)Math.PI / 24; 
+		float sumDirectionf = theta;
+		float spanf = (float)Math.PI / 12;
+		for (int i = 1 ; i < Ernest.RESOLUTION_RETINA; i++)
+		{
+			theta += (float)Math.PI / 12;
+			if (visualCortex[i].equals(stimulation))
+			{
+				// measure the salience span and average direction
+				span++;
+				sumDirection += i * 10;
+               sumDirectionf += theta;
+               spanf += (float)Math.PI / 12;
+			}
+			else 
+			{	
+				// Record the previous salience
+				ISalience salience = new Salience(stimulation.getValue(), 0, sumDirectionf / span, stimulation.getDistance(), spanf);
+				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
+				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
+				saliences.add(salience);
+				if (salience.getValue() == visualCortex[5].getValue() && salience.getValue() == visualCortex[6].getValue())
+					m_frontVisualStimulation = stimulation;
+				// look for the next salience
+				stimulation = visualCortex[i];
+				span = 1;
+				sumDirection = i * 10;
+       		spanf = (float)Math.PI / 12;
+       		sumDirectionf = theta;
+			}
+		}
+		// record the last salience
+		ISalience last = new Salience(stimulation.getValue(), 0, sumDirectionf / span, stimulation.getDistance(), spanf);
+		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
+		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
+		saliences.add(last);
+		if (last.getValue() == visualCortex[5].getValue() && last.getValue() == visualCortex[6].getValue())
+			m_frontVisualStimulation = stimulation;
+			//frontColor = stimulation.getColor();
+
+		// Tactile salience of fish 
+		// Generates fictitious bundles when touching a fish (this helps).
+		// TODO use touch fish-eat bundles		
+		m_observation.setMap(tactileCortex);
+		//IBundle bundleFish = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_FISH);
+		//m_observation.setTactileMap(bundleFish);
+		
+		// Tactile salience of walls.
+		
+		//ISalience tactileSalience = m_observation.getTactileSalience();
+		ISalience tactileSalience = getTactileSalience(tactileCortex);
+		if (tactileSalience != null)
+			saliences.add(tactileSalience);
+
+	   return saliences;
+   }
+
     /**
      * Check from salient tactile features in Ernest's tactile map. 
      * So far, only detects walls.
@@ -234,7 +253,7 @@ public class Spas implements ISpas
      * @param tactileMap The tactile cortex.
      * @return The tactile salience. Null if no wall in front of Ernest. 
      */
-   public ISalience getTactileSalience(IStimulation[][] tactileMap)
+   private ISalience getTactileSalience(IStimulation[][] tactileMap)
     {
     	ISalience salience = null;
 	
@@ -311,5 +330,6 @@ public class Spas implements ISpas
         }
         return salience;
     }
+   
 
 }

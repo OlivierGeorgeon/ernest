@@ -126,7 +126,7 @@ public class PersistenceMemory
 	 * @param tactileStimulation The bundle's tactile stimulation.
 	 * @return the new bundle if created or the already existing bundle.
 	 */
-	private IBundle addBundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
+	public IBundle addBundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
 	{
 		IBundle bundle = new Bundle(visualStimulation, tactileStimulation, kinematicStimulation, gustatoryStimulation);
 		
@@ -156,6 +156,14 @@ public class PersistenceMemory
 		}
 	}
 	
+//	public void addTactileStimulation(IBundle bundle, IStimulation stimulation)
+//	{
+//		if (!bundle.getTactileStimulation().equals(stimulation))
+//		{
+//			bundle.setTactileStimulation(stimulation);
+//			bundle.trace(m_tracer, "bundle");
+//		}
+//	}
 	public void addKinematicStimulation(IBundle bundle, IStimulation stimulation)
 	{
 		if (!bundle.getKinematicStimulation().equals(stimulation))
