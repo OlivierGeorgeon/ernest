@@ -43,7 +43,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		for (int j = 0; j < 3; j++)
 			for (int i = 0; i < 3; i++)
 			{
-				somatoCortex[i][j] = m_staticSystem.addStimulation(Ernest.STIMULATION_TACTILE, stimuli[i][9 + j]);
+				somatoCortex[i][j] = m_staticSystem.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9 + j]);
 				if (m_tracer != null)
 					m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getHexColor());
 			}

@@ -24,7 +24,7 @@ public class Stimulation implements IStimulation
 	{
 		//m_color= new EColor(red, green, blue);
 		m_distance = distance;
-		m_type = Ernest.STIMULATION_VISUAL;
+		m_type = Ernest.MODALITY_VISUAL;
 		//m_value = m_color.getRGB();
 		m_value = red*65536 + green*256 + blue;
 

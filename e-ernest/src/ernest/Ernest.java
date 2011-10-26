@@ -1,6 +1,9 @@
 package ernest;
 
+import java.util.ArrayList;
+
 import spas.IObservation;
+import spas.ISalience;
 import spas.ISpas;
 import spas.IStimulation;
 import spas.Spas;
@@ -54,10 +57,10 @@ public class Ernest implements IErnest
 	public static int STIMULATION_KINEMATIC = 1;
 	
 	/** A visual stimulation */
-	public static int STIMULATION_VISUAL = 2;
+	public static int MODALITY_VISUAL = 2;
 	
 	/** A tactile stimulation */
-	public static int STIMULATION_TACTILE = 3;
+	public static int MODALITY_TACTILE = 3;
 	
 	/** A circadian stimulation */
 	public static int STIMULATION_CIRCADIAN = 4;
@@ -72,16 +75,16 @@ public class Ernest implements IErnest
 	public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(255, 255, 255, 0);
 
 	/** Touch empty */
-	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(STIMULATION_TACTILE, 180 * 65536 + 180 * 256 + 180);
+	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(MODALITY_TACTILE, 180 * 65536 + 180 * 256 + 180);
 	
 	/** Touch soft */
-	public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(STIMULATION_TACTILE, 100 * 65536 + 100 * 256 + 100);
+	public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 100);
 	
 	/** Touch hard */
-	public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(STIMULATION_TACTILE, 0);
+	public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(MODALITY_TACTILE, 0);
 	
 	/** Touch fish */
-	public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(STIMULATION_TACTILE, 100 * 65536 + 100 * 256 + 101);
+	public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 101);
 	
 	/** Kinematic Stimulation succeed */	
 	public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536 + 255 * 256 + 255);
@@ -117,7 +120,7 @@ public class Ernest implements IErnest
 	private boolean m_inhibited = false;
 	
 	/** Ernest's static system. */
-	private ISpas m_staticSystem = new Spas();
+	private ISpas m_spas = new Spas();
 
 	/** Ernest's motivational system. */
 	private IImos m_imos ;
@@ -145,7 +148,7 @@ public class Ernest implements IErnest
 	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
 	{
 		m_sensorymotorSystem = sensor;
-		m_sensorymotorSystem.init(m_staticSystem, m_imos, m_tracer);
+		m_sensorymotorSystem.init(m_spas, m_imos, m_tracer);
 	};
 	
 	/**
@@ -156,7 +159,7 @@ public class Ernest implements IErnest
 	{ 
 		m_tracer = tracer;
 		m_imos.setTracer(m_tracer); 
-		m_staticSystem.setTracer(m_tracer);
+		m_spas.setTracer(m_tracer);
 	}
 
 	/**
@@ -182,7 +185,7 @@ public class Ernest implements IErnest
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
-		m_staticSystem.tick();
+		m_spas.tick();
 		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
 		// Return the schema to enact.
@@ -205,7 +208,7 @@ public class Ernest implements IErnest
 		if (m_inhibited)
 		{
 			// If the intention was inhibited and the anticipation is reset and the intention is considered enacted.
-			m_staticSystem.resetAnticipation();
+			m_spas.resetAnticipation();
 			enactedPrimitiveAct = m_primitiveAct.getSchema().resultingAct(false);
 		}
 		else
@@ -213,12 +216,12 @@ public class Ernest implements IErnest
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
-		m_staticSystem.tick();
+		m_spas.tick();
 		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
 		// Anticipate the next observation
 		
-		IObservation anticipation = m_staticSystem.anticipate(m_primitiveAct);
+		IObservation anticipation = m_spas.anticipate(m_primitiveAct);
 
 		//m_inhibited = anticipation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP); // !anticipation.getConfirmation();
 
@@ -235,18 +238,17 @@ public class Ernest implements IErnest
 
 	public IObservation getObservation()
 	{
-		return m_staticSystem.getAnticipation();
+		return m_spas.getAnticipation();
 	}
-
-//	public ISpas getStaticSystem()
-//	{
-//		return m_staticSystem;
-//	}
 
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{
 		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
 
+	public void setSalienceList(ArrayList<ISalience> salienceList)
+	{
+		m_spas.setSalienceList(salienceList);
+	}
 
 }

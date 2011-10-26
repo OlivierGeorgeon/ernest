@@ -33,6 +33,9 @@ public class Spas implements ISpas
 	/** The visual stimulation in front of Ernest  */
 	IStimulation m_frontVisualStimulation;
 
+	/** The list of saliences in Ernest's colliculus  */
+	ArrayList<ISalience> m_salienceList;
+
 	public void setTracer(ITracer tracer) 
 	{
 		m_tracer = tracer;
@@ -82,11 +85,12 @@ public class Spas implements ISpas
 	{
 		m_observation = m_anticipation;
 
-		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
+		List<ISalience> saliences = new ArrayList<ISalience>();
 		
 		// Get the list of saliences. 
 		
 		saliences = getSaliences(visualCortex, tactileCortex);
+		saliences = getColliculusSaliences();
 
 		// Find the most attractive salience in the list (abs value) (There is at least a wall)
 		
@@ -331,5 +335,42 @@ public class Spas implements ISpas
         return salience;
     }
    
+	/**
+	 * @param salienceList The list of saliences in Ernest's colliculus.
+	 */
+	public void setSalienceList(ArrayList<ISalience> salienceList)
+	{
+		m_salienceList = salienceList;
+	}
 
+	private ArrayList<ISalience> getColliculusSaliences()
+	{
+		//saliences = m_salienceList;
+		
+		for (ISalience salience : m_salienceList)
+		{
+			if (salience.getType() == Ernest.MODALITY_VISUAL)
+			{
+				IStimulation stimulation = new Stimulation(Ernest.MODALITY_VISUAL, salience.getValue());
+				IBundle b = m_persistenceMemory.seeBundle(stimulation);
+				salience.setBundle(b);
+				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + (int)(5 * salience.getSpan()) );
+			}
+			else
+			{
+				
+				IStimulation stimulation = new Stimulation(Ernest.MODALITY_TACTILE, salience.getValue());
+				IBundle b = m_persistenceMemory.touchBundle(stimulation);
+				if (b != null)
+				{
+					salience.setBundle(b);
+					salience.setAttractiveness(b.getAttractiveness(m_clock));
+					//salience.setValue(b.getValue());
+				}
+				else
+					salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
+			}
+		}
+		return m_salienceList;
+	}
 }
