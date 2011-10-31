@@ -20,12 +20,6 @@ public class Observation implements IObservation
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
 
-	/** Ernest's internal clock  */
-	//private int m_clock;
-
-	/** Ernest's persistence memory  */
-	//private PersistenceSystem m_persistenceMemory = new PersistenceSystem();
-	
 	private float m_direction = Ernest.CENTER_RETINA;
 	private float m_previousDirection = Ernest.CENTER_RETINA;
 	private int m_attractiveness = 0;
@@ -47,7 +41,7 @@ public class Observation implements IObservation
 	
 	// The map of surrounding bundles 
 	IBundle[][] m_bundleMap = new IBundle[3][3];
-	
+
 	private String getHexColor() 
 	{
 		// Return the salience's color
@@ -66,21 +60,16 @@ public class Observation implements IObservation
 	public int getColor(int x, int y)
 	{
 		int c = 0;
-//		if (m_kinematicStimulation != null && Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation) && (x == 1) && (y == 0))
-//			c = 255 * 65536; // red
-//		else
-//		{
-			if (m_bundleMap[x][y] == null)
-			{
-				if (m_tactileMap[x][y] == null)
-					// at startup, the tactile map is not yet initialized
-					c = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
-				else
-					c = m_tactileMap[x][y].getValue();
-			}
+		if (m_bundleMap[x][y] == null)
+		{
+			if (m_tactileMap[x][y] == null)
+				// at startup, the tactile map is not yet initialized
+				c = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
 			else
-				c = m_bundleMap[x][y].getVisualStimulation().getValue();
-//		}		
+				c = m_tactileMap[x][y].getValue();
+		}
+		else
+			c = m_bundleMap[x][y].getVisualStimulation().getValue();
 		return c;
 	}
 	
@@ -256,7 +245,7 @@ public class Observation implements IObservation
 			
 			if (!dynamicFeature.equals(""))
 			{
-				if (m_direction < -0.1f ) // (30 is the center in the tactile referential)
+				if (m_direction < -0.1f ) 
 					dynamicFeature = "|" + dynamicFeature;
 				else if (m_direction > 0.1f )
 					dynamicFeature = dynamicFeature + "|";
@@ -268,11 +257,7 @@ public class Observation implements IObservation
 		if (m_gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 		{
 			if (m_bundleMap[1][1] != null)
-			{
-				//m_bundleMap[1][1].setGustatoryStimulation(m_gustatoryStimulation);
 				m_bundleMap[1][1] = null; // The fish disappears from the local map (into Ernest's stomach) !
-				
-			}
 			dynamicFeature = "e";
 			satisfaction = 100;
 		}
@@ -520,96 +505,9 @@ public class Observation implements IObservation
 		return m_attractiveness;
 	}
 
-//	public void setPreviousAttractiveness(int attractiveness) 
-//	{
-//		m_previousAttractiveness = attractiveness;
-//	}
-
 	public int getPreviousAttractiveness() 
 	{
 		return m_previousAttractiveness;
 	}
 
-//    public ISalience getTactileSalience()
-//    {
-//    	ISalience salience = null;
-//	
-//        IStimulation[] tactileStimulations = new Stimulation[7];
-//        tactileStimulations[0] = m_tactileMap[2][2];
-//        tactileStimulations[1] = m_tactileMap[2][1];
-//        tactileStimulations[2] = m_tactileMap[2][0];
-//        tactileStimulations[3] = m_tactileMap[1][0];
-//        tactileStimulations[4] = m_tactileMap[0][0];
-//        tactileStimulations[5] = m_tactileMap[0][1];
-//        tactileStimulations[6] = m_tactileMap[0][2];
-//
-//        int span = 0;
-//        int sumDirection = 0;
-//        boolean front = false;
-//        for (int i = 0 ; i < 7; i++)
-//        {
-//        	if (tactileStimulations[i].equals(Ernest.STIMULATION_TOUCH_WALL))
-//        	{
-//				// measure the salience span and average direction
-//        		span++;
-//                sumDirection += i * 10;
-//                if (i == 3) // Ernest's front
-//                	front = true;
-//        	}
-//        	else
-//        	{
-//        		// record the previous salience if it is frontal
-//        		if (front)
-//		        {
-//		        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
-//		        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
-//		        }
-//        		
-//        		// look for the next salience
-//        		front = false;
-//        		span = 0;
-//        		sumDirection = 0;
-//        	}
-//        }
-//		// record the last salience if it is frontal
-//		if (front)
-//        {
-//        	salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), (int) (sumDirection / span + .5), span);
-//        	salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_EMPTY);
-//        }
-//        return salience;
-//    }
-
-	public void setTactileMap(IBundle bundleFish)
-	{
-		
-		// Check if there is already a fish bundle in the local map.
-		boolean grayBundle = false;
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-				if (m_bundleMap[i][j] != null && m_bundleMap[i][j].getGustatoryStimulation().equals(Ernest.STIMULATION_GUSTATORY_FISH)) 
-					grayBundle = true;
-		
-		// If there is no gray bundle yet, then create a gray bundle if a fish is touched.
-		if (!grayBundle)
-		{
-			if (m_tactileMap[1][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][0] == null)
-				m_bundleMap[1][0] = bundleFish;
-			else if (m_tactileMap[0][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][0] == null)
-				m_bundleMap[0][0] = bundleFish;
-			else if (m_tactileMap[2][0].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][0] == null)
-				m_bundleMap[2][0] = bundleFish;
-			else if (m_tactileMap[0][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][1] == null)
-				m_bundleMap[0][1] = bundleFish;
-			else if (m_tactileMap[2][1].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][1] == null)
-				m_bundleMap[2][1] = bundleFish;
-			else if (m_tactileMap[0][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[0][2] == null)
-				m_bundleMap[0][2] = bundleFish;
-			else if (m_tactileMap[2][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[2][2] == null)
-				m_bundleMap[2][2] = bundleFish;
-			else if (m_tactileMap[1][2].equals(Ernest.STIMULATION_TOUCH_FISH) && m_bundleMap[1][2] == null)
-				m_bundleMap[1][2] = bundleFish;
-		}
-		
-	}
 }

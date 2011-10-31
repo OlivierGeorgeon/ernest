@@ -1,5 +1,7 @@
 package spas;
 
+import javax.vecmath.Vector3f;
+
 
 /**
  * An element of Ernest's sensory state.
@@ -8,24 +10,19 @@ package spas;
 public interface IStimulation 
 {
 	/**
-	 * @return The stimulation's color. Used for visualization in the trace. 
-	 */
-	//EColor getColor();
-	
-	/**
 	 * @return The hexadecimal color of the stimulation's color
 	 */
 	String getHexColor();
 	
 	/**
-	 * @return The stimulation's distance. The visual system is assumed to get a sense of distance.
+	 * @return The stimulation's position in egocentric coordinates. 
 	 */
-	int getDistance();
+	Vector3f getPosition();
 	
 	/**
-	 * @param distance
+	 * @param position The stimulation's position in egocentric coordinates.
 	 */
-	void setDistance(int distance);
+	void setPosition(Vector3f position);
 	
 	/**
 	 * @return The type of the stimulus 

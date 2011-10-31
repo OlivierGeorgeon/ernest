@@ -1,5 +1,7 @@
 package spas;
 
+import javax.vecmath.Vector3f;
+
 
 /**
  * A set of sensory stimulations that are salient as a whole.
@@ -12,6 +14,7 @@ public class Salience implements ISalience
 	private int m_modality;
 	private float m_direction;
 	private float m_distance;
+	private Vector3f m_position;
 	private float m_span;
 	private int m_attractiveness;
 	private IBundle m_bundle;
@@ -24,6 +27,15 @@ public class Salience implements ISalience
 		m_distance = distance;
 		m_span = span;
 	}
+	
+//	public Salience(int value, int modality, Vector3f position, float span)
+//	{
+//		m_value = value;
+//		m_modality = modality;
+//		m_direction = direction;
+//		m_distance = distance;
+//		m_span = span;
+//	}
 	
 	public void setDistance(int distance) 
 	{

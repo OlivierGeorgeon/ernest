@@ -23,7 +23,8 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		IStimulation[] visualCortex = new Stimulation[Ernest.RESOLUTION_RETINA];
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-			visualCortex[i] = m_staticSystem.addStimulation(stimuli[i][1], stimuli[i][2], stimuli[i][3], stimuli[i][0]);
+			//visualCortex[i] = m_staticSystem.addStimulation(stimuli[i][1], stimuli[i][2], stimuli[i][3], stimuli[i][0]);
+			visualCortex[i] = m_staticSystem.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
 
 		if (m_tracer != null) {
 			Object retinaElmt = m_tracer.addEventElement("retina");

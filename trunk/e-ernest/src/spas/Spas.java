@@ -3,6 +3,8 @@ package spas;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Vector3f;
+
 import imos.IAct;
 import ernest.Ernest;
 import ernest.ITracer;
@@ -23,6 +25,9 @@ public class Spas implements ISpas
 
 	/** Ernest's persistence momory  */
 	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
+	
+	/** Ernest's local space memory  */
+	private LocalSpaceMemory m_localMemory = new LocalSpaceMemory();
 	
 	/** The current local map  */
 	private IObservation m_observation  = new Observation();;
@@ -68,12 +73,6 @@ public class Spas implements ISpas
 		return m_anticipation;
 	}
 
-	public IStimulation addStimulation(int red, int green, int blue,
-			int distance) 
-	{
-		return m_persistenceMemory.addStimulation(red, green, blue, distance);
-	}
-
 	public IStimulation addStimulation(int type, int value) 
 	{
 		return m_persistenceMemory.addStimulation(type, value);
@@ -90,7 +89,7 @@ public class Spas implements ISpas
 		// Get the list of saliences. 
 		
 		saliences = getSaliences(visualCortex, tactileCortex);
-		saliences = getColliculusSaliences();
+		//saliences = m_salienceList;
 
 		// Find the most attractive salience in the list (abs value) (There is at least a wall)
 		
@@ -210,7 +209,7 @@ public class Spas implements ISpas
 			else 
 			{	
 				// Record the previous salience
-				ISalience salience = new Salience(stimulation.getValue(), 0, sumDirectionf / span, stimulation.getDistance(), spanf);
+				ISalience salience = new Salience(stimulation.getValue(), 0, sumDirectionf / span, 0, spanf);
 				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
 				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 				saliences.add(salience);
@@ -225,7 +224,7 @@ public class Spas implements ISpas
 			}
 		}
 		// record the last salience
-		ISalience last = new Salience(stimulation.getValue(), 0, sumDirectionf / span, stimulation.getDistance(), spanf);
+		ISalience last = new Salience(stimulation.getValue(), 0, sumDirectionf / span, 0, spanf);
 		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
 		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
@@ -341,12 +340,8 @@ public class Spas implements ISpas
 	public void setSalienceList(ArrayList<ISalience> salienceList)
 	{
 		m_salienceList = salienceList;
-	}
-
-	private ArrayList<ISalience> getColliculusSaliences()
-	{
-		//saliences = m_salienceList;
 		
+		// Find the salience's attractiveness.
 		for (ISalience salience : m_salienceList)
 		{
 			if (salience.getType() == Ernest.MODALITY_VISUAL)
@@ -371,6 +366,5 @@ public class Spas implements ISpas
 					salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
 			}
 		}
-		return m_salienceList;
 	}
 }
