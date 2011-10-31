@@ -69,10 +69,10 @@ public class Ernest implements IErnest
 	public static int STIMULATION_FOOD = 2;
 	
 	/** Stimulation of seeing a regular wall  */
-	public static IStimulation STIMULATION_VISUAL_WALL = new Stimulation(0, 128, 0, 0);
+	public static IStimulation STIMULATION_VISUAL_WALL = new Stimulation( MODALITY_VISUAL, 128 * 256 );
 
 	/** Visual stimulation of touching an alga */
-	public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(255, 255, 255, 0);
+	public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(MODALITY_VISUAL, 255 * 65536 + 255 * 256 + 255);
 
 	/** Touch empty */
 	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(MODALITY_TACTILE, 180 * 65536 + 180 * 256 + 180);

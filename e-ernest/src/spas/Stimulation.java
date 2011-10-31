@@ -1,5 +1,7 @@
 package spas;
 
+import javax.vecmath.Vector3f;
+
 import ernest.Ernest;
 
 /**
@@ -8,27 +10,23 @@ import ernest.Ernest;
  */
 public class Stimulation implements IStimulation 
 {
-	//private EColor m_color;
-	private int m_distance = 0;
 	private int m_type;
 	private int m_value;
+	private Vector3f m_position;
 	
 	/**
-	 * Create a visual stimulation
-	 * @param red The red component
-	 * @param green The green component
-	 * @param blue The blue component
-	 * @param distance The distance 
+	 * Create a visual stimulation.
+	 * @param red The red component.
+	 * @param green The green component.
+	 * @param blue The blue component.
+	 * @param position The position in egocentric coordinates. 
 	 */
-	public Stimulation(int red, int green, int blue, int distance)
-	{
-		//m_color= new EColor(red, green, blue);
-		m_distance = distance;
-		m_type = Ernest.MODALITY_VISUAL;
-		//m_value = m_color.getRGB();
-		m_value = red*65536 + green*256 + blue;
-
-	}
+//	public Stimulation(int red, int green, int blue, Vector3f position)
+//	{
+//		m_type = Ernest.MODALITY_VISUAL;
+//		m_value = red*65536 + green*256 + blue;
+//		m_position = position;
+//	}
 
 	/**
 	 * Create a stimulation from its type and its value
@@ -41,14 +39,14 @@ public class Stimulation implements IStimulation
 		m_value = value; 		
 	}
 	
-	public void setDistance(int distance) 
+	public void setPosition(Vector3f position) 
 	{
-		m_distance = distance;
+		m_position = position;
 	}
 
-	public int getDistance() 
+	public Vector3f getPosition() 
 	{
-		return m_distance;
+		return m_position;
 	}
 
 	public int getType() 
@@ -80,6 +78,7 @@ public class Stimulation implements IStimulation
 		else
 			return Integer.toString(i, 16).toUpperCase();
 	}
+	
 	/**
 	 * Stimulations are equal if they have the same type and value. 
 	 */

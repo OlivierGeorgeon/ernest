@@ -2,6 +2,9 @@ package spas;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.vecmath.Vector3f;
+
 import ernest.Ernest;
 import ernest.ITracer;
 
@@ -45,29 +48,29 @@ public class PersistenceMemory
 	}
 		
 	/**
-	 * Add a stimulation to static memory if it does not already exist
-	 * @param red Component of the landmark's color
-	 * @param green Component of the landmark's color
-	 * @param blue Component of the landmark's color
-	 * @param distance The distance of the stimulation (or intensity)
-	 * @return the new stimulation if created or the already existing landmark
+	 * Add a stimulation to static memory if it does not already exist.
+	 * @param red Component of the landmark's color.
+	 * @param green Component of the landmark's color.
+	 * @param blue Component of the landmark's color.
+	 * @param position The position of the stimulation in egocentric coordinates.
+	 * @return the new stimulation if created or the already existing landmark.
 	 */
-	public IStimulation addStimulation(int red, int green, int blue, int distance)
-	{
-		IStimulation l = new Stimulation(red,green,blue,distance);
-		
-		int i = m_stimulations.indexOf(l);
-		if (i == -1)
-			// The landmark does not exist
-			m_stimulations.add(l);
-		else 
-		{
-			// The landmark already exists: return a pointer to it.
-			l =  m_stimulations.get(i);
-			l.setDistance(distance);
-		}
-		return l;
-	}
+//	public IStimulation addStimulation(int red, int green, int blue, Vector3f position)
+//	{
+//		IStimulation l = new Stimulation(red, green, blue, position);
+//		
+//		int i = m_stimulations.indexOf(l);
+//		if (i == -1)
+//			// The landmark does not exist
+//			m_stimulations.add(l);
+//		else 
+//		{
+//			// The landmark already exists: return a pointer to it.
+//			l =  m_stimulations.get(i);
+//			l.setPosition(position);
+//		}
+//		return l;
+//	}
 	
 	/**
 	 * Add a stimulation to static memory if it does not already exist

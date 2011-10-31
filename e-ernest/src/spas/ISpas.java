@@ -2,6 +2,8 @@ package spas;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Vector3f;
+
 import ernest.ITracer;
 import spas.IBundle;
 import spas.IStimulation;
@@ -52,7 +54,7 @@ public interface ISpas
 	 * @param distance The distance of the stimulation (or intensity)
 	 * @return the new stimulation if created or the already existing landmark
 	 */
-	public IStimulation addStimulation(int red, int green, int blue, int distance);
+//	public IStimulation addStimulation(int red, int green, int blue, Vector3f position);
 	
 	/**
 	 * Add a stimulation to static memory if it does not already exist
