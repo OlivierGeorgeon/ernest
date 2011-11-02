@@ -27,62 +27,52 @@ public class Spas implements ISpas
 	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
 	
 	/** Ernest's local space memory  */
-	private LocalSpaceMemory m_localMemory = new LocalSpaceMemory();
-	
-	/** The current local map  */
-	private IObservation m_observation  = new Observation();;
-
-	/** The anticipated local map  */
-	private IObservation m_anticipation = new Observation();;
+	private LocalSpaceMemory m_localSpaceMemory = new LocalSpaceMemory();
 	
 	/** The visual stimulation in front of Ernest  */
 	IStimulation m_frontVisualStimulation;
 
-	/** The list of saliences in Ernest's colliculus  */
+	/** The list of saliences in Ernest's locals space memory  */
 	ArrayList<ISalience> m_salienceList;
 
+	/** The anticipated local map  */
+	ISalience m_focusSalience = null;
+	
+	/** The anticipated local map  */
+	IBundle m_focusBundle = null;
+	
+	IStimulation m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
+	IStimulation m_gustatoryStimulation = Ernest.STIMULATION_GUSTATORY_NOTHING;
+	
 	public void setTracer(ITracer tracer) 
 	{
 		m_tracer = tracer;
 		m_persistenceMemory.setTracer(tracer);
 	}
 
-	public void tick() 
-	{
-		m_persistenceMemory.tick();
-		if (m_tracer != null)
-			m_tracer.addEventElement("clock", m_clock + "");
-		
-		m_clock++;
-	}
-
-	public void resetAnticipation() 
-	{
-		m_anticipation = m_observation;
-	}
-
-	public IObservation anticipate(IAct act) 
-	{
-		m_anticipation = new Observation();
-		m_anticipation.anticipate(m_observation, act);
-		return m_anticipation;
-	}
-
-	public IObservation getAnticipation() 
-	{
-		return m_anticipation;
-	}
-
-	public IStimulation addStimulation(int type, int value) 
-	{
-		return m_persistenceMemory.addStimulation(type, value);
-	}
-
-	public IObservation adjust(IStimulation[] visualCortex,
+	public IObservation step(IAct act, IStimulation[] visualCortex,
 			IStimulation[][] tactileCortex, IStimulation kinematicStimulation,
 			IStimulation gustatoryStimulation) 
 	{
-		m_observation = m_anticipation;
+		// Tick the clock
+		m_persistenceMemory.tick();
+		if (m_tracer != null)
+			m_tracer.addEventElement("clock", m_clock + "");		
+		m_clock++;
+		
+		m_gustatoryStimulation = gustatoryStimulation;
+		m_kinematicStimulation = kinematicStimulation;
+
+		// Construct the new observation from the previous one.
+		m_focusSalience = null;
+		m_focusBundle = null;
+		IObservation observation = new Observation();
+		observation.setGustatory(gustatoryStimulation);
+		observation.setKinematic(kinematicStimulation);
+
+		// Update the local space memory
+		m_localSpaceMemory.update(act, kinematicStimulation);
+		m_localSpaceMemory.Trace(m_tracer);
 
 		List<ISalience> saliences = new ArrayList<ISalience>();
 		
@@ -100,27 +90,21 @@ public class Spas implements ISpas
 			{
 				maxAttractiveness = salience.getAttractiveness();
 				direction = salience.getDirection();
-				m_observation.setSalience(salience);
-				m_observation.setFocusBundle(salience.getBundle());
+				m_focusSalience = salience;
+				m_focusBundle = salience.getBundle();
 			}
 
-		m_observation.setAttractiveness(maxAttractiveness);
-		m_observation.setDirection(direction);
-		
-		// Taste
-		
-		m_observation.setGustatory(gustatoryStimulation);
-
-		// Kinematic
-		
-		m_observation.setConfirmation(kinematicStimulation.equals(m_observation.getKinematic()));
-		m_observation.setKinematic(kinematicStimulation);
+		observation.setAttractiveness(maxAttractiveness);
+		observation.setDirection(direction);
 		
 		// Bundle the tactile stimulation with the kinematic stimulation.
+
+		IBundle frontBundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
+		IBundle hereBundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_HERE);
 		
 		if (kinematicStimulation.equals(Ernest.STIMULATION_KINEMATIC_BUMP) )
 		{
-			if (m_observation.getBundle(1, 0) == null)
+			if (frontBundle == null)
 			{
 				if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))
 				{
@@ -130,52 +114,83 @@ public class Spas implements ISpas
 						m_persistenceMemory.addBundle(m_frontVisualStimulation, tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP, Ernest.STIMULATION_GUSTATORY_NOTHING);
 				}
 			}
-			else if (m_observation.getBundle(1, 0).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
-				m_persistenceMemory.addKinematicStimulation(m_observation.getBundle(1, 0), kinematicStimulation);
+			else if (frontBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
+				m_persistenceMemory.addKinematicStimulation(frontBundle, kinematicStimulation);
 		}
 
 		// Bundle the tactile stimulation with the gustatory stimulation
 		
 		if (gustatoryStimulation.equals(Ernest.STIMULATION_GUSTATORY_FISH))
 		{
-			// Discrete environment.
-			if (m_observation.getBundle(1, 1) == null)
+			// Discrete environment. The fish bundle is the hereBundle.
+			if (hereBundle == null)
 				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);				
-			else if (m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
-				m_persistenceMemory.addGustatoryStimulation(m_observation.getBundle(1, 1), gustatoryStimulation);
-			// Continuous environment.
-			if (m_observation.getBundle(1, 0) == null) // Continuous environment. 
+			else if (hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
+				m_persistenceMemory.addGustatoryStimulation(hereBundle, gustatoryStimulation);
+			
+			// Continuous environment. The fish bundle is the frontBundle
+			if (frontBundle == null) // Continuous environment. 
 				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);				
-			else if (m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
-				m_persistenceMemory.addGustatoryStimulation(m_observation.getBundle(1, 0), gustatoryStimulation);
+			else if (frontBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
+				m_persistenceMemory.addGustatoryStimulation(frontBundle, gustatoryStimulation);
 		}
 		
 		// If the current stimulation does not match the anticipated local map then the local map is cleared.
 		// TODO The criteria to decide whether the matching is correct or incorrect need to be learned ! 
 
-		if ((m_observation.getBundle(1, 1) != null && m_observation.getBundle(1, 1).getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL)) ||
-			(m_observation.getBundle(1, 0) != null && !m_observation.getBundle(1, 0).getTactileStimulation().equals(tactileCortex[1][0])))
-			m_observation.clearMap();
+		if ((hereBundle != null && hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL)) ||
+			(frontBundle != null && !frontBundle.getTactileStimulation().equals(tactileCortex[1][0])))
+			//m_observation.clearMap();
+			m_localSpaceMemory.clear();
 
 		// Bundle the visual stimulation with the tactile stimulation.
 		
 		if (m_frontVisualStimulation != null )
 		{
-			if (m_observation.getBundle(1, 0) == null)
+			if (frontBundle == null)
 			{
 				if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
 				{
 					IBundle bundle = m_persistenceMemory.createVisioTactileBundle(m_frontVisualStimulation, tactileCortex[1][0]);
-					m_observation.setFrontBundle(bundle);
+					//m_observation.setFrontBundle(bundle);
+					m_localSpaceMemory.addLocation(bundle, LocalSpaceMemory.DIRECTION_AHEAD);
 				}
 			}
 			else
-				m_persistenceMemory.addVisualStimulation(m_observation.getBundle(1, 0), m_frontVisualStimulation);
+				m_persistenceMemory.addVisualStimulation(frontBundle, m_frontVisualStimulation);
 		}
-		m_frontVisualStimulation = null;		
-		return m_observation;
+		m_frontVisualStimulation = null;	
+		
+		// Trace the spatial update.
+		if (m_tracer != null) 
+		{
+			Object e = m_tracer.addEventElement("focus");
+			m_tracer.addSubelement(e, "salience", m_focusSalience.getHexColor());
+			if (m_focusBundle != null)
+				m_tracer.addSubelement(e, "bundle", m_focusBundle.getHexColor());
+		}
+
+		return observation;
 	}
 	
+	public IStimulation addStimulation(int type, int value) 
+	{
+		return m_persistenceMemory.addStimulation(type, value);
+	}
+
+	public int getValue(int i, int j)
+	{
+		if (i == 1 && j == 0 && Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation))
+			return Ernest.STIMULATION_KINEMATIC_BUMP.getValue();
+		else if (i == 1 && j == 1 && Ernest.STIMULATION_GUSTATORY_FISH.equals(m_gustatoryStimulation))
+			return Ernest.STIMULATION_GUSTATORY_FISH.getValue();
+		else
+		{
+			Vector3f position = new Vector3f(i - 1, 1 - j, 0);
+			return m_localSpaceMemory.getValue(position);
+		}
+	}
+
 	/**
 	 * Get the list of the saliences in the environment.
 	 * @param visualCortex The visual cortex.
@@ -235,7 +250,7 @@ public class Spas implements ISpas
 		// Tactile salience of fish 
 		// Generates fictitious bundles when touching a fish (this helps).
 		// TODO use touch fish-eat bundles		
-		m_observation.setMap(tactileCortex);
+		//m_observation.setMap(tactileCortex);
 		//IBundle bundleFish = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_FISH);
 		//m_observation.setTactileMap(bundleFish);
 		

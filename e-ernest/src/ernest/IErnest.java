@@ -61,7 +61,8 @@ public interface IErnest
 	/**
 	 * @return Ernest observation used to draw the local map in the environment 
 	 */
-	public IObservation getObservation();
+	//public IObservation getObservation();
+	public int getValue(int i, int j);
 	
 	/**
 	 * @param schemaLabel The action label in the environment.

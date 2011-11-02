@@ -13,6 +13,8 @@ public interface ILocation {
 	 */
 	public IBundle getBundle();
 	
+	public void setBundle(IBundle bundle);
+
 	/**
 	 * @return The location's position.
 	 */
