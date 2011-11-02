@@ -133,5 +133,30 @@ public class Salience implements ISalience
 	{
 		m_span = span;
 	}
+	
+	public String getHexColor() 
+	{
+		return getHexColor(m_value);
+	}
+
+	private String getHexColor(int rgb) 
+	{
+		int r = rgb/65536;
+		int g = (rgb - r * 65536)/256;
+		int b = rgb - r * 65536 - g * 256;
+		String s = format(r) + format(g) + format(b);
+
+		return s;
+	}
+	
+	private String format(int i)
+	{
+		if (i == 0)
+			return "00";
+		else if (i < 16)
+			return "0" + Integer.toString(i, 16).toUpperCase();
+		else
+			return Integer.toString(i, 16).toUpperCase();
+	}
 
 }

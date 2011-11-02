@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javax.vecmath.Vector3f;
 
 import ernest.ITracer;
-import spas.IBundle;
 import spas.IStimulation;
 import imos.IAct;
 
@@ -24,57 +23,34 @@ public interface ISpas
 	public void setTracer(ITracer tracer);
 	
 	/**
-	 * Tick Ernest's clock.
-	 * Used to simulate a decay in Static memory
-	 */
-	public void tick();
-	
-	/**
-	 * The anticipated observation is reset equal to the previous observation. 
-	 */
-	public void resetAnticipation();
-	
-	/**
-	 * Generate the anticipated observation from the previous observation and the current intention.
-	 * @param act The act whose effects we want to anticipate.
-	 * @return A pointer to the anticipated observation.
-	 */
-	public IObservation anticipate(IAct act);
-	
-	/**
-	 * @return The anticipated observation
-	 */
-	public IObservation getAnticipation();
-
-	/**
-	 * Add a stimulation to static memory if it does not already exist
-	 * @param red Component of the landmark's color
-	 * @param green Component of the landmark's color
-	 * @param blue Component of the landmark's color
-	 * @param distance The distance of the stimulation (or intensity)
-	 * @return the new stimulation if created or the already existing landmark
-	 */
-//	public IStimulation addStimulation(int red, int green, int blue, Vector3f position);
-	
-	/**
-	 * Add a stimulation to static memory if it does not already exist
-	 * @param type The stimulation's type
-	 * @param value The stimulation's value
-	 * @return the new landmark if created or the already existing landmark
-	 */
-	public IStimulation addStimulation(int type, int value);
-	
-	/**
-	 * Update the current Observation based on the anticipated observation and on to the sensory stimulations.
+	 * Processes the impact of the enacted interaction on the local space system.
+	 * @param act The enacted act.
 	 * @param visualCortex The set of visual stimulations in the visual cortex.
 	 * @param tactileCortex The set of tactile stimulations in the tactile cortex.
 	 * @param kinematicStimulation The kinematic stimulation.
 	 * @param gustatoryStimulation The gustatory stimulation.
-	 * @return A pointer to the current observation that has been updated.
+	 * @return An observation to compute the impact on the imos.
 	 */
-	public IObservation adjust(IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
+	public IObservation step(IAct act, IStimulation[] visualCortex, IStimulation[][] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
 
 	/**
+	 * Add a stimulation to static memory if it does not already exist.
+	 * @param type The stimulation's type.
+	 * @param value The stimulation's value.
+	 * @return the new stimulation if created or the already existing stimulation.
+	 */
+	public IStimulation addStimulation(int type, int value);
+	
+	/**
+	 * Provide a rgb code to display the local space map in the environment.
+	 * @param i x coordinate.
+	 * @param j y coordinate.
+	 * @return The value of the bundle in this place in local space memory.
+	 */
+	public int getValue(int i, int j);
+
+	/**
+	 * Set the salience list (from Simon's local space map).
 	 * @param salienceList The list of salience in Ernest's colliculus.
 	 */
 	public void setSalienceList(ArrayList<ISalience> salienceList);

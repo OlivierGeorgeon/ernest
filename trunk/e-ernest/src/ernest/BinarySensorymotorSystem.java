@@ -19,13 +19,13 @@ import spas.PersistenceMemory;
  */
 public class BinarySensorymotorSystem implements ISensorymotorSystem 
 {
-	protected ISpas m_staticSystem;
+	protected ISpas m_spas;
 	protected IImos m_imos;
 	protected ITracer m_tracer;
 
-	public void init(ISpas staticSystem, IImos imos, ITracer tracer)
+	public void init(ISpas spas, IImos imos, ITracer tracer)
 	{
-		m_staticSystem = staticSystem;
+		m_spas = spas;
 		m_imos = imos;
 		m_tracer = tracer;
 		// TODO clean this up.

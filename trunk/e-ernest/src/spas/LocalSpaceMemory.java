@@ -1,12 +1,16 @@
 package spas;
 
+import imos.IAct;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 import ernest.Ernest;
+import ernest.ITracer;
 
 /**
  * The local space structure maintaines an awareness of the bundle surrounding Ernest. 
@@ -15,14 +19,45 @@ import ernest.Ernest;
 public class LocalSpaceMemory 
 {
 	
-	/** The radius of any given location. */
+	/** The radius of a location. */
 	public static float LOCATION_RADIUS = 0.5f;
 	
 	/** The Local space structure. */
 	private List<ILocation> m_localSpace = new ArrayList<ILocation>();
 	
+	public final static float DIAG2D_PROJ = (float) (1/Math.sqrt(2));
+
+	// Local directions
+	public final static Vector3f DIRECTION_HERE = new Vector3f(0, 0, 0);
+	public final static Vector3f DIRECTION_AHEAD = new Vector3f(1, 0, 0);
+	public final static Vector3f DIRECTION_BEHIND = new Vector3f(-1, 0, 0);
+	public final static Vector3f DIRECTION_LEFT = new Vector3f(0, 1, 0);
+	public final static Vector3f DIRECTION_RIGHT = new Vector3f(0, -1, 0);
+	public final static Vector3f DIRECTION_AHEAD_LEFT = new Vector3f(DIAG2D_PROJ, DIAG2D_PROJ, 0);
+	public final static Vector3f DIRECTION_AHEAD_RIGHT = new Vector3f(DIAG2D_PROJ, -DIAG2D_PROJ, 0);
+	public final static Vector3f DIRECTION_BEHIND_LEFT = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
+	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
+	public final static float SOMATO_RADIUS = 1.1f;
+
+	public void Trace(ITracer tracer)
+	{
+		if (tracer != null)
+		{
+			Object localSpace = tracer.addEventElement("local_space");
+			tracer.addSubelement(localSpace, "position_6", getHexColor(DIRECTION_BEHIND_LEFT));
+			tracer.addSubelement(localSpace, "position_5", getHexColor(DIRECTION_LEFT));
+			tracer.addSubelement(localSpace, "position_4", getHexColor(DIRECTION_BEHIND_LEFT));
+			tracer.addSubelement(localSpace, "position_3", getHexColor(DIRECTION_AHEAD));
+			tracer.addSubelement(localSpace, "position_2", getHexColor(DIRECTION_AHEAD_RIGHT));
+			tracer.addSubelement(localSpace, "position_1", getHexColor(DIRECTION_RIGHT));
+			tracer.addSubelement(localSpace, "position_0", getHexColor(DIRECTION_BEHIND_RIGHT));
+		}
+
+	}
+	
 	/**
 	 * Add a new location to the localSpace if it does not yet exist.
+	 * Replace the bundle if it already exists.
 	 * @param bundle The bundle in this location.
 	 * @param position The position of this location.
 	 * @return The new or already existing location.
@@ -35,17 +70,38 @@ public class LocalSpaceMemory
 			// The location does not exist
 			m_localSpace.add(l);
 		else 
+		{
 			// The location already exists: return a pointer to it.
 			l =  m_localSpace.get(i);
+			l.setBundle(bundle);
+		}
 		return l;
 		
+	}
+	
+	/**
+	 * Update the local space memory according to the enacted interaction.
+	 * @param act The enacted act.
+	 * @param kinematicStimulation The kinematic stimulation.
+	 */
+	public void update(IAct act, IStimulation kinematicStimulation)
+	{
+		if (act != null)
+		{
+			if (act.getSchema().getLabel().equals(">") && !Ernest.STIMULATION_KINEMATIC_BUMP.equals(kinematicStimulation))
+				translate(1);
+			else if (act.getSchema().getLabel().equals("^"))
+				rotate((float)Math.PI / 4);
+			else if (act.getSchema().getLabel().equals("v"))
+				rotate(- (float)Math.PI / 4);
+		}
 	}
 	
 	/**
 	 * Rotate the local space of the given angle.
 	 * @param angle The angle.
 	 */
-	public void rotate(float angle)
+	private void rotate(float angle)
 	{
 		for (ILocation l : m_localSpace)
 		{
@@ -55,13 +111,20 @@ public class LocalSpaceMemory
 
 	/**
 	 * Translate the local space of the given distance.
+	 * Remove loations that are left behind.
 	 * @param distance The distance.
 	 */
-	public void translate(float distance)
+	private void translate(float distance)
 	{
 		for (ILocation l : m_localSpace)
-		{
 			l.translate(distance);
+			
+		for (Iterator it = m_localSpace.iterator(); it.hasNext();)
+		{
+			ILocation l = (ILocation)it.next();
+			if (l.getPosition().x < - 1.5f)
+				it.remove();
+				//m_localSpace.remove(l);
 		}		
 	}
 	

@@ -23,6 +23,11 @@ public class Location implements ILocation
 		m_position = position;
 	}
 	
+	public void setBundle(IBundle bundle) 
+	{
+		m_bundle = bundle;
+	}
+
 	public IBundle getBundle() 
 	{
 		return m_bundle;
@@ -52,7 +57,10 @@ public class Location implements ILocation
 	
 	public boolean isInCell(Vector3f position)
 	{
-		return (Math.abs(m_position.x - position.x ) < .5f && Math.abs(m_position.y - position.y ) < .5f);		
+		boolean ret;
+		//ret = (Math.abs(m_position.x - position.x ) < .5f && Math.abs(m_position.y - position.y ) < .5f);
+		ret = (int)(m_position.x + .5f) == (int)(position.x + .5f) && (int)(m_position.y + .5f) == (int)(position.y + .5f); 
+		return ret;		
 	}
 
 	/**

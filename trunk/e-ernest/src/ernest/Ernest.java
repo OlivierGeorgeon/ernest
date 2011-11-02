@@ -185,7 +185,7 @@ public class Ernest implements IErnest
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
-		m_spas.tick();
+		//m_spas.tick();
 		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
 		// Return the schema to enact.
@@ -208,7 +208,7 @@ public class Ernest implements IErnest
 		if (m_inhibited)
 		{
 			// If the intention was inhibited and the anticipation is reset and the intention is considered enacted.
-			m_spas.resetAnticipation();
+			//m_spas.resetAnticipation();
 			enactedPrimitiveAct = m_primitiveAct.getSchema().resultingAct(false);
 		}
 		else
@@ -216,12 +216,12 @@ public class Ernest implements IErnest
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
-		m_spas.tick();
+		//m_spas.tick();
 		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
 		// Anticipate the next observation
 		
-		IObservation anticipation = m_spas.anticipate(m_primitiveAct);
+		//IObservation anticipation = m_spas.anticipate(m_primitiveAct);
 
 		//m_inhibited = anticipation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP); // !anticipation.getConfirmation();
 
@@ -236,10 +236,16 @@ public class Ernest implements IErnest
 		return primitiveSchema;
 	}
 
-	public IObservation getObservation()
+//	public IObservation getObservation()
+//	{
+//		return m_spas.getAnticipation();
+//	}
+	
+	public int getValue(int i, int j)
 	{
-		return m_spas.getAnticipation();
+		return m_spas.getValue(i,j);
 	}
+
 
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{

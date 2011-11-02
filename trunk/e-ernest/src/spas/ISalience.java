@@ -68,4 +68,6 @@ public interface ISalience
 
 	void setSpan(float span);
 	
+	public String getHexColor(); 
+	
 }
