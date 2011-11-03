@@ -205,42 +205,19 @@ public class Ernest implements IErnest
 		
 		// Determine the primitive enacted act from the enacted schema and the stimuli received from the environment.		
 		
-		if (m_inhibited)
-		{
-			// If the intention was inhibited and the anticipation is reset and the intention is considered enacted.
-			//m_spas.resetAnticipation();
-			enactedPrimitiveAct = m_primitiveAct.getSchema().resultingAct(false);
-		}
-		else
-			enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, stimuli);
+		enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, stimuli);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
-		//m_spas.tick();
 		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
 		
-		// Anticipate the next observation
-		
-		//IObservation anticipation = m_spas.anticipate(m_primitiveAct);
-
-		//m_inhibited = anticipation.getKinematic().equals(Ernest.STIMULATION_KINEMATIC_BUMP); // !anticipation.getConfirmation();
-
-		if (m_inhibited)
-			System.out.println("intention inhibited");
-		else
-			// If the anticipation confirms the intention then the intention is selected for enaction.
-			primitiveSchema = m_primitiveAct.getSchema().getLabel();
+		primitiveSchema = m_primitiveAct.getSchema().getLabel();
 
 		// Return the schema to enact.
 		
 		return primitiveSchema;
 	}
 
-//	public IObservation getObservation()
-//	{
-//		return m_spas.getAnticipation();
-//	}
-	
 	public int getValue(int i, int j)
 	{
 		return m_spas.getValue(i,j);

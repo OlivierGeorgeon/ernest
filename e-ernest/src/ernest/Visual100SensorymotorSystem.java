@@ -29,7 +29,6 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		IStimulation[] visualCortex = new Stimulation[Ernest.RESOLUTION_RETINA];
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-			//visualCortex[i] = m_staticSystem.addStimulation(stimuli[i][1], stimuli[i][2], stimuli[i][3], stimuli[i][0]);
 			visualCortex[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
 
 		if (m_tracer != null) 
@@ -75,8 +74,6 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		// If the intended act was null (during the first cycle), then the enacted act is null.
 		if (act != null)
 		{
-			//observation.setDynamicFeature(act);
-			//enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), observation.getStimuli(), observation.getSatisfaction());
 			setDynamicFeature(act, m_observation, newObservation);
 			enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), m_stimuli, m_satisfaction);
 		}
@@ -89,6 +86,8 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 			m_tracer.addSubelement(e, "direction", newObservation.getDirection() + "");
 			m_tracer.addSubelement(e, "attractiveness", newObservation.getAttractiveness() + "");
 			m_tracer.addSubelement(e, "stimuli", m_stimuli);
+			m_tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
+			m_tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
 			m_tracer.addSubelement(e, "kinematic", newObservation.getKinematicStimulation().getHexColor());
 			m_tracer.addSubelement(e, "gustatory", newObservation.getGustatoryStimulation().getHexColor());
 		}

@@ -109,9 +109,15 @@ public class Spas implements ISpas
 				if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))
 				{
 					if (m_frontVisualStimulation == null)
-						m_persistenceMemory.createTactoKinematicBundle(tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP);
+					{
+						IBundle b = m_persistenceMemory.createTactoKinematicBundle(tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP);
+						m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_AHEAD);
+					}
 					else
-						m_persistenceMemory.addBundle(m_frontVisualStimulation, tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP, Ernest.STIMULATION_GUSTATORY_NOTHING);
+					{
+						IBundle b = m_persistenceMemory.addBundle(m_frontVisualStimulation, tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP, Ernest.STIMULATION_GUSTATORY_NOTHING);
+						m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_AHEAD);
+					}
 				}
 			}
 			else if (frontBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
@@ -124,15 +130,27 @@ public class Spas implements ISpas
 		{
 			// Discrete environment. The fish bundle is the hereBundle.
 			if (hereBundle == null)
-				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);				
+			{
+				IBundle b = m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);
+				m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_HERE);
+			}
 			else if (hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
+			{
 				m_persistenceMemory.addGustatoryStimulation(hereBundle, gustatoryStimulation);
+				m_localSpaceMemory.addLocation(hereBundle, LocalSpaceMemory.DIRECTION_AHEAD);
+			}
 			
 			// Continuous environment. The fish bundle is the frontBundle
 			if (frontBundle == null) // Continuous environment. 
-				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);				
+			{
+				IBundle b = m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);
+				m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_AHEAD);
+			}
 			else if (frontBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
+			{
 				m_persistenceMemory.addGustatoryStimulation(frontBundle, gustatoryStimulation);
+				m_localSpaceMemory.addLocation(frontBundle, LocalSpaceMemory.DIRECTION_AHEAD);
+			}
 		}
 		
 		// If the current stimulation does not match the anticipated local map then the local map is cleared.
@@ -152,12 +170,14 @@ public class Spas implements ISpas
 				if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
 				{
 					IBundle bundle = m_persistenceMemory.createVisioTactileBundle(m_frontVisualStimulation, tactileCortex[1][0]);
-					//m_observation.setFrontBundle(bundle);
 					m_localSpaceMemory.addLocation(bundle, LocalSpaceMemory.DIRECTION_AHEAD);
 				}
 			}
 			else
+			{
 				m_persistenceMemory.addVisualStimulation(frontBundle, m_frontVisualStimulation);
+				m_localSpaceMemory.addLocation(frontBundle, LocalSpaceMemory.DIRECTION_AHEAD);
+			}
 		}
 		m_frontVisualStimulation = null;	
 		
@@ -166,6 +186,7 @@ public class Spas implements ISpas
 		{
 			Object e = m_tracer.addEventElement("focus");
 			m_tracer.addSubelement(e, "salience", m_focusSalience.getHexColor());
+			
 			if (m_focusBundle != null)
 				m_tracer.addSubelement(e, "bundle", m_focusBundle.getHexColor());
 		}
@@ -186,7 +207,7 @@ public class Spas implements ISpas
 			return Ernest.STIMULATION_GUSTATORY_FISH.getValue();
 		else
 		{
-			Vector3f position = new Vector3f(i - 1, 1 - j, 0);
+			Vector3f position = new Vector3f(1 - j, i - 1, 0);
 			return m_localSpaceMemory.getValue(position);
 		}
 	}
