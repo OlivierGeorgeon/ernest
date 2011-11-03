@@ -58,8 +58,7 @@ public class Location implements ILocation
 	public boolean isInCell(Vector3f position)
 	{
 		boolean ret;
-		//ret = (Math.abs(m_position.x - position.x ) < .5f && Math.abs(m_position.y - position.y ) < .5f);
-		ret = (int)(m_position.x + .5f) == (int)(position.x + .5f) && (int)(m_position.y + .5f) == (int)(position.y + .5f); 
+		ret = (Math.round(m_position.x) == Math.round(position.x)) && (Math.round(m_position.y) == Math.round(position.y)); 
 		return ret;		
 	}
 

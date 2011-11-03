@@ -27,17 +27,17 @@ public class LocalSpaceMemory
 	
 	public final static float DIAG2D_PROJ = (float) (1/Math.sqrt(2));
 
-	// Local directions
-	public final static Vector3f DIRECTION_HERE = new Vector3f(0, 0, 0);
-	public final static Vector3f DIRECTION_AHEAD = new Vector3f(1, 0, 0);
-	public final static Vector3f DIRECTION_BEHIND = new Vector3f(-1, 0, 0);
-	public final static Vector3f DIRECTION_LEFT = new Vector3f(0, 1, 0);
-	public final static Vector3f DIRECTION_RIGHT = new Vector3f(0, -1, 0);
-	public final static Vector3f DIRECTION_AHEAD_LEFT = new Vector3f(DIAG2D_PROJ, DIAG2D_PROJ, 0);
-	public final static Vector3f DIRECTION_AHEAD_RIGHT = new Vector3f(DIAG2D_PROJ, -DIAG2D_PROJ, 0);
-	public final static Vector3f DIRECTION_BEHIND_LEFT = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
-	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
-	public final static float SOMATO_RADIUS = 1.1f;
+
+	public final static Vector3f DIRECTION_HERE         = new Vector3f(0, 0, 0);
+	public final static Vector3f DIRECTION_AHEAD        = new Vector3f(1, 0, 0);
+	public final static Vector3f DIRECTION_BEHIND       = new Vector3f(-1, 0, 0);
+	public final static Vector3f DIRECTION_LEFT         = new Vector3f(0, 1, 0);
+	public final static Vector3f DIRECTION_RIGHT        = new Vector3f(0, -1, 0);
+	public final static Vector3f DIRECTION_AHEAD_LEFT   = new Vector3f(1, 1, 0);
+	public final static Vector3f DIRECTION_AHEAD_RIGHT  = new Vector3f(1, -1, 0);
+	public final static Vector3f DIRECTION_BEHIND_LEFT  = new Vector3f(-1, 1, 0);
+	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-1, -1, 0);	
+	public final static float    SOMATO_RADIUS = 1f;
 
 	public void Trace(ITracer tracer)
 	{
@@ -59,12 +59,17 @@ public class LocalSpaceMemory
 	 * Add a new location to the localSpace if it does not yet exist.
 	 * Replace the bundle if it already exists.
 	 * @param bundle The bundle in this location.
-	 * @param position The position of this location.
+	 * @param position The initial position of this location.
 	 * @return The new or already existing location.
 	 */
 	public ILocation addLocation(IBundle bundle, Vector3f position)
 	{
-		ILocation l = new Location(bundle, position);
+		// The initial position must be cloned so that 
+		// the position can be moved without changing the position used for intialization.
+		Vector3f p = new Vector3f(position);
+		
+		ILocation l = new Location(bundle, p);
+		
 		int i = m_localSpace.indexOf(l);
 		if (i == -1)
 			// The location does not exist
@@ -89,7 +94,7 @@ public class LocalSpaceMemory
 		if (act != null)
 		{
 			if (act.getSchema().getLabel().equals(">") && !Ernest.STIMULATION_KINEMATIC_BUMP.equals(kinematicStimulation))
-				translate(1);
+				translate(-1);
 			else if (act.getSchema().getLabel().equals("^"))
 				rotate((float)Math.PI / 4);
 			else if (act.getSchema().getLabel().equals("v"))
@@ -111,8 +116,8 @@ public class LocalSpaceMemory
 
 	/**
 	 * Translate the local space of the given distance.
-	 * Remove loations that are left behind.
-	 * @param distance The distance.
+	 * Remove locations that are left behind.
+	 * @param distance The distance (provide a negative value to translate backwards).
 	 */
 	private void translate(float distance)
 	{
@@ -124,7 +129,6 @@ public class LocalSpaceMemory
 			ILocation l = (ILocation)it.next();
 			if (l.getPosition().x < - 1.5f)
 				it.remove();
-				//m_localSpace.remove(l);
 		}		
 	}
 	
@@ -170,7 +174,7 @@ public class LocalSpaceMemory
 	 */
 	public int getValue(Vector3f position)
 	{
-		int c = Ernest.STIMULATION_VISUAL_UNSEEN.getValue();
+		int c = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
 
 		IBundle b = getBundle(position);
 		if (b != null)

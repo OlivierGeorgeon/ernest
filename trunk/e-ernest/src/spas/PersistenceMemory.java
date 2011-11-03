@@ -48,31 +48,6 @@ public class PersistenceMemory
 	}
 		
 	/**
-	 * Add a stimulation to static memory if it does not already exist.
-	 * @param red Component of the landmark's color.
-	 * @param green Component of the landmark's color.
-	 * @param blue Component of the landmark's color.
-	 * @param position The position of the stimulation in egocentric coordinates.
-	 * @return the new stimulation if created or the already existing landmark.
-	 */
-//	public IStimulation addStimulation(int red, int green, int blue, Vector3f position)
-//	{
-//		IStimulation l = new Stimulation(red, green, blue, position);
-//		
-//		int i = m_stimulations.indexOf(l);
-//		if (i == -1)
-//			// The landmark does not exist
-//			m_stimulations.add(l);
-//		else 
-//		{
-//			// The landmark already exists: return a pointer to it.
-//			l =  m_stimulations.get(i);
-//			l.setPosition(position);
-//		}
-//		return l;
-//	}
-	
-	/**
 	 * Add a stimulation to static memory if it does not already exist
 	 * @param type The stimulation's type
 	 * @param value The stimulation's value
@@ -100,6 +75,7 @@ public class PersistenceMemory
 	 */
 	public IBundle createVisioTactileBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
 	{
+		m_tracer.addEventElement("create_visio_tactile_bundle");
 		return addBundle(visualStimulation, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 	}
 	
@@ -111,6 +87,7 @@ public class PersistenceMemory
 	 */
 	public IBundle createTactoGustatoryBundle(IStimulation tactileStimulation, IStimulation gustatoryStimulation)
 	{
+		m_tracer.addEventElement("create_tacto_gustatory_bundle");
 		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryStimulation);
 	}
 	/**
@@ -121,6 +98,7 @@ public class PersistenceMemory
 	 */
 	public IBundle createTactoKinematicBundle(IStimulation tactileStimulation, IStimulation kinematicStimulation)
 	{
+		m_tracer.addEventElement("create_tacto_kinematic_bundle");
 		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, kinematicStimulation, Ernest.STIMULATION_GUSTATORY_NOTHING);
 	}
 	/**
@@ -155,23 +133,17 @@ public class PersistenceMemory
 		if (!bundle.getVisualStimulation().equals(stimulation))
 		{
 			bundle.setVisualStimulation(stimulation);
+			m_tracer.addEventElement("add_visual_bundle");
 			bundle.trace(m_tracer, "bundle");
 		}
 	}
 	
-//	public void addTactileStimulation(IBundle bundle, IStimulation stimulation)
-//	{
-//		if (!bundle.getTactileStimulation().equals(stimulation))
-//		{
-//			bundle.setTactileStimulation(stimulation);
-//			bundle.trace(m_tracer, "bundle");
-//		}
-//	}
 	public void addKinematicStimulation(IBundle bundle, IStimulation stimulation)
 	{
 		if (!bundle.getKinematicStimulation().equals(stimulation))
 		{
 			bundle.setKinematicStimulation(stimulation);
+			m_tracer.addEventElement("add_kinematic_bundle");
 			bundle.trace(m_tracer, "bundle");
 		}
 	}
@@ -181,6 +153,7 @@ public class PersistenceMemory
 		if (!bundle.getGustatoryStimulation().equals(stimulation))
 		{
 			bundle.setGustatoryStimulation(stimulation);
+			m_tracer.addEventElement("add_gustatory_bundle");
 			bundle.trace(m_tracer, "bundle");
 		}
 	}

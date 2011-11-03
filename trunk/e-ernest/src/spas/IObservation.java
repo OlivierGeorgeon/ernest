@@ -1,41 +1,35 @@
 package spas;
 
-import ernest.ITracer;
-import imos.IAct;
-
 
 /**
- * The main construct that represents Ernest's current observation of its situation.
+ * An observation holds the significant consequences that the enacted interaction had on the spatial system.
+ * It is the structure that supports the interaction between the spatial system (spas) 
+ * and the intrinsic motivation system (imos).
  * @author Olivier
  */
 public interface IObservation 
 {
 	/**
-	 * @return This observation's dynamic feature: reflect the changes in the salience of attention over the last interaction cycle.
+	 * @param direction The direction of the salience of current attention.
+	 * Radian trigonometric in egocentric referential.
 	 */
-	//String getStimuli();
+	public void setDirection(float direction);
 	
 	/**
-	 * This obervation's satisfaction value
-	 * @return the satisfaction associated with the change over the last interaction cycle.
+	 * @return The direction of the salience of current attention.
+	 * Radian trigonometric in egocentric referential.
 	 */
-	//int getSatisfaction();
+	public float getDirection();
 	
 	/**
-	 * Record this observation into the trace
-	 * @param tracer
-	 * @param element
+	 * @param attractiveness The attractiveness of the salience of current attention.
 	 */
-	//void trace(ITracer tracer, String element);
+	public void setAttractiveness(int attractiveness);
 	
 	/**
-	 * Generate the stimuli for imos.
-	 * The stimuli come from: 
-	 * - The kinematic feature.
-	 * - The variation in attractiveness and in direction of the object of interest. 
-	 * @param act The enacted act.
+	 * @return The attractiveness of the salience of current attention.
 	 */
-	//void setDynamicFeature(IAct act);
+	public int getAttractiveness();
 	
 	/**
 	 * @param kinematicStimulation
@@ -56,56 +50,5 @@ public interface IObservation
 	 * @return The gustatory stimulation;
 	 */
 	public IStimulation getGustatoryStimulation();
-	
-	/**
-	 * @return The bundle of current interest.
-	 */
-	//public IBundle getFocusBundle();
-	
-	/**
-	 * Initialize this observation by anticipating the consequences of the intended act on the previous observation.
-	 * Does not predict the square in front (leave it unchanged).
-	 * TODO Anticipation should be refined using visual information.
-	 * @param previousObservation The previous observation on which we construct the anticipated observation.
-	 */
-	//public void anticipate(IObservation previousObservation);
-
-	/**
-	 * @param salience The salience of current attention
-	 */
-	//public void setSalience(ISalience salience);
-	
-	/**
-	 * Set this observation's focus bundle.
-	 * @param bundle The focus bundle.
-	 */
-	//public void setFocusBundle(IBundle bundle);
-	
-	/**
-	 * @return The salience of current attention 
-	 */
-	//public ISalience getSalience();
-	
-	/**
-	 * @param direction The direction of the salience of current attention.
-	 * Radian trigonometric.
-	 */
-	public void setDirection(float direction);
-	
-	/**
-	 * @return The direction of the salience of current attention
-	 * Radian trigonometric.
-	 */
-	public float getDirection();
-	
-	/**
-	 * @param attractiveness The attractiveness of the salience of current attention
-	 */
-	public void setAttractiveness(int attractiveness);
-	
-	/**
-	 * @return The attractiveness of the salience of current attention
-	 */
-	public int getAttractiveness();
 	
 }
