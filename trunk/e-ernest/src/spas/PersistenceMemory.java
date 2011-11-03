@@ -75,7 +75,10 @@ public class PersistenceMemory
 	 */
 	public IBundle createVisioTactileBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
 	{
-		m_tracer.addEventElement("create_visio_tactile_bundle");
+		Object e = m_tracer.addEventElement("create_visio_tactile_bundle");
+		m_tracer.addSubelement(e, "vision", visualStimulation.getHexColor());
+		m_tracer.addSubelement(e, "touch", tactileStimulation.getHexColor());
+
 		return addBundle(visualStimulation, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 	}
 	
@@ -87,7 +90,10 @@ public class PersistenceMemory
 	 */
 	public IBundle createTactoGustatoryBundle(IStimulation tactileStimulation, IStimulation gustatoryStimulation)
 	{
-		m_tracer.addEventElement("create_tacto_gustatory_bundle");
+		Object e = m_tracer.addEventElement("create_tacto_gustatory_bundle");
+		m_tracer.addSubelement(e, "touch", tactileStimulation.getHexColor());
+		m_tracer.addSubelement(e, "taste", gustatoryStimulation.getHexColor());
+
 		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryStimulation);
 	}
 	/**
@@ -98,7 +104,10 @@ public class PersistenceMemory
 	 */
 	public IBundle createTactoKinematicBundle(IStimulation tactileStimulation, IStimulation kinematicStimulation)
 	{
-		m_tracer.addEventElement("create_tacto_kinematic_bundle");
+		Object e = m_tracer.addEventElement("create_tacto_kinematic_bundle");
+		m_tracer.addSubelement(e, "touch", tactileStimulation.getHexColor());
+		m_tracer.addSubelement(e, "kinematic", kinematicStimulation.getHexColor());
+
 		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, kinematicStimulation, Ernest.STIMULATION_GUSTATORY_NOTHING);
 	}
 	/**
@@ -133,7 +142,8 @@ public class PersistenceMemory
 		if (!bundle.getVisualStimulation().equals(stimulation))
 		{
 			bundle.setVisualStimulation(stimulation);
-			m_tracer.addEventElement("add_visual_bundle");
+			Object e = m_tracer.addEventElement("add_visual_stimulation");
+			m_tracer.addSubelement(e, "vision", stimulation.getHexColor());
 			bundle.trace(m_tracer, "bundle");
 		}
 	}
@@ -143,7 +153,8 @@ public class PersistenceMemory
 		if (!bundle.getKinematicStimulation().equals(stimulation))
 		{
 			bundle.setKinematicStimulation(stimulation);
-			m_tracer.addEventElement("add_kinematic_bundle");
+			Object e = m_tracer.addEventElement("add_kinematic_stimulation");
+			m_tracer.addSubelement(e, "kinematic", stimulation.getHexColor());
 			bundle.trace(m_tracer, "bundle");
 		}
 	}
@@ -153,7 +164,8 @@ public class PersistenceMemory
 		if (!bundle.getGustatoryStimulation().equals(stimulation))
 		{
 			bundle.setGustatoryStimulation(stimulation);
-			m_tracer.addEventElement("add_gustatory_bundle");
+			Object e = m_tracer.addEventElement("add_gustatory_stimulation");
+			m_tracer.addSubelement(e, "taste", stimulation.getHexColor());
 			bundle.trace(m_tracer, "bundle");
 		}
 	}

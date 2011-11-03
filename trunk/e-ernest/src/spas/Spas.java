@@ -72,7 +72,6 @@ public class Spas implements ISpas
 
 		// Update the local space memory
 		m_localSpaceMemory.update(act, kinematicStimulation);
-		m_localSpaceMemory.Trace(m_tracer);
 
 		List<ISalience> saliences = new ArrayList<ISalience>();
 		
@@ -189,6 +188,9 @@ public class Spas implements ISpas
 			
 			if (m_focusBundle != null)
 				m_tracer.addSubelement(e, "bundle", m_focusBundle.getHexColor());
+
+			// Trace the local space memory
+			m_localSpaceMemory.Trace(m_tracer);
 		}
 
 		return observation;
