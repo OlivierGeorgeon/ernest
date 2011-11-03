@@ -41,12 +41,14 @@ public class LocalSpaceMemory
 
 	public void Trace(ITracer tracer)
 	{
-		if (tracer != null)
+		if (tracer != null && !m_localSpace.isEmpty())
 		{
 			Object localSpace = tracer.addEventElement("local_space");
+			tracer.addSubelement(localSpace, "position_8", getHexColor(DIRECTION_HERE));
+			tracer.addSubelement(localSpace, "position_7", getHexColor(DIRECTION_BEHIND));
 			tracer.addSubelement(localSpace, "position_6", getHexColor(DIRECTION_BEHIND_LEFT));
 			tracer.addSubelement(localSpace, "position_5", getHexColor(DIRECTION_LEFT));
-			tracer.addSubelement(localSpace, "position_4", getHexColor(DIRECTION_BEHIND_LEFT));
+			tracer.addSubelement(localSpace, "position_4", getHexColor(DIRECTION_AHEAD_LEFT));
 			tracer.addSubelement(localSpace, "position_3", getHexColor(DIRECTION_AHEAD));
 			tracer.addSubelement(localSpace, "position_2", getHexColor(DIRECTION_AHEAD_RIGHT));
 			tracer.addSubelement(localSpace, "position_1", getHexColor(DIRECTION_RIGHT));
@@ -96,15 +98,15 @@ public class LocalSpaceMemory
 			if (act.getSchema().getLabel().equals(">") && !Ernest.STIMULATION_KINEMATIC_BUMP.equals(kinematicStimulation))
 				translate(-1);
 			else if (act.getSchema().getLabel().equals("^"))
-				rotate((float)Math.PI / 4);
-			else if (act.getSchema().getLabel().equals("v"))
 				rotate(- (float)Math.PI / 4);
+			else if (act.getSchema().getLabel().equals("v"))
+				rotate((float)Math.PI / 4);
 		}
 	}
 	
 	/**
 	 * Rotate the local space of the given angle.
-	 * @param angle The angle.
+	 * @param angle The angle (provide the oposite angle from the agent's movement).
 	 */
 	private void rotate(float angle)
 	{
@@ -174,7 +176,7 @@ public class LocalSpaceMemory
 	 */
 	public int getValue(Vector3f position)
 	{
-		int c = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
+		int c = Ernest.STIMULATION_VISUAL_UNSEEN.getValue();
 
 		IBundle b = getBundle(position);
 		if (b != null)
