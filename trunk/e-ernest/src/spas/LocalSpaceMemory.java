@@ -33,10 +33,10 @@ public class LocalSpaceMemory
 	public final static Vector3f DIRECTION_BEHIND       = new Vector3f(-1, 0, 0);
 	public final static Vector3f DIRECTION_LEFT         = new Vector3f(0, 1, 0);
 	public final static Vector3f DIRECTION_RIGHT        = new Vector3f(0, -1, 0);
-	public final static Vector3f DIRECTION_AHEAD_LEFT   = new Vector3f(1, 1, 0);
-	public final static Vector3f DIRECTION_AHEAD_RIGHT  = new Vector3f(1, -1, 0);
-	public final static Vector3f DIRECTION_BEHIND_LEFT  = new Vector3f(-1, 1, 0);
-	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-1, -1, 0);	
+	public final static Vector3f DIRECTION_AHEAD_LEFT   = new Vector3f(DIAG2D_PROJ, DIAG2D_PROJ, 0);
+	public final static Vector3f DIRECTION_AHEAD_RIGHT  = new Vector3f(DIAG2D_PROJ, -DIAG2D_PROJ, 0);
+	public final static Vector3f DIRECTION_BEHIND_LEFT  = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
+	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
 	public final static float    SOMATO_RADIUS = 1f;
 
 	public void Trace(ITracer tracer)
@@ -96,7 +96,7 @@ public class LocalSpaceMemory
 		if (act != null)
 		{
 			if (act.getSchema().getLabel().equals(">") && !Ernest.STIMULATION_KINEMATIC_BUMP.equals(kinematicStimulation))
-				translate(-1);
+				translate(-1f);
 			else if (act.getSchema().getLabel().equals("^"))
 				rotate(- (float)Math.PI / 4);
 			else if (act.getSchema().getLabel().equals("v"))
@@ -158,6 +158,19 @@ public class LocalSpaceMemory
 		return null;
 	}
 
+	/**
+	 * Clear a location in the local space memory.
+	 * @param position The position to clear.
+	 */
+	public void clearLocation(Vector3f position)
+	{
+		for (Iterator it = m_localSpace.iterator(); it.hasNext();)
+		{
+			ILocation l = (ILocation)it.next();
+			if (l.isInCell(position))
+				it.remove();
+		}		
+	}
 	/**
 	 * Get the color of a given position.
 	 * @param position The position.
