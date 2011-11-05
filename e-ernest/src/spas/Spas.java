@@ -131,24 +131,22 @@ public class Spas implements ISpas
 			if (hereBundle == null)
 			{
 				IBundle b = m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);
-				m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_HERE);
 			}
 			else if (hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
 			{
 				m_persistenceMemory.addGustatoryStimulation(hereBundle, gustatoryStimulation);
-				m_localSpaceMemory.addLocation(hereBundle, LocalSpaceMemory.DIRECTION_AHEAD);
+				m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_HERE);
 			}
 			
 			// Continuous environment. The fish bundle is the frontBundle
 			if (frontBundle == null) // Continuous environment. 
 			{
 				IBundle b = m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);
-				m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (frontBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_FISH))
 			{
 				m_persistenceMemory.addGustatoryStimulation(frontBundle, gustatoryStimulation);
-				m_localSpaceMemory.addLocation(frontBundle, LocalSpaceMemory.DIRECTION_AHEAD);
+				m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 		}
 		
@@ -209,7 +207,7 @@ public class Spas implements ISpas
 			return Ernest.STIMULATION_GUSTATORY_FISH.getValue();
 		else
 		{
-			Vector3f position = new Vector3f(1 - j, i - 1, 0);
+			Vector3f position = new Vector3f(1 - j, 1 - i, 0);
 			return m_localSpaceMemory.getValue(position);
 		}
 	}
@@ -227,6 +225,7 @@ public class Spas implements ISpas
 
 		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
 
+		m_frontVisualStimulation = null;
 		IStimulation stimulation = visualCortex[0];
 		int span = 1;
 		int sumDirection = 0;
@@ -241,8 +240,8 @@ public class Spas implements ISpas
 				// measure the salience span and average direction
 				span++;
 				sumDirection += i * 10;
-               sumDirectionf += theta;
-               spanf += (float)Math.PI / 12;
+                sumDirectionf += theta;
+                spanf += (float)Math.PI / 12;
 			}
 			else 
 			{	
@@ -251,14 +250,15 @@ public class Spas implements ISpas
 				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
 				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 				saliences.add(salience);
-				if (salience.getValue() == visualCortex[5].getValue() && salience.getValue() == visualCortex[6].getValue())
+				//if (salience.getValue() == visualCortex[5].getValue() && salience.getValue() == visualCortex[6].getValue() &&
+				if (i > 6 && span >= i - 5 && span > 2)
 					m_frontVisualStimulation = stimulation;
 				// look for the next salience
 				stimulation = visualCortex[i];
 				span = 1;
 				sumDirection = i * 10;
-       		spanf = (float)Math.PI / 12;
-       		sumDirectionf = theta;
+				spanf = (float)Math.PI / 12;
+				sumDirectionf = theta;
 			}
 		}
 		// record the last salience
@@ -266,7 +266,8 @@ public class Spas implements ISpas
 		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
 		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
-		if (last.getValue() == visualCortex[5].getValue() && last.getValue() == visualCortex[6].getValue())
+		//if (last.getValue() == visualCortex[5].getValue() && last.getValue() == visualCortex[6].getValue() &&
+		if (span > 6)
 			m_frontVisualStimulation = stimulation;
 			//frontColor = stimulation.getColor();
 

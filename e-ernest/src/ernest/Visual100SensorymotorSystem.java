@@ -34,28 +34,32 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		if (m_tracer != null) 
 		{
 			Object retinaElmt = m_tracer.addEventElement("retina");
-
 			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
-			{
 				m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, visualCortex[i].getHexColor());
-			}
 		}
 		
 		// Touch =====
 		
-		Object s = null;
-		if (m_tracer != null)
-			s = m_tracer.addEventElement("tactile");
 		IStimulation [][] somatoCortex = new IStimulation[3][3];
 		
 		for (int j = 0; j < 3; j++)
 			for (int i = 0; i < 3; i++)
-			{
 				somatoCortex[i][j] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9 + j]);
-				if (m_tracer != null)
-					m_tracer.addSubelement(s, "cell_" + i + "_" + j, somatoCortex[i][j].getHexColor());
-			}
-		
+
+		if (m_tracer != null)
+		{
+			Object s = m_tracer.addEventElement("tactile");
+			//m_tracer.addSubelement(s, "touch_8", somatoCortex[1][1].getHexColor());
+			//m_tracer.addSubelement(s, "touch_7", somatoCortex[1][2].getHexColor());
+			m_tracer.addSubelement(s, "touch_6", somatoCortex[0][2].getHexColor());
+			m_tracer.addSubelement(s, "touch_5", somatoCortex[0][1].getHexColor());
+			m_tracer.addSubelement(s, "touch_4", somatoCortex[0][0].getHexColor());
+			m_tracer.addSubelement(s, "touch_3", somatoCortex[1][0].getHexColor());
+			m_tracer.addSubelement(s, "touch_2", somatoCortex[2][0].getHexColor());
+			m_tracer.addSubelement(s, "touch_1", somatoCortex[2][1].getHexColor());
+			m_tracer.addSubelement(s, "touch_0", somatoCortex[2][2].getHexColor());
+		}
+			
 		// Kinematic ====
 		
 		kinematicStimulation = m_spas.addStimulation(Ernest.STIMULATION_KINEMATIC, stimuli[1][8]);

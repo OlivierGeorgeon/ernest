@@ -58,7 +58,58 @@ public class Location implements ILocation
 	public boolean isInCell(Vector3f position)
 	{
 		boolean ret;
-		ret = (Math.round(m_position.x) == Math.round(position.x)) && (Math.round(m_position.y) == Math.round(position.y)); 
+		// Is in the same cell in egocentric Cartesian referential.
+		//ret = (Math.round(m_position.x) == Math.round(position.x)) && (Math.round(m_position.y) == Math.round(position.y)); 
+
+		// Is in the same cell in egocentric polar referential.
+		if (m_position.length() < .5f && position.length() < .5f)
+			ret = true;
+		//else if (m_position.angle(position) < (float)Math.PI / 8)
+		else if ((m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < (float)Math.PI / 8) && 
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < (float)Math.PI / 8))
+			ret = true;
+		else if ((m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) >     (float)Math.PI / 8) && 
+				 (m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < 3 * (float)Math.PI / 8) && 
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) >     (float)Math.PI / 8) &&
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < 3 * (float)Math.PI / 8) &&
+				 (m_position.y * position.y > 0))
+			ret = true;
+		else if ((m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) > 3 * (float)Math.PI / 8) && 
+				 (m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < 5 * (float)Math.PI / 8) && 
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) > 3 * (float)Math.PI / 8) &&
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < 5 * (float)Math.PI / 8) &&
+			 (m_position.y * position.y > 0))
+			ret = true;
+		else if ((m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) > 5 * (float)Math.PI / 8) && 
+				 (m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < 7 * (float)Math.PI / 8) && 
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) > 5 * (float)Math.PI / 8) &&
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < 7 * (float)Math.PI / 8) &&
+			 (m_position.y * position.y > 0))
+			ret = true;
+		else if ((m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) > 7 * (float)Math.PI / 8) && 
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) > 7 * (float)Math.PI / 8))
+			ret = true;
+		else 
+			ret = false;
+		
+		// Is in the same cell in egocentric polar referential.
+		if (m_position.length() < .5f && position.length() < .5f)
+			ret = true;
+		else if ((m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < (float)Math.PI / 8) && 
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) < (float)Math.PI / 8))
+			ret = true;
+		else if ((m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) > 7 * (float)Math.PI / 8) && 
+				 (  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) > 7 * (float)Math.PI / 8))
+			ret = true;
+		else if (Math.round(m_position.angle(LocalSpaceMemory.DIRECTION_AHEAD) / (float)Math.PI * 4) ==
+ 			     Math.round(  position.angle(LocalSpaceMemory.DIRECTION_AHEAD) / (float)Math.PI * 4) &&
+ 			     (m_position.y * position.y >= 0) &&
+ 			     (Math.round(m_position.length()) == Math.round(position.length())))
+			ret = true;
+		else 
+			ret = false;
+
+		
 		return ret;		
 	}
 
