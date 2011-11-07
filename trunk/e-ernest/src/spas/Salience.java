@@ -148,4 +148,9 @@ public class Salience implements ISalience
 			return Integer.toString(i, 16).toUpperCase();
 	}
 
+	public boolean isFrontal()
+	{
+		return (getDirection() - m_span / 2 < 0 && getDirection() + m_span / 2 > 0 );
+	}
+
 }

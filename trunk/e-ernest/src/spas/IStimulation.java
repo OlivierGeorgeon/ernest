@@ -4,7 +4,7 @@ import javax.vecmath.Vector3f;
 
 
 /**
- * An element of Ernest's sensory state.
+ * An sensory stimulation is a basic element of Ernest's sensory system.
  * @author Olivier
  */
 public interface IStimulation 
@@ -27,7 +27,7 @@ public interface IStimulation
 	/**
 	 * @return The type of the stimulus 
 	 */
-	int getType();
+	int getModality();
 
 	/**
 	 * @return The value of the stimulus 
