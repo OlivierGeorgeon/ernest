@@ -15,20 +15,6 @@ public class Stimulation implements IStimulation
 	private Vector3f m_position;
 	
 	/**
-	 * Create a visual stimulation.
-	 * @param red The red component.
-	 * @param green The green component.
-	 * @param blue The blue component.
-	 * @param position The position in egocentric coordinates. 
-	 */
-//	public Stimulation(int red, int green, int blue, Vector3f position)
-//	{
-//		m_type = Ernest.MODALITY_VISUAL;
-//		m_value = red*65536 + green*256 + blue;
-//		m_position = position;
-//	}
-
-	/**
 	 * Create a stimulation from its type and its value
 	 * @param type The stimulation's type
 	 * @param value The stimulation's value
@@ -81,6 +67,7 @@ public class Stimulation implements IStimulation
 	
 	/**
 	 * Stimulations are equal if they have the same type and value. 
+	 * (this equality criteria is used to find saliences).
 	 */
 	public boolean equals(Object o)
 	{

@@ -95,8 +95,8 @@ public class PersistenceMemory
 		if (m_tracer != null)
 		{
 			Object e = m_tracer.addEventElement("cooccurrence");
-			m_tracer.addSubelement(e, "stimulus_1", tactileStimulation.getHexColor());
-			m_tracer.addSubelement(e, "stimulus_0", gustatoryStimulation.getHexColor());
+			m_tracer.addSubelement(e, "stimulus_1", gustatoryStimulation.getHexColor());
+			m_tracer.addSubelement(e, "stimulus_0", tactileStimulation.getHexColor());
 		}
 		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryStimulation);
 	}

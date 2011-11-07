@@ -26,16 +26,8 @@ public class Salience implements ISalience
 		m_direction = direction;
 		m_distance = distance;
 		m_span = span;
+		m_position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
 	}
-	
-//	public Salience(int value, int modality, Vector3f position, float span)
-//	{
-//		m_value = value;
-//		m_modality = modality;
-//		m_direction = direction;
-//		m_distance = distance;
-//		m_span = span;
-//	}
 	
 	public void setDistance(int distance) 
 	{
@@ -59,12 +51,14 @@ public class Salience implements ISalience
 
 	public float getDistance() 
 	{
-		return m_distance;
+		return m_position.length();
+		//return m_distance;
 	}
 
 	public float getDirection() 
 	{
-		return m_direction;
+		return (float)Math.atan2((double)m_position.y, (double)m_position.x);
+		//return m_direction;
 	}
 
 	public float getSpan() 
@@ -99,7 +93,7 @@ public class Salience implements ISalience
 		else
 		{
 			ISalience other = (ISalience)o;
-			ret = (m_value == other.getValue()) || (m_modality == other.getType());
+			ret = (m_value == other.getValue()) || (m_modality == other.getModality());
 		}
 		
 		return ret;
@@ -114,12 +108,7 @@ public class Salience implements ISalience
 		return m_value;
 	}
 
-	public void setType(int modality) 
-	{
-		m_modality = modality;
-	}
-
-	public int getType() 
+	public int getModality() 
 	{
 		return m_modality;
 	}

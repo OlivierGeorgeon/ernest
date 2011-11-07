@@ -51,7 +51,7 @@ public class Spas implements ISpas
 	}
 
 	public IObservation step(IAct act, IStimulation[] visualCortex,
-			IStimulation[][] tactileCortex, IStimulation kinematicStimulation,
+			IStimulation[] tactileCortex, IStimulation kinematicStimulation,
 			IStimulation gustatoryStimulation) 
 	{
 		// Tick the clock
@@ -63,7 +63,7 @@ public class Spas implements ISpas
 		m_gustatoryStimulation = gustatoryStimulation;
 		m_kinematicStimulation = kinematicStimulation;
 
-		// Construct the new observation from the previous one.
+		// Construct the new observation.
 		m_focusSalience = null;
 		m_focusBundle = null;
 		IObservation observation = new Observation();
@@ -80,7 +80,7 @@ public class Spas implements ISpas
 		saliences = getSaliences(visualCortex, tactileCortex);
 		//saliences = m_salienceList;
 
-		// Find the most attractive salience in the list (abs value) (There is at least a wall)
+		// Find the most attractive or the most repulsive salience in the list (abs value) (There is at least a wall)
 		
 		int maxAttractiveness = 0;
 		float direction = 0;
@@ -105,16 +105,16 @@ public class Spas implements ISpas
 		{
 			if (frontBundle == null)
 			{
-				if (tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_WALL))
+				if (tactileCortex[3].equals(Ernest.STIMULATION_TOUCH_WALL))
 				{
 					if (m_frontVisualStimulation == null)
 					{
-						IBundle b = m_persistenceMemory.createTactoKinematicBundle(tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP);
+						IBundle b = m_persistenceMemory.createTactoKinematicBundle(tactileCortex[3], Ernest.STIMULATION_KINEMATIC_BUMP);
 						m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_AHEAD);
 					}
 					else
 					{
-						IBundle b = m_persistenceMemory.addBundle(m_frontVisualStimulation, tactileCortex[1][0], Ernest.STIMULATION_KINEMATIC_BUMP, Ernest.STIMULATION_GUSTATORY_NOTHING);
+						IBundle b = m_persistenceMemory.addBundle(m_frontVisualStimulation, tactileCortex[3], Ernest.STIMULATION_KINEMATIC_BUMP, Ernest.STIMULATION_GUSTATORY_NOTHING);
 						m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_AHEAD);
 					}
 				}
@@ -153,10 +153,11 @@ public class Spas implements ISpas
 		// If the current stimulation does not match the anticipated local map then the local map is cleared.
 		// TODO The criteria to decide whether the matching is correct or incorrect need to be learned ! 
 
-		if ((hereBundle != null && hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL)) ||
-			(frontBundle != null && !frontBundle.getTactileStimulation().equals(tactileCortex[1][0])))
-			//m_observation.clearMap();
-			m_localSpaceMemory.clear();
+		if (hereBundle != null && hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
+			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_HERE);
+		if (frontBundle != null && !frontBundle.getTactileStimulation().equals(tactileCortex[3]))
+			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD);
+			//m_localSpaceMemory.clear();
 
 		// Bundle the visual stimulation with the tactile stimulation.
 		
@@ -164,9 +165,9 @@ public class Spas implements ISpas
 		{
 			if (frontBundle == null)
 			{
-				if (!tactileCortex[1][0].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
+				if (!tactileCortex[3].equals(Ernest.STIMULATION_TOUCH_EMPTY))		
 				{
-					IBundle bundle = m_persistenceMemory.createVisioTactileBundle(m_frontVisualStimulation, tactileCortex[1][0]);
+					IBundle bundle = m_persistenceMemory.createVisioTactileBundle(m_frontVisualStimulation, tactileCortex[3]);
 					m_localSpaceMemory.addLocation(bundle, LocalSpaceMemory.DIRECTION_AHEAD);
 				}
 			}
@@ -219,7 +220,7 @@ public class Spas implements ISpas
 	 * @return The salience list.
 	 */
 	private List<ISalience> getSaliences(IStimulation[] visualCortex,
-				IStimulation[][] tactileCortex)
+				IStimulation[] tactileCortex)
 	   {
 		// Create a List of the various saliences in the visual field
 
@@ -246,11 +247,10 @@ public class Spas implements ISpas
 			else 
 			{	
 				// Record the previous salience
-				ISalience salience = new Salience(stimulation.getValue(), 0, sumDirectionf / span, 0, spanf);
+				ISalience salience = new Salience(stimulation.getValue(), Ernest.MODALITY_VISUAL, sumDirectionf / span, 1, spanf);
 				salience.setBundle(m_persistenceMemory.seeBundle(stimulation));
 				salience.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 				saliences.add(salience);
-				//if (salience.getValue() == visualCortex[5].getValue() && salience.getValue() == visualCortex[6].getValue() &&
 				if (i > 6 && span >= i - 5 && span > 2)
 					m_frontVisualStimulation = stimulation;
 				// look for the next salience
@@ -262,25 +262,16 @@ public class Spas implements ISpas
 			}
 		}
 		// record the last salience
-		ISalience last = new Salience(stimulation.getValue(), 0, sumDirectionf / span, 0, spanf);
+		ISalience last = new Salience(stimulation.getValue(),  Ernest.MODALITY_VISUAL, sumDirectionf / span, 1, spanf);
 		last.setBundle(m_persistenceMemory.seeBundle(stimulation));
 		last.setAttractiveness(m_persistenceMemory.attractiveness(stimulation) + 5 * span );
 		saliences.add(last);
-		//if (last.getValue() == visualCortex[5].getValue() && last.getValue() == visualCortex[6].getValue() &&
 		if (span > 6)
 			m_frontVisualStimulation = stimulation;
-			//frontColor = stimulation.getColor();
 
-		// Tactile salience of fish 
-		// Generates fictitious bundles when touching a fish (this helps).
-		// TODO use touch fish-eat bundles		
-		//m_observation.setMap(tactileCortex);
-		//IBundle bundleFish = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_FISH);
-		//m_observation.setTactileMap(bundleFish);
 		
 		// Tactile salience of walls.
 		
-		//ISalience tactileSalience = m_observation.getTactileSalience();
 		ISalience tactileSalience = getTactileSalience(tactileCortex);
 		if (tactileSalience != null)
 			saliences.add(tactileSalience);
@@ -295,19 +286,10 @@ public class Spas implements ISpas
      * @param tactileMap The tactile cortex.
      * @return The tactile salience. Null if no wall in front of Ernest. 
      */
-   private ISalience getTactileSalience(IStimulation[][] tactileMap)
+   private ISalience getTactileSalience(IStimulation[] tactileStimulations)
     {
     	ISalience salience = null;
 	
-        IStimulation[] tactileStimulations = new Stimulation[7];
-        tactileStimulations[0] = tactileMap[2][2];
-        tactileStimulations[1] = tactileMap[2][1];
-        tactileStimulations[2] = tactileMap[2][0];
-        tactileStimulations[3] = tactileMap[1][0];
-        tactileStimulations[4] = tactileMap[0][0];
-        tactileStimulations[5] = tactileMap[0][1];
-        tactileStimulations[6] = tactileMap[0][2];
-
         int span = 0;
         int sumDirection = 0;
         float theta = - 3 * (float)Math.PI /4; 
@@ -331,7 +313,7 @@ public class Spas implements ISpas
         		// record the previous salience if it is frontal
         		if (front)
 		        {
-    				salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), 0, sumDirectionf / span, 0, spanf);
+    				salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(),  Ernest.MODALITY_TACTILE, sumDirectionf / span, 1, spanf);
 					IBundle b = m_persistenceMemory.touchBundle(Ernest.STIMULATION_TOUCH_WALL);
 					salience.setDirection(sumDirectionf / span);
 					salience.setSpan(spanf);
@@ -357,7 +339,7 @@ public class Spas implements ISpas
 		// record the last salience if it is frontal
 		if (front)
         {
-			salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), 0, sumDirectionf / span, 0, spanf);
+			salience = new Salience(Ernest.STIMULATION_TOUCH_WALL.getValue(), 0, sumDirectionf / span, 1, spanf);
 			IBundle b = m_persistenceMemory.touchBundle(tactileStimulations[6]);
 			salience.setDirection(sumDirectionf / spanf);
 			salience.setSpan(spanf);
@@ -383,7 +365,7 @@ public class Spas implements ISpas
 		// Find the salience's attractiveness.
 		for (ISalience salience : m_salienceList)
 		{
-			if (salience.getType() == Ernest.MODALITY_VISUAL)
+			if (salience.getModality() == Ernest.MODALITY_VISUAL)
 			{
 				IStimulation stimulation = new Stimulation(Ernest.MODALITY_VISUAL, salience.getValue());
 				IBundle b = m_persistenceMemory.seeBundle(stimulation);

@@ -27,37 +27,39 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Vision =====
 		
-		IStimulation[] visualCortex = new Stimulation[Ernest.RESOLUTION_RETINA];
+		IStimulation[] visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-			visualCortex[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
+			visualStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
 
 		if (m_tracer != null) 
 		{
 			Object retinaElmt = m_tracer.addEventElement("retina");
 			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
-				m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, visualCortex[i].getHexColor());
+				m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, visualStimulations[i].getHexColor());
 		}
 		
 		// Touch =====
 		
-		IStimulation [][] somatoCortex = new IStimulation[3][3];
+		IStimulation [] tactileSimulations = new IStimulation[9];
 		
-		for (int j = 0; j < 3; j++)
-			for (int i = 0; i < 3; i++)
-				somatoCortex[i][j] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9 + j]);
+//		for (int j = 0; j < 3; j++)
+//			for (int i = 0; i < 3; i++)
+//				tactileSimulations[i][j] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9 + j]);
+		for (int i = 0; i < 9; i++)
+			tactileSimulations[i] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9]);
 
 		if (m_tracer != null)
 		{
 			Object s = m_tracer.addEventElement("tactile");
-			//m_tracer.addSubelement(s, "touch_8", somatoCortex[1][1].getHexColor());
-			//m_tracer.addSubelement(s, "touch_7", somatoCortex[1][2].getHexColor());
-			m_tracer.addSubelement(s, "touch_6", somatoCortex[0][2].getHexColor());
-			m_tracer.addSubelement(s, "touch_5", somatoCortex[0][1].getHexColor());
-			m_tracer.addSubelement(s, "touch_4", somatoCortex[0][0].getHexColor());
-			m_tracer.addSubelement(s, "touch_3", somatoCortex[1][0].getHexColor());
-			m_tracer.addSubelement(s, "touch_2", somatoCortex[2][0].getHexColor());
-			m_tracer.addSubelement(s, "touch_1", somatoCortex[2][1].getHexColor());
-			m_tracer.addSubelement(s, "touch_0", somatoCortex[2][2].getHexColor());
+			//m_tracer.addSubelement(s, "touch_8", tactileSimulations[8].getHexColor());
+			//m_tracer.addSubelement(s, "touch_7", tactileSimulations[7].getHexColor());
+			m_tracer.addSubelement(s, "touch_6", tactileSimulations[6].getHexColor());
+			m_tracer.addSubelement(s, "touch_5", tactileSimulations[5].getHexColor());
+			m_tracer.addSubelement(s, "touch_4", tactileSimulations[4].getHexColor());
+			m_tracer.addSubelement(s, "touch_3", tactileSimulations[3].getHexColor());
+			m_tracer.addSubelement(s, "touch_2", tactileSimulations[2].getHexColor());
+			m_tracer.addSubelement(s, "touch_1", tactileSimulations[1].getHexColor());
+			m_tracer.addSubelement(s, "touch_0", tactileSimulations[0].getHexColor());
 		}
 			
 		// Kinematic ====
@@ -71,7 +73,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		// Process the spatial implications of the enacted interaction ====
 		
 		IAct enactedAct = null;		
-		IObservation newObservation = m_spas.step(act, visualCortex, somatoCortex, kinematicStimulation, gustatoryStimulation);
+		IObservation newObservation = m_spas.step(act, visualStimulations, tactileSimulations, kinematicStimulation, gustatoryStimulation);
 		
 		// Process the sequential implications of the enacted interaction ===
 		

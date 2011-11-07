@@ -58,16 +58,29 @@ public interface ISalience
 	 */
 	IBundle getBundle();
 	
-	void setType(int type);
+	/**
+	 * @return The salience's modality.
+	 */
+	int getModality();
 	
-	int getType();
-	
+	/**
+	 * @param direction The salience's direction.
+	 */
 	void setDirection(float direction);
 	
+	/**
+	 * @return The salience's direction.
+	 */
 	float getDirection();
 
+	/**
+	 * @param span The salience's span.
+	 */
 	void setSpan(float span);
 	
+	/**
+	 * @return The salience's color hexadecimal code.
+	 */
 	public String getHexColor(); 
 	
 }
