@@ -2,26 +2,24 @@ package spas;
 
 import javax.vecmath.Vector3f;
 
-import ernest.Ernest;
-
 /**
  * A sensory stimulation.
  * @author Olivier
  */
 public class Stimulation implements IStimulation 
 {
-	private int m_type;
+	private int m_modality;
 	private int m_value;
 	private Vector3f m_position;
 	
 	/**
-	 * Create a stimulation from its type and its value
-	 * @param type The stimulation's type
+	 * Create a stimulation from a type and a value
+	 * @param modality The stimulation's type
 	 * @param value The stimulation's value
 	 */
-	public Stimulation(int type, int value)
+	public Stimulation(int modality, int value)
 	{
-		m_type = type;
+		m_modality = modality;
 		m_value = value; 		
 	}
 	
@@ -35,9 +33,9 @@ public class Stimulation implements IStimulation
 		return m_position;
 	}
 
-	public int getType() 
+	public int getModality() 
 	{
-		return m_type;
+		return m_modality;
 	}
 
 	public int getValue() 
@@ -66,7 +64,7 @@ public class Stimulation implements IStimulation
 	}
 	
 	/**
-	 * Stimulations are equal if they have the same type and value. 
+	 * Stimulations are equal if they have the same modality and value. 
 	 * (this equality criteria is used to find saliences).
 	 */
 	public boolean equals(Object o)
@@ -82,9 +80,8 @@ public class Stimulation implements IStimulation
 		else
 		{
 			IStimulation other = (IStimulation)o;
-			ret = (other.getType() == m_type) && (other.getValue() == m_value);
+			ret = (other.getModality() == m_modality) && (other.getValue() == m_value);
 		}
-		
 		return ret;
 	}
 

@@ -75,7 +75,7 @@ public class Ernest implements IErnest
 	public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(MODALITY_VISUAL, 255 * 65536 + 255 * 256 + 255);
 
 	/** Touch empty */
-	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(MODALITY_TACTILE, 180 * 65536 + 180 * 256 + 180);
+	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(MODALITY_TACTILE, 11842740); // 180 * 65536 + 180 * 256 + 180  = B4B4B4
 	
 	/** Touch soft */
 	public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 100);

@@ -83,4 +83,6 @@ public interface ISalience
 	 */
 	public String getHexColor(); 
 	
+	public boolean isFrontal();
+	
 }
