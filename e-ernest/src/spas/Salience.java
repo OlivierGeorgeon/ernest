@@ -12,28 +12,27 @@ public class Salience implements ISalience
 {
 	private int m_value;
 	private int m_modality;
-	private float m_direction;
-	private float m_distance;
 	private Vector3f m_position;
 	private float m_span;
 	private int m_attractiveness;
 	private IBundle m_bundle;
 	
+	/**
+	 * Constructor. 
+	 * @param value The salience value.
+	 * @param modality The salience modality (MODALITY_VISUAL or MODALITY_TACTILE.
+	 * @param direction The average direction in egocentric referential.
+	 * @param distance The distance in egocentric referential.
+	 * @param span The angular span.
+	 */
 	public Salience(int value, int modality, float direction, float distance, float span)
 	{
 		m_value = value;
 		m_modality = modality;
-		m_direction = direction;
-		m_distance = distance;
 		m_span = span;
 		m_position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
 	}
 	
-	public void setDistance(int distance) 
-	{
-		m_distance = distance;
-	}
-
 	public void setSpan(int span) 
 	{
 		m_span = span;
@@ -52,13 +51,11 @@ public class Salience implements ISalience
 	public float getDistance() 
 	{
 		return m_position.length();
-		//return m_distance;
 	}
 
 	public float getDirection() 
 	{
 		return (float)Math.atan2((double)m_position.y, (double)m_position.x);
-		//return m_direction;
 	}
 
 	public float getSpan() 
@@ -113,11 +110,6 @@ public class Salience implements ISalience
 		return m_modality;
 	}
 
-	public void setDirection(float direction) 
-	{
-		m_direction = direction;
-	}
-
 	public void setSpan(float span) 
 	{
 		m_span = span;
@@ -151,6 +143,11 @@ public class Salience implements ISalience
 	public boolean isFrontal()
 	{
 		return (getDirection() - m_span / 2 < 0 && getDirection() + m_span / 2 > 0 );
+	}
+	
+	public Vector3f getPosition()
+	{
+		return m_position;
 	}
 
 }

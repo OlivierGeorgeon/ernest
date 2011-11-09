@@ -23,7 +23,7 @@ public class LocalSpaceMemory
 	public static float LOCATION_RADIUS = 0.5f;
 	
 	/** The Local space structure. */
-	private List<ILocation> m_localSpace = new ArrayList<ILocation>();
+	private List<IPlace> m_localSpace = new ArrayList<IPlace>();
 	
 	public final static float DIAG2D_PROJ = (float) (1/Math.sqrt(2));
 
@@ -64,13 +64,13 @@ public class LocalSpaceMemory
 	 * @param position The initial position of this location.
 	 * @return The new or already existing location.
 	 */
-	public ILocation addLocation(IBundle bundle, Vector3f position)
+	public IPlace addLocation(IBundle bundle, Vector3f position)
 	{
 		// The initial position must be cloned so that 
 		// the position can be moved without changing the position used for intialization.
 		Vector3f p = new Vector3f(position);
 		
-		ILocation l = new Location(bundle, p);
+		IPlace l = new place(bundle, p);
 		
 		int i = m_localSpace.indexOf(l);
 		if (i == -1)
@@ -110,7 +110,7 @@ public class LocalSpaceMemory
 	 */
 	private void rotate(float angle)
 	{
-		for (ILocation l : m_localSpace)
+		for (IPlace l : m_localSpace)
 		{
 			l.rotate(angle);
 		}		
@@ -123,12 +123,12 @@ public class LocalSpaceMemory
 	 */
 	private void translate(float distance)
 	{
-		for (ILocation l : m_localSpace)
+		for (IPlace l : m_localSpace)
 			l.translate(distance);
 			
 		for (Iterator it = m_localSpace.iterator(); it.hasNext();)
 		{
-			ILocation l = (ILocation)it.next();
+			IPlace l = (IPlace)it.next();
 			if (l.getPosition().x < - 1.5f)
 				it.remove();
 		}		
@@ -149,7 +149,7 @@ public class LocalSpaceMemory
 	 */
 	public IBundle getBundle(Vector3f position)
 	{
-		for (ILocation l : m_localSpace)
+		for (IPlace l : m_localSpace)
 		{
 			if (l.isInCell(position))
 				return l.getBundle();
@@ -166,7 +166,7 @@ public class LocalSpaceMemory
 	{
 		for (Iterator it = m_localSpace.iterator(); it.hasNext();)
 		{
-			ILocation l = (ILocation)it.next();
+			IPlace l = (IPlace)it.next();
 			if (l.isInCell(position))
 				it.remove();
 		}		

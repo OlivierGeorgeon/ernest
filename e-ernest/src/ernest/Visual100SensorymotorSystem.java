@@ -5,6 +5,7 @@ import org.w3c.dom.Element;
 
 import spas.IObservation;
 import spas.IStimulation;
+import spas.LocalSpaceMemory;
 import spas.Stimulation;
 
 /**
@@ -48,11 +49,13 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		for (int i = 0; i < 9; i++)
 			tactileSimulations[i] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9]);
 
+//		tactileSimulations[0] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[0][9], LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
+		
 		if (m_tracer != null)
 		{
 			Object s = m_tracer.addEventElement("tactile");
-			//m_tracer.addSubelement(s, "touch_8", tactileSimulations[8].getHexColor());
-			//m_tracer.addSubelement(s, "touch_7", tactileSimulations[7].getHexColor());
+			m_tracer.addSubelement(s, "here", tactileSimulations[8].getHexColor());
+			m_tracer.addSubelement(s, "rear", tactileSimulations[7].getHexColor());
 			m_tracer.addSubelement(s, "touch_6", tactileSimulations[6].getHexColor());
 			m_tracer.addSubelement(s, "touch_5", tactileSimulations[5].getHexColor());
 			m_tracer.addSubelement(s, "touch_4", tactileSimulations[4].getHexColor());

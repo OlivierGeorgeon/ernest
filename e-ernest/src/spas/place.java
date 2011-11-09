@@ -7,7 +7,7 @@ import javax.vecmath.Vector3f;
  * A location is a place in the local space that was associated with a bundle.
  * @author Olivier
  */
-public class Location implements ILocation 
+public class place implements IPlace 
 {
 
 	IBundle m_bundle;
@@ -17,7 +17,7 @@ public class Location implements ILocation
 	 * @param bundle The location's bundle.
 	 * @param position The location's position.
 	 */
-	public Location(IBundle bundle, Vector3f position)
+	public place(IBundle bundle, Vector3f position)
 	{
 		m_bundle = bundle;
 		m_position = position;
@@ -90,7 +90,7 @@ public class Location implements ILocation
 			ret = false;
 		else
 		{
-			ILocation other = (ILocation)o;
+			IPlace other = (IPlace)o;
 			//ret = (other.getBundle() == m_bundle) && (m_position.epsilonEquals(other.getPosition(), LocalSpace.LOCATION_RADIUS));
 			ret = isInCell(other.getPosition());
 		}		
