@@ -23,10 +23,23 @@ public class Stimulation implements IStimulation
 		m_value = value; 		
 	}
 	
-	public void setPosition(Vector3f position) 
+	/**
+	 * Create a stimulation from a type and a value
+	 * @param modality The stimulation's type
+	 * @param value The stimulation's value
+	 * @param position The stimulation's position in egocentric referential.
+	 */
+	public Stimulation(int modality, int value, Vector3f position)
 	{
+		m_modality = modality;
+		m_value = value; 		
 		m_position = position;
 	}
+	
+//	public void setPosition(Vector3f position) 
+//	{
+//		m_position = position;
+//	}
 
 	public Vector3f getPosition() 
 	{

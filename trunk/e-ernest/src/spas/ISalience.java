@@ -1,5 +1,7 @@
 package spas;
 
+import javax.vecmath.Vector3f;
+
 
 /**
  * A set of sensory stimulations that are salient as a whole.
@@ -11,7 +13,7 @@ public interface ISalience
 	/**
 	 * @param distance The distance of the salience (not used anymore except for debug)
 	 */
-	void setDistance(int distance);
+	//void setDistance(int distance);
 	
 	/**
 	 * @param span The span of the salience (number of pixels or of tactile cells)
@@ -66,7 +68,7 @@ public interface ISalience
 	/**
 	 * @param direction The salience's direction.
 	 */
-	void setDirection(float direction);
+	//void setDirection(float direction);
 	
 	/**
 	 * @return The salience's direction.
@@ -83,6 +85,14 @@ public interface ISalience
 	 */
 	public String getHexColor(); 
 	
+	/**
+	 * @return true if the salience overlaps Ernest's front, false if not.
+	 */
 	public boolean isFrontal();
+	
+	/**
+	 * @return The position of this salience in egocentric referential.
+	 */
+	public Vector3f getPosition();
 	
 }

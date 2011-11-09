@@ -93,6 +93,10 @@ public class Spas implements ISpas
 		
 		createBundles(m_frontVisualStimulation, tactileStimulations[3] , m_kinematicStimulation, m_gustatoryStimulation);
 		
+		// Adjust the local space memory according to the tactile simulations.
+		
+		adjustLocalSpaceMemory(tactileStimulations);
+		
 		// Construct the new observation.
 		
 		IObservation observation = new Observation();
@@ -233,7 +237,7 @@ public class Spas implements ISpas
 			}
 			else if (salience.isFrontal() && salience.getValue()== Ernest.STIMULATION_TOUCH_WALL.getValue())// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
 			{
-				// Attractiveness of tactile saliences.
+				// Attractiveness of touching a wall.
 				IStimulation stimulation = new Stimulation(Ernest.MODALITY_TACTILE, salience.getValue());
 				IBundle b = m_persistenceMemory.touchBundle(stimulation);
 				if (b != null)
@@ -244,6 +248,22 @@ public class Spas implements ISpas
 				}
 				else
 					salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
+			}
+			else if (salience.getValue()== Ernest.STIMULATION_TOUCH_FISH.getValue())// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
+			{
+				// Attractiveness of touching a fish.
+				IStimulation stimulation = new Stimulation(Ernest.MODALITY_TACTILE, salience.getValue());
+				IBundle b = m_persistenceMemory.touchBundle(stimulation);
+				if (b != null)
+				{
+					salience.setBundle(b);
+					salience.setAttractiveness(b.getAttractiveness(m_clock));
+					salience.setValue(b.getValue());
+					// Place the bundle in the local space memory
+					m_localSpaceMemory.addLocation(b, salience.getPosition());					
+				}
+//				else
+//					salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
 			}
 		}
 	}
@@ -313,13 +333,13 @@ public class Spas implements ISpas
 			}
 		}
 		
-		// If the current stimulation does not match the anticipated local map then the local map is cleared.
-		// TODO The criteria to decide whether the matching is correct or incorrect need to be learned ! 
-
-		if (hereBundle != null && hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
-			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_HERE);
-		if (frontBundle != null && !frontBundle.getTactileStimulation().equals(frontTactileStimulation))
-			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD);
+//		// If the current stimulation does not match the anticipated local map then the local map is cleared.
+//		// TODO The criteria to decide whether the matching is correct or incorrect need to be learned ! 
+//
+//		if (hereBundle != null && hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
+//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_HERE);
+//		if (frontBundle != null && !frontBundle.getTactileStimulation().equals(frontTactileStimulation))
+//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD);
 
 		// Associate the visual stimulation with the tactile stimulation.
 		
@@ -335,8 +355,8 @@ public class Spas implements ISpas
 			}
 			else
 			{
-				m_persistenceMemory.addVisualStimulation(frontBundle, frontVisualStimulation);
-				m_localSpaceMemory.addLocation(frontBundle, LocalSpaceMemory.DIRECTION_AHEAD);
+//				m_persistenceMemory.addVisualStimulation(frontBundle, frontVisualStimulation);
+				//m_localSpaceMemory.addLocation(frontBundle, LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 		}
 		frontVisualStimulation = null;	
@@ -353,5 +373,35 @@ public class Spas implements ISpas
 			// Trace the local space memory
 			m_localSpaceMemory.Trace(m_tracer);
 		}
+	}
+	
+	/**
+	 * Remove the bundles in local space memory that are not consistent with the tactile stimuli.
+     * TODO The criteria to decide whether the matching is correct or incorrect need to be learned ! 
+	 * @param tactileStimulations The tactile stimuli.
+	 */
+	private void adjustLocalSpaceMemory(IStimulation[] tactileStimulations)
+	{
+
+		for (IStimulation s : tactileStimulations)
+		{
+			Vector3f position = s.getPosition();
+			IBundle b = m_localSpaceMemory.getBundle(position);
+			if (b != null && b.getTactileStimulation().getValue() != s.getValue())
+				m_localSpaceMemory.clearLocation(position);
+		}
+		
+		
+//		IBundle hereBundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_HERE);
+//		IBundle frontBundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
+//		
+//		// The here bundle cannot be a wall
+//		if (hereBundle != null && hereBundle.getTactileStimulation().equals(Ernest.STIMULATION_TOUCH_WALL))
+//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_HERE);
+//		
+//		// The front bundle's stimulation must correspond to
+//		if (frontBundle != null && !frontBundle.getTactileStimulation().equals(tactileStimulations[3]))
+//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD);
+		
 	}
 }

@@ -6,7 +6,7 @@ import javax.vecmath.Vector3f;
  * A location is a place in the local space that has been associated with a bundle.
  * @author Olivier
  */
-public interface ILocation {
+public interface IPlace {
 	
 	/**
 	 * @return The location's bundle.
