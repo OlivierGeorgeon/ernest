@@ -3,7 +3,7 @@ package spas;
 import javax.vecmath.Vector3f;
 
 /**
- * A location is a place in the local space that has been associated with a bundle.
+ * A place is a location in the local space that holds a placeable item (stimulation, salience, or bundle).
  * @author Olivier
  */
 public interface IPlace {
@@ -13,6 +13,10 @@ public interface IPlace {
 	 */
 	public IBundle getBundle();
 	
+	/**
+	 * Allocate a bundle to this place.
+	 * @param bundle The bundle at this place.
+	 */
 	public void setBundle(IBundle bundle);
 
 	/**
@@ -32,6 +36,11 @@ public interface IPlace {
 	 */
 	public void translate(float distance);
 
+	/**
+	 * Test if this place is at this position.
+	 * @param position The position to test
+	 * @return true if this place is in the same cell as thi position.
+	 */
 	public boolean isInCell(Vector3f position);
 
 }

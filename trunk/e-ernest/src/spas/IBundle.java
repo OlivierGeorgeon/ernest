@@ -15,17 +15,17 @@ public interface IBundle
 	/**
 	 * @return The bundle's visual stimulation.
 	 */
-	IStimulation getVisualStimulation(); 
+	int getVisualValue(); 
 	
 	/**
 	 * @param stimulation The visual stimulation.
 	 */
-	public void setVisualStimulation(IStimulation stimulation); 
+	public void setVisualValue(int visualValue); 
 	
 	/**
 	 * @return The bundle's color  for tracing.
 	 */
-	String getHexColor();
+	//String getHexColor();
 
 	/**
 	 * @return The value of the visual stimulation if any, or of the tactile stimulation
@@ -35,27 +35,27 @@ public interface IBundle
 	/**
 	 * @return The bundle's tactile stimulation.
 	 */
-	IStimulation getTactileStimulation();
+	int getTactileValue();
 	
 	/**
 	 * @param gustatoryStimulation The bundle's gustatory stimulation.
 	 */
-	void setGustatoryStimulation(IStimulation  gustatoryStimulation); 
+	void setGustatoryValue(int  gustatoryValue); 
 	
 	/**
 	 * @return The bundle's gustatory stimulation.
 	 */
-	IStimulation getGustatoryStimulation();
+	int getGustatoryValue();
 	
 	/**
 	 * @param kinematicStimulation The bundle's kinematic stimulation.
 	 */
-	void setKinematicStimulation(IStimulation kinematicStimulation);
+	void setKinematicValue(int kinematicValue);
 	
 	/**
 	 * @return The bundle's kinematic stimulation.
 	 */
-	IStimulation getKinematicStimulation();
+	int getKinematicValue();
 	
 	/**
 	 * ATTRACTIVENESS_OF_FISH (400) if this bundle's gustatory stimulation is STIMULATION_TASTE_FISH.
