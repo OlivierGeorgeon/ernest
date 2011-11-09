@@ -4,7 +4,7 @@ import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 /**
- * A location is a place in the local space that was associated with a bundle.
+ * A place is a location in the local space that holds a placeable item (stimulation, salience, or bundle).
  * @author Olivier
  */
 public class place implements IPlace 

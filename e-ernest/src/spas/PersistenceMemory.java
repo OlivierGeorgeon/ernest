@@ -46,6 +46,11 @@ public class PersistenceMemory
 		
 		m_clock++;
 	}
+	
+	public int getClock()
+	{
+		return m_clock;
+	}
 		
 	/**
 	 * Add a stimulation to static memory if it does not already exist
@@ -73,15 +78,15 @@ public class PersistenceMemory
 	 * @param tactileStimulation The tactile stimulation.
 	 * @return The bundle.
 	 */
-	public IBundle createVisioTactileBundle(IStimulation visualStimulation, IStimulation tactileStimulation)
+	public IBundle createVisioTactileBundle(int visualValue, int tactileValue)
 	{
 		if (m_tracer != null)
 		{
 			Object e = m_tracer.addEventElement("cooccurrence");
-			m_tracer.addSubelement(e, "stimulus_1", visualStimulation.getHexColor());
-			m_tracer.addSubelement(e, "stimulus_0", tactileStimulation.getHexColor());
+			m_tracer.addSubelement(e, "stimulus_1", hexColor(visualValue));
+			m_tracer.addSubelement(e, "stimulus_0", hexColor(tactileValue));
 		}
-		return addBundle(visualStimulation, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+		return addBundle(visualValue, tactileValue, Ernest.STIMULATION_KINEMATIC_FORWARD.getValue(), Ernest.STIMULATION_GUSTATORY_NOTHING.getValue());
 	}
 	
 	/**
@@ -90,15 +95,15 @@ public class PersistenceMemory
 	 * @param gustatoryStimulation The gustatory stimulation.
 	 * @return The bundle
 	 */
-	public IBundle createTactoGustatoryBundle(IStimulation tactileStimulation, IStimulation gustatoryStimulation)
+	public IBundle createTactoGustatoryBundle(int tactileValue, int gustatoryValue)
 	{
 		if (m_tracer != null)
 		{
 			Object e = m_tracer.addEventElement("cooccurrence");
-			m_tracer.addSubelement(e, "stimulus_1", gustatoryStimulation.getHexColor());
-			m_tracer.addSubelement(e, "stimulus_0", tactileStimulation.getHexColor());
+			m_tracer.addSubelement(e, "stimulus_1", hexColor(gustatoryValue));
+			m_tracer.addSubelement(e, "stimulus_0", hexColor(tactileValue));
 		}
-		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryStimulation);
+		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN.getValue(), tactileValue, Ernest.STIMULATION_KINEMATIC_FORWARD.getValue(), gustatoryValue);
 	}
 	/**
 	 * Create a bundle with a tactile and a gustatory stimulation.
@@ -106,15 +111,15 @@ public class PersistenceMemory
 	 * @param gustatoryStimulation The gustatory stimulation.
 	 * @return The bundle
 	 */
-	public IBundle createTactoKinematicBundle(IStimulation tactileStimulation, IStimulation kinematicStimulation)
+	public IBundle createTactoKinematicBundle(int tactileValue, int kinematicValue)
 	{
 		if (m_tracer != null)
 		{
 			Object e = m_tracer.addEventElement("cooccurrence");
-			m_tracer.addSubelement(e, "stimulus_1", tactileStimulation.getHexColor());
-			m_tracer.addSubelement(e, "stimulus_0", kinematicStimulation.getHexColor());
+			m_tracer.addSubelement(e, "stimulus_1", hexColor(tactileValue));
+			m_tracer.addSubelement(e, "stimulus_0", hexColor(kinematicValue));
 		}
-		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, kinematicStimulation, Ernest.STIMULATION_GUSTATORY_NOTHING);
+		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN.getValue(), tactileValue, kinematicValue, Ernest.STIMULATION_GUSTATORY_NOTHING.getValue());
 	}
 	/**
 	 * Add a bundle to static memory if it does not already exist
@@ -122,9 +127,9 @@ public class PersistenceMemory
 	 * @param tactileStimulation The bundle's tactile stimulation.
 	 * @return the new bundle if created or the already existing bundle.
 	 */
-	public IBundle addBundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
+	public IBundle addBundle(int visualValue, int tactileValue, int kinematicValue, int gustatoryValue)
 	{
-		IBundle bundle = new Bundle(visualStimulation, tactileStimulation, kinematicStimulation, gustatoryStimulation);
+		IBundle bundle = new Bundle(visualValue, tactileValue, kinematicValue, gustatoryValue);
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
@@ -143,43 +148,44 @@ public class PersistenceMemory
 		return bundle;
 	}
 	
-	public void addVisualStimulation(IBundle bundle, IStimulation stimulation)
+	public void addVisualValue(IBundle bundle, int visualValue)
 	{
-		if (!bundle.getVisualStimulation().equals(stimulation))
+		if (bundle.getVisualValue() != visualValue)
 		{
-			bundle.setVisualStimulation(stimulation);
+			bundle.setVisualValue(visualValue);
 			if (m_tracer != null)
 			{
 				Object e = m_tracer.addEventElement("cooccurrence");
-				m_tracer.addSubelement(e, "stimulus_1", stimulation.getHexColor());
+				m_tracer.addSubelement(e, "stimulus_1", hexColor(visualValue));
 				bundle.trace(m_tracer, "bundle");
 			}
 		}
 	}
 	
-	public void addKinematicStimulation(IBundle bundle, IStimulation stimulation)
+	public void addKinematicValue(IBundle bundle, int kinematiValue)
 	{
-		if (!bundle.getKinematicStimulation().equals(stimulation))
+		if (bundle.getKinematicValue() != kinematiValue)
 		{
-			bundle.setKinematicStimulation(stimulation);
+			bundle.setKinematicValue(kinematiValue);
 			if (m_tracer != null)
 			{
 				Object e = m_tracer.addEventElement("cooccurrence");
-				m_tracer.addSubelement(e, "stimulus_0", stimulation.getHexColor());
+				m_tracer.addSubelement(e, "stimulus_1", hexColor(kinematiValue));
+				m_tracer.addSubelement(e, "stimulus_0", hexColor(bundle.getTactileValue()));
 				bundle.trace(m_tracer, "bundle");
 			}
 		}
 	}
 	
-	public void addGustatoryStimulation(IBundle bundle, IStimulation stimulation)
+	public void addGustatoryValue(IBundle bundle, int gustatoryValue)
 	{
-		if (!bundle.getGustatoryStimulation().equals(stimulation))
+		if (bundle.getGustatoryValue() != gustatoryValue)
 		{
-			bundle.setGustatoryStimulation(stimulation);
+			bundle.setGustatoryValue(gustatoryValue);
 			if (m_tracer != null)
 			{
 				Object e = m_tracer.addEventElement("cooccurrence");
-				m_tracer.addSubelement(e, "stimulus_0", stimulation.getHexColor());
+				m_tracer.addSubelement(e, "stimulus_0", hexColor(gustatoryValue));
 				bundle.trace(m_tracer, "bundle");
 			}
 		}
@@ -192,15 +198,15 @@ public class PersistenceMemory
 	 * @return The motivation value generated by this stimulation.
 	 * (Either the bundle's motivation or the base motivation if this stimulation evokes no bundle.
 	 */
-	public int attractiveness(IStimulation stimulation)
+	public int visualAttractiveness(int visualValue)
 	{
 		// Walls are never attractive
-		if (stimulation.equals(Ernest.STIMULATION_VISUAL_WALL))
+		if (visualValue == Ernest.STIMULATION_VISUAL_WALL.getValue())
 			return 0;
 		
 		// Recognized bundles return their attractiveness (depends on time elapsed since last check)
 		for (IBundle bundle : m_bundles)
-			if (bundle.getVisualStimulation().equals(stimulation))
+			if (bundle.getVisualValue() == visualValue)
 				return bundle.getAttractiveness(m_clock);
 
 		// Stimulations not recognized get the attractiveness of unknown.
@@ -214,10 +220,10 @@ public class PersistenceMemory
 	 * @param stimulation The visual stimulation.
 	 * @return The bundle that match this stimulation.
 	 */
-	public IBundle seeBundle(IStimulation stimulation)
+	public IBundle seeBundle(int visualValue)
 	{
 		for (IBundle bundle : m_bundles)
-			if (bundle.getVisualStimulation().equals(stimulation))
+			if (bundle.getVisualValue() == visualValue)
 				return bundle;
 
 		return null;
@@ -228,14 +234,34 @@ public class PersistenceMemory
 	 * @param stimulation The visual stimulation.
 	 * @return The bundle that match this stimulation.
 	 */
-	public IBundle touchBundle(IStimulation stimulation)
+	public IBundle touchBundle(int tactileValue)
 	{
 		for (IBundle bundle : m_bundles)
-			if (bundle.getTactileStimulation().equals(stimulation))
+			if (bundle.getTactileValue() == tactileValue)
 				return bundle;
 
 		return null;
 	}
 	
+	private String hexColor(int value) 
+	{
+		int r = value/65536;
+		int g = (value - r * 65536)/256;
+		int b = value - r * 65536 - g * 256;
+		String s = format(r) + format(g) + format(b);
+
+		return s;
+	}
+	
+	private String format(int i)
+	{
+		if (i == 0)
+			return "00";
+		else if (i < 16)
+			return "0" + Integer.toString(i, 16).toUpperCase();
+		else
+			return Integer.toString(i, 16).toUpperCase();
+	}
+
 }
 	

@@ -29,12 +29,12 @@ public class Stimulation implements IStimulation
 	 * @param value The stimulation's value
 	 * @param position The stimulation's position in egocentric referential.
 	 */
-	public Stimulation(int modality, int value, Vector3f position)
-	{
-		m_modality = modality;
-		m_value = value; 		
-		m_position = position;
-	}
+//	public Stimulation(int modality, int value, Vector3f position)
+//	{
+//		m_modality = modality;
+//		m_value = value; 		
+//		m_position = position;
+//	}
 	
 //	public void setPosition(Vector3f position) 
 //	{

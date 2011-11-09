@@ -15,12 +15,11 @@ public class Salience implements ISalience
 	private Vector3f m_position;
 	private float m_span;
 	private int m_attractiveness;
-	private IBundle m_bundle;
 	
 	/**
 	 * Constructor. 
-	 * @param value The salience value.
-	 * @param modality The salience modality (MODALITY_VISUAL or MODALITY_TACTILE.
+	 * @param value The salience's value (equal to the value of the stimulations that generated this salience).
+	 * @param modality The salience's modality (MODALITY_VISUAL or MODALITY_TACTILE).
 	 * @param direction The average direction in egocentric referential.
 	 * @param distance The distance in egocentric referential.
 	 * @param span The angular span.
@@ -33,19 +32,9 @@ public class Salience implements ISalience
 		m_position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
 	}
 	
-	public void setSpan(int span) 
-	{
-		m_span = span;
-	}
-
 	public void setAttractiveness(int attractiveness) 
 	{
 		m_attractiveness = attractiveness;
-	}
-
-	public void setBundle(IBundle bundle) 
-	{
-		m_bundle = bundle;
 	}
 
 	public float getDistance() 
@@ -66,11 +55,6 @@ public class Salience implements ISalience
 	public int getAttractiveness() 
 	{
 		return m_attractiveness;
-	}
-	
-	public IBundle getBundle() 
-	{
-		return m_bundle;
 	}
 	
 	/**

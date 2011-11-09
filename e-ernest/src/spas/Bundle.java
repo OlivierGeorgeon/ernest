@@ -14,76 +14,73 @@ import ernest.ITracer;
  */
 public class Bundle implements IBundle {
 
-	ISalience m_visualSalience;
-	IStimulation m_visualStimulation;
-	IStimulation m_tactileStimulation;
-	IStimulation m_kinematicStimulation;
-	IStimulation m_gustatoryStimulation;
+	//ISalience m_visualSalience;
+	int m_visualValue;
+	int m_tactileValue;
+	int m_kinematicValue;
+	int m_gustatoryValue;
 
 	int m_lastTimeBundled;
 	
-	Bundle(IStimulation visualStimulation, IStimulation tactileStimulation, IStimulation kinematicStimulation, IStimulation gustatoryStimulation)
+	Bundle(int visualValue, int tactileValue, int kinematicValue, int gustatoryValue)
 	{
-		m_visualStimulation = visualStimulation;
-		m_tactileStimulation = tactileStimulation;
-		m_kinematicStimulation = kinematicStimulation;//Ernest.STIMULATION_KINEMATIC_FORWARD;
-		m_gustatoryStimulation = gustatoryStimulation; //Ernest.STIMULATION_GUSTATORY_NOTHING;
+		m_visualValue = visualValue;
+		m_tactileValue = tactileValue;
+		m_kinematicValue = kinematicValue;
+		m_gustatoryValue = gustatoryValue;
 	}
 	
 	public int getValue()
 	{
 		int value = 0;
-		if (m_visualStimulation.equals(Ernest.STIMULATION_VISUAL_UNSEEN))
-			value = m_tactileStimulation.getValue();
+		if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN.getValue())
+			value = m_tactileValue;
 		else 
-			value = m_visualStimulation.getValue();
+			value = m_visualValue;
 		
 		return value;
 	}
 	
-	public String getHexColor() 
+//	public String getHexColor() 
+//	{
+//		if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN.getValue())
+//			return hexColor(m_tactileValue);
+//		else 
+//			return hexColor(m_visualValue);
+//	}
+	
+	public int getVisualValue() 
 	{
-		String s = "";
-		if (m_visualStimulation.equals(Ernest.STIMULATION_VISUAL_UNSEEN))
-			s = m_tactileStimulation.getHexColor();
-		else 
-			s = m_visualStimulation.getHexColor();
-			
-		return s;
+		return m_visualValue;
 	}
 	
-	public IStimulation getVisualStimulation() 
+	public void setVisualValue(int visualValue) 
 	{
-		return m_visualStimulation;
+		m_visualValue = visualValue;
 	}
 	
-	public void setVisualStimulation(IStimulation stimulation) 
+	public int getTactileValue() 
 	{
-		m_visualStimulation = stimulation;
+		return m_tactileValue;
+	}
+	public void setGustatoryValue(int  gustatoryValue) 
+	{
+		m_gustatoryValue = gustatoryValue;
 	}
 	
-	public IStimulation getTactileStimulation() 
+	public int getGustatoryValue() 
 	{
-		return m_tactileStimulation;
-	}
-	public void setGustatoryStimulation(IStimulation  gustatoryStimulation) 
-	{
-		m_gustatoryStimulation = gustatoryStimulation;
+		return m_gustatoryValue;
 	}
 	
-	public IStimulation getGustatoryStimulation() 
+	public void setKinematicValue(int kinematicValue)
 	{
-		return m_gustatoryStimulation;
+		m_kinematicValue = kinematicValue;
 	}
 	
-	public void setKinematicStimulation(IStimulation kinematicStimulation)
+	public int getKinematicValue()
 	{
-		m_kinematicStimulation = kinematicStimulation;
-	}
-	
-	public IStimulation getKinematicStimulation()
-	{
-		return m_kinematicStimulation;
+		return m_kinematicValue;
 	}
 	
 	public void setLastTimeBundled(int clock)
@@ -102,11 +99,11 @@ public class Bundle implements IBundle {
 	public int getAttractiveness(int clock) 
 	{
 		// If the bundle has a kinematic stimulation of bump.
-		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation))
+		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP.getValue())
 			return Ernest.ATTRACTIVENESS_OF_BUMP;
 
 		// If the bundle has a tactile stimulation of hard.
-		if (Ernest.STIMULATION_TOUCH_WALL.equals(m_tactileStimulation))
+		if (m_tactileValue == Ernest.STIMULATION_TOUCH_WALL.getValue())
 			return Ernest.ATTRACTIVENESS_OF_HARD - 10; // prefer a bundle salience than a mere touch salience.
 
 		// The bundle of touching a fish
@@ -114,9 +111,9 @@ public class Bundle implements IBundle {
 		//	return Ernest.ATTRACTIVENESS_OF_FISH + 10;
 		
 		// If the bundle has a gustatory stimulation of fish 
-		else if (Ernest.STIMULATION_GUSTATORY_FISH.equals(m_gustatoryStimulation))
+		else if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH.getValue())
 		{
-			if (m_visualStimulation.equals(Ernest.STIMULATION_VISUAL_UNSEEN))
+			if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN.getValue())
 				// Fish that are touched are more attractive 
 				return Ernest.ATTRACTIVENESS_OF_FISH + 10;
 			else
@@ -147,8 +144,8 @@ public class Bundle implements IBundle {
 		else
 		{
 			IBundle other = (IBundle)o;
-			ret = other.getVisualStimulation().equals(m_visualStimulation) && 	
-				  other.getTactileStimulation().equals(m_tactileStimulation);
+			ret = (other.getVisualValue() == m_visualValue) && 	
+				  (other.getTactileValue() == m_tactileValue);
 		}
 		return ret;
 	}
@@ -161,24 +158,41 @@ public class Bundle implements IBundle {
 		Object element = tracer.addEventElement(label);
 		
 		// Visual stimulation
-		tracer.addSubelement(element, "visual", m_visualStimulation.getHexColor());
+		tracer.addSubelement(element, "visual", hexColor(m_visualValue));
 		
 		// Only trace fish gustatory stimulations.
-		if (Ernest.STIMULATION_GUSTATORY_FISH.equals(m_gustatoryStimulation))
-			tracer.addSubelement(element, "gustatory", m_gustatoryStimulation.getHexColor());
+		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH.getValue())
+			tracer.addSubelement(element, "gustatory", hexColor(m_gustatoryValue));
 		else
-			tracer.addSubelement(element, "gustatory", m_visualStimulation.getHexColor());
+			tracer.addSubelement(element, "gustatory", hexColor(m_visualValue));
 		
 		// Tactile stimulation
-		tracer.addSubelement(element, "tactile", m_tactileStimulation.getHexColor());
+		tracer.addSubelement(element, "tactile", hexColor(m_tactileValue));
 
 		// Only trace bump kinematic stimulation.
-		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_kinematicStimulation))
-			tracer.addSubelement(element, "kinematic", m_kinematicStimulation.getHexColor());
+		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP.getValue())
+			tracer.addSubelement(element, "kinematic", hexColor(m_kinematicValue));
 		else
-			tracer.addSubelement(element, "kinematic", m_tactileStimulation.getHexColor());
-		
-		//tracer.addSubelement(element, "attractiveness", getAttractiveness(m_clock) + "");
-	}
+			tracer.addSubelement(element, "kinematic", hexColor(m_tactileValue));
+		}
 
+	private String hexColor(int value) 
+	{
+		int r = value/65536;
+		int g = (value - r * 65536)/256;
+		int b = value - r * 65536 - g * 256;
+		String s = format(r) + format(g) + format(b);
+
+		return s;
+	}
+	
+	private String format(int i)
+	{
+		if (i == 0)
+			return "00";
+		else if (i < 16)
+			return "0" + Integer.toString(i, 16).toUpperCase();
+		else
+			return Integer.toString(i, 16).toUpperCase();
+	}
 }
