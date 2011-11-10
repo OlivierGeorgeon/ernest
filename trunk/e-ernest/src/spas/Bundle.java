@@ -128,7 +128,7 @@ public class Bundle implements IBundle {
 	}
 
 	/**
-	 * Bundles are equal if they have the same visual and tactile stimulations. 
+	 * Bundles are equal if they have the same visual, tactile, kinematic, and gustatory values. 
 	 * TODO also test other stimulations.
 	 */
 	public boolean equals(Object o)
@@ -146,6 +146,8 @@ public class Bundle implements IBundle {
 			IBundle other = (IBundle)o;
 			ret = (other.getVisualValue() == m_visualValue) && 	
 				  (other.getTactileValue() == m_tactileValue);
+				  //(other.getKinematicValue() == m_kinematicValue) &&
+				  //(other.getGustatoryValue() == m_gustatoryValue);
 		}
 		return ret;
 	}

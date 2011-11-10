@@ -7,7 +7,7 @@ import javax.vecmath.Vector3f;
  * A place is a location in the local space that holds a placeable item (stimulation, salience, or bundle).
  * @author Olivier
  */
-public class place implements IPlace 
+public class Place implements IPlace 
 {
 
 	IBundle m_bundle;
@@ -17,7 +17,7 @@ public class place implements IPlace
 	 * @param bundle The location's bundle.
 	 * @param position The location's position.
 	 */
-	public place(IBundle bundle, Vector3f position)
+	public Place(IBundle bundle, Vector3f position)
 	{
 		m_bundle = bundle;
 		m_position = position;
