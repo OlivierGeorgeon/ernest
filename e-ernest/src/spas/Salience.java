@@ -32,6 +32,15 @@ public class Salience implements ISalience
 		m_position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
 	}
 	
+	public Salience(int value, int modality, Vector3f position, int attractiveness)
+	{
+		m_value = value;
+		m_modality = modality;
+		m_span = 0;
+		m_position = position;
+		m_attractiveness = attractiveness;
+	}
+	
 	public void setAttractiveness(int attractiveness) 
 	{
 		m_attractiveness = attractiveness;

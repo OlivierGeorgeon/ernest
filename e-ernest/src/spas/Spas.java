@@ -72,12 +72,14 @@ public class Spas implements ISpas
 		// TODO construct a list of places of interest whether they are visible or not. 
 		
 		setSaliencesAttractiveness(saliences);
+		//List<ISalience> attractiveSaliences = attractiveSaliences(saliences);
 
 		// Find the most attractive or the most repulsive salience in the list (abs value) (There is at least a wall)
 		
 		int maxAttractiveness = 0;
 		float direction = 0;
 		ISalience focusSalience = null;
+		//for (ISalience salience : attractiveSaliences)
 		for (ISalience salience : saliences)
 		{
 			if (Math.abs(salience.getAttractiveness()) > Math.abs(maxAttractiveness))
@@ -258,12 +260,78 @@ public class Spas implements ISpas
 					salience.setAttractiveness(b.getAttractiveness(clock));
 					salience.setValue(b.getValue());
 					// Place the bundle in the local space memory
-					m_localSpaceMemory.addLocation(b, salience.getPosition());					
+					m_localSpaceMemory.addPlace(b, salience.getPosition());					
 				}
 //				else
 //					salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
 			}
 		}
+		
+		// Add saliences from bundles in the local space memory.
+		for (IPlace place : m_localSpaceMemory.getPlaces())
+		{
+			if (place.getBundle().getGustatoryValue() == Ernest.STIMULATION_GUSTATORY_FISH.getValue())
+			{
+				ISalience attractiveSalience = new Salience(place.getBundle().getVisualValue(), Ernest.MODALITY_VISUAL, place.getPosition(), Ernest.ATTRACTIVENESS_OF_FISH - 10);
+				salienceList.add(attractiveSalience);
+			}
+		}
+	}
+	
+	/**
+	 * Set the attractiveness of the saliences in the list of saliences.
+	 */
+	private List<ISalience> attractiveSaliences(List<ISalience> salienceList)
+	{
+		List<ISalience> attractiveSaliences = new ArrayList<ISalience>();
+
+		int clock = m_persistenceMemory.getClock();
+		for (ISalience salience : salienceList)
+		{
+			if (salience.getModality() == Ernest.MODALITY_VISUAL)
+			{
+				// Attractiveness of visual saliences.
+				IBundle b = m_persistenceMemory.seeBundle(salience.getValue());
+				//salience.setAttractiveness(m_persistenceMemory.visualAttractiveness(salience.getValue()) + (int)(5 * salience.getSpan() / ((float)Math.PI / 12)));
+				int attractiveness = m_persistenceMemory.visualAttractiveness(salience.getValue()) + (int)(5 * salience.getSpan() / ((float)Math.PI / 12));
+				ISalience attractiveSalience = new Salience(salience.getValue(), salience.getModality(), salience.getPosition(), attractiveness);
+				attractiveSaliences.add(attractiveSalience);
+			}
+			else if (salience.isFrontal() && salience.getValue()== Ernest.STIMULATION_TOUCH_WALL.getValue())
+			{
+				// Attractiveness of touching a wall.
+				IBundle b = m_persistenceMemory.touchBundle(salience.getValue());
+				if (b != null)
+				{
+					//salience.setBundle(b);
+//					salience.setAttractiveness(b.getAttractiveness(clock));
+//					salience.setValue(b.getValue());
+					ISalience attractiveSalience = new Salience(b.getValue(), salience.getModality(), salience.getPosition(), b.getAttractiveness(clock));
+					attractiveSaliences.add(attractiveSalience);
+				}
+				else
+				{
+					//salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
+					ISalience attractiveSalience = new Salience(salience.getValue(), salience.getModality(), salience.getPosition(), Ernest.ATTRACTIVENESS_OF_HARD);
+					attractiveSaliences.add(attractiveSalience);
+				}
+			}
+			else if (salience.getValue()== Ernest.STIMULATION_TOUCH_FISH.getValue())
+			{
+				// Attractiveness of touching a fish.
+				IBundle b = m_persistenceMemory.touchBundle(salience.getValue());
+				if (b != null)
+				{
+//					salience.setAttractiveness(b.getAttractiveness(clock));
+//					salience.setValue(b.getValue());
+					ISalience attractiveSalience = new Salience(b.getValue(), salience.getModality(), salience.getPosition(), b.getAttractiveness(clock));
+					attractiveSaliences.add(attractiveSalience);
+					// Place the bundle in the local space memory
+					m_localSpaceMemory.addPlace(b, salience.getPosition());					
+				}
+			}
+		}
+		return attractiveSaliences;
 	}
 	
 	/**
@@ -296,12 +364,12 @@ public class Spas implements ISpas
 					if (frontVisualSalience == null)
 					{
 						IBundle b = m_persistenceMemory.createTactoKinematicBundle(frontTactileValue, Ernest.STIMULATION_KINEMATIC_BUMP.getValue());
-						m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_AHEAD);
+						m_localSpaceMemory.addPlace(b, LocalSpaceMemory.DIRECTION_AHEAD);
 					}
 					else
 					{
 						IBundle b = m_persistenceMemory.addBundle(frontVisualSalience.getValue(), frontTactileValue, Ernest.STIMULATION_KINEMATIC_BUMP.getValue(), Ernest.STIMULATION_GUSTATORY_NOTHING.getValue());
-						m_localSpaceMemory.addLocation(b, LocalSpaceMemory.DIRECTION_AHEAD);
+						m_localSpaceMemory.addPlace(b, LocalSpaceMemory.DIRECTION_AHEAD);
 					}
 				}
 			}
@@ -345,7 +413,7 @@ public class Spas implements ISpas
 				if (frontTactileValue != Ernest.STIMULATION_TOUCH_EMPTY.getValue())		
 				{
 					IBundle bundle = m_persistenceMemory.createVisioTactileBundle(frontVisualSalience.getValue(), frontTactileValue);
-					m_localSpaceMemory.addLocation(bundle, LocalSpaceMemory.DIRECTION_AHEAD);
+					m_localSpaceMemory.addPlace(bundle, LocalSpaceMemory.DIRECTION_AHEAD);
 				}
 			}
 			else

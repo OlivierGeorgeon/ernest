@@ -23,7 +23,7 @@ public class LocalSpaceMemory
 	public static float LOCATION_RADIUS = 0.5f;
 	
 	/** The Local space structure. */
-	private List<IPlace> m_localSpace = new ArrayList<IPlace>();
+	private List<IPlace> m_places = new ArrayList<IPlace>();
 	
 	public final static float DIAG2D_PROJ = (float) (1/Math.sqrt(2));
 
@@ -41,7 +41,7 @@ public class LocalSpaceMemory
 
 	public void Trace(ITracer tracer)
 	{
-		if (tracer != null && !m_localSpace.isEmpty())
+		if (tracer != null && !m_places.isEmpty())
 		{
 			Object localSpace = tracer.addEventElement("local_space");
 			tracer.addSubelement(localSpace, "position_8", getHexColor(DIRECTION_HERE));
@@ -64,22 +64,22 @@ public class LocalSpaceMemory
 	 * @param position The initial position of this location.
 	 * @return The new or already existing location.
 	 */
-	public IPlace addLocation(IBundle bundle, Vector3f position)
+	public IPlace addPlace(IBundle bundle, Vector3f position)
 	{
 		// The initial position must be cloned so that 
 		// the position can be moved without changing the position used for intialization.
 		Vector3f p = new Vector3f(position);
 		
-		IPlace l = new place(bundle, p);
+		IPlace l = new Place(bundle, p);
 		
-		int i = m_localSpace.indexOf(l);
+		int i = m_places.indexOf(l);
 		if (i == -1)
 			// The location does not exist
-			m_localSpace.add(l);
+			m_places.add(l);
 		else 
 		{
 			// The location already exists: return a pointer to it.
-			l =  m_localSpace.get(i);
+			l =  m_places.get(i);
 			l.setBundle(bundle);
 		}
 		return l;
@@ -110,7 +110,7 @@ public class LocalSpaceMemory
 	 */
 	private void rotate(float angle)
 	{
-		for (IPlace l : m_localSpace)
+		for (IPlace l : m_places)
 		{
 			l.rotate(angle);
 		}		
@@ -123,10 +123,10 @@ public class LocalSpaceMemory
 	 */
 	private void translate(float distance)
 	{
-		for (IPlace l : m_localSpace)
+		for (IPlace l : m_places)
 			l.translate(distance);
 			
-		for (Iterator it = m_localSpace.iterator(); it.hasNext();)
+		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace l = (IPlace)it.next();
 			if (l.getPosition().x < - 1.5f)
@@ -137,10 +137,10 @@ public class LocalSpaceMemory
 	/**
 	 * Remove all locations from the local space.
 	 */
-	public void clear()
-	{
-		m_localSpace.clear();
-	}
+//	public void clear()
+//	{
+//		m_places.clear();
+//	}
 
 	/**
 	 * Get the bundle at a given position.
@@ -149,7 +149,7 @@ public class LocalSpaceMemory
 	 */
 	public IBundle getBundle(Vector3f position)
 	{
-		for (IPlace l : m_localSpace)
+		for (IPlace l : m_places)
 		{
 			if (l.isInCell(position))
 				return l.getBundle();
@@ -164,7 +164,7 @@ public class LocalSpaceMemory
 	 */
 	public void clearLocation(Vector3f position)
 	{
-		for (Iterator it = m_localSpace.iterator(); it.hasNext();)
+		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace l = (IPlace)it.next();
 			if (l.isInCell(position))
@@ -195,6 +195,11 @@ public class LocalSpaceMemory
 		if (b != null)
 			c = b.getValue();
 		return c;
+	}
+	
+	public List<IPlace> getPlaces()
+	{
+		return m_places;
 	}
 	
 	private String getHexColor(int rgb) 
