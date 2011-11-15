@@ -95,7 +95,7 @@ public class LocalSpaceMemory
 	{
 		if (act != null)
 		{
-			if (act.getSchema().getLabel().equals(">") && !Ernest.STIMULATION_KINEMATIC_BUMP.equals(kinematicStimulation))
+			if (act.getSchema().getLabel().equals(">") && kinematicStimulation.getValue() != Ernest.STIMULATION_KINEMATIC_BUMP)
 				translate(-1f);
 			else if (act.getSchema().getLabel().equals("^"))
 				rotate(- (float)Math.PI / 4);
@@ -189,7 +189,7 @@ public class LocalSpaceMemory
 	 */
 	public int getValue(Vector3f position)
 	{
-		int c = Ernest.STIMULATION_VISUAL_UNSEEN.getValue();
+		int c = Ernest.STIMULATION_VISUAL_UNSEEN;
 
 		IBundle b = getBundle(position);
 		if (b != null)

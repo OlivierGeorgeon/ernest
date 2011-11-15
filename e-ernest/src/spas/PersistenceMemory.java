@@ -86,7 +86,7 @@ public class PersistenceMemory
 			m_tracer.addSubelement(e, "stimulus_1", hexColor(visualValue));
 			m_tracer.addSubelement(e, "stimulus_0", hexColor(tactileValue));
 		}
-		return addBundle(visualValue, tactileValue, Ernest.STIMULATION_KINEMATIC_FORWARD.getValue(), Ernest.STIMULATION_GUSTATORY_NOTHING.getValue());
+		return addBundle(visualValue, tactileValue, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class PersistenceMemory
 			m_tracer.addSubelement(e, "stimulus_1", hexColor(gustatoryValue));
 			m_tracer.addSubelement(e, "stimulus_0", hexColor(tactileValue));
 		}
-		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN.getValue(), tactileValue, Ernest.STIMULATION_KINEMATIC_FORWARD.getValue(), gustatoryValue);
+		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileValue, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryValue);
 	}
 	/**
 	 * Create a bundle with a tactile and a gustatory stimulation.
@@ -119,7 +119,7 @@ public class PersistenceMemory
 			m_tracer.addSubelement(e, "stimulus_1", hexColor(tactileValue));
 			m_tracer.addSubelement(e, "stimulus_0", hexColor(kinematicValue));
 		}
-		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN.getValue(), tactileValue, kinematicValue, Ernest.STIMULATION_GUSTATORY_NOTHING.getValue());
+		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileValue, kinematicValue, Ernest.STIMULATION_GUSTATORY_NOTHING);
 	}
 	/**
 	 * Add a bundle to static memory if it does not already exist
@@ -201,7 +201,7 @@ public class PersistenceMemory
 	public int visualAttractiveness(int visualValue)
 	{
 		// Walls are never attractive
-		if (visualValue == Ernest.STIMULATION_VISUAL_WALL.getValue())
+		if (visualValue == Ernest.STIMULATION_VISUAL_WALL)
 			return 0;
 		
 		// Recognized bundles return their attractiveness (depends on time elapsed since last check)

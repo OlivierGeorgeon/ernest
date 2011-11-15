@@ -69,49 +69,60 @@ public class Ernest implements IErnest
 	public static int STIMULATION_FOOD = 2;
 	
 	/** Stimulation of seeing a regular wall  */
-	public static IStimulation STIMULATION_VISUAL_WALL = new Stimulation( MODALITY_VISUAL, 128 * 256 );
+	public static int STIMULATION_VISUAL_WALL = 128 * 256;
+	// public static IStimulation STIMULATION_VISUAL_WALL = new Stimulation( MODALITY_VISUAL, 128 * 256 );
 
 	/** Visual stimulation of touching an alga */
-	public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(MODALITY_VISUAL, 255 * 65536 + 255 * 256 + 255);
+	public static int STIMULATION_VISUAL_UNSEEN = 255 * 65536 + 255 * 256 + 255;
+	//public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(MODALITY_VISUAL, 255 * 65536 + 255 * 256 + 255);
 
 	/** Touch empty */
-	public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(MODALITY_TACTILE, 11842740); // 180 * 65536 + 180 * 256 + 180  = B4B4B4
+	public static int STIMULATION_TOUCH_EMPTY = 11842740;
+	//public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(MODALITY_TACTILE, 11842740); // 180 * 65536 + 180 * 256 + 180  = B4B4B4
 	
 	/** Touch soft */
-	public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 100);
+	public static int STIMULATION_TOUCH_SOFT = 100 * 65536 + 100 * 256 + 100;
+	//public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 100);
 	
 	/** Touch hard */
-	public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(MODALITY_TACTILE, 0);
+	public static int STIMULATION_TOUCH_WALL = 0;
+	//public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(MODALITY_TACTILE, 0);
 	
 	/** Touch fish */
-	public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 101);
+	public static int STIMULATION_TOUCH_FISH = 100 * 65536 + 100 * 256 + 101;
+	//public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 101);
 	
 	/** Kinematic Stimulation succeed */	
-	public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536 + 255 * 256 + 255);
+	public static int STIMULATION_KINEMATIC_FORWARD = 255 * 65536 + 255 * 256 + 255;
+	//public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536 + 255 * 256 + 255);
 
 	/** Kinematic Stimulations fail*/
-	public static IStimulation STIMULATION_KINEMATIC_BUMP = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536);
+	public static int STIMULATION_KINEMATIC_BUMP = 255 * 65536;
+	//public static IStimulation STIMULATION_KINEMATIC_BUMP = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536);
 		
 	/** Kinematic Stimulations turn left toward empty square */
-	public static IStimulation STIMULATION_KINEMATIC_LEFT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 2);
+	public static int STIMULATION_KINEMATIC_LEFT_EMPTY = 2;
+	//public static IStimulation STIMULATION_KINEMATIC_LEFT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 2);
 		
 	/** Kinematic Stimulations turn left toward wall */
-	public static IStimulation STIMULATION_KINEMATIC_LEFT_WALL = new Stimulation(STIMULATION_KINEMATIC, 3);
+	public static int STIMULATION_KINEMATIC_LEFT_WALL = 3;
+	//public static IStimulation STIMULATION_KINEMATIC_LEFT_WALL = new Stimulation(STIMULATION_KINEMATIC, 3);
 		
 	/** Kinematic Stimulations turn left toward empty square */
-	public static IStimulation STIMULATION_KINEMATIC_RIGHT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 4);
+	public static int STIMULATION_KINEMATIC_RIGHT_EMPTY = 4;
+	//public static IStimulation STIMULATION_KINEMATIC_RIGHT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 4);
 		
 	/** Kinematic Stimulations turn left toward wall */
-	public static IStimulation STIMULATION_KINEMATIC_RIGHT_WALL = new Stimulation(STIMULATION_KINEMATIC, 5);
+	public static int STIMULATION_KINEMATIC_RIGHT_WALL = 5;
+	//public static IStimulation STIMULATION_KINEMATIC_RIGHT_WALL = new Stimulation(STIMULATION_KINEMATIC, 5);
 		
 	/** Gustatory Stimulation nothing */	
-	public static IStimulation STIMULATION_GUSTATORY_NOTHING = new Stimulation(STIMULATION_GUSTATORY, 255 * 65536 + 255 * 256 + 255);
+	public static int STIMULATION_GUSTATORY_NOTHING = 255 * 65536 + 255 * 256 + 255;
+	//public static IStimulation STIMULATION_GUSTATORY_NOTHING = new Stimulation(STIMULATION_GUSTATORY, 255 * 65536 + 255 * 256 + 255);
 
 	/** Gustatory Stimulation fish */	
-	public static IStimulation STIMULATION_GUSTATORY_FISH = new Stimulation(STIMULATION_GUSTATORY, 255 * 65536 + 255 * 256);
-	
-	/** Circadian stimulation (daytime) */	
-	public static int STIMULATION_CIRCADIAN_DAY = 0;
+	public static int STIMULATION_GUSTATORY_FISH = 255 * 65536 + 255 * 256;
+	//public static IStimulation STIMULATION_GUSTATORY_FISH = new Stimulation(STIMULATION_GUSTATORY, 255 * 65536 + 255 * 256);
 	
 	/** Ernest's primitive schema currently enacted */
 	private IAct m_primitiveAct = null;

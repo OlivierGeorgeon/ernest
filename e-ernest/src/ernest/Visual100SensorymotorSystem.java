@@ -193,7 +193,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Gustatory
 		
-		if (Ernest.STIMULATION_GUSTATORY_FISH.equals(newObservation.getGustatoryStimulation()))
+		if (newObservation.getGustatoryStimulation().getValue() == Ernest.STIMULATION_GUSTATORY_FISH)
 		{
 			dynamicFeature = "e";
 			satisfaction = 100;
@@ -204,7 +204,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		// Kinematic
 		
 		boolean status = true;
-		if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(newObservation.getKinematicStimulation())) 
+		if (newObservation.getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_BUMP) 
 			status = false;
 		
 		dynamicFeature = (status ? " " : "w") + dynamicFeature;
