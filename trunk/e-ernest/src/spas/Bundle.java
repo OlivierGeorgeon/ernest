@@ -33,21 +33,13 @@ public class Bundle implements IBundle {
 	public int getValue()
 	{
 		int value = 0;
-		if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN.getValue())
+		if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN)
 			value = m_tactileValue;
 		else 
 			value = m_visualValue;
 		
 		return value;
 	}
-	
-//	public String getHexColor() 
-//	{
-//		if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN.getValue())
-//			return hexColor(m_tactileValue);
-//		else 
-//			return hexColor(m_visualValue);
-//	}
 	
 	public int getVisualValue() 
 	{
@@ -99,11 +91,11 @@ public class Bundle implements IBundle {
 	public int getAttractiveness(int clock) 
 	{
 		// If the bundle has a kinematic stimulation of bump.
-		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP.getValue())
+		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
 			return Ernest.ATTRACTIVENESS_OF_BUMP;
 
 		// If the bundle has a tactile stimulation of hard.
-		if (m_tactileValue == Ernest.STIMULATION_TOUCH_WALL.getValue())
+		if (m_tactileValue == Ernest.STIMULATION_TOUCH_WALL)
 			return Ernest.ATTRACTIVENESS_OF_HARD - 10; // prefer a bundle salience than a mere touch salience.
 
 		// The bundle of touching a fish
@@ -111,9 +103,9 @@ public class Bundle implements IBundle {
 		//	return Ernest.ATTRACTIVENESS_OF_FISH + 10;
 		
 		// If the bundle has a gustatory stimulation of fish 
-		else if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH.getValue())
+		else if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
 		{
-			if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN.getValue())
+			if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN)
 				// Fish that are touched are more attractive 
 				return Ernest.ATTRACTIVENESS_OF_FISH + 10;
 			else
@@ -163,7 +155,7 @@ public class Bundle implements IBundle {
 		tracer.addSubelement(element, "visual", hexColor(m_visualValue));
 		
 		// Only trace fish gustatory stimulations.
-		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH.getValue())
+		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
 			tracer.addSubelement(element, "gustatory", hexColor(m_gustatoryValue));
 		else
 			tracer.addSubelement(element, "gustatory", hexColor(m_visualValue));
@@ -172,7 +164,7 @@ public class Bundle implements IBundle {
 		tracer.addSubelement(element, "tactile", hexColor(m_tactileValue));
 
 		// Only trace bump kinematic stimulation.
-		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP.getValue())
+		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
 			tracer.addSubelement(element, "kinematic", hexColor(m_kinematicValue));
 		else
 			tracer.addSubelement(element, "kinematic", hexColor(m_tactileValue));
