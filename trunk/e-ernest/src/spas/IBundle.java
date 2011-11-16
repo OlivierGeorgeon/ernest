@@ -65,7 +65,8 @@ public interface IBundle
 	 * @param clock Ernest's current clock value.
 	 * @return This bundle's attractiveness at the given time.
 	 */
-	int getAttractiveness(int clock);
+	int getExtrapersonalAttractiveness(int clock);
+	int getPeripersonalAttractiveness(int clock);
 
 	/**
 	 * Updating the bundle's time value will impact its attractiveness (bundles remain unattractive for a while after being checked)

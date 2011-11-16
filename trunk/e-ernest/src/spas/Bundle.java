@@ -81,14 +81,39 @@ public class Bundle implements IBundle {
 	}
 
 	/**
+	 * Get the attractiveness of object in the extrapersonal space (out of reach by touch).
 	 * ATTRACTIVENESS_OF_FISH (400) if this bundle's gustatory stimulation is STIMULATION_TASTE_FISH.
-	 * ATTRACTIVENESS_OF_FISH + 10 (410) if the fish is touched.
-	 * Otherwise ATTRACTIVENESS_OF_UNKNOWN (200) if this bundle has been forgotten,
-	 * or 0 if this bundle has just been visited.
+	 * ATTRACTIVENESS_OF_UNKNOWN (200) if this bundle has been forgotten,
+	 * ATTRACTIVENESS_OF_BACKGROUND (0) if this bundle is known and not fish.
 	 * @param clock Ernest's current clock value.
 	 * @return This bundle's attractiveness at the given time.
 	 */
-	public int getAttractiveness(int clock) 
+	public int getExtrapersonalAttractiveness(int clock) 
+	{
+
+		// If the bundle has a gustatory stimulation of fish 
+		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
+			return Ernest.ATTRACTIVENESS_OF_FISH;	
+		
+		// if the bundle is forgotten
+		if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
+			return Ernest.ATTRACTIVENESS_OF_UNKNOWN ;
+
+		// if the bundle is known and not fish.
+		return Ernest.ATTRACTIVENESS_OF_BACKGROUND;
+	}
+
+	/**
+	 * Get the attractiveness of object in the peripersonal space (within the reach of touch).
+	 * ATTRACTIVENESS_OF_BUMP (-500) if the bundle has a kinematic stimulation of bump.
+	 * ATTRACTIVENESS_OF_HARD - 10 (-210) if the bundle is hard but not yet bump.  
+	 * ATTRACTIVENESS_OF_FISH + 10 (410) if this bundle's gustatory stimulation is STIMULATION_TASTE_FISH.
+	 * ATTRACTIVENESS_OF_UNKNOWN (200) if this bundle has been forgotten,
+	 * ATTRACTIVENESS_OF_BACKGROUND (0) otherwise.
+	 * @param clock Ernest's current clock value.
+	 * @return This bundle's attractiveness at the given time.
+	 */
+	public int getPeripersonalAttractiveness(int clock) 
 	{
 		// If the bundle has a kinematic stimulation of bump.
 		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
@@ -98,25 +123,17 @@ public class Bundle implements IBundle {
 		if (m_tactileValue == Ernest.STIMULATION_TOUCH_WALL)
 			return Ernest.ATTRACTIVENESS_OF_HARD - 10; // prefer a bundle salience than a mere touch salience.
 
-		// The bundle of touching a fish
-		//if (m_visualStimulation.equals(PersistenceSystem.BUNDLE_GRAY_FISH.getVisualStimulation()))
-		//	return Ernest.ATTRACTIVENESS_OF_FISH + 10;
-		
 		// If the bundle has a gustatory stimulation of fish 
-		else if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
-		{
-			if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN)
-				// Fish that are touched are more attractive 
-				return Ernest.ATTRACTIVENESS_OF_FISH + 10;
-			else
-				return Ernest.ATTRACTIVENESS_OF_FISH;
-		}
+		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
+			// Fish that are touched are more attractive 
+			return Ernest.ATTRACTIVENESS_OF_FISH + 10;
 		
-		else if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
+		// if the bundle was forgotten
+		if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)
 			return Ernest.ATTRACTIVENESS_OF_UNKNOWN ;
-		
-		else
-			return 0;
+	
+		// If the bundle is not a wall nor a fish nor unknown
+		return Ernest.ATTRACTIVENESS_OF_BACKGROUND;
 	}
 
 	/**
