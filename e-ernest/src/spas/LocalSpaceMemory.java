@@ -21,6 +21,7 @@ public class LocalSpaceMemory
 	
 	/** The radius of a location. */
 	public static float LOCATION_RADIUS = 0.5f;
+	public static float LOCAL_SPACE_MEMORY_RADIUS = 2f;
 	
 	/** The Local space structure. */
 	private List<IPlace> m_places = new ArrayList<IPlace>();
@@ -129,19 +130,11 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace l = (IPlace)it.next();
-			if (l.getPosition().x < - 1.5f)
+			if (l.getPosition().x < - LOCAL_SPACE_MEMORY_RADIUS)
 				it.remove();
 		}		
 	}
 	
-	/**
-	 * Remove all locations from the local space.
-	 */
-//	public void clear()
-//	{
-//		m_places.clear();
-//	}
-
 	/**
 	 * Get the bundle at a given position.
 	 * @param position The position of the location.
@@ -178,23 +171,31 @@ public class LocalSpaceMemory
 	 */
 	public String getHexColor(Vector3f position) 
 	{
-		return getHexColor(getValue(position));
+		int value = getValue(position);
+		if (value == Ernest.STIMULATION_VISUAL_UNSEEN)
+		{
+			Vector3f farPosition = new Vector3f(position);
+			farPosition.scale(2f);
+			value = getValue(farPosition);
+		}
+		return getHexColor(value);
+		//return getHexColor(getValue(position));
 	}
 
 	/**
-	 * Get the value of the main bundle in a given position.
-	 * or STIMULATION_VISUAL_UNSEEN in no bundle.
+	 * Get the value of the first bundle found in a given position.
+	 * or STIMULATION_VISUAL_UNSEEN if no bundle found in that position.
 	 * @param position The position.
 	 * @return The value.
 	 */
 	public int getValue(Vector3f position)
 	{
-		int c = Ernest.STIMULATION_VISUAL_UNSEEN;
+		int value = Ernest.STIMULATION_VISUAL_UNSEEN;
 
 		IBundle b = getBundle(position);
 		if (b != null)
-			c = b.getValue();
-		return c;
+			value = b.getValue();
+		return value;
 	}
 	
 	public List<IPlace> getPlaces()
