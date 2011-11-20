@@ -2,6 +2,7 @@ package imos;
 
 import ernest.ITracer;
 
+
 /**
  * The Intrinsically Motivated Schema mechanism.
  * @author ogeorgeon

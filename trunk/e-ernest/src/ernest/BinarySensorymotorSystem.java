@@ -1,14 +1,10 @@
 package ernest;
 
-import imos.EpisodicMemory;
+import spas.ISpas;
 import imos.IAct;
 import imos.IImos;
-import imos.ISchema;
 
-import java.awt.Color;
 
-import spas.ISpas;
-import spas.PersistenceMemory;
 
 
 /**
@@ -19,9 +15,9 @@ import spas.PersistenceMemory;
  */
 public class BinarySensorymotorSystem implements ISensorymotorSystem 
 {
-	protected ISpas m_spas;
 	protected IImos m_imos;
 	protected ITracer m_tracer;
+	protected spas.ISpas m_spas;
 
 	public void init(ISpas spas, IImos imos, ITracer tracer)
 	{

@@ -1,6 +1,7 @@
 package imos;
 
 
+
 /**
  * Represents a proposal for enacting a Schema. 
  * A proposal consists of the proposed schema, 

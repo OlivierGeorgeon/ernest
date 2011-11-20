@@ -1,6 +1,7 @@
 package imos;
 
 
+
 /**
  * A proposal that Ernest enacts a schema.  A proposal consists of 
  * the proposed schema and a weight that determines the strength of the proposal.
