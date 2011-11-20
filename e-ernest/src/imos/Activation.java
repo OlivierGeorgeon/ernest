@@ -1,6 +1,7 @@
 package imos;
 
 
+
 /**
  * An activation consists of the activated act and a weight that determines the strength of the activation.
  * Primitive acts that receive the highest summarized activation weight are selected for enaction. 

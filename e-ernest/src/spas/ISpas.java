@@ -1,12 +1,11 @@
 package spas;
 
+import imos.IAct;
+
 import java.util.ArrayList;
 
-import javax.vecmath.Vector3f;
-
 import ernest.ITracer;
-import spas.IStimulation;
-import imos.IAct;
+
 
 
 /**

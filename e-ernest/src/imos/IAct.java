@@ -1,6 +1,8 @@
 package imos;
 
 
+
+
 /**
  * An act is the association of a schema with the feedback the agent receives 
  * when trying to enact that schema.    

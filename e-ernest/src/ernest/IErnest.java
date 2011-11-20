@@ -1,8 +1,9 @@
 package ernest;
 
+import imos.IAct;
+
 import java.util.ArrayList;
 
-import imos.IAct;
 import spas.IObservation;
 import spas.ISalience;
 

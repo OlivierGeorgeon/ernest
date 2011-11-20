@@ -1,5 +1,6 @@
 package spas;
 
+
 import imos.IAct;
 
 import java.util.ArrayList;
@@ -130,7 +131,8 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace l = (IPlace)it.next();
-			if (l.getPosition().x < - LOCAL_SPACE_MEMORY_RADIUS)
+			if (l.getPosition().length() > LOCAL_SPACE_MEMORY_RADIUS)
+			//if (l.getPosition().x < - LOCAL_SPACE_MEMORY_RADIUS)
 				it.remove();
 		}		
 	}
@@ -176,6 +178,8 @@ public class LocalSpaceMemory
 		{
 			Vector3f farPosition = new Vector3f(position);
 			farPosition.scale(2f);
+			//Vector3f farPosition = new Vector3f();
+			//farPosition.scale(2f, position);
 			value = getValue(farPosition);
 		}
 		return getHexColor(value);

@@ -1,11 +1,12 @@
 package spas;
 
+import imos.IAct;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Vector3f;
 
-import imos.IAct;
 import ernest.Ernest;
 import ernest.ITracer;
 
@@ -160,8 +161,6 @@ public class Spas implements ISpas
 				// Record the previous salience
 				ISalience salience = new Salience(stimulation.getValue(), Ernest.MODALITY_VISUAL, sumDirection / span, 1, spanf);
 				saliences.add(salience);
-//				if (i > 6 && span >= i - 5 && span > 2)
-//					m_frontVisualSalience = salience;
 				// look for the next salience
 				stimulation = visualStimulations[i];
 				span = 1;
@@ -172,8 +171,6 @@ public class Spas implements ISpas
 		// record the last salience
 		ISalience last = new Salience(stimulation.getValue(),  Ernest.MODALITY_VISUAL, sumDirection / span, 1, spanf);
 		saliences.add(last);
-//		if (span > 6)
-//			m_frontVisualSalience = last;
 	
 		// Tactile saliences =====
 		
@@ -208,9 +205,6 @@ public class Spas implements ISpas
 		ISalience salience = new Salience(tactileStimulation.getValue(),  Ernest.MODALITY_TACTILE, sumDirection / span, 1, spanf);
 		saliences.add(salience);
 		
-		// Saliences from Local space memory ====
-		
-
 	   return saliences;
    }
 
@@ -280,62 +274,6 @@ public class Spas implements ISpas
 		}
 	}
 	
-	/**
-	 * Set the attractiveness of the saliences in the list of saliences.
-	 */
-//	private List<ISalience> attractiveSaliences(List<ISalience> salienceList)
-//	{
-//		List<ISalience> attractiveSaliences = new ArrayList<ISalience>();
-//
-//		int clock = m_persistenceMemory.getClock();
-//		for (ISalience salience : salienceList)
-//		{
-//			if (salience.getModality() == Ernest.MODALITY_VISUAL)
-//			{
-//				// Attractiveness of visual saliences.
-//				IBundle b = m_persistenceMemory.seeBundle(salience.getValue());
-//				//salience.setAttractiveness(m_persistenceMemory.visualAttractiveness(salience.getValue()) + (int)(5 * salience.getSpan() / ((float)Math.PI / 12)));
-//				int attractiveness = m_persistenceMemory.visualAttractiveness(salience.getValue()) + (int)(5 * salience.getSpan() / ((float)Math.PI / 12));
-//				ISalience attractiveSalience = new Salience(salience.getValue(), salience.getModality(), salience.getPosition(), attractiveness);
-//				attractiveSaliences.add(attractiveSalience);
-//			}
-//			else if (salience.isFrontal() && salience.getValue()== Ernest.STIMULATION_TOUCH_WALL)
-//			{
-//				// Attractiveness of touching a wall.
-//				IBundle b = m_persistenceMemory.touchBundle(salience.getValue());
-//				if (b != null)
-//				{
-//					//salience.setBundle(b);
-////					salience.setAttractiveness(b.getAttractiveness(clock));
-////					salience.setValue(b.getValue());
-//					ISalience attractiveSalience = new Salience(b.getValue(), salience.getModality(), salience.getPosition(), b.getPeripersonalAttractiveness(clock));
-//					attractiveSaliences.add(attractiveSalience);
-//				}
-//				else
-//				{
-//					//salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_HARD);
-//					ISalience attractiveSalience = new Salience(salience.getValue(), salience.getModality(), salience.getPosition(), Ernest.ATTRACTIVENESS_OF_HARD);
-//					attractiveSaliences.add(attractiveSalience);
-//				}
-//			}
-//			else if (salience.getValue()== Ernest.STIMULATION_TOUCH_FISH)
-//			{
-//				// Attractiveness of touching a fish.
-//				IBundle b = m_persistenceMemory.touchBundle(salience.getValue());
-//				if (b != null)
-//				{
-////					salience.setAttractiveness(b.getAttractiveness(clock));
-////					salience.setValue(b.getValue());
-//					ISalience attractiveSalience = new Salience(b.getValue(), salience.getModality(), salience.getPosition(), b.getPeripersonalAttractiveness(clock));
-//					attractiveSaliences.add(attractiveSalience);
-//					// Place the bundle in the local space memory
-//					m_localSpaceMemory.addPlace(b, salience.getPosition());					
-//				}
-//			}
-//		}
-//		return attractiveSaliences;
-//	}
-//	
 	/**
 	 * Create new bundles based on cooccurrences of stimulations.
 	 * Place the new bundles in the local space map.
@@ -436,14 +374,35 @@ public class Spas implements ISpas
 	private void adjustLocalSpaceMemory(IStimulation[] tactileStimulations)
 	{
 
-		// Check the front 
-		IBundle frontBundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
-		if (frontBundle != null && frontBundle.getTactileValue() != tactileStimulations[3].getValue())
+		// Check right
+		IBundle bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_RIGHT);
+//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[1].getValue())
+//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_RIGHT);
+//
+//		// Check ahead right
+//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
+//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[2].getValue())
+//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
+
+		// Check ahead 
+		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[3].getValue())
 			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD);
 
+		// Check ahead left
+//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
+//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[4].getValue())
+//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
+//
+//		// Check left
+//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_LEFT);
+//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[5].getValue())
+//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_LEFT);
+
 		// Check here
-		IBundle hereBundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_HERE);
-		if (hereBundle != null && hereBundle.getTactileValue() != tactileStimulations[8].getValue())
+		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_HERE);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
 			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_HERE);
+
 	}
 }

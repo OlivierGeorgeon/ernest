@@ -1,6 +1,8 @@
 package imos;
 
 
+
+
 /**
  * A Schema is a sequence of interaction between Ernest and its environment.
  * Primitive schemas represent a single interaction step.

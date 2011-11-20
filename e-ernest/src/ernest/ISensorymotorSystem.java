@@ -1,8 +1,9 @@
 package ernest;
 
+import spas.ISpas;
 import imos.IAct;
 import imos.IImos;
-import spas.ISpas;
+
 
 
 /**
