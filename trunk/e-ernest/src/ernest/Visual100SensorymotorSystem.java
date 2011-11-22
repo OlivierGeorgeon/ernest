@@ -194,7 +194,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		// Gustatory
 		
-		if (newObservation.getGustatoryStimulation().getValue() == Ernest.STIMULATION_GUSTATORY_FISH)
+		if (newObservation.getGustatoryStimulation().getValue() != Ernest.STIMULATION_GUSTATORY_NOTHING)
 		{
 			dynamicFeature = "e";
 			satisfaction = 100;

@@ -95,11 +95,15 @@ public class Bundle implements IBundle {
 		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
 			return Ernest.ATTRACTIVENESS_OF_FISH;	
 		
+		// If the bundle has a gustatory stimulation of cuddle 
+		if (m_gustatoryValue == Ernest.STIMULATION_SOCIAL_CUDDLE)
+			return Ernest.ATTRACTIVENESS_OF_CUDDLE;	
+		
 		// if the bundle is forgotten
 		if (clock - m_lastTimeBundled > Ernest.PERSISTENCE)// && !m_visualStimulation.getColor().equals(Ernest.COLOR_WALL))
 			return Ernest.ATTRACTIVENESS_OF_UNKNOWN ;
 
-		// if the bundle is known and not fish.
+		// if the bundle is known and not fish and not cuddle.
 		return Ernest.ATTRACTIVENESS_OF_BACKGROUND;
 	}
 

@@ -157,7 +157,7 @@ public class LocalSpaceMemory
 	 * Clear a location in the local space memory.
 	 * @param position The position to clear.
 	 */
-	public void clearLocation(Vector3f position)
+	public void clearPlace(Vector3f position)
 	{
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
