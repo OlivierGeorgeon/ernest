@@ -89,6 +89,9 @@ public class Ernest implements IErnest
 	/** Touch fish */
 	public static int STIMULATION_TOUCH_FISH = 0x646465;//100 * 65536 + 100 * 256 + 101;
 	
+	/** Touch other agent */
+	public static int STIMULATION_TOUCH_AGENT = 0x646466;
+	
 	/** Kinematic Stimulation move forward */	
 	public static int STIMULATION_KINEMATIC_FORWARD = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
 
