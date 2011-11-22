@@ -324,7 +324,7 @@ public class Spas implements ISpas
 			// Discrete environment. The fish bundle is the hereBundle.
 			if (hereBundle == null)
 			{
-				IBundle bundle = m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, gustatoryValue);
+				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, gustatoryValue);
 			}
 			else if (hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
 			{
@@ -333,24 +333,31 @@ public class Spas implements ISpas
 			}
 			
 			// Continuous environment. The fish bundle is the frontBundle
-			if (frontBundle == null) // Continuous environment. 
+			if (frontTactileValue == Ernest.STIMULATION_TOUCH_FISH)
 			{
-				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, gustatoryValue);
-			}
-			else if (frontTactileValue == Ernest.STIMULATION_TOUCH_FISH)
-			{
-				m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
-				m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
+				if (frontBundle == null) // Continuous environment. 
+				{
+					IBundle bundle = m_persistenceMemory.createTactoGustatoryBundle(frontTactileValue, gustatoryValue);
+					if (frontVisualSalience != null )
+						m_persistenceMemory.addVisualValue(bundle, frontVisualSalience.getValue());
+				}
+				else if (frontBundle.getTactileValue() == frontTactileValue)
+				{
+					m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
+					m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
+				}
 			}
 		}
 		
-		// Associate the tactile stimulation with the gustatory stimulation
+		// Associate the tactile stimulation with the social stimulation
 		
-		if (gustatoryValue == Ernest.STIMULATION_SOCIAL_CUDDLE)
+		if (gustatoryValue == Ernest.STIMULATION_SOCIAL_CUDDLE && frontTactileValue == Ernest.STIMULATION_TOUCH_AGENT)
 		{
 			if (frontBundle == null) // Continuous environment. 
 			{
 				IBundle bundle = m_persistenceMemory.createTactoGustatoryBundle(frontTactileValue, gustatoryValue);
+				if (frontVisualSalience != null )
+					m_persistenceMemory.addVisualValue(bundle, frontVisualSalience.getValue());
 				m_localSpaceMemory.addPlace(bundle, LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (frontBundle.getTactileValue() == frontTactileValue)

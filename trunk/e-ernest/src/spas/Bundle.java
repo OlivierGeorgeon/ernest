@@ -119,6 +119,10 @@ public class Bundle implements IBundle {
 	 */
 	public int getPeripersonalAttractiveness(int clock) 
 	{
+		// If the bundle has a gustatory stimulation of cuddle 
+		if (m_gustatoryValue == Ernest.STIMULATION_SOCIAL_CUDDLE)
+			return Ernest.ATTRACTIVENESS_OF_CUDDLE;	
+		
 		// If the bundle has a kinematic stimulation of bump.
 		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
 			return Ernest.ATTRACTIVENESS_OF_BUMP;
