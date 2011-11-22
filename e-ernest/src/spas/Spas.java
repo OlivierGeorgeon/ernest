@@ -324,23 +324,37 @@ public class Spas implements ISpas
 			// Discrete environment. The fish bundle is the hereBundle.
 			if (hereBundle == null)
 			{
-				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);
+				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, gustatoryValue);
 			}
 			else if (hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
 			{
 				m_persistenceMemory.addGustatoryValue(hereBundle, gustatoryValue);
-				m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_HERE);
+				m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_HERE); // The fish is eaten
 			}
 			
 			// Continuous environment. The fish bundle is the frontBundle
 			if (frontBundle == null) // Continuous environment. 
 			{
-				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, Ernest.STIMULATION_GUSTATORY_FISH);
+				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, gustatoryValue);
 			}
-			else if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
+			else if (frontTactileValue == Ernest.STIMULATION_TOUCH_FISH)
 			{
 				m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
-				m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD);
+				m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
+			}
+		}
+		
+		// Associate the tactile stimulation with the gustatory stimulation
+		
+		if (gustatoryValue == Ernest.STIMULATION_SOCIAL_CUDDLE)
+		{
+			if (frontBundle == null) // Continuous environment. 
+			{
+				m_persistenceMemory.createTactoGustatoryBundle(frontTactileValue, gustatoryValue);
+			}
+			else if (frontBundle.getTactileValue() == frontTactileValue)
+			{
+				m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
 			}
 		}
 		
@@ -358,12 +372,14 @@ public class Spas implements ISpas
 			}
 			else
 			{
-//				m_persistenceMemory.addVisualStimulation(frontBundle, frontVisualStimulation);
-				//m_localSpaceMemory.addLocation(frontBundle, LocalSpaceMemory.DIRECTION_AHEAD);
+				if (frontTactileValue == frontBundle.getTactileValue())
+				{
+					m_persistenceMemory.addVisualValue(frontBundle, frontVisualSalience.getValue());
+					m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD);
+					m_localSpaceMemory.addPlace(frontBundle, LocalSpaceMemory.DIRECTION_AHEAD);
+				}
 			}
 		}
-//		frontVisualStimulation = null;	
-		
 	}
 	
 	/**
@@ -377,32 +393,32 @@ public class Spas implements ISpas
 		// Check right
 		IBundle bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_RIGHT);
 //		if (bundle != null && bundle.getTactileValue() != tactileStimulations[1].getValue())
-//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_RIGHT);
+//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_RIGHT);
 //
 //		// Check ahead right
 //		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
 //		if (bundle != null && bundle.getTactileValue() != tactileStimulations[2].getValue())
-//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
+//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
 
 		// Check ahead 
 		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
 		if (bundle != null && bundle.getTactileValue() != tactileStimulations[3].getValue())
-			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD);
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD);
 
 		// Check ahead left
 //		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
 //		if (bundle != null && bundle.getTactileValue() != tactileStimulations[4].getValue())
-//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
+//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
 //
 //		// Check left
 //		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_LEFT);
 //		if (bundle != null && bundle.getTactileValue() != tactileStimulations[5].getValue())
-//			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_LEFT);
+//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_LEFT);
 
 		// Check here
 		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_HERE);
 		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
-			m_localSpaceMemory.clearLocation(LocalSpaceMemory.DIRECTION_HERE);
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_HERE);
 
 	}
 }

@@ -41,7 +41,10 @@ public class Ernest implements IErnest
 	/** 400 Top attractiveness of bundles that are edible  */
 	public static int ATTRACTIVENESS_OF_FISH  =  400;
 	
-	/** -500 Attractiveness of bumping in a wall  */
+	/** 300 Top attractiveness of cuddling another fish  */
+	public static int ATTRACTIVENESS_OF_CUDDLE  =  300;
+	
+	/** -350 Attractiveness of bumping in a wall  */
 	public static int ATTRACTIVENESS_OF_BUMP  =  -350;//-500;
 	
 	/** -200 Attractiveness of hard  */
@@ -71,61 +74,50 @@ public class Ernest implements IErnest
 	/** The taste of food */
 	public static int STIMULATION_FOOD = 2;
 	
-	/** Stimulation of seeing a regular wall  */
-	//public static int STIMULATION_VISUAL_WALL = 0x008000;//128 * 256;
-	// public static IStimulation STIMULATION_VISUAL_WALL = new Stimulation( MODALITY_VISUAL, 128 * 256 );
-
 	/** Visual stimulation of seeing nothing */
 	public static int STIMULATION_VISUAL_UNSEEN = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
-	//public static IStimulation STIMULATION_VISUAL_UNSEEN = new Stimulation(MODALITY_VISUAL, 255 * 65536 + 255 * 256 + 255);
 
 	/** Touch empty */
 	public static int STIMULATION_TOUCH_EMPTY = 0xB4B4B4;//11842740;
-	//public static IStimulation STIMULATION_TOUCH_EMPTY = new Stimulation(MODALITY_TACTILE, 11842740); // 180 * 65536 + 180 * 256 + 180  = B4B4B4
 	
 	/** Touch soft */
 	public static int STIMULATION_TOUCH_SOFT = 0x646464;//100 * 65536 + 100 * 256 + 100;
-	//public static IStimulation STIMULATION_TOUCH_SOFT = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 100);
 	
 	/** Touch hard */
 	public static int STIMULATION_TOUCH_WALL = 0x000000;
-	//public static IStimulation STIMULATION_TOUCH_WALL = new Stimulation(MODALITY_TACTILE, 0);
 	
 	/** Touch fish */
 	public static int STIMULATION_TOUCH_FISH = 0x646465;//100 * 65536 + 100 * 256 + 101;
-	//public static IStimulation STIMULATION_TOUCH_FISH = new Stimulation(MODALITY_TACTILE, 100 * 65536 + 100 * 256 + 101);
 	
-	/** Kinematic Stimulation succeed */	
+	/** Kinematic Stimulation move forward */	
 	public static int STIMULATION_KINEMATIC_FORWARD = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
-	//public static IStimulation STIMULATION_KINEMATIC_FORWARD = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536 + 255 * 256 + 255);
 
-	/** Kinematic Stimulations fail*/
+	/** Kinematic Stimulations bump */
 	public static int STIMULATION_KINEMATIC_BUMP = 0xFF0000;//255 * 65536;
-	//public static IStimulation STIMULATION_KINEMATIC_BUMP = new Stimulation(STIMULATION_KINEMATIC, 255 * 65536);
 		
 	/** Kinematic Stimulations turn left toward empty square */
 	public static int STIMULATION_KINEMATIC_LEFT_EMPTY = 2;
-	//public static IStimulation STIMULATION_KINEMATIC_LEFT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 2);
 		
 	/** Kinematic Stimulations turn left toward wall */
 	public static int STIMULATION_KINEMATIC_LEFT_WALL = 3;
-	//public static IStimulation STIMULATION_KINEMATIC_LEFT_WALL = new Stimulation(STIMULATION_KINEMATIC, 3);
 		
-	/** Kinematic Stimulations turn left toward empty square */
+	/** Kinematic Stimulations turn right toward empty square */
 	public static int STIMULATION_KINEMATIC_RIGHT_EMPTY = 4;
-	//public static IStimulation STIMULATION_KINEMATIC_RIGHT_EMPTY = new Stimulation(STIMULATION_KINEMATIC, 4);
 		
-	/** Kinematic Stimulations turn left toward wall */
+	/** Kinematic Stimulations turn right toward wall */
 	public static int STIMULATION_KINEMATIC_RIGHT_WALL = 5;
-	//public static IStimulation STIMULATION_KINEMATIC_RIGHT_WALL = new Stimulation(STIMULATION_KINEMATIC, 5);
 		
 	/** Gustatory Stimulation nothing */	
 	public static int STIMULATION_GUSTATORY_NOTHING = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
-	//public static IStimulation STIMULATION_GUSTATORY_NOTHING = new Stimulation(STIMULATION_GUSTATORY, 255 * 65536 + 255 * 256 + 255);
 
 	/** Gustatory Stimulation fish */	
 	public static int STIMULATION_GUSTATORY_FISH = 0xFFFF00;//255 * 65536 + 255 * 256;
-	//public static IStimulation STIMULATION_GUSTATORY_FISH = new Stimulation(STIMULATION_GUSTATORY, 255 * 65536 + 255 * 256);
+	
+	/** Social Stimulation cuddle */	
+	public static int STIMULATION_SOCIAL_CUDDLE = 0xFF00FF;
+	
+	/** Social Stimulation nothing */	
+	public static int STIMULATION_SOCIAL_NOTHING = 0x000000;
 	
 	/** Ernest's primitive schema currently enacted */
 	private IAct m_primitiveAct = null;
