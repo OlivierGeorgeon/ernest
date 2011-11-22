@@ -114,7 +114,7 @@ public class Ernest implements IErnest
 	public static int STIMULATION_GUSTATORY_FISH = 0xFFFF00;//255 * 65536 + 255 * 256;
 	
 	/** Social Stimulation cuddle */	
-	public static int STIMULATION_SOCIAL_CUDDLE = 0xFF00FF;
+	public static int STIMULATION_SOCIAL_CUDDLE = 0xFF8080;
 	
 	/** Social Stimulation nothing */	
 	public static int STIMULATION_SOCIAL_NOTHING = 0x000000;
