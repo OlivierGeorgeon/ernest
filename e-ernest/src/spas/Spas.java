@@ -324,7 +324,7 @@ public class Spas implements ISpas
 			// Discrete environment. The fish bundle is the hereBundle.
 			if (hereBundle == null)
 			{
-				m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, gustatoryValue);
+				IBundle bundle = m_persistenceMemory.createTactoGustatoryBundle(Ernest.STIMULATION_TOUCH_FISH, gustatoryValue);
 			}
 			else if (hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
 			{
@@ -350,7 +350,8 @@ public class Spas implements ISpas
 		{
 			if (frontBundle == null) // Continuous environment. 
 			{
-				m_persistenceMemory.createTactoGustatoryBundle(frontTactileValue, gustatoryValue);
+				IBundle bundle = m_persistenceMemory.createTactoGustatoryBundle(frontTactileValue, gustatoryValue);
+				m_localSpaceMemory.addPlace(bundle, LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (frontBundle.getTactileValue() == frontTactileValue)
 			{
@@ -375,8 +376,6 @@ public class Spas implements ISpas
 				if (frontTactileValue == frontBundle.getTactileValue())
 				{
 					m_persistenceMemory.addVisualValue(frontBundle, frontVisualSalience.getValue());
-					m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD);
-					m_localSpaceMemory.addPlace(frontBundle, LocalSpaceMemory.DIRECTION_AHEAD);
 				}
 			}
 		}

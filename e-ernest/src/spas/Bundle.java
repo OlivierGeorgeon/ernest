@@ -175,8 +175,8 @@ public class Bundle implements IBundle {
 		// Visual stimulation
 		tracer.addSubelement(element, "visual", hexColor(m_visualValue));
 		
-		// Only trace fish gustatory stimulations.
-		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
+		// Trace gustatory stimulation if not nothing.
+		if (m_gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
 			tracer.addSubelement(element, "gustatory", hexColor(m_gustatoryValue));
 		else
 			tracer.addSubelement(element, "gustatory", hexColor(m_visualValue));
