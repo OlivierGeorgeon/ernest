@@ -150,7 +150,8 @@ public class PersistenceMemory
 	
 	public void addVisualValue(IBundle bundle, int visualValue)
 	{
-		if (bundle.getVisualValue() != visualValue)
+		// TODO Possibly change the visual value of an existing bundle.
+		if (bundle.getVisualValue() == Ernest.STIMULATION_VISUAL_UNSEEN)
 		{
 			bundle.setVisualValue(visualValue);
 			if (m_tracer != null)
@@ -164,7 +165,8 @@ public class PersistenceMemory
 	
 	public void addKinematicValue(IBundle bundle, int kinematiValue)
 	{
-		if (bundle.getKinematicValue() != kinematiValue)
+		// TODO Possibly change the kinematic stimulation of a bump bundle
+		if (bundle.getKinematicValue() == Ernest.STIMULATION_KINEMATIC_FORWARD)
 		{
 			bundle.setKinematicValue(kinematiValue);
 			if (m_tracer != null)
