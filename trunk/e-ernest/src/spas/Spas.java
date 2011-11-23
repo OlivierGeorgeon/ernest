@@ -96,6 +96,8 @@ public class Spas implements ISpas
 		{
 			Object e = m_tracer.addEventElement("focus");
 			m_tracer.addSubelement(e, "salience", focusSalience.getHexColor());
+			if (focusSalience.getEvokedBundle() != null)
+				focusSalience.getEvokedBundle().trace(m_tracer, "focus_bundle");
 			m_localSpaceMemory.Trace(m_tracer);
 		}
 		
@@ -232,8 +234,10 @@ public class Spas implements ISpas
 				if (b == null)
 					salience.setAttractiveness(Ernest.ATTRACTIVENESS_OF_UNKNOWN + (int)(5 * salience.getSpan() / ((float)Math.PI / 12)));
 				else
+				{
 					salience.setAttractiveness(b.getExtrapersonalAttractiveness(clock) + (int)(5 * salience.getSpan() / ((float)Math.PI / 12)));
-				//salience.setAttractiveness(m_persistenceMemory.visualAttractiveness(salience.getValue()) + (int)(5 * salience.getSpan() / ((float)Math.PI / 12)));
+					salience.setEvokedBundle(b);
+				}
 			}
 			else if (salience.isFrontal() && salience.getValue()== Ernest.STIMULATION_TOUCH_WALL)
 			{
@@ -246,6 +250,7 @@ public class Spas implements ISpas
 					//salience.setBundle(b);
 					salience.setAttractiveness(b.getPeripersonalAttractiveness(clock));
 					salience.setValue(b.getValue());
+					salience.setEvokedBundle(b);
 				}
 			}
 			else if (salience.getValue()== Ernest.STIMULATION_TOUCH_FISH)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
@@ -257,6 +262,7 @@ public class Spas implements ISpas
 					//salience.setBundle(b);
 					salience.setAttractiveness(b.getPeripersonalAttractiveness(clock));
 					salience.setValue(b.getValue());
+					salience.setEvokedBundle(b);
 					// Place the bundle in the local space memory
 					m_localSpaceMemory.addPlace(b, salience.getPosition());					
 				}
@@ -266,10 +272,12 @@ public class Spas implements ISpas
 		// Add saliences from bundles in the local space memory.
 		for (IPlace place : m_localSpaceMemory.getPlaces())
 		{
-			if (place.getBundle().getGustatoryValue() == Ernest.STIMULATION_GUSTATORY_FISH)
+			IBundle b = place.getBundle();
+			if (b.getGustatoryValue() == Ernest.STIMULATION_GUSTATORY_FISH)
 			{
-				ISalience bundleSalience = new Salience(place.getBundle().getVisualValue(), Ernest.MODALITY_VISUAL, place.getPosition(), Ernest.ATTRACTIVENESS_OF_FISH - 10);
-				salienceList.add(bundleSalience);
+				ISalience salience = new Salience(b.getVisualValue(), Ernest.MODALITY_VISUAL, place.getPosition(), Ernest.ATTRACTIVENESS_OF_FISH - 10);
+				salience.setEvokedBundle(b);
+				salienceList.add(salience);
 			}
 		}
 	}
@@ -287,7 +295,7 @@ public class Spas implements ISpas
 		// Find the visual salience in front of Ernest.
 		ISalience frontVisualSalience = null;
 		for (ISalience salience : saliences)
-			if (salience.isFrontal() && salience.getModality() == Ernest.MODALITY_VISUAL && salience.getSpan() > Math.PI/6+0.01f )
+			if (salience.isFrontal() && salience.getModality() == Ernest.MODALITY_VISUAL && salience.getSpan() > Math.PI/6 + 0.01f )
 				frontVisualSalience = salience;
 		
 		// Associate the tactile stimulation with the kinematic stimulation.
