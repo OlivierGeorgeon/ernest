@@ -70,4 +70,7 @@ public interface ISalience
 	 */
 	public Vector3f getPosition();
 	
+	public void setEvokedBundle(IBundle bundle);
+	public IBundle getEvokedBundle();
+	
 }

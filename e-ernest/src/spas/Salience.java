@@ -15,6 +15,7 @@ public class Salience implements ISalience
 	private Vector3f m_position;
 	private float m_span;
 	private int m_attractiveness;
+	private IBundle evokedBundle;
 	
 	/**
 	 * Constructor. 
@@ -135,7 +136,8 @@ public class Salience implements ISalience
 
 	public boolean isFrontal()
 	{
-		return (getDirection() - m_span / 2 < 0 && getDirection() + m_span / 2 > 0 );
+		// Covers at least a pixel to the right and a pixel to the left of Ernest's axis.
+		return (getDirection() - m_span / 2 < - Math.PI/12 + 0.1 && getDirection() + m_span / 2 > Math.PI/12 - 0.1 );
 	}
 	
 	public Vector3f getPosition()
@@ -143,4 +145,13 @@ public class Salience implements ISalience
 		return m_position;
 	}
 
+	public void setEvokedBundle(IBundle bundle) 
+	{
+		evokedBundle = bundle;
+	}
+
+	public IBundle getEvokedBundle() 
+	{
+		return evokedBundle;
+	}
 }
