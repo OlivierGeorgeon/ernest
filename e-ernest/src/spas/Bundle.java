@@ -193,6 +193,11 @@ public class Bundle implements IBundle {
 			tracer.addSubelement(element, "kinematic", hexColor(m_kinematicValue));
 		else
 			tracer.addSubelement(element, "kinematic", hexColor(m_tactileValue));
+		
+		String id = this.toString();
+		tracer.addSubelement(element, "id", id);
+		tracer.addSubelement(element, "short_id", id.substring(id.length() - 6));
+		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
 		}
 
 	private String hexColor(int value) 

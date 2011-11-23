@@ -96,6 +96,7 @@ public class Spas implements ISpas
 		{
 			Object e = m_tracer.addEventElement("focus");
 			m_tracer.addSubelement(e, "salience", focusSalience.getHexColor());
+			m_tracer.addSubelement(e, "modality", focusSalience.getModality() + "");
 			if (focusSalience.getEvokedBundle() != null)
 				focusSalience.getEvokedBundle().trace(m_tracer, "focus_bundle");
 			m_localSpaceMemory.Trace(m_tracer);
