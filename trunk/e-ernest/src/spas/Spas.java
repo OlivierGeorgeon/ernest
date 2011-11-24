@@ -254,9 +254,10 @@ public class Spas implements ISpas
 					salience.setEvokedBundle(b);
 				}
 			}
-			else if (salience.getValue()== Ernest.STIMULATION_TOUCH_FISH)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
+			else if (salience.getValue()== Ernest.STIMULATION_TOUCH_FISH 
+					|| salience.getValue()== Ernest.STIMULATION_TOUCH_AGENT)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
 			{
-				// Attractiveness of touching a fish.
+				// Attractiveness of touching.
 				IBundle b = m_persistenceMemory.touchBundle(salience.getValue());
 				if (b != null)
 				{
@@ -271,12 +272,13 @@ public class Spas implements ISpas
 		}
 		
 		// Add saliences from bundles in the local space memory.
+		// TODO all kinds of bundles, not only gustatory.
 		for (IPlace place : m_localSpaceMemory.getPlaces())
 		{
 			IBundle b = place.getBundle();
-			if (b.getGustatoryValue() == Ernest.STIMULATION_GUSTATORY_FISH)
+			if (b.getGustatoryValue() != Ernest.STIMULATION_GUSTATORY_NOTHING)
 			{
-				ISalience salience = new Salience(b.getVisualValue(), Ernest.MODALITY_VISUAL, place.getPosition(), Ernest.ATTRACTIVENESS_OF_FISH - 10);
+				ISalience salience = new Salience(b.getVisualValue(), Ernest.MODALITY_SPATIAL, place.getPosition(), b.getPeripersonalAttractiveness(clock) - (int)(place.getPosition().length()*15 ));
 				salience.setEvokedBundle(b);
 				salienceList.add(salience);
 			}

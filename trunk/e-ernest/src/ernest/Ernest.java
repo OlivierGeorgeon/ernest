@@ -62,9 +62,12 @@ public class Ernest implements IErnest
 	/** A kinematic stimulation */
 	public static int STIMULATION_KINEMATIC = 1;
 	
+	/** A spatial stimulation */
+	public static int MODALITY_SPATIAL = 1;
+	
 	/** A visual stimulation */
 	public static int MODALITY_VISUAL = 2;
-	
+
 	/** A tactile stimulation */
 	public static int MODALITY_TACTILE = 3;
 	
