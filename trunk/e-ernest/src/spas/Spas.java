@@ -161,7 +161,7 @@ public class Spas implements ISpas
 			}
 			else 
 			{	
-				// Record the previous salience
+				// Record the previous salience (distance is not used but must not be 0 otherwise direction is meaningless)
 				ISalience salience = new Salience(stimulation.getValue(), Ernest.MODALITY_VISUAL, sumDirection / span, 1, spanf);
 				saliences.add(salience);
 				// look for the next salience
@@ -195,7 +195,7 @@ public class Spas implements ISpas
 			else 
 			{	
 				// Record the previous salience
-				ISalience salience = new Salience(tactileStimulation.getValue(), Ernest.MODALITY_TACTILE, sumDirection / span, 1, spanf);
+				ISalience salience = new Salience(tactileStimulation.getValue(), Ernest.MODALITY_TACTILE, sumDirection / span, Ernest.TACTILE_RADIUS, spanf);
 				saliences.add(salience);
 				// look for the next salience
 				tactileStimulation = tactileStimulations[i];
@@ -205,7 +205,7 @@ public class Spas implements ISpas
 			}
 		}
 		// record the last salience
-		ISalience salience = new Salience(tactileStimulation.getValue(),  Ernest.MODALITY_TACTILE, sumDirection / span, 1, spanf);
+		ISalience salience = new Salience(tactileStimulation.getValue(),  Ernest.MODALITY_TACTILE, sumDirection / span, Ernest.TACTILE_RADIUS, spanf);
 		saliences.add(salience);
 		
 	   return saliences;
