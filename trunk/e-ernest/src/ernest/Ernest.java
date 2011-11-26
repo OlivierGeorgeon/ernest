@@ -237,7 +237,10 @@ public class Ernest implements IErnest
 	{
 		return m_spas.getValue(i,j);
 	}
-
+	public int getAttention()
+	{
+		return m_spas.getAttention();
+	}
 
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{

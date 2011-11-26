@@ -36,6 +36,9 @@ public class Spas implements ISpas
 	int m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
 	int m_gustatoryStimulation = Ernest.STIMULATION_GUSTATORY_NOTHING;
 	
+	/** The color of attention for display in the environment.  */
+	private int mAttention = 0;
+	
 	public void setTracer(ITracer tracer) 
 	{
 		m_tracer = tracer;
@@ -91,6 +94,8 @@ public class Spas implements ISpas
 			}
 		}
 		
+		mAttention = focusSalience.getValue();
+		
 		// Trace the focus salience and the local space memory.
 		if (m_tracer != null) 
 		{
@@ -120,17 +125,22 @@ public class Spas implements ISpas
 
 	public int getValue(int i, int j)
 	{
-		if (i == 1 && j == 0 && m_kinematicStimulation == Ernest.STIMULATION_KINEMATIC_BUMP)
-			return Ernest.STIMULATION_KINEMATIC_BUMP;
-		else if (i == 1 && j == 1 && m_gustatoryStimulation == Ernest.STIMULATION_GUSTATORY_FISH)
-			return Ernest.STIMULATION_GUSTATORY_FISH;
-		else
-		{
+//		if (i == 1 && j == 0 && m_kinematicStimulation == Ernest.STIMULATION_KINEMATIC_BUMP)
+//			return Ernest.STIMULATION_KINEMATIC_BUMP;
+//		else if (i == 1 && j == 1 && m_gustatoryStimulation == Ernest.STIMULATION_GUSTATORY_FISH)
+//			return Ernest.STIMULATION_GUSTATORY_FISH;
+//		else
+//		{
 			Vector3f position = new Vector3f(1 - j, 1 - i, 0);
 			return m_localSpaceMemory.getValue(position);
-		}
+//		}
 	}
 
+	public int getAttention()
+	{
+		return mAttention;
+	}
+	
 	/**
 	 * Generate the list of the saliences from the sensory stimulations.
 	 * @param visualStimulations The visual stimulations.

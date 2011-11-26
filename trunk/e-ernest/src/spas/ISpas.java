@@ -47,6 +47,8 @@ public interface ISpas
 	 * @return The value of the bundle in this place in local space memory.
 	 */
 	public int getValue(int i, int j);
+	public int getAttention();
+
 
 	/**
 	 * Set the salience list (from Simon's local space map).
