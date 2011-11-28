@@ -27,7 +27,7 @@ public class Ernest implements IErnest
 	public static int CENTER_RETINA = 0; //55; 
 		
 	/** Ernest's colliculus resolution  */
-	public static int RESOLUTION_COLLICULUS = 24;
+	//public static int RESOLUTION_COLLICULUS = 24;
 	
 	/** Ernest's number of rows in the retina */
 	public static int ROW_RETINA = 1;
