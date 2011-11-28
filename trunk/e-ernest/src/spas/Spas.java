@@ -152,7 +152,7 @@ public class Spas implements ISpas
 	   {
 		// Visual saliences ====
 
-		List<ISalience> saliences = new ArrayList<ISalience>(Ernest.RESOLUTION_COLLICULUS);
+		List<ISalience> saliences = new ArrayList<ISalience>();
 
 		IStimulation stimulation = visualStimulations[0];
 		int span = 1;

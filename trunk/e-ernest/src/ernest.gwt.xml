@@ -1,4 +1,6 @@
 <module>
   <inherits name='com.google.gwt.user.User'/>
   <source path="ernest"></source>
+  <source path="imos"></source>
+  <source path="spas"></source>
 </module>
