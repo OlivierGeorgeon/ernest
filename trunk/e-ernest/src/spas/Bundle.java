@@ -28,6 +28,8 @@ public class Bundle implements IBundle {
 		m_tactileValue = tactileValue;
 		m_kinematicValue = kinematicValue;
 		m_gustatoryValue = gustatoryValue;
+		// When created, the bundle is not yet confirmed visited.
+		m_lastTimeBundled = - Ernest.PERSISTENCE;
 	}
 	
 	public int getValue()
@@ -96,7 +98,7 @@ public class Bundle implements IBundle {
 			return Ernest.ATTRACTIVENESS_OF_FISH;	
 		
 		// If the bundle has a gustatory stimulation of cuddle 
-		if (m_gustatoryValue == Ernest.STIMULATION_SOCIAL_CUDDLE)
+		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE)
 			return Ernest.ATTRACTIVENESS_OF_CUDDLE;	
 		
 		// if the bundle is forgotten
@@ -120,7 +122,7 @@ public class Bundle implements IBundle {
 	public int getPeripersonalAttractiveness(int clock) 
 	{
 		// If the bundle has a gustatory stimulation of cuddle 
-		if (m_gustatoryValue == Ernest.STIMULATION_SOCIAL_CUDDLE)
+		if (m_gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE)
 			return Ernest.ATTRACTIVENESS_OF_CUDDLE;	
 		
 		// If the bundle has a kinematic stimulation of bump.

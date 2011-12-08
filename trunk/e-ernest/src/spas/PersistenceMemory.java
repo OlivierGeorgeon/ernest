@@ -143,7 +143,9 @@ public class PersistenceMemory
 			// The bundle already exists: return a pointer to it.
 			bundle =  m_bundles.get(i);
 		
-		bundle.setLastTimeBundled(m_clock);
+		// This bundle is considered confirmed or visited
+		if (tactileValue != Ernest.STIMULATION_TOUCH_EMPTY || kinematicValue != Ernest.STIMULATION_KINEMATIC_FORWARD || gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+			bundle.setLastTimeBundled(m_clock);
 
 		return bundle;
 	}
@@ -196,14 +198,16 @@ public class PersistenceMemory
 	/**
 	 * Returns the first bundle found form a visual stimulation.
 	 * TODO manage different bundles that have the same color.
-	 * TODO manage different bundles with more than one visual stimulation. 
+	 * TODO manage different bundles with more than one visual stimulation.
+	 * TODO manage bundles that have no tactile stimulation. 
 	 * @param stimulation The visual stimulation.
 	 * @return The bundle that match this stimulation.
 	 */
 	public IBundle seeBundle(int visualValue)
 	{
 		for (IBundle bundle : m_bundles)
-			if (bundle.getVisualValue() == visualValue)
+			// Return only bundles that have also a tactile stimulation
+			if (bundle.getVisualValue() == visualValue && bundle.getTactileValue() != Ernest.STIMULATION_TOUCH_EMPTY)
 				return bundle;
 
 		return null;
@@ -211,13 +215,16 @@ public class PersistenceMemory
 
 	/**
 	 * Returns the first bundle found form a tactile stimulation.
+	 * TODO evoke different kind of bundles 
 	 * @param stimulation The visual stimulation.
 	 * @return The bundle that match this stimulation.
 	 */
 	public IBundle touchBundle(int tactileValue)
 	{
 		for (IBundle bundle : m_bundles)
-			if (bundle.getTactileValue() == tactileValue)
+			// So far, only consider bump and eat bundles
+			if (bundle.getTactileValue() == tactileValue && 
+					(bundle.getKinematicValue() != Ernest.STIMULATION_KINEMATIC_FORWARD || bundle.getGustatoryValue() != Ernest.STIMULATION_GUSTATORY_NOTHING))
 				return bundle;
 
 		return null;
