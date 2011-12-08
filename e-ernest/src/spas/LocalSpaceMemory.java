@@ -83,10 +83,10 @@ public class LocalSpaceMemory
 		float theta = - 11 * (float)Math.PI / 24; 
 		float sumDirection = theta;
 		float spanf = (float)Math.PI / 12;
-		for (int i = 1 ; i < Ernest.RESOLUTION_RETINA; i++)
+		for (int i = 1 ; i <= Ernest.RESOLUTION_RETINA; i++)
 		{
 			theta += (float)Math.PI / 12;
-			if (visualStimulations[i].equals(stimulation))
+			if ((i < Ernest.RESOLUTION_RETINA) && visualStimulations[i].equals(stimulation))
 			{
 				// measure the salience span and average direction
 				span++;
@@ -105,19 +105,23 @@ public class LocalSpaceMemory
 				m_places.add(place);
 				//place.setSpan(spanf);
 				// look for the next bundle
-				stimulation = visualStimulations[i];
-				span = 1;
-				spanf = (float)Math.PI / 12;
-				sumDirection = theta;
+				
+				if (i < Ernest.RESOLUTION_RETINA)
+				{
+					stimulation = visualStimulations[i];
+					span = 1;
+					spanf = (float)Math.PI / 12;
+					sumDirection = theta;
+				}
 			}
 		}
 		// Create a visual bundle.
-		IBundle lastBundle = m_persistenceMemory.seeBundle(stimulation.getValue());
-		if (lastBundle == null)
-			lastBundle = m_persistenceMemory.addBundle(stimulation.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-		// Record the place in the visual background.
-		IPlace lastPlace = new Place(lastBundle, DISTANCE_VISUAL_BACKGROUND, sumDirection / span, spanf);
-		m_places.add(lastPlace);
+//		IBundle lastBundle = m_persistenceMemory.seeBundle(stimulation.getValue());
+//		if (lastBundle == null)
+//			lastBundle = m_persistenceMemory.addBundle(stimulation.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+//		// Record the place in the visual background.
+//		IPlace lastPlace = new Place(lastBundle, DISTANCE_VISUAL_BACKGROUND, sumDirection / span, spanf);
+//		m_places.add(lastPlace);
 		//lastPlace.setSpan(spanf);
 	}
 
@@ -134,10 +138,10 @@ public class LocalSpaceMemory
 		float sumDirection = theta;
 		float spanf = (float)Math.PI / 4;
 		
-		for (int i = 1 ; i < 7; i++)
+		for (int i = 1 ; i <= 7; i++)
 		{
 			theta += (float)Math.PI / 4;
-			if (tactileStimulations[i].equals(tactileStimulation))
+			if ((i < 7) && tactileStimulations[i].equals(tactileStimulation))
 			{
 				// measure the salience span and average direction
 				span++;
@@ -180,44 +184,47 @@ public class LocalSpaceMemory
 					}
 				}
 				// look for the next bundle
-				tactileStimulation = tactileStimulations[i];
-				span = 1;
-				spanf = (float)Math.PI / 4;
-				sumDirection = theta;
-			}
-		}
-		if (tactileStimulation.getValue() != Ernest.STIMULATION_TOUCH_EMPTY)
-		{
-			float direction = sumDirection / span;
-			Vector3f position = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)direction)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)direction)), 0f);
-			// See in that direction.
-			IPlace place = seePlace(direction);
-			if (place == null)
-			{
-				// Create a place.
-				IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-				place = addPlace(b, position);
-				place.setSpan(spanf);
-			}
-			else
-			{
-				if (place.getBundle().getTactileValue() == tactileStimulation.getValue())
+				if (i < 7)
 				{
-					// move the visual place to the tactile radius.
-					place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
-					place.setPosition(position);
-					place.setSpan(spanf);
-				}
-				else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY)
-				{
-					// Update the place and the bundle
-					IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-					place.setBundle(b);
-					place.setPosition(position);
-					place.setSpan(spanf);
+					tactileStimulation = tactileStimulations[i];
+					span = 1;
+					spanf = (float)Math.PI / 4;
+					sumDirection = theta;
 				}
 			}
 		}
+//		if (tactileStimulation.getValue() != Ernest.STIMULATION_TOUCH_EMPTY)
+//		{
+//			float direction = sumDirection / span;
+//			Vector3f position = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)direction)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)direction)), 0f);
+//			// See in that direction.
+//			IPlace place = seePlace(direction);
+//			if (place == null)
+//			{
+//				// Create a place.
+//				IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+//				place = addPlace(b, position);
+//				place.setSpan(spanf);
+//			}
+//			else
+//			{
+//				if (place.getBundle().getTactileValue() == tactileStimulation.getValue())
+//				{
+//					// move the visual place to the tactile radius.
+//					place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
+//					place.setPosition(position);
+//					place.setSpan(spanf);
+//				}
+//				else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY)
+//				{
+//					// Update the place and the bundle
+//					IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+//					place.setBundle(b);
+//					place.setPosition(position);
+//					place.setSpan(spanf);
+//				}
+//			}
+//		}
 	}
 	
 	public void addKinematicPlace(int kinematicValue)
