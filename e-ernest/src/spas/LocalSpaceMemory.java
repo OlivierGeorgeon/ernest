@@ -14,7 +14,7 @@ import ernest.Ernest;
 import ernest.ITracer;
 
 /**
- * The local space structure maintaines an awareness of the bundle surrounding Ernest. 
+ * The local space structure maintains an awareness of the bundle surrounding Ernest. 
  * @author Olivier
  */
 public class LocalSpaceMemory 
@@ -23,9 +23,16 @@ public class LocalSpaceMemory
 	/** The radius of a location. */
 	public static float LOCATION_RADIUS = 0.5f;
 	public static float LOCAL_SPACE_MEMORY_RADIUS = 2f;
+	public static float DISTANCE_VISUAL_BACKGROUND = 10f;
 	
 	/** The Local space structure. */
 	private List<IPlace> m_places = new ArrayList<IPlace>();
+
+	/** The persistence memory. */
+	PersistenceMemory m_persistenceMemory;
+	
+	/** The tracer. */
+	ITracer m_tracer;
 	
 	public final static float DIAG2D_PROJ = (float) (1/Math.sqrt(2));
 
@@ -40,32 +47,248 @@ public class LocalSpaceMemory
 	public final static Vector3f DIRECTION_BEHIND_LEFT  = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
 	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
 	public final static float    SOMATO_RADIUS = 1f;
-
-	public void Trace(ITracer tracer)
+	
+	LocalSpaceMemory(PersistenceMemory persistenceMemory, ITracer tracer)
 	{
-		if (tracer != null && !m_places.isEmpty())
+		m_persistenceMemory = persistenceMemory;
+		m_tracer = tracer;
+	}
+
+	public void Trace()
+	{
+		if (m_tracer != null && !m_places.isEmpty())
 		{
-			Object localSpace = tracer.addEventElement("local_space");
-			tracer.addSubelement(localSpace, "position_8", getHexColor(DIRECTION_HERE));
-			tracer.addSubelement(localSpace, "position_7", getHexColor(DIRECTION_BEHIND));
-			tracer.addSubelement(localSpace, "position_6", getHexColor(DIRECTION_BEHIND_LEFT));
-			tracer.addSubelement(localSpace, "position_5", getHexColor(DIRECTION_LEFT));
-			tracer.addSubelement(localSpace, "position_4", getHexColor(DIRECTION_AHEAD_LEFT));
-			tracer.addSubelement(localSpace, "position_3", getHexColor(DIRECTION_AHEAD));
-			tracer.addSubelement(localSpace, "position_2", getHexColor(DIRECTION_AHEAD_RIGHT));
-			tracer.addSubelement(localSpace, "position_1", getHexColor(DIRECTION_RIGHT));
-			tracer.addSubelement(localSpace, "position_0", getHexColor(DIRECTION_BEHIND_RIGHT));
+			Object localSpace = m_tracer.addEventElement("local_space");
+			m_tracer.addSubelement(localSpace, "position_8", getHexColor(DIRECTION_HERE));
+			m_tracer.addSubelement(localSpace, "position_7", getHexColor(DIRECTION_BEHIND));
+			m_tracer.addSubelement(localSpace, "position_6", getHexColor(DIRECTION_BEHIND_LEFT));
+			m_tracer.addSubelement(localSpace, "position_5", getHexColor(DIRECTION_LEFT));
+			m_tracer.addSubelement(localSpace, "position_4", getHexColor(DIRECTION_AHEAD_LEFT));
+			m_tracer.addSubelement(localSpace, "position_3", getHexColor(DIRECTION_AHEAD));
+			m_tracer.addSubelement(localSpace, "position_2", getHexColor(DIRECTION_AHEAD_RIGHT));
+			m_tracer.addSubelement(localSpace, "position_1", getHexColor(DIRECTION_RIGHT));
+			m_tracer.addSubelement(localSpace, "position_0", getHexColor(DIRECTION_BEHIND_RIGHT));
 		}
 
 	}
 	
 	/**
-	 * Add a new location to the localSpace if it does not yet exist.
+	 * Add places in the background associated with visual bundles.
+	 * @param visualStimulations The list of visual stimulations.
+	 */
+	public void addVisualPlaces(IStimulation[] visualStimulations)
+	{
+		IStimulation stimulation = visualStimulations[0];
+		int span = 1;
+		float theta = - 11 * (float)Math.PI / 24; 
+		float sumDirection = theta;
+		float spanf = (float)Math.PI / 12;
+		for (int i = 1 ; i < Ernest.RESOLUTION_RETINA; i++)
+		{
+			theta += (float)Math.PI / 12;
+			if (visualStimulations[i].equals(stimulation))
+			{
+				// measure the salience span and average direction
+				span++;
+                sumDirection += theta;
+                spanf += (float)Math.PI / 12;
+			}
+			else 
+			{	
+				// Create or recognize a visual bundle.
+				IBundle b = m_persistenceMemory.seeBundle(stimulation.getValue());
+				if (b == null)
+					b = m_persistenceMemory.addBundle(stimulation.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+				// Record the place in the visual background.
+				//IPlace place = addPlace(b, DISTANCE_VISUAL_BACKGROUND, sumDirection / span);
+				IPlace place = new Place(b,DISTANCE_VISUAL_BACKGROUND, sumDirection / span, spanf);
+				m_places.add(place);
+				//place.setSpan(spanf);
+				// look for the next bundle
+				stimulation = visualStimulations[i];
+				span = 1;
+				spanf = (float)Math.PI / 12;
+				sumDirection = theta;
+			}
+		}
+		// Create a visual bundle.
+		IBundle lastBundle = m_persistenceMemory.seeBundle(stimulation.getValue());
+		if (lastBundle == null)
+			lastBundle = m_persistenceMemory.addBundle(stimulation.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+		// Record the place in the visual background.
+		IPlace lastPlace = new Place(lastBundle, DISTANCE_VISUAL_BACKGROUND, sumDirection / span, spanf);
+		m_places.add(lastPlace);
+		//lastPlace.setSpan(spanf);
+	}
+
+	/**
+	 * Add places in the peripersonal space associated with tactile bundles.
+	 * @param tactileStimulations The list of visual stimulations.
+	 */
+	public void addTactilePlaces(IStimulation[] tactileStimulations)
+	{
+
+		IStimulation tactileStimulation = tactileStimulations[0];
+		int span = 1;
+		float theta = - 3 * (float)Math.PI / 4; 
+		float sumDirection = theta;
+		float spanf = (float)Math.PI / 4;
+		
+		for (int i = 1 ; i < 7; i++)
+		{
+			theta += (float)Math.PI / 4;
+			if (tactileStimulations[i].equals(tactileStimulation))
+			{
+				// measure the salience span and average direction
+				span++;
+                sumDirection += theta;
+                spanf += (float)Math.PI / 4;
+			}
+			else 
+			{	
+				if (tactileStimulation.getValue() != Ernest.STIMULATION_TOUCH_EMPTY)
+				{
+					// Create a tactile bundle.
+					float direction = sumDirection / span;
+					Vector3f position = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)direction)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)direction)), 0f);
+					// See in that direction.
+					IPlace place = seePlace(direction);
+					if (place == null)
+					{
+						// Create a place.
+						IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+						place = addPlace(b, position);
+						place.setSpan(spanf);
+					}
+					else
+					{
+						if (place.getBundle().getTactileValue() == tactileStimulation.getValue())
+						{
+							// move the visual place to the tactile radius.
+							place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
+							place.setPosition(position);
+							place.setSpan(spanf);
+						}
+						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY)
+						{
+							// Update the place and the bundle
+							IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+							place.setBundle(b);
+							place.setPosition(position);							
+							place.setSpan(spanf);
+						}
+					}
+				}
+				// look for the next bundle
+				tactileStimulation = tactileStimulations[i];
+				span = 1;
+				spanf = (float)Math.PI / 4;
+				sumDirection = theta;
+			}
+		}
+		if (tactileStimulation.getValue() != Ernest.STIMULATION_TOUCH_EMPTY)
+		{
+			float direction = sumDirection / span;
+			Vector3f position = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)direction)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)direction)), 0f);
+			// See in that direction.
+			IPlace place = seePlace(direction);
+			if (place == null)
+			{
+				// Create a place.
+				IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+				place = addPlace(b, position);
+				place.setSpan(spanf);
+			}
+			else
+			{
+				if (place.getBundle().getTactileValue() == tactileStimulation.getValue())
+				{
+					// move the visual place to the tactile radius.
+					place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
+					place.setPosition(position);
+					place.setSpan(spanf);
+				}
+				else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY)
+				{
+					// Update the place and the bundle
+					IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+					place.setBundle(b);
+					place.setPosition(position);
+					place.setSpan(spanf);
+				}
+			}
+		}
+	}
+	
+	public void addKinematicPlace(int kinematicValue)
+	{
+		// Find the place in front of Ernest.
+		IBundle frontBundle = null;
+		for (IPlace place : m_places)
+			if (place.isFrontal() && place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && place.getSpan() > Math.PI/6 + 0.01f )
+				frontBundle = place.getBundle();
+		
+		// Associate kinematic stimulation to the front bundle.
+
+		if (kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
+		{
+			if (frontBundle != null)
+			{
+				m_persistenceMemory.addKinematicValue(frontBundle, kinematicValue);
+			}
+		}
+	}
+	
+	public void addGustatoryPlace(int gustatoryValue)
+	{
+		IBundle frontBundle = getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
+		IBundle hereBundle = getBundle(LocalSpaceMemory.DIRECTION_HERE);
+
+		// Associate the tactile stimulation with the fish gustatory stimulation
+		
+		if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
+		{
+			// Discrete environment. The fish bundle is the hereBundle.
+			if (hereBundle != null && hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
+			{
+				m_persistenceMemory.addGustatoryValue(hereBundle, gustatoryValue);
+				clearPlace(LocalSpaceMemory.DIRECTION_HERE); // The fish is eaten
+			}
+			
+			// Continuous environment. The fish bundle is the frontBundle
+			if (frontBundle != null && frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
+			{
+				m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
+				clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
+			}
+		}
+		
+		// Associate the tactile stimulation with the cuddle stimulation
+		
+		if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE)
+		{
+			if (frontBundle != null && frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)
+			{
+				m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
+			}
+		}
+		
+	}
+	
+	/**
+	 * Add a new place to the local space memory if it does not yet exist.
 	 * Replace the bundle if it already exists.
 	 * @param bundle The bundle in this location.
-	 * @param position The initial position of this location.
+	 * @param distance The distance of this place.
+	 * @param direction The direction of this place.
 	 * @return The new or already existing location.
 	 */
+	public IPlace addPlace(IBundle bundle, float distance, float direction)
+	{
+		Vector3f position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
+		return addPlace(bundle, position);
+	}
+	
 	public IPlace addPlace(IBundle bundle, Vector3f position)
 	{
 		// The initial position must be cloned so that 
@@ -76,16 +299,15 @@ public class LocalSpaceMemory
 		
 		int i = m_places.indexOf(l);
 		if (i == -1)
-			// The location does not exist
+			// The place does not exist
 			m_places.add(l);
 		else 
 		{
-			// The location already exists: return a pointer to it.
+			// The place already exists: return a pointer to it.
 			l =  m_places.get(i);
 			l.setBundle(bundle);
 		}
 		return l;
-		
 	}
 	
 	/**
@@ -108,7 +330,7 @@ public class LocalSpaceMemory
 	
 	/**
 	 * Rotate the local space of the given angle.
-	 * @param angle The angle (provide the oposite angle from the agent's movement).
+	 * @param angle The angle (provide the opposite angle from the agent's movement).
 	 */
 	private void rotate(float angle)
 	{
@@ -121,7 +343,7 @@ public class LocalSpaceMemory
 	/**
 	 * Translate the local space of the given distance.
 	 * Remove locations that are left behind.
-	 * @param distance The distance (provide a negative value to translate backwards).
+	 * @param distance The distance (provide the opposite value from the agent's movement).
 	 */
 	private void translate(float distance)
 	{
@@ -135,6 +357,20 @@ public class LocalSpaceMemory
 			//if (l.getPosition().x < - LOCAL_SPACE_MEMORY_RADIUS)
 				it.remove();
 		}		
+	}
+	
+	private IPlace seePlace(float direction)
+	{
+		IPlace place = null;
+		for (IPlace l : m_places)
+		{
+			if (l.getDirection() - l.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
+				l.getDirection() + l.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
+				l.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN)
+				if (place == null || l.getDistance() < place.getDistance())
+					place = l;
+		}
+		return place;
 	}
 	
 	/**
@@ -166,6 +402,21 @@ public class LocalSpaceMemory
 				it.remove();
 		}		
 	}
+	
+	/**
+	 * Clear a location in the local space memory.
+	 * @param position The position to clear.
+	 */
+	public void clearBackground()
+	{
+		for (Iterator it = m_places.iterator(); it.hasNext();)
+		{
+			IPlace l = (IPlace)it.next();
+			if (l.getDistance() > DISTANCE_VISUAL_BACKGROUND - 1)
+				it.remove();
+		}		
+	}
+	
 	/**
 	 * Get the color of a given position.
 	 * @param position The position.

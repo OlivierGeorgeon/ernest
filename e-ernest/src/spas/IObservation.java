@@ -13,13 +13,13 @@ public interface IObservation
 	 * @param direction The direction of the salience of current attention.
 	 * Radian trigonometric in egocentric referential.
 	 */
-	public void setDirection(float direction);
+	//public void setDirection(float direction);
 	
 	/**
 	 * @return The direction of the salience of current attention.
 	 * Radian trigonometric in egocentric referential.
 	 */
-	public float getDirection();
+	//public float getDirection();
 	
 	/**
 	 * @param attractiveness The attractiveness of the salience of current attention.
@@ -51,4 +51,6 @@ public interface IObservation
 	 */
 	public IStimulation getGustatoryStimulation();
 	
+	public void setPlace(IPlace place);
+	public IPlace getPlace();
 }

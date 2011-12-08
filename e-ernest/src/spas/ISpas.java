@@ -54,6 +54,6 @@ public interface ISpas
 	 * Set the salience list (from Simon's local space map).
 	 * @param salienceList The list of salience in Ernest's colliculus.
 	 */
-	public void setSalienceList(ArrayList<ISalience> salienceList);
+	public void setSalienceList(ArrayList<IPlace> placeList);
 
 }

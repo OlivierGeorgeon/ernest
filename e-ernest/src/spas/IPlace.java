@@ -42,5 +42,46 @@ public interface IPlace {
 	 * @return true if this place is in the same cell as thi position.
 	 */
 	public boolean isInCell(Vector3f position);
+	
+	/**
+	 * @return The place's direction.
+	 */
+	public float getDirection();
+	
+	/**
+	 * @return The place's distance.
+	 */
+	public float getDistance();
+	
+	/**
+	 * @param distance The place's distance.
+	 */
+	public void setDistance(float distance);
+	
+	/**
+	 * @param position The place's position.
+	 */
+	public void setPosition(Vector3f position);
+
+	/**
+	 * @param clock The current time in Ernest's life.
+	 * @return The salience's attractiveness.
+	 */
+	int getAttractiveness(int clock);
+
+	/**
+	 * @return The span of the bundle at this place.
+	 */
+	public float getSpan();
+	
+	/**
+	 * @param span The span of the bundle at this place.
+	 */
+	public void setSpan(float span);
+	
+	/**
+	 * @return True if this place is frontal. 
+	 */
+	public boolean isFrontal();
 
 }
