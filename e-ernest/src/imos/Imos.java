@@ -119,22 +119,6 @@ public class Imos implements IImos
 	public IAct addPrimitiveAct(String actionLabel, boolean status, int satisfaction) 
 	{
 		return addInteraction( actionLabel, "",  satisfaction);
-//		IAct a = null;
-//		ISchema s =  m_episodicMemory.addPrimitiveSchema(schemaLabel);
-//		
-//		if (status)
-//		{
-//			a = m_episodicMemory.addAct("(" + schemaLabel + ")", s, status,  satisfaction,  RELIABLE);
-//			s.setSucceedingAct(a);
-//		}
-//		else 
-//		{
-//			a = m_episodicMemory.addAct("[" + schemaLabel + "]", s, status,  satisfaction,  RELIABLE);
-//			s.setFailingAct(a);
-//		}
-//		
-//		System.out.println("Primitive schema " + s);
-//		return a;
 	}
 
 	/**
@@ -152,23 +136,9 @@ public class Imos implements IImos
 		String actLabel = actionLabel + stimuliLabel;
 		ISchema s =  m_episodicMemory.addPrimitiveSchema(actionLabel);
 		
-//		if (status)
-//			actLabel = "(" + actLabel + ")";
-//		else 
-//			actLabel = "[" + actLabel + "]";
-		
 		// Primitive satisfactions are multiplied by 10 internally for rounding issues.   
 		// (this value does not impact the agent's behavior)
 		a = m_episodicMemory.addAct(actLabel, s, true,  satisfaction * 10,  RELIABLE);
-		
-		// Only acts that have no stimuli are the succeeding or the failing act of a schema.
-		// TODO see how to change that.
-		//if (stimuliLabel == null || stimuliLabel.equals(""))
-//		{
-//			if (status) 
-//				s.setSucceedingAct(a);
-//			else s.setFailingAct(a);
-//		}
 		
 		System.out.println("Primitive schema " + s);
 		return a;
@@ -370,10 +340,6 @@ public class Imos implements IImos
 		if (m_tracer != null)
 			m_tracer.addEventElement("next_primitive_intention", nextPrimitiveAct.getLabel());
 		
-		// Anticipate the next observation
-//		IObservation nextObservation = m_staticSystem.anticipate(nextPrimitiveAct.getSchema());
-//		m_staticSystem.setObservation(nextObservation);
-
 		return nextPrimitiveAct;
 				
 	}

@@ -258,7 +258,7 @@ public class EpisodicMemory
 						activated = true;
 						if (m_tracer != null)
 							m_tracer.addSubelement(activations, "activation", s + " s=" + s.getIntentionAct().getSatisfaction());
-						System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
+						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
 				
