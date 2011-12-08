@@ -3,7 +3,7 @@ package ernest;
 import java.util.ArrayList;
 
 import spas.IObservation;
-import spas.ISalience;
+import spas.IPlace;
 import spas.ISpas;
 import spas.IStimulation;
 import spas.Spas;
@@ -87,22 +87,22 @@ public class Ernest implements IErnest
 	public static int STIMULATION_TOUCH_EMPTY = 0xB4B4B4;//11842740;
 	
 	/** Touch soft */
-	public static int STIMULATION_TOUCH_SOFT = 0x646464;//100 * 65536 + 100 * 256 + 100;
+	public static int STIMULATION_TOUCH_SOFT = 0x646464;//100 * 65536 + 100 * 256 + 100 = 6579300
 	
 	/** Touch hard */
 	public static int STIMULATION_TOUCH_WALL = 0x000000;
 	
 	/** Touch fish */
-	public static int STIMULATION_TOUCH_FISH = 0x646465;//100 * 65536 + 100 * 256 + 101;
+	public static int STIMULATION_TOUCH_FISH = 0x646465;//100 * 65536 + 100 * 256 + 101 = 6579301
 	
 	/** Touch other agent */
 	public static int STIMULATION_TOUCH_AGENT = 0x646466;
 	
 	/** Kinematic Stimulation move forward */	
-	public static int STIMULATION_KINEMATIC_FORWARD = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
+	public static int STIMULATION_KINEMATIC_FORWARD = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255 = 16777215
 
 	/** Kinematic Stimulations bump */
-	public static int STIMULATION_KINEMATIC_BUMP = 0xFF0000;//255 * 65536;
+	public static int STIMULATION_KINEMATIC_BUMP = 0xFF0000;//255 * 65536 = 16711680
 		
 	/** Kinematic Stimulations turn left toward empty square */
 	public static int STIMULATION_KINEMATIC_LEFT_EMPTY = 2;
@@ -123,7 +123,7 @@ public class Ernest implements IErnest
 	public static int STIMULATION_GUSTATORY_FISH = 0xFFFF00;//255 * 65536 + 255 * 256;
 	
 	/** Social Stimulation cuddle */	
-	public static int STIMULATION_SOCIAL_CUDDLE = 0xFF8080;
+	public static int STIMULATION_GUSTATORY_CUDDLE = 0xFF8080;
 	
 	/** Social Stimulation nothing */	
 	public static int STIMULATION_SOCIAL_NOTHING = 0x000000;
@@ -247,9 +247,9 @@ public class Ernest implements IErnest
 		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
 
-	public void setSalienceList(ArrayList<ISalience> salienceList)
+	public void setPlaceList(ArrayList<IPlace> placeList)
 	{
-		m_spas.setSalienceList(salienceList);
+		m_spas.setSalienceList(placeList);
 	}
 
 }
