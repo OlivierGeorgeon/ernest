@@ -93,7 +93,9 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		{
 			m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
 			Object e = m_tracer.addEventElement("current_observation");
-			m_tracer.addSubelement(e, "direction", newObservation.getDirection() + "");
+			m_tracer.addSubelement(e, "direction", newObservation.getPlace().getDirection() + "");
+			m_tracer.addSubelement(e, "distance", newObservation.getPlace().getDistance() + "");
+			m_tracer.addSubelement(e, "span", newObservation.getPlace().getSpan() + "");
 			m_tracer.addSubelement(e, "attractiveness", newObservation.getAttractiveness() + "");
 			m_tracer.addSubelement(e, "stimuli", m_stimuli);
 			m_tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
@@ -116,9 +118,9 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 	private void setDynamicFeature(IAct act, IObservation previousObservation, IObservation newObservation)
 	{
 		int   newAttractiveness = newObservation.getAttractiveness();
-		float newDirection = newObservation.getDirection();
+		float newDirection = newObservation.getPlace().getDirection();
 		int   previousAttractiveness = previousObservation.getAttractiveness();
-		float previousDirection = previousObservation.getDirection();
+		float previousDirection = previousObservation.getPlace().getDirection();
 		
 		String dynamicFeature = "";
 		

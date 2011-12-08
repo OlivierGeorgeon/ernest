@@ -5,7 +5,7 @@ import imos.IAct;
 import java.util.ArrayList;
 
 import spas.IObservation;
-import spas.ISalience;
+import spas.IPlace;
 
 
 /**
@@ -60,9 +60,15 @@ public interface IErnest
 	public String step(int[][] matrix);
 	
 	/**
-	 * @return Ernest observation used to draw the local map in the environment 
+	 * @param i x coordinate (0 = left, 2 = right)
+	 * @param j y coordinate (0 = ahead, 2 = behind)
+	 * @return The value in the corresponding place in the environment. 
 	 */
 	public int getValue(int i, int j);
+
+	/**
+	 * @return The value of Ernet's current attention. 
+	 */
 	public int getAttention();
 	
 	/**
@@ -74,8 +80,8 @@ public interface IErnest
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
 
 	/**
-	 * @param salienceList The list of salience in Ernest's colliculus.
+	 * @param placeList The list of places in Ernest's local space memory.
 	 */
-	public void setSalienceList(ArrayList<ISalience> salienceList);
+	public void setPlaceList(ArrayList<IPlace> placeList);
 	
 }
