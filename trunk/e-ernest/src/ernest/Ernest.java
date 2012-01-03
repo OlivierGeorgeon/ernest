@@ -213,9 +213,9 @@ public class Ernest implements IErnest
 	 * @param stimuli The matrix of stimuli privided by the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public String step(int[][] stimuli) 
+	public int[] step(int[][] stimuli) 
 	{
-		String primitiveSchema = "";
+		int primitiveSchema[] = new int[2];
 		IAct enactedPrimitiveAct;
 		
 		// Determine the primitive enacted act from the enacted schema and the stimuli received from the environment.		
@@ -225,10 +225,13 @@ public class Ernest implements IErnest
 		// Let Ernest decide for the next primitive schema to enact.
 		
 		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
+		primitiveSchema[0] = m_primitiveAct.getSchema().getLabel().toCharArray()[0];
 		
-		primitiveSchema = m_primitiveAct.getSchema().getLabel();
-
-		// Return the schema to enact.
+		// Once the decision is made, compute the intensity.
+		
+		primitiveSchema[1] = m_sensorymotorSystem.impulsion(primitiveSchema[0]);
+		
+		// Return the schema to enact and its intensity.
 		
 		return primitiveSchema;
 	}

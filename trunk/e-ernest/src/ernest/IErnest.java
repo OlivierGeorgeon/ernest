@@ -57,7 +57,7 @@ public interface IErnest
 	 * @param matrix The matrix of stimuli received from the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public String step(int[][] matrix);
+	public int[] step(int[][] matrix);
 	
 	/**
 	 * @param i x coordinate (0 = left, 2 = right)
