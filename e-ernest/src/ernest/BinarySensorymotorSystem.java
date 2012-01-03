@@ -69,4 +69,9 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return null;
 	}
 
+	public int impulsion(int intentionSchema) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

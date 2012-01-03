@@ -32,7 +32,7 @@ public interface ISensorymotorSystem
 	 * @param satisfaction The act's satisfaction 
 	 * @return the created primitive act
 	 */
-	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction); 
+	//public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction); 
 
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction); 
 
@@ -45,5 +45,7 @@ public interface ISensorymotorSystem
 	public IAct enactedAct(IAct act, boolean status);
 	
 	public IAct enactedAct(IAct act, int[][] matrix);
+	
+	public int impulsion(int intentionSchema);
 	
 }

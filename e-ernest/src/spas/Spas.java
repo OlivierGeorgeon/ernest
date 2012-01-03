@@ -126,7 +126,10 @@ public class Spas implements ISpas
 //		else
 //		{
 			Vector3f position = new Vector3f(1 - j, 1 - i, 0);
-			return m_localSpaceMemory.getValue(position);
+			if (m_localSpaceMemory != null)
+				return m_localSpaceMemory.getValue(position);
+			else
+				return 0xFFFFFF;
 //		}
 	}
 

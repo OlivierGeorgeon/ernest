@@ -222,4 +222,37 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		m_stimuli = dynamicFeature;
 		m_satisfaction = satisfaction;
 	}
+	
+	public int impulsion(int intentionSchema) 
+	{
+		if (intentionSchema == '>')
+		{
+			if (m_observation.getPlace().getDistance() < .5f)
+				return 500;
+			if (m_observation.getPlace().getDistance() < 1.5f)
+				return (int)(m_observation.getPlace().getDistance() * 1000);
+			else
+				return 1500;
+		}
+		if (intentionSchema == '^' || intentionSchema == 'v' )
+			return (int)(Math.PI/4 * 1000);
+			//return (int)(Math.abs(m_observation.getPlace().getDirection()) * 1000);
+		
+		
+		// For Seca
+		
+//		if (intentionSchema == '>')
+//		{
+//			if (m_observation.getPlace().getDistance() < .5f)
+//				return 5;
+//			if (m_observation.getPlace().getDistance() < 1.5f)
+//				return (int)(m_observation.getPlace().getDistance() * 10);
+//			else
+//				return 15;
+//		}
+//		if (intentionSchema == '^' || intentionSchema == 'v' )
+//			return (int)(Math.abs(m_observation.getPlace().getDirection()) * 10);
+		
+		return 0;
+	}
 }
