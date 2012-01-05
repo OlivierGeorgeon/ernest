@@ -209,7 +209,7 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Ernest's main process in the case of an environment that provides a matrix of stimuli.
+	 * Ernest's main cognitive loop in the case of an environment that provides a matrix of stimuli.
 	 * @param stimuli The matrix of stimuli privided by the environment.
 	 * @return The next primitive schema to enact.
 	 */
@@ -236,6 +236,27 @@ public class Ernest implements IErnest
 		return primitiveSchema;
 	}
 
+	/**
+	 * Ernest's main process in the case of an environment that provides a matrix of stimuli.
+	 * @param stimuli The matrix of stimuli privided by the environment.
+	 * @return The next primitive schema to enact.
+	 */
+	public int[] update(int[][] stimuli) 
+	{
+		int primitiveSchema[] = new int[2];
+
+        if ((stimuli[4][8] <= 50) && (Math.abs(stimuli[3][8]) <= 50))
+        {
+        	primitiveSchema = step(stimuli);
+        }
+        else
+        {
+        	primitiveSchema[0] = 0;
+        	primitiveSchema[1] = 0;
+        }
+		return primitiveSchema;
+	}
+	
 	public int getValue(int i, int j)
 	{
 		return m_spas.getValue(i,j);
