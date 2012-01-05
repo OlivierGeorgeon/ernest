@@ -54,11 +54,19 @@ public interface IErnest
 	
 	/**
 	 * Run Ernest one step.
-	 * @param matrix The matrix of stimuli received from the environment.
+	 * @param stimuli The matrix of stimuli received from the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public int[] step(int[][] matrix);
+	public int[] step(int[][] stimuli);
 	
+	/**
+	 * Update Ernest on each environment refresh 
+	 * (not necessarilly a cognitive step for Ernest).
+	 * @param stimuli The matrix of stimuli received from the environment.
+	 * @return The next primitive schema to enact.
+	 */
+	public int[] update(int[][] stimuli); 
+
 	/**
 	 * @param i x coordinate (0 = left, 2 = right)
 	 * @param j y coordinate (0 = ahead, 2 = behind)
