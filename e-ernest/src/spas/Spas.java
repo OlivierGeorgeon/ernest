@@ -54,7 +54,7 @@ public class Spas implements ISpas
 		m_kinematicStimulation = kinematicStimulation.getValue();
 
 		// Update the local space memory
-		m_localSpaceMemory.update(act, kinematicStimulation);
+		//m_localSpaceMemory.update(act, kinematicStimulation);
 		
 		// Construct the list of primitive bundles and places. 
 		
@@ -205,6 +205,13 @@ public class Spas implements ISpas
 			return "0" + Integer.toString(i, 16).toUpperCase();
 		else
 			return Integer.toString(i, 16).toUpperCase();
+	}
+
+	public void update(float translation, float rotation) 
+	{
+		m_localSpaceMemory.update(translation, rotation);
+		// TODO Auto-generated method stub
+		
 	}
 
 }

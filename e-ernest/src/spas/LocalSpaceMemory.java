@@ -36,7 +36,6 @@ public class LocalSpaceMemory
 	
 	public final static float DIAG2D_PROJ = (float) (1/Math.sqrt(2));
 
-
 	public final static Vector3f DIRECTION_HERE         = new Vector3f(0, 0, 0);
 	public final static Vector3f DIRECTION_AHEAD        = new Vector3f(1, 0, 0);
 	public final static Vector3f DIRECTION_BEHIND       = new Vector3f(-1, 0, 0);
@@ -115,14 +114,6 @@ public class LocalSpaceMemory
 				}
 			}
 		}
-		// Create a visual bundle.
-//		IBundle lastBundle = m_persistenceMemory.seeBundle(stimulation.getValue());
-//		if (lastBundle == null)
-//			lastBundle = m_persistenceMemory.addBundle(stimulation.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-//		// Record the place in the visual background.
-//		IPlace lastPlace = new Place(lastBundle, DISTANCE_VISUAL_BACKGROUND, sumDirection / span, spanf);
-//		m_places.add(lastPlace);
-		//lastPlace.setSpan(spanf);
 	}
 
 	/**
@@ -193,38 +184,6 @@ public class LocalSpaceMemory
 				}
 			}
 		}
-//		if (tactileStimulation.getValue() != Ernest.STIMULATION_TOUCH_EMPTY)
-//		{
-//			float direction = sumDirection / span;
-//			Vector3f position = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)direction)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)direction)), 0f);
-//			// See in that direction.
-//			IPlace place = seePlace(direction);
-//			if (place == null)
-//			{
-//				// Create a place.
-//				IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-//				place = addPlace(b, position);
-//				place.setSpan(spanf);
-//			}
-//			else
-//			{
-//				if (place.getBundle().getTactileValue() == tactileStimulation.getValue())
-//				{
-//					// move the visual place to the tactile radius.
-//					place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
-//					place.setPosition(position);
-//					place.setSpan(spanf);
-//				}
-//				else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY)
-//				{
-//					// Update the place and the bundle
-//					IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-//					place.setBundle(b);
-//					place.setPosition(position);
-//					place.setSpan(spanf);
-//				}
-//			}
-//		}
 	}
 	
 	public void addKinematicPlace(int kinematicValue)
@@ -333,6 +292,17 @@ public class LocalSpaceMemory
 			else if (act.getSchema().getLabel().equals("v"))
 				rotate((float)Math.PI / 4);
 		}
+	}
+	
+	/**
+	 * Update the local space memory according to the agent's moves.
+	 * @param translation The translation value (provide the opposite value from the agent's movement).
+	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
+	 */
+	public void update(float translation, float rotation)
+	{
+		translate(translation);
+		rotate(rotation);
 	}
 	
 	/**
