@@ -47,13 +47,23 @@ public interface ISpas
 	 * @return The value of the bundle in this place in local space memory.
 	 */
 	public int getValue(int i, int j);
-	public int getAttention();
-
 
 	/**
-	 * Set the salience list (from Simon's local space map).
-	 * @param salienceList The list of salience in Ernest's colliculus.
+	 * Provide a rgb code to display the the object of Ernest's attention in the environment.
+	 * @return The value of the focus bundle.
+	 */
+	public int getAttention();
+
+	/**
+	 * Set the place list (from Simon's local space map).
+	 * @param placeList The list of place in Ernest's local space memory.
 	 */
 	public void setSalienceList(ArrayList<IPlace> placeList);
 
+	/**
+	 * Update the local space memory according to the agent's moves.
+	 * @param translation The translation value (provide the opposite value from the agent's movement).
+	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
+	 */
+	public void update(float translation, float rotation);
 }
