@@ -207,7 +207,7 @@ public class Spas implements ISpas
 			return Integer.toString(i, 16).toUpperCase();
 	}
 
-	public void update(float translation, float rotation) 
+	public void update(Vector3f translation, float rotation) 
 	{
 		m_localSpaceMemory.update(translation, rotation);
 		// TODO Auto-generated method stub

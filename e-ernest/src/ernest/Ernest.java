@@ -2,6 +2,8 @@ package ernest;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Vector3f;
+
 import spas.IObservation;
 import spas.IPlace;
 import spas.ISpas;
@@ -19,9 +21,12 @@ import imos.Imos;
  */
 public class Ernest implements IErnest 
 {
-	/** A big value that can represent infinite for diverse purpose. */
-	public static final int INFINITE = 1000;
+	/** A multiplication factor when we need decimal precision but still use integers. */		
+	public static final int INT_FACTOR = 1000;
 	
+	/** A big value that can represent infinite for diverse purpose. */	
+	public static final int INFINITE = 1000 * INT_FACTOR;
+
 	/** Ernest's retina resolution  */
 	public static int RESOLUTION_RETINA = 12;
 	public static int CENTER_RETINA = 0; //55; 
@@ -237,15 +242,24 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Ernest's main process in the case of an environment that provides a matrix of stimuli.
-	 * @param stimuli The matrix of stimuli privided by the environment.
+	 * Update Ernest when the environment is refreshed.
+	 * May trigger a new cognitive loop
+	 * @param stimuli The matrix of stimuli provided by the environment.
 	 * @return The next primitive schema to enact.
 	 */
 	public int[] update(int[][] stimuli) 
 	{
 		int primitiveSchema[] = new int[2];
+		float translationx = (float) stimuli[2][8] / INT_FACTOR; 
+		float translationy = (float) stimuli[3][8] / INT_FACTOR;
+		float rotation = (float) stimuli[4][8] / INT_FACTOR;
+		float speed = (float) stimuli[5][8] / INT_FACTOR;
 
-        if ((stimuli[4][8] <= 50) && (Math.abs(stimuli[3][8]) <= 50))
+		// Update the local space memory
+    	m_spas.update(new Vector3f(-translationx, -translationy, 0), - rotation);
+
+    	// Trigger a new cognitive loop when the speed is below a threshold.
+        if ((speed <= .050f) && (Math.abs(rotation) <= .050f))
         {
         	primitiveSchema = step(stimuli);
         }
