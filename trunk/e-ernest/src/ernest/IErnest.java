@@ -2,7 +2,7 @@ package ernest;
 
 import imos.IAct;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import spas.IObservation;
 import spas.IPlace;
@@ -90,6 +90,11 @@ public interface IErnest
 	/**
 	 * @param placeList The list of places in Ernest's local space memory.
 	 */
-	public void setPlaceList(ArrayList<IPlace> placeList);
+	public void setPlaceList(List<IPlace> placeList);
+	
+	/**
+	 * @return The list of places in Ernest's local space memory.
+	 */
+	public List<IPlace> getPlaceList();
 	
 }

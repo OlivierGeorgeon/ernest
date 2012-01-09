@@ -78,7 +78,7 @@ public class Spas implements ISpas
 		int maxAttractiveness = 0;
 		IPlace focusPlace = null;
 		//for (ISalience salience : attractiveSaliences)
-		for (IPlace place : m_localSpaceMemory.getPlaces())
+		for (IPlace place : m_localSpaceMemory.getPlaceList())
 		{
 			int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
 			if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
@@ -142,7 +142,7 @@ public class Spas implements ISpas
 	 * Set the list of saliences from the list provided by VacuumSG.
 	 * @param salienceList The list of saliences provided by VacuumSG.
 	 */
-	public void setSalienceList(ArrayList<IPlace> placeList)
+	public void setSalienceList(List<IPlace> placeList)
 	{
 		m_placeList = placeList;
 	}
@@ -210,8 +210,10 @@ public class Spas implements ISpas
 	public void update(Vector3f translation, float rotation) 
 	{
 		m_localSpaceMemory.update(translation, rotation);
-		// TODO Auto-generated method stub
-		
 	}
 
+	public List<IPlace> getPlaceList()
+	{
+		return m_localSpaceMemory.getPlaceList();
+	}
 }

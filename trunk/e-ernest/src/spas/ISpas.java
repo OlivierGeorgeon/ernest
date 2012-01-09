@@ -3,6 +3,7 @@ package spas;
 import imos.IAct;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.vecmath.Vector3f;
 
@@ -60,7 +61,7 @@ public interface ISpas
 	 * Set the place list (from Simon's local space map).
 	 * @param placeList The list of place in Ernest's local space memory.
 	 */
-	public void setSalienceList(ArrayList<IPlace> placeList);
+	public void setSalienceList(List<IPlace> placeList);
 
 	/**
 	 * Update the local space memory according to the agent's moves.
@@ -68,4 +69,10 @@ public interface ISpas
 	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
 	 */
 	public void update(Vector3f translation, float rotation);
+
+	/**
+	 * @return The list of places in Ernest's local space memory.
+	 */
+	public List<IPlace> getPlaceList();
+	
 }
