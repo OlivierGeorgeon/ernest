@@ -430,7 +430,7 @@ public class LocalSpaceMemory
 		return value;
 	}
 	
-	public List<IPlace> getPlaces()
+	public List<IPlace> getPlaceList()
 	{
 		return m_places;
 	}
