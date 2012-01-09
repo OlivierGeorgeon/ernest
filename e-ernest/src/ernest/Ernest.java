@@ -4,8 +4,6 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
-import java.util.List;
-
 import spas.IObservation;
 import spas.IPlace;
 import spas.ISpas;
@@ -287,12 +285,12 @@ public class Ernest implements IErnest
 		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
 
-	public void setPlaceList(List<IPlace> placeList)
+	public void setPlaceList(ArrayList<IPlace> placeList)
 	{
 		m_spas.setSalienceList(placeList);
 	}
 
-	public List<IPlace> getPlaceList()
+	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_spas.getPlaceList();
 	}

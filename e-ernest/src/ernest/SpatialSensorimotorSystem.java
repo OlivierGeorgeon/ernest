@@ -1,5 +1,7 @@
 package ernest;
 
+import javax.vecmath.Vector3f;
+
 import imos.IAct;
 
 import org.w3c.dom.Element;
@@ -34,8 +36,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		IStimulation[] visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
+		{
 			visualStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
-
+			float angle = (float) (- 11 * Math.PI/24 + i * Math.PI/12); 
+			Vector3f pos = new Vector3f((float) Math.cos(angle) * stimuli[i][0] / Ernest.INT_FACTOR, (float) Math.sin(angle) * stimuli[i][0] / Ernest.INT_FACTOR, 0);
+			visualStimulations[i].setPosition(pos);
+		}
 		if (m_tracer != null) 
 		{
 			Object retinaElmt = m_tracer.addEventElement("retina");
@@ -47,12 +53,15 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		IStimulation [] tactileStimulations = new IStimulation[9];
 		
-//		for (int j = 0; j < 3; j++)
-//			for (int i = 0; i < 3; i++)
-//				tactileSimulations[i][j] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9 + j]);
 		for (int i = 0; i < 9; i++)
+		{
 			tactileStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9]);
-
+//			float angle = (float) (- 3 * Math.PI/4 + i * Math.PI/4); 
+//			Vector3f pos = new Vector3f((float) Math.cos(angle) * Ernest.TACTILE_RADIUS, (float) Math.sin(angle) * Ernest.TACTILE_RADIUS, 0);
+//			if (i == 8) pos.set(0, 0, 0); 
+//			visualStimulations[i].setPosition(pos);
+		}
+			
 //		tactileSimulations[0] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[0][9], LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
 		
 		if (m_tracer != null)

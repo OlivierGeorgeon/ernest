@@ -73,6 +73,6 @@ public interface ISpas
 	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
-	public List<IPlace> getPlaceList();
+	public ArrayList<IPlace> getPlaceList();
 	
 }
