@@ -26,7 +26,7 @@ public class LocalSpaceMemory
 	public static float DISTANCE_VISUAL_BACKGROUND = 10f;
 	
 	/** The Local space structure. */
-	private List<IPlace> m_places = new ArrayList<IPlace>();
+	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
 
 	/** The persistence memory. */
 	PersistenceMemory m_persistenceMemory;
@@ -82,6 +82,7 @@ public class LocalSpaceMemory
 		float theta = - 11 * (float)Math.PI / 24; 
 		float sumDirection = theta;
 		float spanf = (float)Math.PI / 12;
+		float sumDistance = visualStimulations[0].getPosition().length();
 		for (int i = 1 ; i <= Ernest.RESOLUTION_RETINA; i++)
 		{
 			theta += (float)Math.PI / 12;
@@ -91,6 +92,7 @@ public class LocalSpaceMemory
 				span++;
                 sumDirection += theta;
                 spanf += (float)Math.PI / 12;
+                sumDistance += visualStimulations[i].getPosition().length();
 			}
 			else 
 			{	
@@ -99,10 +101,9 @@ public class LocalSpaceMemory
 				if (b == null)
 					b = m_persistenceMemory.addBundle(stimulation.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 				// Record the place in the visual background.
-				//IPlace place = addPlace(b, DISTANCE_VISUAL_BACKGROUND, sumDirection / span);
-				IPlace place = new Place(b,DISTANCE_VISUAL_BACKGROUND, sumDirection / span, spanf);
+				//IPlace place = new Place(b,DISTANCE_VISUAL_BACKGROUND, sumDirection / span, spanf);
+				IPlace place = new Place(b,sumDistance / span, sumDirection / span, spanf);
 				m_places.add(place);
-				//place.setSpan(spanf);
 				// look for the next bundle
 				
 				if (i < Ernest.RESOLUTION_RETINA)
@@ -111,6 +112,7 @@ public class LocalSpaceMemory
 					span = 1;
 					spanf = (float)Math.PI / 12;
 					sumDirection = theta;
+					sumDistance = visualStimulations[i].getPosition().length();
 				}
 			}
 		}
@@ -430,7 +432,7 @@ public class LocalSpaceMemory
 		return value;
 	}
 	
-	public List<IPlace> getPlaceList()
+	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_places;
 	}

@@ -12,9 +12,8 @@ import ernest.ITracer;
  * A bundle may correspond to a physical object according to Hume's bundle theory (http://en.wikipedia.org/wiki/Bundle_theory)
  * @author Olivier
  */
-public class Bundle implements IBundle {
-
-	//ISalience m_visualSalience;
+public class Bundle implements IBundle 
+{
 	int m_visualValue;
 	int m_tactileValue;
 	int m_kinematicValue;

@@ -212,7 +212,7 @@ public class Spas implements ISpas
 		m_localSpaceMemory.update(translation, rotation);
 	}
 
-	public List<IPlace> getPlaceList()
+	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_localSpaceMemory.getPlaceList();
 	}

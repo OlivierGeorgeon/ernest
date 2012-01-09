@@ -36,10 +36,10 @@ public class Stimulation implements IStimulation
 //		m_position = position;
 //	}
 	
-//	public void setPosition(Vector3f position) 
-//	{
-//		m_position = position;
-//	}
+	public void setPosition(Vector3f position) 
+	{
+		m_position = position;
+	}
 
 	public Vector3f getPosition() 
 	{

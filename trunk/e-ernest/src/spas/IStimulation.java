@@ -22,7 +22,7 @@ public interface IStimulation
 	/**
 	 * @param position The stimulation's position in egocentric coordinates.
 	 */
-	//void setPosition(Vector3f position);
+	void setPosition(Vector3f position);
 	
 	/**
 	 * @return The type of the stimulus 
