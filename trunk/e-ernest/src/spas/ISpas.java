@@ -4,6 +4,8 @@ import imos.IAct;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Vector3f;
+
 import ernest.ITracer;
 
 
@@ -65,5 +67,5 @@ public interface ISpas
 	 * @param translation The translation value (provide the opposite value from the agent's movement).
 	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
 	 */
-	public void update(float translation, float rotation);
+	public void update(Vector3f translation, float rotation);
 }

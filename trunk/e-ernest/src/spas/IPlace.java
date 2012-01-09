@@ -34,7 +34,7 @@ public interface IPlace {
 	 * Translate this location along the agent's axis.
 	 * @param distance The translation distance.
 	 */
-	public void translate(float distance);
+	public void translate(Vector3f translation);
 
 	/**
 	 * Test if this place is at this position.

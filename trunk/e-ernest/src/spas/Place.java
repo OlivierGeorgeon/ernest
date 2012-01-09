@@ -67,9 +67,9 @@ public class Place implements IPlace
 		
 	}
 
-	public void translate(float distance) 
+	public void translate(Vector3f translation) 
 	{
-		m_position.add(new Vector3f (distance, 0, 0));
+		m_position.add(translation);
 	}
 	
 	public boolean isInCell(Vector3f position)

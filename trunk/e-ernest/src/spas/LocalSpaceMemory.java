@@ -286,7 +286,7 @@ public class LocalSpaceMemory
 		if (act != null)
 		{
 			if (act.getSchema().getLabel().equals(">") && kinematicStimulation.getValue() != Ernest.STIMULATION_KINEMATIC_BUMP)
-				translate(-1f);
+				translate(new Vector3f(-1f, 0,0));
 			else if (act.getSchema().getLabel().equals("^"))
 				rotate(- (float)Math.PI / 4);
 			else if (act.getSchema().getLabel().equals("v"))
@@ -299,7 +299,7 @@ public class LocalSpaceMemory
 	 * @param translation The translation value (provide the opposite value from the agent's movement).
 	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
 	 */
-	public void update(float translation, float rotation)
+	public void update(Vector3f translation, float rotation)
 	{
 		translate(translation);
 		rotate(rotation);
@@ -322,10 +322,10 @@ public class LocalSpaceMemory
 	 * Remove locations that are left behind.
 	 * @param distance The distance (provide the opposite value from the agent's movement).
 	 */
-	private void translate(float distance)
+	private void translate(Vector3f translation)
 	{
-		for (IPlace l : m_places)
-			l.translate(distance);
+		for (IPlace p : m_places)
+			p.translate(translation);
 			
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
