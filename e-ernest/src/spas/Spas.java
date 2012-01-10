@@ -90,7 +90,7 @@ public class Spas implements ISpas
 
 		mAttention = focusPlace.getBundle().getVisualValue();
 
-		m_localSpaceMemory.clearBackground();
+		// m_localSpaceMemory.clearBackground();
 		
 		// Trace the focus bundle and the local space memory.
 		if (m_tracer != null && focusPlace != null) 

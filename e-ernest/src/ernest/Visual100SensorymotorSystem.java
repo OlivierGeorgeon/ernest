@@ -1,5 +1,7 @@
 package ernest;
 
+import javax.vecmath.Vector3f;
+
 import imos.IAct;
 
 import org.w3c.dom.Element;
@@ -31,8 +33,12 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		
 		IStimulation[] visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
+		{
 			visualStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
-
+			float angle = (float) (- 11 * Math.PI/24 + i * Math.PI/12); 
+			Vector3f pos = new Vector3f((float) Math.cos(angle) * stimuli[i][0] / Ernest.INT_FACTOR, (float) Math.sin(angle) * stimuli[i][0] / Ernest.INT_FACTOR, 0);
+			visualStimulations[i].setPosition(pos);
+		}
 		if (m_tracer != null) 
 		{
 			Object retinaElmt = m_tracer.addEventElement("retina");

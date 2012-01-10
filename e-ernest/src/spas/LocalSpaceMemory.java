@@ -332,9 +332,9 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace l = (IPlace)it.next();
-			if (l.getPosition().length() > LOCAL_SPACE_MEMORY_RADIUS)
+			//if (l.getPosition().length() > LOCAL_SPACE_MEMORY_RADIUS)
 			//if (l.getPosition().x < - LOCAL_SPACE_MEMORY_RADIUS)
-				it.remove();
+			//	it.remove();
 		}		
 	}
 	
