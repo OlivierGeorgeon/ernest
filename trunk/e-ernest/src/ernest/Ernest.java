@@ -254,12 +254,13 @@ public class Ernest implements IErnest
 		float translationy = (float) stimuli[3][8] / INT_FACTOR;
 		float rotation = (float) stimuli[4][8] / INT_FACTOR;
 		float speed = (float) stimuli[5][8] / INT_FACTOR;
+		int cognitiveMode = stimuli[6][8];
 
 		// Update the local space memory
     	m_spas.update(new Vector3f(-translationx, -translationy, 0), - rotation);
 
     	// Trigger a new cognitive loop when the speed is below a threshold.
-        if ((speed <= .050f) && (Math.abs(rotation) <= .050f))
+        if ((speed <= .050f) && (Math.abs(rotation) <= .050f) && cognitiveMode > 0)
         {
         	primitiveSchema = step(stimuli);
         }
