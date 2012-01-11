@@ -22,7 +22,7 @@ public class LocalSpaceMemory
 	
 	/** The radius of a location. */
 	public static float LOCATION_RADIUS = 0.5f;
-	public static float LOCAL_SPACE_MEMORY_RADIUS = 2f;
+	public static float LOCAL_SPACE_MEMORY_RADIUS = 3f;
 	public static float DISTANCE_VISUAL_BACKGROUND = 10f;
 	
 	/** The Local space structure. */
@@ -332,15 +332,16 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace l = (IPlace)it.next();
-			//if (l.getPosition().length() > LOCAL_SPACE_MEMORY_RADIUS)
+			if (l.getPosition().length() > LOCAL_SPACE_MEMORY_RADIUS)
 			//if (l.getPosition().x < - LOCAL_SPACE_MEMORY_RADIUS)
-			//	it.remove();
+				it.remove();
 		}		
 	}
 	
 	private IPlace seePlace(float direction)
 	{
 		IPlace place = null;
+
 		for (IPlace l : m_places)
 		{
 			if (l.getDirection() - l.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
@@ -359,13 +360,14 @@ public class LocalSpaceMemory
 	 */
 	public IBundle getBundle(Vector3f position)
 	{
+		IBundle b = null;
 		for (IPlace l : m_places)
 		{
 			if (l.isInCell(position))
-				return l.getBundle();
-		}		
+				b = l.getBundle();
+		}	
 
-		return null;
+		return b;
 	}
 
 	/**
@@ -393,7 +395,7 @@ public class LocalSpaceMemory
 			IPlace l = (IPlace)it.next();
 			if (l.getDistance() > DISTANCE_VISUAL_BACKGROUND - 1)
 				it.remove();
-		}		
+		}
 	}
 	
 	/**
