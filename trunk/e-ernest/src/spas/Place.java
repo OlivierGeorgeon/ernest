@@ -62,6 +62,7 @@ public class Place implements IPlace
 		
 		Vector3f oldPosition = m_position;
 		rot.transform(oldPosition, m_position); // (rot * m_position) is placed into m_position
+		
 		//parentVec.add(new Vector3f(m_x, m_y, 0));
 		//parentVec.add(mPosition); // now parentVec = (rotZ(mOrientation.z) * localVec) + mPosition.
 		

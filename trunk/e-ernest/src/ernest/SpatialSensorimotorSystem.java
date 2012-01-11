@@ -237,21 +237,28 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	
 	public int impulsion(int intentionSchema) 
 	{
+		int impulsion = 0;
+		
 		if (intentionSchema == '>')
 		{
-			return (int)(TRANSLATION_IMPULSION * 1000);
-//			if (m_observation.getPlace().getDistance() < .5f)
-//				return 500;
-//			if (m_observation.getPlace().getDistance() < 1.5f)
-//				return (int)(m_observation.getPlace().getDistance() * 1000);
-//			else
-//				return 1500;
+			impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR);
+			if (m_observation.getPlace().getDistance() < .5f)
+				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * .5f);
+			if (m_observation.getPlace().getDistance() < 1.2f)
+				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * m_observation.getPlace().getDistance());
+			else
+				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * 1.2f);
 		}
 		if (intentionSchema == '^' || intentionSchema == 'v' )
-			return (int)(ROTATION_IMPULSION * 1000);
-			//return (int)(Math.PI/4 * 1000);
+		{ 
+			impulsion = (int)(ROTATION_IMPULSION * Ernest.INT_FACTOR);
+			if (Math.abs(m_observation.getPlace().getDirection()) > Math.PI/8)
+				impulsion = (int)(ROTATION_IMPULSION * Ernest.INT_FACTOR * Math.abs(m_observation.getPlace().getDirection()) / (Math.PI/4));
+			if (impulsion > 2 * ROTATION_IMPULSION * Ernest.INT_FACTOR)
+				impulsion = (int)(2 * ROTATION_IMPULSION * Ernest.INT_FACTOR);
+			
 			//return (int)(Math.abs(m_observation.getPlace().getDirection()) * 1000);
-		
-		return 0;
+		}
+		return impulsion;
 	}
 }
