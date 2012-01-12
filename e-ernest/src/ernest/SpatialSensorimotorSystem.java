@@ -105,9 +105,9 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		{
 			m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
 			Object e = m_tracer.addEventElement("current_observation");
-			m_tracer.addSubelement(e, "direction", newObservation.getPlace().getDirection() + "");
-			m_tracer.addSubelement(e, "distance", newObservation.getPlace().getDistance() + "");
-			m_tracer.addSubelement(e, "span", newObservation.getPlace().getSpan() + "");
+			m_tracer.addSubelement(e, "direction", newObservation.getDirection() + "");
+			m_tracer.addSubelement(e, "distance", newObservation.getDistance() + "");
+			m_tracer.addSubelement(e, "span", newObservation.getSpan() + "");
 			m_tracer.addSubelement(e, "attractiveness", newObservation.getAttractiveness() + "");
 			m_tracer.addSubelement(e, "stimuli", m_stimuli);
 			m_tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
@@ -130,9 +130,9 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	private void setDynamicFeature(IAct act, IObservation previousObservation, IObservation newObservation)
 	{
 		int   newAttractiveness = newObservation.getAttractiveness();
-		float newDirection = newObservation.getPlace().getDirection();
+		float newDirection = newObservation.getDirection();
 		int   previousAttractiveness = previousObservation.getAttractiveness();
-		float previousDirection = previousObservation.getPlace().getDirection();
+		float previousDirection = previousObservation.getDirection();
 		
 		String dynamicFeature = "";
 		
@@ -242,18 +242,18 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		if (intentionSchema == '>')
 		{
 			impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR);
-			if (m_observation.getPlace().getDistance() < .5f)
+			if (m_observation.getDistance() < .5f)
 				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * .5f);
-			if (m_observation.getPlace().getDistance() < 1.1f)
-				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * m_observation.getPlace().getDistance());
+			if (m_observation.getDistance() < 1.1f)
+				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * m_observation.getDistance());
 			else
 				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * 1.1f);
 		}
 		if (intentionSchema == '^' || intentionSchema == 'v' )
 		{ 
 			impulsion = (int)(ROTATION_IMPULSION * Ernest.INT_FACTOR);
-			if (Math.abs(m_observation.getPlace().getDirection()) > Math.PI/8)
-				impulsion = (int)(ROTATION_IMPULSION * Ernest.INT_FACTOR * Math.abs(m_observation.getPlace().getDirection()) / (Math.PI/4));
+			if (Math.abs(m_observation.getDirection()) > Math.PI/8)
+				impulsion = (int)(ROTATION_IMPULSION * Ernest.INT_FACTOR * Math.abs(m_observation.getDirection()) / (Math.PI/4));
 			if (impulsion > 2 * ROTATION_IMPULSION * Ernest.INT_FACTOR)
 				impulsion = (int)(2 * ROTATION_IMPULSION * Ernest.INT_FACTOR);
 			

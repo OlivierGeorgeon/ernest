@@ -22,7 +22,7 @@ public class LocalSpaceMemory
 	
 	/** The radius of a location. */
 	public static float LOCATION_RADIUS = 0.5f;
-	public static float LOCAL_SPACE_MEMORY_RADIUS = 3f;
+	public static float LOCAL_SPACE_MEMORY_RADIUS = 4f;
 	public static float DISTANCE_VISUAL_BACKGROUND = 10f;
 	
 	/** The Local space structure. */
@@ -399,7 +399,8 @@ public class LocalSpaceMemory
 	}
 	
 	/**
-	 * Clear the places in the visual background.
+	 * Clear the places in front (but not below Ernest) 
+	 * (will be replaced by new seen places).
 	 * @param position The position to clear.
 	 */
 	public void clearFront()
@@ -407,7 +408,8 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace l = (IPlace)it.next();
-			if (l.getDirection() > - Math.PI/4 && l.getDirection() < Math.PI/4 )
+			if (l.getDirection() > - Math.PI/2 && l.getDirection() < Math.PI/2 &&
+				l.getDistance() > 1)
 				it.remove();
 		}
 	}

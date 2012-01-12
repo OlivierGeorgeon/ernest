@@ -99,9 +99,9 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		{
 			m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
 			Object e = m_tracer.addEventElement("current_observation");
-			m_tracer.addSubelement(e, "direction", newObservation.getPlace().getDirection() + "");
-			m_tracer.addSubelement(e, "distance", newObservation.getPlace().getDistance() + "");
-			m_tracer.addSubelement(e, "span", newObservation.getPlace().getSpan() + "");
+			m_tracer.addSubelement(e, "direction", newObservation.getDirection() + "");
+			m_tracer.addSubelement(e, "distance", newObservation.getDistance() + "");
+			m_tracer.addSubelement(e, "span", newObservation.getSpan() + "");
 			m_tracer.addSubelement(e, "attractiveness", newObservation.getAttractiveness() + "");
 			m_tracer.addSubelement(e, "stimuli", m_stimuli);
 			m_tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
@@ -124,9 +124,9 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 	private void setDynamicFeature(IAct act, IObservation previousObservation, IObservation newObservation)
 	{
 		int   newAttractiveness = newObservation.getAttractiveness();
-		float newDirection = newObservation.getPlace().getDirection();
+		float newDirection = newObservation.getDirection();
 		int   previousAttractiveness = previousObservation.getAttractiveness();
-		float previousDirection = previousObservation.getPlace().getDirection();
+		float previousDirection = previousObservation.getDirection();
 		
 		String dynamicFeature = "";
 		
@@ -237,10 +237,10 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 	{
 		if (intentionSchema == '>')
 		{
-			if (m_observation.getPlace().getDistance() < .5f)
+			if (m_observation.getDistance() < .5f)
 				return 500;
-			if (m_observation.getPlace().getDistance() < 1.5f)
-				return (int)(m_observation.getPlace().getDistance() * 1000);
+			if (m_observation.getDistance() < 1.5f)
+				return (int)(m_observation.getDistance() * 1000);
 			else
 				return 1500;
 		}

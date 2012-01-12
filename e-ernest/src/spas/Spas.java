@@ -111,7 +111,9 @@ public class Spas implements ISpas
 		observation.setGustatory(gustatoryStimulation);
 		observation.setKinematic(kinematicStimulation);
 		observation.setAttractiveness(maxAttractiveness);
-		observation.setPlace(focusPlace);
+		//observation.setPlace(new Place(focusPlace));
+		observation.setPosition(focusPlace.getPosition());
+		observation.setSpan(focusPlace.getSpan());
 		
 		return observation;
 	}
@@ -162,28 +164,28 @@ public class Spas implements ISpas
 
 		// Check right
 		IBundle bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_RIGHT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[1].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_RIGHT);
-//
-//		// Check ahead right
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[2].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[1].getValue())
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_RIGHT);
+
+		// Check ahead right
+		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[2].getValue())
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
 
 		// Check ahead 
 		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
 		if (bundle != null && bundle.getTactileValue() != tactileStimulations[3].getValue())
 			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD);
 
-//		// Check ahead left
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[4].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
-//
-//		// Check left
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_LEFT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[5].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_LEFT);
+		// Check ahead left
+		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[4].getValue())
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
+
+		// Check left
+		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_LEFT);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[5].getValue())
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_LEFT);
 
 		// Check here
 		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_HERE);
@@ -191,19 +193,19 @@ public class Spas implements ISpas
 			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_HERE);
 
 		// Check behind left
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND_LEFT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND_LEFT);
-//
-//		// Check behind right
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
-//
-//		// Check behind
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND);
+		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND_LEFT);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[6].getValue())
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND_LEFT);
+
+		// Check behind right
+		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[0].getValue())
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
+
+		// Check behind
+		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND);
+		if (bundle != null && bundle.getTactileValue() != tactileStimulations[7].getValue())
+			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND);
 
 	}
 	private String getHexColor(int rgb) 
