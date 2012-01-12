@@ -1,5 +1,7 @@
 package spas;
 
+import javax.vecmath.Vector3f;
+
 
 /**
  * An observation holds the significant consequences that the enacted interaction had on the spatial system.
@@ -10,16 +12,17 @@ package spas;
 public interface IObservation 
 {
 	/**
-	 * @param direction The direction of the salience of current attention.
-	 * Radian trigonometric in egocentric referential.
+	 * @param position The position of the focus place.
 	 */
-	//public void setDirection(float direction);
+	public void setPosition(Vector3f position);
+	public void setSpan(float span);
 	
 	/**
-	 * @return The direction of the salience of current attention.
-	 * Radian trigonometric in egocentric referential.
+	 * @return The direction of the focus place.
 	 */
-	//public float getDirection();
+	public float getDirection();
+	public float getDistance();
+	public float getSpan();
 	
 	/**
 	 * @param attractiveness The attractiveness of the salience of current attention.
@@ -51,6 +54,6 @@ public interface IObservation
 	 */
 	public IStimulation getGustatoryStimulation();
 	
-	public void setPlace(IPlace place);
-	public IPlace getPlace();
+//	public void setPlace(IPlace place);
+//	public IPlace getPlace();
 }

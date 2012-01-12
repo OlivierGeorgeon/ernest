@@ -1,5 +1,7 @@
 package spas;
 
+import javax.vecmath.Vector3f;
+
 import ernest.Ernest;
 
 /**
@@ -15,8 +17,9 @@ public class Observation implements IObservation
 	//private float m_direction = Ernest.CENTER_RETINA;
 	
 	//private float m_distance = 1;
-	//private float m_span = 0;
-	private IPlace m_place = null;
+	private float m_span = 0;
+	//private IPlace m_place = null;
+	private Vector3f m_position = new Vector3f();
 
 	/** The attractiveness of Ernest's interest. */
 	private int m_attractiveness = 0;
@@ -57,13 +60,38 @@ public class Observation implements IObservation
 		return m_gustatoryStimulation;
 	}
 
-	public void setPlace(IPlace place) 
+//	public void setPlace(IPlace place) 
+//	{
+//		m_place = place;
+//	}
+//
+//	public IPlace getPlace() 
+//	{
+//		return m_place;
+//	}
+
+	public void setPosition(Vector3f position) 
 	{
-		m_place = place;
+		m_position.set(position);
 	}
 
-	public IPlace getPlace() 
+	public float getDirection() 
 	{
-		return m_place;
+		return (float)Math.atan2((double)m_position.y, (double)m_position.x);
+	}
+
+	public float getDistance() 
+	{
+		return m_position.length();
+	}
+
+	public void setSpan(float span) 
+	{
+		m_span = span;
+	}
+
+	public float getSpan() 
+	{
+		return m_span;
 	}
 }
