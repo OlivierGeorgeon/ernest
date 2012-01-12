@@ -61,6 +61,8 @@ public class Spas implements ISpas
 		//List<IPlace> places;
 		//places = getPrimitivePlaces(visualStimulations, tactileStimulations); // Places computed by Ernest.
 		
+		//m_localSpaceMemory.clearFront();
+		
 		m_localSpaceMemory.addVisualPlaces(visualStimulations);
 		m_localSpaceMemory.addTactilePlaces(tactileStimulations);
 		
@@ -80,6 +82,7 @@ public class Spas implements ISpas
 		//for (ISalience salience : attractiveSaliences)
 		for (IPlace place : m_localSpaceMemory.getPlaceList())
 		{
+			place.setFocus(false);
 			int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
 			if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
 			{
@@ -88,9 +91,10 @@ public class Spas implements ISpas
 			}
 		}
 
+		focusPlace.setFocus(true);
 		mAttention = focusPlace.getBundle().getVisualValue();
 
-		m_localSpaceMemory.clearBackground();
+		//m_localSpaceMemory.clearBackground();
 		
 		// Trace the focus bundle and the local space memory.
 		if (m_tracer != null && focusPlace != null) 
@@ -171,7 +175,7 @@ public class Spas implements ISpas
 		if (bundle != null && bundle.getTactileValue() != tactileStimulations[3].getValue())
 			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD);
 
-		// Check ahead left
+//		// Check ahead left
 //		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
 //		if (bundle != null && bundle.getTactileValue() != tactileStimulations[4].getValue())
 //			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
@@ -185,6 +189,21 @@ public class Spas implements ISpas
 		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_HERE);
 		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
 			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_HERE);
+
+		// Check behind left
+//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND_LEFT);
+//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
+//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND_LEFT);
+//
+//		// Check behind right
+//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
+//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
+//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
+//
+//		// Check behind
+//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND);
+//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
+//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND);
 
 	}
 	private String getHexColor(int rgb) 
@@ -209,6 +228,9 @@ public class Spas implements ISpas
 
 	public void update(Vector3f translation, float rotation) 
 	{
+		// Clear previous background
+		//m_localSpaceMemory.clearBackground();
+
 		m_localSpaceMemory.update(translation, rotation);
 	}
 

@@ -83,5 +83,8 @@ public interface IPlace {
 	 * @return True if this place is frontal. 
 	 */
 	public boolean isFrontal();
+	
+	public void setFocus(boolean focus);
+	public boolean getFocus();
 
 }
