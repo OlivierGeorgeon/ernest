@@ -17,6 +17,8 @@ public class Place implements IPlace
 	float m_span;
 	int m_attractiveness;
 	
+	boolean m_focus;
+	
 	/**
 	 * @param bundle This place's bundle.
 	 * @param distance This place's distance.
@@ -174,4 +176,13 @@ public class Place implements IPlace
 		m_position = position;
 	}
 
+	public void setFocus(boolean focus) 
+	{
+		m_focus = focus;
+	}
+
+	public boolean getFocus() 
+	{
+		return m_focus;
+	}
 }

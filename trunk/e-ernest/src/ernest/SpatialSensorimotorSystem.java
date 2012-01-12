@@ -244,10 +244,10 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR);
 			if (m_observation.getPlace().getDistance() < .5f)
 				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * .5f);
-			if (m_observation.getPlace().getDistance() < 1.2f)
+			if (m_observation.getPlace().getDistance() < 1.1f)
 				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * m_observation.getPlace().getDistance());
 			else
-				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * 1.2f);
+				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * 1.1f);
 		}
 		if (intentionSchema == '^' || intentionSchema == 'v' )
 		{ 

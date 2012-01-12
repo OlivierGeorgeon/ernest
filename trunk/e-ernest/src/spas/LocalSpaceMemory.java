@@ -385,7 +385,7 @@ public class LocalSpaceMemory
 	}
 	
 	/**
-	 * Clear a location in the local space memory.
+	 * Clear the places in the visual background.
 	 * @param position The position to clear.
 	 */
 	public void clearBackground()
@@ -394,6 +394,20 @@ public class LocalSpaceMemory
 		{
 			IPlace l = (IPlace)it.next();
 			if (l.getDistance() > DISTANCE_VISUAL_BACKGROUND - 1)
+				it.remove();
+		}
+	}
+	
+	/**
+	 * Clear the places in the visual background.
+	 * @param position The position to clear.
+	 */
+	public void clearFront()
+	{
+		for (Iterator it = m_places.iterator(); it.hasNext();)
+		{
+			IPlace l = (IPlace)it.next();
+			if (l.getDirection() > - Math.PI/4 && l.getDirection() < Math.PI/4 )
 				it.remove();
 		}
 	}
