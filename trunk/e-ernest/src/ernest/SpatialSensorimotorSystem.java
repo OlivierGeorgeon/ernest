@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import spas.IObservation;
 import spas.IStimulation;
 import spas.LocalSpaceMemory;
+import spas.Observation;
 import spas.Stimulation;
 
 /**
@@ -24,14 +25,39 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	private String m_visualStimuli = "";
 	private String m_stimuli = "";
 	private int m_satisfaction = 0;
+	private boolean m_status;
 
 	final static float TRANSLATION_IMPULSION = .15f; // .13f
 	final static float ROTATION_IMPULSION = 0.123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
 
 	public IAct enactedAct(IAct act, int[][] stimuli) 
 	{
-		IStimulation kinematicStimulation;
+		// If the intended act was null (during the first cycle), then the enacted act is null.
+		IAct enactedAct = null;		
+
+		// Sense the environment ===
 		
+		sense(stimuli);
+		
+		// Compute the enacted act == 
+		
+		if (act != null)
+		{
+			if (act.getSchema().getLabel().equals(">"))
+				m_satisfaction = m_satisfaction + (m_status ? 20 : -100);
+			else
+				m_satisfaction = m_satisfaction + (m_status ? -10 : -20);
+		
+			enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), m_stimuli, m_satisfaction);
+
+			if (m_tracer != null) 
+				m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
+		}
+		return enactedAct;
+	}
+	
+	public void sense(int[][] stimuli)
+	{
 		// Vision =====
 		
 		IStimulation[] visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
@@ -56,14 +82,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		for (int i = 0; i < 9; i++)
 		{
 			tactileStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9]);
-//			float angle = (float) (- 3 * Math.PI/4 + i * Math.PI/4); 
-//			Vector3f pos = new Vector3f((float) Math.cos(angle) * Ernest.TACTILE_RADIUS, (float) Math.sin(angle) * Ernest.TACTILE_RADIUS, 0);
-//			if (i == 8) pos.set(0, 0, 0); 
-//			visualStimulations[i].setPosition(pos);
 		}
 			
-//		tactileSimulations[0] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[0][9], LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
-		
 		if (m_tracer != null)
 		{
 			Object s = m_tracer.addEventElement("tactile");
@@ -80,6 +100,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			
 		// Kinematic ====
 		
+		IStimulation kinematicStimulation;
+		
 		kinematicStimulation = m_spas.addStimulation(Ernest.STIMULATION_KINEMATIC, stimuli[1][8]);
 
 		// Taste =====
@@ -88,22 +110,15 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 
 		// Process the spatial implications of the enacted interaction ====
 		
-		IAct enactedAct = null;		
-		IObservation newObservation = m_spas.step(act, visualStimulations, tactileStimulations, kinematicStimulation, gustatoryStimulation);
-		
-		// Process the sequential implications of the enacted interaction ===
-		
-		// If the intended act was null (during the first cycle), then the enacted act is null.
-		if (act != null)
-		{
-			setDynamicFeature(act, m_observation, newObservation);
-			enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), m_stimuli, m_satisfaction);
-		}
-		
+		IObservation newObservation = m_spas.step(visualStimulations, tactileStimulations, kinematicStimulation, gustatoryStimulation);		
 
-		if (act != null && m_tracer != null) 
+		if (m_observation != null)
+			setDynamicFeature(m_observation, newObservation);
+
+		m_observation = newObservation;
+		
+		if (m_tracer != null) 
 		{
-			m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
 			Object e = m_tracer.addEventElement("current_observation");
 			m_tracer.addSubelement(e, "direction", newObservation.getDirection() + "");
 			m_tracer.addSubelement(e, "distance", newObservation.getDistance() + "");
@@ -115,9 +130,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			m_tracer.addSubelement(e, "kinematic", newObservation.getKinematicStimulation().getHexColor());
 			m_tracer.addSubelement(e, "gustatory", newObservation.getGustatoryStimulation().getHexColor());
 		}
-		m_observation = newObservation;
 
-		return enactedAct;
+		m_observation = newObservation;
 	}
 	
 	/**
@@ -127,12 +141,15 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	 * - The variation in attractiveness and in direction of the object of interest. 
 	 * @param act The enacted act.
 	 */
-	private void setDynamicFeature(IAct act, IObservation previousObservation, IObservation newObservation)
+	private void setDynamicFeature(IObservation previousObservation, IObservation newObservation)
 	{
 		int   newAttractiveness = newObservation.getAttractiveness();
 		float newDirection = newObservation.getDirection();
 		int   previousAttractiveness = previousObservation.getAttractiveness();
 		float previousDirection = previousObservation.getDirection();
+		
+		Vector3f relativeSpeed = new Vector3f(newObservation.getPosition());
+		relativeSpeed.sub(previousObservation.getPosition());
 		
 		String dynamicFeature = "";
 		
@@ -148,14 +165,16 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				// Attractiveness
 				if (previousAttractiveness > newAttractiveness)
 					// Farther
-					dynamicFeature = "-";		
+					dynamicFeature = "-";
 				else if (previousAttractiveness < newAttractiveness)
 					// Closer
 					dynamicFeature = "+";
-				else if (Math.abs(previousDirection) < Math.abs(newDirection))
+				//else if (Math.abs(previousDirection) < Math.abs(newDirection))
+				else if (relativeSpeed.y * newDirection > 0)
 					// More outward (or same direction, therefore another salience)
 					dynamicFeature = "-";
-				else if (Math.abs(previousDirection) > Math.abs(newDirection))
+				//else if (Math.abs(previousDirection) > Math.abs(newDirection))
+				else if (relativeSpeed.y * newDirection < 0)
 					// More inward
 					dynamicFeature = "+";
 		
@@ -183,10 +202,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			if (previousAttractiveness >= 0)
 				// A wall appeared with a part of it in front of Ernest
 				dynamicFeature = "*";		
-			else if (Math.abs(previousDirection) < Math.abs(newDirection))
+			//else if (Math.abs(previousDirection) < Math.abs(newDirection))
+			else if (relativeSpeed.y * newDirection > 0)
 				// The wall went more outward (Ernest closer to the edge)
 				dynamicFeature = "_";
-			else if (Math.abs(previousDirection) > Math.abs(newDirection))
+			//else if (Math.abs(previousDirection) > Math.abs(newDirection))
+			else if (relativeSpeed.y * newDirection < 0)
 				// The wall went more inward (Ernest farther to the edge)
 				dynamicFeature = "*";
 	
@@ -218,20 +239,10 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		// Kinematic
 		
-		boolean status = true;
-		if (newObservation.getKinematicStimulation().getValue() == Ernest.STIMULATION_KINEMATIC_BUMP) 
-			status = false;
+		m_status = (newObservation.getKinematicStimulation().getValue() != Ernest.STIMULATION_KINEMATIC_BUMP);
 		
-		dynamicFeature = (status ? " " : "w") + dynamicFeature;
-		if (act != null)
-		{
-			if (act.getSchema().getLabel().equals(">"))
-				satisfaction = satisfaction + (status ? 20 : -100);
-			else
-				satisfaction = satisfaction + (status ? -10 : -20);
-		}
-				
-		m_stimuli = dynamicFeature;
+		m_stimuli = (m_status ? " " : "w") + dynamicFeature;
+
 		m_satisfaction = satisfaction;
 	}
 	

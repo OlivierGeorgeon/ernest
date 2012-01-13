@@ -83,7 +83,7 @@ public class Visual100SensorymotorSystem  extends BinarySensorymotorSystem
 		// Process the spatial implications of the enacted interaction ====
 		
 		IAct enactedAct = null;		
-		IObservation newObservation = m_spas.step(act, visualStimulations, tactileStimulations, kinematicStimulation, gustatoryStimulation);
+		IObservation newObservation = m_spas.step(visualStimulations, tactileStimulations, kinematicStimulation, gustatoryStimulation);
 		
 		// Process the sequential implications of the enacted interaction ===
 		

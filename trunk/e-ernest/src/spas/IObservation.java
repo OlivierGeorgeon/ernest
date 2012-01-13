@@ -20,6 +20,7 @@ public interface IObservation
 	/**
 	 * @return The direction of the focus place.
 	 */
+	public Vector3f getPosition(); 
 	public float getDirection();
 	public float getDistance();
 	public float getSpan();

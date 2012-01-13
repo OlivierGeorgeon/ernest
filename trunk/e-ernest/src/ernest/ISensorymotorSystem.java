@@ -47,5 +47,5 @@ public interface ISensorymotorSystem
 	public IAct enactedAct(IAct act, int[][] matrix);
 	
 	public int impulsion(int intentionSchema);
-	
+	public void sense(int[][] stimuli);
 }

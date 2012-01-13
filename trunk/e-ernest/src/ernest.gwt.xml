@@ -3,4 +3,5 @@
   <source path="ernest"></source>
   <source path="imos"></source>
   <source path="spas"></source>
+  <source path="utils"></source>
 </module>
