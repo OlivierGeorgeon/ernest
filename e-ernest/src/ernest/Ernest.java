@@ -266,6 +266,7 @@ public class Ernest implements IErnest
         }
         else
         {
+        	m_sensorymotorSystem.sense(stimuli);
         	primitiveSchema[0] = 0;
         	primitiveSchema[1] = 0;
         }

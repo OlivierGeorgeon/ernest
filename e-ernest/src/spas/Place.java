@@ -3,6 +3,8 @@ package spas;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
+import utils.ErnestUtils;
+
 import ernest.Ernest;
 
 /**
@@ -84,8 +86,8 @@ public class Place implements IPlace
 		// Is in the same cell in egocentric polar referential.
 		if (m_position.length() < .5f && position.length() < .5f)
 			ret = true;
-		else if (Math.round(polarAngle(m_position) / (float)Math.PI * 4) ==
- 			     Math.round(polarAngle(  position) / (float)Math.PI * 4) &&
+		else if (Math.round(ErnestUtils.polarAngle(m_position) / (float)Math.PI * 4) ==
+ 			     Math.round(ErnestUtils.polarAngle(  position) / (float)Math.PI * 4) &&
  			     (Math.round(m_position.length()) == Math.round(position.length())))
 			ret = true;
 		else 
@@ -117,14 +119,15 @@ public class Place implements IPlace
 		return ret;
 	}
 
-	private float polarAngle(Vector3f v) 
-	{
-		return (float)Math.atan2((double)v.y, (double)v.x);
-	}
+//	private float polarAngle(Vector3f v) 
+//	{
+//		return (float)Math.atan2((double)v.y, (double)v.x);
+//	}
 
 	public float getDirection() 
 	{
-		return (float)Math.atan2((double)m_position.y, (double)m_position.x);
+		return ErnestUtils.polarAngle(m_position);
+		//return (float)Math.atan2((double)m_position.y, (double)m_position.x);
 	}
 
 	public float getDistance() 

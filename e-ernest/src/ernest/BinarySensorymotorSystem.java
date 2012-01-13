@@ -74,4 +74,7 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return 0;
 	}
 
+	public void sense(int[][] stimuli)
+	{
+	}
 }

@@ -2,6 +2,8 @@ package spas;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import utils.ErnestUtils;
 import ernest.Ernest;
 import ernest.ITracer;
 
@@ -178,22 +180,22 @@ public class Bundle implements IBundle
 		Object element = tracer.addEventElement(label);
 		
 		// Visual stimulation
-		tracer.addSubelement(element, "visual", hexColor(m_visualValue));
+		tracer.addSubelement(element, "visual", ErnestUtils.hexColor(m_visualValue));
 		
 		// Trace gustatory stimulation if not nothing.
 		if (m_gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
-			tracer.addSubelement(element, "gustatory", hexColor(m_gustatoryValue));
+			tracer.addSubelement(element, "gustatory", ErnestUtils.hexColor(m_gustatoryValue));
 		else
-			tracer.addSubelement(element, "gustatory", hexColor(m_visualValue));
+			tracer.addSubelement(element, "gustatory", ErnestUtils.hexColor(m_visualValue));
 		
 		// Tactile stimulation
-		tracer.addSubelement(element, "tactile", hexColor(m_tactileValue));
+		tracer.addSubelement(element, "tactile", ErnestUtils.hexColor(m_tactileValue));
 
 		// Only trace bump kinematic stimulation.
 		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
-			tracer.addSubelement(element, "kinematic", hexColor(m_kinematicValue));
+			tracer.addSubelement(element, "kinematic", ErnestUtils.hexColor(m_kinematicValue));
 		else
-			tracer.addSubelement(element, "kinematic", hexColor(m_tactileValue));
+			tracer.addSubelement(element, "kinematic", ErnestUtils.hexColor(m_tactileValue));
 		
 		String id = this.toString();
 		tracer.addSubelement(element, "id", id);
@@ -201,23 +203,23 @@ public class Bundle implements IBundle
 		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
 		}
 
-	private String hexColor(int value) 
-	{
-		int r = value/65536;
-		int g = (value - r * 65536)/256;
-		int b = value - r * 65536 - g * 256;
-		String s = format(r) + format(g) + format(b);
-
-		return s;
-	}
-	
-	private String format(int i)
-	{
-		if (i == 0)
-			return "00";
-		else if (i < 16)
-			return "0" + Integer.toString(i, 16).toUpperCase();
-		else
-			return Integer.toString(i, 16).toUpperCase();
-	}
+//	private String hexColor(int value) 
+//	{
+//		int r = value/65536;
+//		int g = (value - r * 65536)/256;
+//		int b = value - r * 65536 - g * 256;
+//		String s = format(r) + format(g) + format(b);
+//
+//		return s;
+//	}
+//	
+//	private String format(int i)
+//	{
+//		if (i == 0)
+//			return "00";
+//		else if (i < 16)
+//			return "0" + Integer.toString(i, 16).toUpperCase();
+//		else
+//			return Integer.toString(i, 16).toUpperCase();
+//	}
 }

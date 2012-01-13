@@ -43,7 +43,7 @@ public class Spas implements ISpas
 		m_localSpaceMemory = new LocalSpaceMemory(m_persistenceMemory, m_tracer);
 	}
 
-	public IObservation step(IAct act, IStimulation[] visualStimulations,
+	public IObservation step(IStimulation[] visualStimulations,
 			IStimulation[] tactileStimulations, IStimulation kinematicStimulation,
 			IStimulation gustatoryStimulation) 
 	{
