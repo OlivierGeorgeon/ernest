@@ -77,4 +77,9 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	public void sense(int[][] stimuli)
 	{
 	}
+
+	public int[] update(int[][] stimuli) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

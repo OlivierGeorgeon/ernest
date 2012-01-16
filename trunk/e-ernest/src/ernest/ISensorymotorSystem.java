@@ -22,7 +22,6 @@ public interface ISensorymotorSystem
 	 * @param imos Ernest's motivational system.
 	 * @param tracer Ernest's tracer.
 	 */
-	//public void init(EpisodicMemory episodicMemory, StaticSystem staticSystem, IImos attentionalSystem , ITracer tracer);
 	public void init(ISpas staticSystem, IImos imos , ITracer tracer);
 
 	/**
@@ -32,8 +31,6 @@ public interface ISensorymotorSystem
 	 * @param satisfaction The act's satisfaction 
 	 * @return the created primitive act
 	 */
-	//public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction); 
-
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction); 
 
 	/**
@@ -46,6 +43,7 @@ public interface ISensorymotorSystem
 	
 	public IAct enactedAct(IAct act, int[][] matrix);
 	
-	public int impulsion(int intentionSchema);
+	public int[] update(int[][] stimuli);
 	public void sense(int[][] stimuli);
+	public int impulsion(int intentionSchema);
 }
