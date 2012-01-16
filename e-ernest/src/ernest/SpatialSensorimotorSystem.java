@@ -26,10 +26,61 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	private String m_stimuli = "";
 	private int m_satisfaction = 0;
 	private boolean m_status;
+	private IAct m_primitiveAct = null;
 
 	final static float TRANSLATION_IMPULSION = .15f; // .13f
 	final static float ROTATION_IMPULSION = 0.123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
 
+	public int[] update(int[][] stimuli) 
+	{
+		int primitiveSchema[] = new int[2];
+		float translationx = (float) stimuli[2][8] / Ernest.INT_FACTOR; 
+		float translationy = (float) stimuli[3][8] / Ernest.INT_FACTOR;
+		float rotation = (float) stimuli[4][8] / Ernest.INT_FACTOR;
+		float speed = (float) stimuli[5][8] / Ernest.INT_FACTOR;
+		int cognitiveMode = stimuli[6][8];
+
+		// Update the local space memory
+    	m_spas.update(new Vector3f(-translationx, -translationy, 0), - rotation);
+
+    	sense(stimuli);
+    	primitiveSchema[0] = 0;
+    	primitiveSchema[1] = 0;
+
+    	// Trigger a new cognitive loop when the speed is below a threshold.
+        if ((speed <= .050f) && (Math.abs(rotation) <= .050f) && cognitiveMode > 0)
+        {
+    		IAct enactedPrimitiveAct = null;
+ 
+    		// If the intended act was null (during the first cycle), then the enacted act is null.
+
+    		// Compute the enacted act == 
+    		
+    		if (m_primitiveAct != null)
+    		{
+    			if (m_primitiveAct.getSchema().getLabel().equals(">"))
+    				m_satisfaction = m_satisfaction + (m_status ? 20 : -100);
+    			else
+    				m_satisfaction = m_satisfaction + (m_status ? -10 : -20);
+    		
+    			enactedPrimitiveAct = m_imos.addInteraction(m_primitiveAct.getSchema().getLabel(), m_stimuli, m_satisfaction);
+
+    			if (m_tracer != null) 
+    				m_tracer.addEventElement("primitive_enacted_schema", m_primitiveAct.getSchema().getLabel());
+    		}
+    		
+    		// Let Ernest decide for the next primitive schema to enact.
+    		
+    		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
+    		primitiveSchema[0] = m_primitiveAct.getSchema().getLabel().toCharArray()[0];
+    		
+    		// Once the decision is made, compute the intensity.
+    		
+    		primitiveSchema[1] = impulsion(primitiveSchema[0]);
+        }
+
+		return primitiveSchema;    		
+	}
 	public IAct enactedAct(IAct act, int[][] stimuli) 
 	{
 		// If the intended act was null (during the first cycle), then the enacted act is null.
