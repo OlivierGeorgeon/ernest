@@ -183,19 +183,19 @@ public class Bundle implements IBundle
 		tracer.addSubelement(element, "visual", ErnestUtils.hexColor(m_visualValue));
 		
 		// Trace gustatory stimulation if not nothing.
-		if (m_gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+		//if (m_gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
 			tracer.addSubelement(element, "gustatory", ErnestUtils.hexColor(m_gustatoryValue));
-		else
-			tracer.addSubelement(element, "gustatory", ErnestUtils.hexColor(m_visualValue));
+		//else
+		//	tracer.addSubelement(element, "gustatory", ErnestUtils.hexColor(m_visualValue));
 		
 		// Tactile stimulation
 		tracer.addSubelement(element, "tactile", ErnestUtils.hexColor(m_tactileValue));
 
 		// Only trace bump kinematic stimulation.
-		if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
+		//if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
 			tracer.addSubelement(element, "kinematic", ErnestUtils.hexColor(m_kinematicValue));
-		else
-			tracer.addSubelement(element, "kinematic", ErnestUtils.hexColor(m_tactileValue));
+		//else
+		//	tracer.addSubelement(element, "kinematic", ErnestUtils.hexColor(m_tactileValue));
 		
 		String id = this.toString();
 		tracer.addSubelement(element, "id", id);

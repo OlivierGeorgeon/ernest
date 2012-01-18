@@ -11,6 +11,7 @@ import spas.IStimulation;
 import spas.LocalSpaceMemory;
 import spas.Observation;
 import spas.Stimulation;
+import utils.ErnestUtils;
 
 /**
  * Implement Ernest 10.0's sensorimotor system.
@@ -27,6 +28,14 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	private int m_satisfaction = 0;
 	private boolean m_status;
 	private IAct m_primitiveAct = null;
+	private float m_rotation = 0;
+	
+	private IStimulation[] m_visualStimulations;
+	private IStimulation[] m_tactileStimulations;
+	private IStimulation m_kinematicStimulation;
+	private IStimulation m_gustatoryStimulation;
+
+	private int m_cognitiveCycleCounter = 0;
 
 	final static float TRANSLATION_IMPULSION = .15f; // .13f
 	final static float ROTATION_IMPULSION = 0.123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
@@ -36,20 +45,34 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		int primitiveSchema[] = new int[2];
 		float translationx = (float) stimuli[2][8] / Ernest.INT_FACTOR; 
 		float translationy = (float) stimuli[3][8] / Ernest.INT_FACTOR;
-		float rotation = (float) stimuli[4][8] / Ernest.INT_FACTOR;
+		m_rotation = (float) stimuli[4][8] / Ernest.INT_FACTOR;
 		float speed = (float) stimuli[5][8] / Ernest.INT_FACTOR;
 		int cognitiveMode = stimuli[6][8];
 
 		// Update the local space memory
-    	m_spas.update(new Vector3f(-translationx, -translationy, 0), - rotation);
+    	m_spas.update(new Vector3f(-translationx, -translationy, 0), - m_rotation);
 
+    	// Sense the environment
     	sense(stimuli);
+    	
+		// Generate a spatial observation ====
+		
+		IObservation newObservation = m_spas.step(m_visualStimulations, m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);		
+
+		if (m_observation != null)
+			setDynamicFeature(m_observation, newObservation);
+
+		m_observation = newObservation;
+
     	primitiveSchema[0] = 0;
     	primitiveSchema[1] = 0;
 
     	// Trigger a new cognitive loop when the speed is below a threshold.
-        if ((speed <= .050f) && (Math.abs(rotation) <= .050f) && cognitiveMode > 0)
+        if ((speed <= .050f) && (Math.abs(m_rotation) <= .050f) && cognitiveMode > 0)
+        //if ((m_observation.getSpeed().length() <= .050f)  && cognitiveMode > 0)
         {
+        	m_spas.tick(); // Tick the clock of persistence memory
+        	
     		IAct enactedPrimitiveAct = null;
  
     		// If the intended act was null (during the first cycle), then the enacted act is null.
@@ -71,12 +94,58 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		
     		// Let Ernest decide for the next primitive schema to enact.
     		
+    		if (m_tracer != null)
+    		{
+    			m_cognitiveCycleCounter++;
+                m_tracer.startNewEvent(m_cognitiveCycleCounter);
+    			m_tracer.addEventElement("clock", m_cognitiveCycleCounter + "");
+    		}                
     		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
     		primitiveSchema[0] = m_primitiveAct.getSchema().getLabel().toCharArray()[0];
     		
     		// Once the decision is made, compute the intensity.
     		
     		primitiveSchema[1] = impulsion(primitiveSchema[0]);
+    		
+    		if (m_tracer != null)
+    		{
+    			// Observation
+    			Object e = m_tracer.addEventElement("current_observation");
+    			m_tracer.addSubelement(e, "direction", m_observation.getDirection() + "");
+    			m_tracer.addSubelement(e, "distance", m_observation.getDistance() + "");
+    			m_tracer.addSubelement(e, "span", m_observation.getSpan() + "");
+    			m_tracer.addSubelement(e, "attractiveness", m_observation.getAttractiveness() + "");
+    			m_tracer.addSubelement(e, "stimuli", m_stimuli);
+    			m_tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
+    			m_tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
+    			m_tracer.addSubelement(e, "kinematic", m_observation.getKinematicStimulation().getHexColor());
+    			m_tracer.addSubelement(e, "gustatory", m_observation.getGustatoryStimulation().getHexColor());
+    			
+    			Object focusElmt = m_tracer.addEventElement("focus");
+    			m_tracer.addSubelement(focusElmt, "salience", ErnestUtils.hexColor(m_observation.getBundle().getValue()));
+    			m_observation.getBundle().trace(m_tracer, "focus_bundle");
+
+    			// Vision
+				Object retinaElmt = m_tracer.addEventElement("retina");
+				for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
+					m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, m_visualStimulations[i].getHexColor());
+
+				// Tactile
+    			Object s = m_tracer.addEventElement("tactile");
+    			m_tracer.addSubelement(s, "here", m_tactileStimulations[8].getHexColor());
+    			m_tracer.addSubelement(s, "rear", m_tactileStimulations[7].getHexColor());
+    			m_tracer.addSubelement(s, "touch_6", m_tactileStimulations[6].getHexColor());
+    			m_tracer.addSubelement(s, "touch_5", m_tactileStimulations[5].getHexColor());
+    			m_tracer.addSubelement(s, "touch_4", m_tactileStimulations[4].getHexColor());
+    			m_tracer.addSubelement(s, "touch_3", m_tactileStimulations[3].getHexColor());
+    			m_tracer.addSubelement(s, "touch_2", m_tactileStimulations[2].getHexColor());
+    			m_tracer.addSubelement(s, "touch_1", m_tactileStimulations[1].getHexColor());
+    			m_tracer.addSubelement(s, "touch_0", m_tactileStimulations[0].getHexColor());
+    			
+    			// Local space memory
+    			
+    			m_spas.traceLocalSpace();
+    		}
         }
 
 		return primitiveSchema;    		
@@ -111,78 +180,33 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	{
 		// Vision =====
 		
-		IStimulation[] visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
+		m_visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 		{
-			visualStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
+			m_visualStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
 			float angle = (float) (- 11 * Math.PI/24 + i * Math.PI/12); 
 			Vector3f pos = new Vector3f((float) Math.cos(angle) * stimuli[i][0] / Ernest.INT_FACTOR, (float) Math.sin(angle) * stimuli[i][0] / Ernest.INT_FACTOR, 0);
-			visualStimulations[i].setPosition(pos);
-		}
-		if (m_tracer != null) 
-		{
-			Object retinaElmt = m_tracer.addEventElement("retina");
-			for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
-				m_tracer.addSubelement(retinaElmt, "pixel_0_" + i, visualStimulations[i].getHexColor());
+			m_visualStimulations[i].setPosition(pos);
 		}
 		
 		// Touch =====
 		
-		IStimulation [] tactileStimulations = new IStimulation[9];
+		m_tactileStimulations = new IStimulation[9];
 		
 		for (int i = 0; i < 9; i++)
-		{
-			tactileStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9]);
-		}
-			
-		if (m_tracer != null)
-		{
-			Object s = m_tracer.addEventElement("tactile");
-			m_tracer.addSubelement(s, "here", tactileStimulations[8].getHexColor());
-			m_tracer.addSubelement(s, "rear", tactileStimulations[7].getHexColor());
-			m_tracer.addSubelement(s, "touch_6", tactileStimulations[6].getHexColor());
-			m_tracer.addSubelement(s, "touch_5", tactileStimulations[5].getHexColor());
-			m_tracer.addSubelement(s, "touch_4", tactileStimulations[4].getHexColor());
-			m_tracer.addSubelement(s, "touch_3", tactileStimulations[3].getHexColor());
-			m_tracer.addSubelement(s, "touch_2", tactileStimulations[2].getHexColor());
-			m_tracer.addSubelement(s, "touch_1", tactileStimulations[1].getHexColor());
-			m_tracer.addSubelement(s, "touch_0", tactileStimulations[0].getHexColor());
-		}
+			m_tactileStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9]);
 			
 		// Kinematic ====
 		
-		IStimulation kinematicStimulation;
+		//IStimulation kinematicStimulation;
 		
-		kinematicStimulation = m_spas.addStimulation(Ernest.STIMULATION_KINEMATIC, stimuli[1][8]);
+		m_kinematicStimulation = m_spas.addStimulation(Ernest.STIMULATION_KINEMATIC, stimuli[1][8]);
 
 		// Taste =====
 		
-		IStimulation gustatoryStimulation = m_spas.addStimulation(Ernest.STIMULATION_GUSTATORY, stimuli[0][8]); 
+		//IStimulation 
+		m_gustatoryStimulation = m_spas.addStimulation(Ernest.STIMULATION_GUSTATORY, stimuli[0][8]); 
 
-		// Process the spatial implications of the enacted interaction ====
-		
-		IObservation newObservation = m_spas.step(visualStimulations, tactileStimulations, kinematicStimulation, gustatoryStimulation);		
-
-		if (m_observation != null)
-			setDynamicFeature(m_observation, newObservation);
-
-		m_observation = newObservation;
-		
-		if (m_tracer != null) 
-		{
-			Object e = m_tracer.addEventElement("current_observation");
-			m_tracer.addSubelement(e, "direction", newObservation.getDirection() + "");
-			m_tracer.addSubelement(e, "distance", newObservation.getDistance() + "");
-			m_tracer.addSubelement(e, "span", newObservation.getSpan() + "");
-			m_tracer.addSubelement(e, "attractiveness", newObservation.getAttractiveness() + "");
-			m_tracer.addSubelement(e, "stimuli", m_stimuli);
-			m_tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
-			m_tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
-			m_tracer.addSubelement(e, "kinematic", newObservation.getKinematicStimulation().getHexColor());
-			m_tracer.addSubelement(e, "gustatory", newObservation.getGustatoryStimulation().getHexColor());
-		}
-
-		m_observation = newObservation;
 	}
 	
 	/**
@@ -202,6 +226,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		Vector3f relativeSpeed = new Vector3f(newObservation.getPosition());
 		relativeSpeed.sub(previousObservation.getPosition());
 		
+		Vector3f rotationSpeed = new Vector3f(- newObservation.getPosition().y, newObservation.getPosition().x, 0); // Orthogonal to the position vector.
+		rotationSpeed.normalize();
+		rotationSpeed.scale(m_rotation);
+		relativeSpeed.add(rotationSpeed);
+		newObservation.setSpeed(relativeSpeed);
+		
 		String dynamicFeature = "";
 		
 		float minFovea =  - (float)Math.PI / 4 + 0.01f;
@@ -214,10 +244,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			// Positive attractiveness
 			{
 				// Attractiveness
-				if (previousAttractiveness > newAttractiveness)
+				//if (previousAttractiveness > newAttractiveness)
+				if (relativeSpeed.dot(newObservation.getPosition()) > 0)
 					// Farther
 					dynamicFeature = "-";
-				else if (previousAttractiveness < newAttractiveness)
+				//else if (previousAttractiveness < newAttractiveness)
+				else if (relativeSpeed.dot(newObservation.getPosition()) < 0)
 					// Closer
 					dynamicFeature = "+";
 				//else if (Math.abs(previousDirection) < Math.abs(newDirection))

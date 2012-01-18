@@ -48,7 +48,7 @@ public class Spas implements ISpas
 			IStimulation gustatoryStimulation) 
 	{
 		// Tick the clock
-		m_persistenceMemory.tick();
+		//m_persistenceMemory.tick();
 		
 		m_gustatoryStimulation = gustatoryStimulation.getValue();
 		m_kinematicStimulation = kinematicStimulation.getValue();
@@ -79,7 +79,6 @@ public class Spas implements ISpas
 		
 		int maxAttractiveness = 0;
 		IPlace focusPlace = null;
-		//for (ISalience salience : attractiveSaliences)
 		for (IPlace place : m_localSpaceMemory.getPlaceList())
 		{
 			place.setFocus(false);
@@ -97,13 +96,13 @@ public class Spas implements ISpas
 		//m_localSpaceMemory.clearBackground();
 		
 		// Trace the focus bundle and the local space memory.
-		if (m_tracer != null && focusPlace != null) 
-		{
-			Object e = m_tracer.addEventElement("focus");
-			m_tracer.addSubelement(e, "salience", getHexColor(mAttention));
-			focusPlace.getBundle().trace(m_tracer, "focus_bundle");
-			m_localSpaceMemory.Trace();
-		}
+//		if (m_tracer != null && focusPlace != null) 
+//		{
+//			Object e = m_tracer.addEventElement("focus");
+//			m_tracer.addSubelement(e, "salience", getHexColor(mAttention));
+//			focusPlace.getBundle().trace(m_tracer, "focus_bundle");
+//			m_localSpaceMemory.Trace();
+//		}
 		
 		// Return the new observation.
 		
@@ -111,7 +110,7 @@ public class Spas implements ISpas
 		observation.setGustatory(gustatoryStimulation);
 		observation.setKinematic(kinematicStimulation);
 		observation.setAttractiveness(maxAttractiveness);
-		//observation.setPlace(new Place(focusPlace));
+		observation.setBundle(focusPlace.getBundle());
 		observation.setPosition(focusPlace.getPosition());
 		observation.setSpan(focusPlace.getSpan());
 		
@@ -208,25 +207,6 @@ public class Spas implements ISpas
 			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND);
 
 	}
-	private String getHexColor(int rgb) 
-	{
-		int r = rgb/65536;
-		int g = (rgb - r * 65536)/256;
-		int b = rgb - r * 65536 - g * 256;
-		String s = format(r) + format(g) + format(b);
-
-		return s;
-	}
-	
-	private String format(int i)
-	{
-		if (i == 0)
-			return "00";
-		else if (i < 16)
-			return "0" + Integer.toString(i, 16).toUpperCase();
-		else
-			return Integer.toString(i, 16).toUpperCase();
-	}
 
 	public void update(Vector3f translation, float rotation) 
 	{
@@ -239,5 +219,15 @@ public class Spas implements ISpas
 	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_localSpaceMemory.getPlaceList();
+	}
+
+	public void tick() 
+	{
+		m_persistenceMemory.tick();
+	}
+
+	public void traceLocalSpace() 
+	{
+		m_localSpaceMemory.Trace();
 	}
 }
