@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import spas.IObservation;
 import spas.IPlace;
+import spas.ISegment;
 
 
 /**
@@ -91,6 +92,7 @@ public interface IErnest
 	 * @param placeList The list of places in Ernest's local space memory.
 	 */
 	public void setPlaceList(ArrayList<IPlace> placeList);
+	public void setSegmentList(ArrayList<ISegment> segmentList);
 	
 	/**
 	 * @return The list of places in Ernest's local space memory.

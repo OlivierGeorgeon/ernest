@@ -86,5 +86,7 @@ public interface IPlace {
 	
 	public void setFocus(boolean focus);
 	public boolean getFocus();
+	public void setSpeed(Vector3f speed);
+	public Vector3f getSpeed();
 
 }

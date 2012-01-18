@@ -6,6 +6,7 @@ import javax.vecmath.Vector3f;
 
 import spas.IObservation;
 import spas.IPlace;
+import spas.ISegment;
 import spas.ISpas;
 import spas.IStimulation;
 import spas.Spas;
@@ -268,11 +269,16 @@ public class Ernest implements IErnest
 
 	public void setPlaceList(ArrayList<IPlace> placeList)
 	{
-		m_spas.setSalienceList(placeList);
+		m_spas.setPlaceList(placeList);
 	}
 
 	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_spas.getPlaceList();
+	}
+
+	public void setSegmentList(ArrayList<ISegment> segmentList) 
+	{
+		m_spas.setSegmentList(segmentList);
 	}
 }

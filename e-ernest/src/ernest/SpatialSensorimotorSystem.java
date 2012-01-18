@@ -57,8 +57,9 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     	
 		// Generate a spatial observation ====
 		
-		IObservation newObservation = m_spas.step(m_visualStimulations, m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);		
-
+		//IObservation newObservation = m_spas.step(m_visualStimulations, m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);		
+		IObservation newObservation = m_spas.step(m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);
+		
 		if (m_observation != null)
 			setDynamicFeature(m_observation, newObservation);
 
@@ -222,15 +223,21 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		float newDirection = newObservation.getDirection();
 		int   previousAttractiveness = previousObservation.getAttractiveness();
 		float previousDirection = previousObservation.getDirection();
+		Vector3f relativeSpeed = new Vector3f();
 		
-		Vector3f relativeSpeed = new Vector3f(newObservation.getPosition());
-		relativeSpeed.sub(previousObservation.getPosition());
-		
-		Vector3f rotationSpeed = new Vector3f(- newObservation.getPosition().y, newObservation.getPosition().x, 0); // Orthogonal to the position vector.
-		rotationSpeed.normalize();
-		rotationSpeed.scale(m_rotation);
-		relativeSpeed.add(rotationSpeed);
-		newObservation.setSpeed(relativeSpeed);
+		if (newObservation.getSpeed() == null)
+		{
+			relativeSpeed.set(newObservation.getPosition());
+			relativeSpeed.sub(previousObservation.getPosition());
+			
+			Vector3f rotationSpeed = new Vector3f(- newObservation.getPosition().y, newObservation.getPosition().x, 0); // Orthogonal to the position vector.
+			rotationSpeed.normalize();
+			rotationSpeed.scale(m_rotation);
+			relativeSpeed.add(rotationSpeed);
+			newObservation.setSpeed(relativeSpeed);
+		}
+		else 
+			relativeSpeed.set(newObservation.getSpeed());
 		
 		String dynamicFeature = "";
 		

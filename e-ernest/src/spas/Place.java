@@ -16,6 +16,7 @@ public class Place implements IPlace
 
 	IBundle m_bundle;
 	Vector3f m_position;
+	Vector3f m_speed;
 	float m_span;
 	int m_attractiveness;
 	
@@ -187,5 +188,15 @@ public class Place implements IPlace
 	public boolean getFocus() 
 	{
 		return m_focus;
+	}
+
+	public void setSpeed(Vector3f speed) 
+	{
+		m_speed = speed;
+	}
+
+	public Vector3f getSpeed() 
+	{
+		return m_speed;
 	}
 }
