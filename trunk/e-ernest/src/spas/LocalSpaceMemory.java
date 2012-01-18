@@ -10,6 +10,8 @@ import java.util.List;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
+import utils.ErnestUtils;
+
 import ernest.Ernest;
 import ernest.ITracer;
 
@@ -115,6 +117,19 @@ public class LocalSpaceMemory
 					sumDistance = visualStimulations[i].getPosition().length();
 				}
 			}
+		}
+	}
+	
+	public void addSegmentPlaces(ArrayList<ISegment> segmentList)
+	{
+		for (ISegment segment : segmentList)
+		{
+			IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
+			if (b == null)
+				b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+			IPlace place = new Place(b,segment.getPosition());
+			place.setSpeed(segment.getSpeed());
+			m_places.add(place);			
 		}
 	}
 
@@ -414,6 +429,11 @@ public class LocalSpaceMemory
 		}
 	}
 	
+	public void clear()
+	{
+		m_places.clear();
+	}
+	
 	/**
 	 * Get the color of a given position.
 	 * @param position The position.
@@ -430,7 +450,7 @@ public class LocalSpaceMemory
 			//farPosition.scale(2f, position);
 			value = getValue(farPosition);
 		}
-		return getHexColor(value);
+		return ErnestUtils.hexColor(value);
 		//return getHexColor(getValue(position));
 	}
 
@@ -454,24 +474,4 @@ public class LocalSpaceMemory
 	{
 		return m_places;
 	}
-	
-	private String getHexColor(int rgb) 
-	{
-		int r = rgb/65536;
-		int g = (rgb - r * 65536)/256;
-		int b = rgb - r * 65536 - g * 256;
-		String s = format(r) + format(g) + format(b);
-
-		return s;
 	}
-	
-	private String format(int i)
-	{
-		if (i == 0)
-			return "00";
-		else if (i < 16)
-			return "0" + Integer.toString(i, 16).toUpperCase();
-		else
-			return Integer.toString(i, 16).toUpperCase();
-	}
-}
