@@ -24,6 +24,10 @@ public interface IObservation
 	public float getDirection();
 	public float getDistance();
 	public float getSpan();
+	public void setBundle(IBundle bundle);
+	public IBundle getBundle();
+	public void setSpeed(Vector3f speed);
+	public Vector3f getSpeed();
 	
 	/**
 	 * @param attractiveness The attractiveness of the salience of current attention.

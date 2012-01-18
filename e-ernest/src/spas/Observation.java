@@ -17,6 +17,8 @@ public class Observation implements IObservation
 
 	private Vector3f m_position = new Vector3f();
 	
+	private Vector3f m_speed = new Vector3f();
+	
 	/** The attractiveness of Ernest's interest. */
 	private int m_attractiveness = 0;
 
@@ -25,6 +27,9 @@ public class Observation implements IObservation
 	
 	/** The gustatory stimulation. */
 	private IStimulation m_gustatoryStimulation;
+	
+	/** The focus bundle. */
+	private IBundle m_bundle; 
 
 	public void setAttractiveness(int attractiveness) 
 	{
@@ -84,5 +89,25 @@ public class Observation implements IObservation
 	public float getSpan() 
 	{
 		return m_span;
+	}
+
+	public void setBundle(IBundle bundle) 
+	{
+		m_bundle = bundle;
+	}
+
+	public IBundle getBundle() 
+	{
+		return m_bundle;
+	}
+
+	public void setSpeed(Vector3f speed) 
+	{
+		m_speed = speed;
+	}
+
+	public Vector3f getSpeed()
+	{
+		return m_speed;
 	}
 }

@@ -75,4 +75,7 @@ public interface ISpas
 	 */
 	public ArrayList<IPlace> getPlaceList();
 	
+	public void tick();
+	public void traceLocalSpace();
+	
 }
