@@ -31,4 +31,6 @@ public interface ISegment
 	 * @return The position of the second point of this segment relatively to Ernest.
 	 */
 	public Vector3f getSecondPosition();
+	
+	public float getSpan();
 }
