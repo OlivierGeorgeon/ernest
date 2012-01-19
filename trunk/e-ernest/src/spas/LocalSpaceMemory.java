@@ -26,6 +26,7 @@ public class LocalSpaceMemory
 	public static float LOCATION_RADIUS = 0.5f;
 	public static float LOCAL_SPACE_MEMORY_RADIUS = 4f;
 	public static float DISTANCE_VISUAL_BACKGROUND = 10f;
+	public static float EXTRAPERSONAL_DISTANCE = 1.5f;
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();

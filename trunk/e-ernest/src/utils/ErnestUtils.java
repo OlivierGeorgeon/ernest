@@ -24,9 +24,10 @@ public final class ErnestUtils
 	 */
 	public static String hexColor(int value) 
 	{
-		int r = value/65536;
-		int g = (value - r * 65536)/256;
-		int b = value - r * 65536 - g * 256;
+		int r = (value & 0xFF0000)/65536;
+		int g = (value & 0x00FF00)/256;
+		int b = (value & 0x0000FF);
+		
 		String s = format(r) + format(g) + format(b);
 
 		return s;
