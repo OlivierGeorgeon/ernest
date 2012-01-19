@@ -129,6 +129,7 @@ public class LocalSpaceMemory
 				b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 			IPlace place = new Place(b,segment.getPosition());
 			place.setSpeed(segment.getSpeed());
+			place.setSpan(segment.getSpan());
 			m_places.add(place);			
 		}
 	}
