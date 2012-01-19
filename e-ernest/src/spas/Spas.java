@@ -36,7 +36,7 @@ public class Spas implements ISpas
 	int m_gustatoryStimulation = Ernest.STIMULATION_GUSTATORY_NOTHING;
 	
 	/** The color of attention for display in the environment.  */
-	private int mAttention = 0;
+	private int mAttention = Ernest.STIMULATION_VISUAL_UNSEEN;
 	
 	public void setTracer(ITracer tracer) 
 	{
@@ -92,29 +92,32 @@ public class Spas implements ISpas
 			}
 		}
 
-		focusPlace.setFocus(true);
-		mAttention = focusPlace.getBundle().getVisualValue();
-
 		//m_localSpaceMemory.clearBackground();
-		
-		// Trace the focus bundle and the local space memory.
-//		if (m_tracer != null && focusPlace != null) 
-//		{
-//			Object e = m_tracer.addEventElement("focus");
-//			m_tracer.addSubelement(e, "salience", getHexColor(mAttention));
-//			focusPlace.getBundle().trace(m_tracer, "focus_bundle");
-//			m_localSpaceMemory.Trace();
-//		}
-		
-		// Return the new observation.
-		
+				
+		// The new observation.
+
 		IObservation observation = new Observation();
 		observation.setGustatory(gustatoryStimulation);
 		observation.setKinematic(kinematicStimulation);
 		observation.setAttractiveness(maxAttractiveness);
-		observation.setBundle(focusPlace.getBundle());
-		observation.setPosition(focusPlace.getPosition());
-		observation.setSpan(focusPlace.getSpan());
+
+		if (focusPlace == null)
+		{
+			mAttention = Ernest.STIMULATION_VISUAL_UNSEEN;
+			observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING));
+			observation.setPosition(new Vector3f(1,0,0));
+			observation.setSpan(0);
+			observation.setSpeed(new Vector3f());
+		}
+		else
+		{
+			focusPlace.setFocus(true);
+			mAttention = focusPlace.getBundle().getVisualValue();
+			observation.setBundle(focusPlace.getBundle());
+			observation.setPosition(focusPlace.getPosition());
+			observation.setSpan(focusPlace.getSpan());
+			observation.setSpeed(focusPlace.getSpeed());
+		}		
 		
 		return observation;
 	}
@@ -160,20 +163,31 @@ public class Spas implements ISpas
 			}
 		}
 
-		focusPlace.setFocus(true);
-		mAttention = focusPlace.getBundle().getVisualValue();
+		// The new observation.
 
-		// Return the new observation.
-		
 		IObservation observation = new Observation();
 		observation.setGustatory(gustatoryStimulation);
 		observation.setKinematic(kinematicStimulation);
 		observation.setAttractiveness(maxAttractiveness);
-		observation.setBundle(focusPlace.getBundle());
-		observation.setPosition(focusPlace.getPosition());
-		observation.setSpan(focusPlace.getSpan());
-		observation.setSpeed(focusPlace.getSpeed());
-		
+
+		if (focusPlace == null)
+		{
+			mAttention = Ernest.STIMULATION_VISUAL_UNSEEN;
+			observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING));
+			observation.setPosition(new Vector3f(1,0,0));
+			observation.setSpan(0);
+			observation.setSpeed(new Vector3f());
+		}
+		else
+		{
+			focusPlace.setFocus(true);
+			mAttention = focusPlace.getBundle().getVisualValue();
+			observation.setBundle(focusPlace.getBundle());
+			observation.setPosition(focusPlace.getPosition());
+			observation.setSpan(focusPlace.getSpan());
+			observation.setSpeed(focusPlace.getSpeed());
+		}		
+
 		return observation;
 	}
 	

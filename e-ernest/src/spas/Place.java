@@ -148,7 +148,7 @@ public class Place implements IPlace
 	public int getAttractiveness(int clock) 
 	{
 		// If it is in the background (visual place).
-		if (getDistance() > LocalSpaceMemory.DISTANCE_VISUAL_BACKGROUND - 1)
+		if (getDistance() > LocalSpaceMemory.EXTRAPERSONAL_DISTANCE)
 			return (m_bundle.getExtrapersonalAttractiveness(clock) + (int)(5 * m_span / ((float)Math.PI / 12)));
 		
 		// Attractiveness of wall in front
