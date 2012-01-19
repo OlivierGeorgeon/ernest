@@ -35,8 +35,6 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	private IStimulation m_kinematicStimulation;
 	private IStimulation m_gustatoryStimulation;
 
-	private int m_cognitiveCycleCounter = 0;
-
 	final static float TRANSLATION_IMPULSION = .15f; // .13f
 	final static float ROTATION_IMPULSION = 0.123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
 
@@ -97,9 +95,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		
     		if (m_tracer != null)
     		{
-    			m_cognitiveCycleCounter++;
-                m_tracer.startNewEvent(m_cognitiveCycleCounter);
-    			m_tracer.addEventElement("clock", m_cognitiveCycleCounter + "");
+                m_tracer.startNewEvent(m_imos.getCounter());
+    			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
     		}                
     		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
     		primitiveSchema[0] = m_primitiveAct.getSchema().getLabel().toCharArray()[0];

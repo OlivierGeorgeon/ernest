@@ -50,4 +50,6 @@ public interface IImos
 	 */
 	public String getInternalState();
 	
+	public int getCounter();
+	
 }

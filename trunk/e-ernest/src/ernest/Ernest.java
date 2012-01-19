@@ -281,4 +281,9 @@ public class Ernest implements IErnest
 	{
 		m_spas.setSegmentList(segmentList);
 	}
+
+	public int getCounter() 
+	{
+		return m_imos.getCounter();
+	}
 }
