@@ -99,4 +99,6 @@ public interface IErnest
 	 */
 	public ArrayList<IPlace> getPlaceList();
 	
+	public int getCounter();
+	
 }

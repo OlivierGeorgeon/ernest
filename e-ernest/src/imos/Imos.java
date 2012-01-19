@@ -68,6 +68,9 @@ public class Imos implements IImos
 	 */
 	private IAct m_primitiveIntention = null;
 
+	/** The Tracer. */
+	private int m_imosCycle = 0;
+
 	/**
 	 * Constructor for the Intrinsic Motivation system.
 	 * Use default parameters REG_SENS_THRESH and SCHEMA_MAX_LENGTH.
@@ -215,6 +218,8 @@ public class Imos implements IImos
 	 */
 	public IAct step(IAct primitiveEnaction) 
 	{
+		m_imosCycle++;
+		
 		m_internalState= "";
 
 		IAct intentionAct = null;
@@ -487,6 +492,11 @@ public class Imos implements IImos
 			m_tracer.addEventElement("prescribed_intention", primitiveAct.getLabel());
 		
 		return primitiveAct;
+	}
+
+	public int getCounter() 
+	{
+		return m_imosCycle;
 	}
 
 }
