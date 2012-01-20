@@ -37,9 +37,14 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 
 	final static float TRANSLATION_IMPULSION = .15f; // .13f
 	final static float ROTATION_IMPULSION = 0.123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
+	
+	private int m_interactionTimer = 0;
+	private String m_initialFeedback = "";
 
 	public int[] update(int[][] stimuli) 
 	{
+		m_interactionTimer++;
+		
 		int primitiveSchema[] = new int[2];
 		float translationx = (float) stimuli[2][8] / Ernest.INT_FACTOR; 
 		float translationy = (float) stimuli[3][8] / Ernest.INT_FACTOR;
@@ -58,6 +63,16 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		//IObservation newObservation = m_spas.step(m_visualStimulations, m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);		
 		IObservation newObservation = m_spas.step(m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);
 		
+    	// Record the initial feedback.
+    	if (m_interactionTimer == 1)
+    	{
+    		if (m_observation != null)
+    			m_initialFeedback = setInitialFeedback(m_observation, newObservation);
+    		else
+    			m_initialFeedback = "";
+    	}
+    		
+    	// Update the feedback.
 		if (m_observation != null)
 			setDynamicFeature(m_observation, newObservation);
 
@@ -65,13 +80,14 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 
     	primitiveSchema[0] = 0;
     	primitiveSchema[1] = 0;
-
+    	
     	// Trigger a new cognitive loop when the speed is below a threshold.
         if ((speed <= .050f) && (Math.abs(m_rotation) <= .050f) && cognitiveMode > 0)
         //if ((m_observation.getSpeed().length() <= .050f)  && cognitiveMode > 0)
         {
         	m_spas.tick(); // Tick the clock of persistence memory
-        	
+    		m_interactionTimer = 0;
+    		        	
     		IAct enactedPrimitiveAct = null;
  
     		// If the intended act was null (during the first cycle), then the enacted act is null.
@@ -113,6 +129,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     			m_tracer.addSubelement(e, "distance", m_observation.getDistance() + "");
     			m_tracer.addSubelement(e, "span", m_observation.getSpan() + "");
     			m_tracer.addSubelement(e, "attractiveness", m_observation.getAttractiveness() + "");
+    			m_tracer.addSubelement(e, "relative_speed_x", m_observation.getSpeed().x + "");
+    			m_tracer.addSubelement(e, "relative_speed_y", m_observation.getSpeed().y + "");
     			m_tracer.addSubelement(e, "stimuli", m_stimuli);
     			m_tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
     			m_tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
@@ -229,7 +247,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			
 			Vector3f rotationSpeed = new Vector3f(- newObservation.getPosition().y, newObservation.getPosition().x, 0); // Orthogonal to the position vector.
 			rotationSpeed.normalize();
-			rotationSpeed.scale(m_rotation);
+			rotationSpeed.scale(- m_rotation);
 			relativeSpeed.add(rotationSpeed);
 			newObservation.setSpeed(relativeSpeed);
 		}
@@ -264,6 +282,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				else if (relativeSpeed.y * newDirection < 0)
 					// More inward
 					dynamicFeature = "+";
+				
+				dynamicFeature = m_initialFeedback;
 		
 				if (dynamicFeature.equals("-"))
 					satisfaction = -100;
@@ -298,6 +318,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				// The wall went more inward (Ernest farther to the edge)
 				dynamicFeature = "*";
 	
+			dynamicFeature = m_initialFeedback;
+
 			if (dynamicFeature.equals("*"))
 				satisfaction = -100;
 			if (dynamicFeature.equals("_"))
@@ -331,6 +353,67 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		m_stimuli = (m_status ? " " : "w") + dynamicFeature;
 
 		m_satisfaction = satisfaction;
+	}
+	
+	/**
+	 * Generate the initial feedback when a new interaction is started.
+	 * @param previousObservation The observation made on the previous update.
+	 * @param newObservation The current observation .
+	 */
+	private String setInitialFeedback(IObservation previousObservation, IObservation newObservation)
+	{
+		String initialFeedback = "";
+		
+		int   newAttractiveness = newObservation.getAttractiveness();
+		float newDirection = newObservation.getDirection();
+		int   previousAttractiveness = previousObservation.getAttractiveness();
+		Vector3f relativeSpeed = new Vector3f();
+		
+		if (newObservation.getSpeed() == null)
+		{
+			relativeSpeed.set(newObservation.getPosition());
+			relativeSpeed.sub(previousObservation.getPosition());
+			
+			Vector3f rotationSpeed = new Vector3f(- newObservation.getPosition().y, newObservation.getPosition().x, 0); // Orthogonal to the position vector.
+			rotationSpeed.normalize();
+			rotationSpeed.scale(- m_rotation);
+			relativeSpeed.add(rotationSpeed);
+			newObservation.setSpeed(relativeSpeed);
+		}
+		else 
+			relativeSpeed.set(newObservation.getSpeed());
+		
+		if (newAttractiveness >= 0)
+		{
+			// Positive attractiveness
+			if (relativeSpeed.dot(newObservation.getPosition()) > 0)
+				// Farther
+				initialFeedback = "-";
+			else if (relativeSpeed.dot(newObservation.getPosition()) < 0)
+				// Closer
+				initialFeedback = "+";
+			else if (relativeSpeed.y * newDirection > 0)
+				// More outward (or same direction, therefore another salience)
+				initialFeedback = "-";
+			else if (relativeSpeed.y * newDirection < 0)
+				// More inward
+				initialFeedback = "+";
+		}
+		else
+		{
+			// Negative attractiveness (repulsion)
+			
+			if (previousAttractiveness >= 0)
+				// A wall appeared with a part of it in front of Ernest
+				initialFeedback = "*";		
+			else if (relativeSpeed.y * newDirection > 0)
+				// The wall went more outward (Ernest closer to the edge)
+				initialFeedback = "_";
+			else if (relativeSpeed.y * newDirection < 0)
+				// The wall went more inward (Ernest farther to the edge)
+				initialFeedback = "*";
+		}	
+		return initialFeedback;
 	}
 	
 	public int impulsion(int intentionSchema) 

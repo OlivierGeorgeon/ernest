@@ -36,7 +36,7 @@ public class Spas implements ISpas
 	int m_gustatoryStimulation = Ernest.STIMULATION_GUSTATORY_NOTHING;
 	
 	/** The color of attention for display in the environment.  */
-	private int mAttention = Ernest.STIMULATION_VISUAL_UNSEEN;
+	private int mAttention = Ernest.UNANIMATED_COLOR;
 	
 	public void setTracer(ITracer tracer) 
 	{
@@ -103,7 +103,7 @@ public class Spas implements ISpas
 
 		if (focusPlace == null)
 		{
-			mAttention = Ernest.STIMULATION_VISUAL_UNSEEN;
+			mAttention = Ernest.UNANIMATED_COLOR;
 			observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING));
 			observation.setPosition(new Vector3f(1,0,0));
 			observation.setSpan(0);
@@ -112,7 +112,7 @@ public class Spas implements ISpas
 		else
 		{
 			focusPlace.setFocus(true);
-			mAttention = focusPlace.getBundle().getVisualValue();
+			mAttention = focusPlace.getBundle().getValue();
 			observation.setBundle(focusPlace.getBundle());
 			observation.setPosition(focusPlace.getPosition());
 			observation.setSpan(focusPlace.getSpan());
@@ -172,7 +172,7 @@ public class Spas implements ISpas
 
 		if (focusPlace == null)
 		{
-			mAttention = Ernest.STIMULATION_VISUAL_UNSEEN;
+			mAttention = Ernest.UNANIMATED_COLOR;
 			observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING));
 			observation.setPosition(new Vector3f(1,0,0));
 			observation.setSpan(0);
@@ -181,7 +181,7 @@ public class Spas implements ISpas
 		else
 		{
 			focusPlace.setFocus(true);
-			mAttention = focusPlace.getBundle().getVisualValue();
+			mAttention = focusPlace.getBundle().getValue();
 			observation.setBundle(focusPlace.getBundle());
 			observation.setPosition(focusPlace.getPosition());
 			observation.setSpan(focusPlace.getSpan());

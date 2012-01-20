@@ -89,6 +89,9 @@ public class Ernest implements IErnest
 	/** Visual stimulation of seeing nothing */
 	public static int STIMULATION_VISUAL_UNSEEN = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
 
+	/** Color unanimated */
+	public static int UNANIMATED_COLOR = 0x808080;
+
 	/** Touch empty */
 	public static int STIMULATION_TOUCH_EMPTY = 0xB4B4B4;//11842740;
 	
