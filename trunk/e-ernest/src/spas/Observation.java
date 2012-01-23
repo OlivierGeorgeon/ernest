@@ -30,6 +30,12 @@ public class Observation implements IObservation
 	
 	/** The focus bundle. */
 	private IBundle m_bundle; 
+	
+	/** The initial feedback obtained when the act starts. */
+	private String m_initialFeedback = "";
+	
+	/** The resulting stimuli of the enacted act. */
+	private String m_stimuli;
 
 	public void setAttractiveness(int attractiveness) 
 	{
@@ -109,5 +115,25 @@ public class Observation implements IObservation
 	public Vector3f getSpeed()
 	{
 		return m_speed;
+	}
+
+	public void setInitialFeedback(String initialFeedback) 
+	{
+		m_initialFeedback = initialFeedback;
+	}
+
+	public void setStimuli(String stimuli) 
+	{
+		m_stimuli = stimuli;
+	}
+
+	public String getInitialFeedback() 
+	{
+		return m_initialFeedback;
+	}
+
+	public String getStimuli() 
+	{
+		return m_stimuli;
 	}
 }
