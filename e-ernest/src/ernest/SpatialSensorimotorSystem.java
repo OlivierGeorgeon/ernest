@@ -39,7 +39,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	final static float ROTATION_IMPULSION = 0.123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
 	
 	private int m_interactionTimer = 0;
-	private String m_initialFeedback = "";
+	private IObservation m_initialObservation = null;
 
 	public int[] update(int[][] stimuli) 
 	{
@@ -63,26 +63,29 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		//IObservation newObservation = m_spas.step(m_visualStimulations, m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);		
 		IObservation newObservation = m_spas.step(m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);
 		
-    	// Record the initial feedback.
-    	if (m_interactionTimer == 1)
-    	{
-    		if (m_observation != null)
-    			m_initialFeedback = setInitialFeedback(m_observation, newObservation);
-    		else
-    			m_initialFeedback = "";
-    	}
-    		
     	// Update the feedback.
 		if (m_observation != null)
+		{
+			setInitialFeedback(m_observation, newObservation);
 			setDynamicFeature(m_observation, newObservation);
+		}
+		else
+			newObservation.setSpeed(new Vector3f());
 
+    	// Record the initial observation.
+    	if (m_interactionTimer == 1)
+    	{
+    		m_initialObservation = newObservation;
+    	}
+    		
 		m_observation = newObservation;
 
     	primitiveSchema[0] = 0;
     	primitiveSchema[1] = 0;
     	
     	// Trigger a new cognitive loop when the speed is below a threshold.
-        if ((speed <= .050f) && (Math.abs(m_rotation) <= .050f) && cognitiveMode > 0)
+        //if ((speed <= .050f) && (Math.abs(m_rotation) <= .050f) && cognitiveMode > 0)
+        if (actEnd(speed) && cognitiveMode > 0)	
         //if ((m_observation.getSpeed().length() <= .050f)  && cognitiveMode > 0)
         {
         	m_spas.tick(); // Tick the clock of persistence memory
@@ -90,6 +93,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		        	
     		IAct enactedPrimitiveAct = null;
  
+    		if (m_tracer != null)
+    		{
+                m_tracer.startNewEvent(m_imos.getCounter());
+    			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+    		}                
+
     		// If the intended act was null (during the first cycle), then the enacted act is null.
 
     		// Compute the enacted act == 
@@ -109,11 +118,6 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		
     		// Let Ernest decide for the next primitive schema to enact.
     		
-    		if (m_tracer != null)
-    		{
-                m_tracer.startNewEvent(m_imos.getCounter());
-    			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-    		}                
     		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
     		primitiveSchema[0] = m_primitiveAct.getSchema().getLabel().toCharArray()[0];
     		
@@ -166,6 +170,22 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 
 		return primitiveSchema;    		
 	}
+	
+	private boolean actEnd(float speed)
+	{
+		boolean actEnd = false;
+		
+        //if ((m_observation.getSpeed().length() <= .050f) && (Math.abs(m_rotation) <= .050f))
+        if ((speed <= .050f) && (Math.abs(m_rotation) <= .050f))
+        	actEnd = true;
+        
+        // If the act does not start as intended, then end and return the actually enacted act
+        
+        // If the act does start as intended, then end when the act is no more as intended and returns the intended act. 
+        
+    	return actEnd;
+	}
+	
 	public IAct enactedAct(IAct act, int[][] stimuli) 
 	{
 		// If the intended act was null (during the first cycle), then the enacted act is null.
@@ -283,7 +303,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 					// More inward
 					dynamicFeature = "+";
 				
-				dynamicFeature = m_initialFeedback;
+				dynamicFeature = m_initialObservation.getInitialFeedback();
 		
 				if (dynamicFeature.equals("-"))
 					satisfaction = -100;
@@ -318,7 +338,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				// The wall went more inward (Ernest farther to the edge)
 				dynamicFeature = "*";
 	
-			dynamicFeature = m_initialFeedback;
+			dynamicFeature = m_initialObservation.getInitialFeedback();
 
 			if (dynamicFeature.equals("*"))
 				satisfaction = -100;
@@ -386,18 +406,38 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		if (newAttractiveness >= 0)
 		{
 			// Positive attractiveness
-			if (relativeSpeed.dot(newObservation.getPosition()) > 0)
-				// Farther
-				initialFeedback = "-";
-			else if (relativeSpeed.dot(newObservation.getPosition()) < 0)
-				// Closer
-				initialFeedback = "+";
-			else if (relativeSpeed.y * newDirection > 0)
-				// More outward (or same direction, therefore another salience)
-				initialFeedback = "-";
-			else if (relativeSpeed.y * newDirection < 0)
-				// More inward
-				initialFeedback = "+";
+			// Move forward
+			if (m_primitiveAct.getSchema().getLabel().equals(">"))
+			{
+				if (relativeSpeed.dot(newObservation.getPosition()) < 0 &&
+					Math.abs(newDirection) < Math.PI/4)
+					// Closer
+					initialFeedback = "+";
+				else
+					// Farther
+					initialFeedback = "-";
+			}
+			else
+			{
+				if (relativeSpeed.x > 0)
+					// More frontwards
+					initialFeedback = "+";
+				else
+					// More backward
+					initialFeedback = "-";
+			}
+//			if (relativeSpeed.dot(newObservation.getPosition()) > 0)
+//				// Farther
+//				initialFeedback = "-";
+//			else if (relativeSpeed.dot(newObservation.getPosition()) < 0)
+//				// Closer
+//				initialFeedback = "+";
+//			else if (relativeSpeed.y * newDirection > 0)
+//				// More outward (or same direction, therefore another salience)
+//				initialFeedback = "-";
+//			else if (relativeSpeed.y * newDirection < 0)
+//				// More inward
+//				initialFeedback = "+";
 		}
 		else
 		{
@@ -406,13 +446,34 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			if (previousAttractiveness >= 0)
 				// A wall appeared with a part of it in front of Ernest
 				initialFeedback = "*";		
-			else if (relativeSpeed.y * newDirection > 0)
-				// The wall went more outward (Ernest closer to the edge)
-				initialFeedback = "_";
-			else if (relativeSpeed.y * newDirection < 0)
-				// The wall went more inward (Ernest farther to the edge)
-				initialFeedback = "*";
+			if (m_primitiveAct.getSchema().getLabel().equals(">"))
+			{
+				if (relativeSpeed.dot(newObservation.getPosition()) < 0 &&
+					Math.abs(newDirection) < Math.PI/4)
+					// Closer
+					initialFeedback = "*";
+				else
+					// Farther
+					initialFeedback = "_";
+			}
+			else
+			{
+				if (relativeSpeed.x > 0)
+					// More frontwards
+					initialFeedback = "*";
+				else
+					// More backward
+					initialFeedback = "_";
+			}
+//			else if (relativeSpeed.y * newDirection > 0)
+//				// The wall went more outward (Ernest closer to the edge)
+//				initialFeedback = "_";
+//			else if (relativeSpeed.y * newDirection < 0)
+//				// The wall went more inward (Ernest farther to the edge)
+//				initialFeedback = "*";
 		}	
+		
+		newObservation.setInitialFeedback(initialFeedback);
 		return initialFeedback;
 	}
 	
@@ -423,20 +484,20 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		if (intentionSchema == '>')
 		{
 			impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR);
-			if (m_observation.getDistance() < .5f)
-				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * .5f);
-			if (m_observation.getDistance() < 1.1f)
-				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * m_observation.getDistance());
-			else
-				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * 1.1f);
+//			if (m_observation.getDistance() < .5f)
+//				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * .5f);
+//			if (m_observation.getDistance() < 1.1f)
+//				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * m_observation.getDistance());
+//			else
+//				impulsion = (int)(TRANSLATION_IMPULSION * Ernest.INT_FACTOR * 1.1f);
 		}
 		if (intentionSchema == '^' || intentionSchema == 'v' )
 		{ 
 			impulsion = (int)(ROTATION_IMPULSION * Ernest.INT_FACTOR);
-			if (Math.abs(m_observation.getDirection()) > Math.PI/8)
-				impulsion = (int)(ROTATION_IMPULSION * Ernest.INT_FACTOR * Math.abs(m_observation.getDirection()) / (Math.PI/4));
-			if (impulsion > 2 * ROTATION_IMPULSION * Ernest.INT_FACTOR)
-				impulsion = (int)(2 * ROTATION_IMPULSION * Ernest.INT_FACTOR);
+//			if (Math.abs(m_observation.getDirection()) > Math.PI/8)
+//				impulsion = (int)(ROTATION_IMPULSION * Ernest.INT_FACTOR * Math.abs(m_observation.getDirection()) / (Math.PI/4));
+//			if (impulsion > 2 * ROTATION_IMPULSION * Ernest.INT_FACTOR)
+//				impulsion = (int)(2 * ROTATION_IMPULSION * Ernest.INT_FACTOR);
 			
 			//return (int)(Math.abs(m_observation.getPlace().getDirection()) * 1000);
 		}
