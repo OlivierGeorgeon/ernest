@@ -32,7 +32,7 @@ public class Observation implements IObservation
 	private IBundle m_bundle; 
 	
 	/** The initial feedback obtained when the act starts. */
-	private String m_initialFeedback = "";
+	private String m_instantaneousFeedback = "";
 	
 	/** The resulting stimuli of the enacted act. */
 	private String m_stimuli;
@@ -117,9 +117,9 @@ public class Observation implements IObservation
 		return m_speed;
 	}
 
-	public void setInitialFeedback(String initialFeedback) 
+	public void setInstantaneousFeedback(String instantaneousFeedback) 
 	{
-		m_initialFeedback = initialFeedback;
+		m_instantaneousFeedback = instantaneousFeedback;
 	}
 
 	public void setStimuli(String stimuli) 
@@ -127,9 +127,9 @@ public class Observation implements IObservation
 		m_stimuli = stimuli;
 	}
 
-	public String getInitialFeedback() 
+	public String getInstantaneousFeedback() 
 	{
-		return m_initialFeedback;
+		return m_instantaneousFeedback;
 	}
 
 	public String getStimuli() 
