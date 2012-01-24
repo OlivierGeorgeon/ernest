@@ -29,10 +29,10 @@ public interface IObservation
 	public void setSpeed(Vector3f speed);
 	public Vector3f getSpeed();
 	
-	public void setInitialFeedback(String initialFeedback);
+	public void setInstantaneousFeedback(String instantaneousFeedback);
 	public void setStimuli(String stimuli);
 	
-	public String getInitialFeedback();
+	public String getInstantaneousFeedback();
 	public String getStimuli();
 	
 	/**
