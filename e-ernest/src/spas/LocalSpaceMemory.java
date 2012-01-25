@@ -173,6 +173,7 @@ public class LocalSpaceMemory
 						IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 						place = addPlace(b, position);
 						place.setSpan(spanf);
+						place.setSpeed(new Vector3f(0,0,1));
 					}
 					else
 					{
@@ -182,6 +183,7 @@ public class LocalSpaceMemory
 							place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
 							place.setPosition(position);
 							place.setSpan(spanf);
+							place.setSpeed(new Vector3f(0,0,1));
 						}
 						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY)
 						{
@@ -190,6 +192,7 @@ public class LocalSpaceMemory
 							place.setBundle(b);
 							place.setPosition(position);							
 							place.setSpan(spanf);
+							place.setSpeed(new Vector3f(0,0,1));
 						}
 					}
 				}

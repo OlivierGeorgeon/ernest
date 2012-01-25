@@ -35,8 +35,9 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	private IStimulation m_kinematicStimulation;
 	private IStimulation m_gustatoryStimulation;
 
-	final static float TRANSLATION_IMPULSION = .15f; // .13f
+	public final static float TRANSLATION_IMPULSION = .10f; // .10f; // .15f
 	final static float ROTATION_IMPULSION = 0.123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
+	public final static float MINIMUM_SPEED = 0.02f;// .05f
 	
 	private int m_interactionTimer = 0;
 	private IObservation m_initialObservation = new Observation();
@@ -87,7 +88,6 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     	
     	// Trigger a new cognitive loop when the speed is below a threshold.
         //if ((speed <= .050f) && (Math.abs(m_rotation) <= .050f) && cognitiveMode > 0)
-        //if (actEnd(speed) && cognitiveMode > 0)
     	if (endInteraction && cognitiveMode > 0)
         //if ((m_observation.getSpeed().length() <= .050f)  && cognitiveMode > 0)
         {
@@ -180,21 +180,6 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
         }
 
 		return primitiveSchema;    		
-	}
-	
-	private boolean actEnd(float speed)
-	{
-		boolean actEnd = false;
-		
-        //if ((m_observation.getSpeed().length() <= .050f) && (Math.abs(m_rotation) <= .050f))
-        if ((speed <= .050f) && (Math.abs(m_rotation) <= .050f))
-        	actEnd = true;
-        
-        // If the act does not start as intended, then end and return the actually enacted act
-        
-        // If the act does start as intended, then end when the act is no more as intended and returns the intended act. 
-        
-    	return actEnd;
 	}
 	
 	public IAct enactedAct(IAct act, int[][] stimuli) 
@@ -290,7 +275,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 					Math.abs(newObservation.getDirection()) > Math.PI/4)
 					// getting away
 					endInteraction = true;
-				else if (newObservation.getSpeed().length() < .050f)
+				else if (newObservation.getSpeed().length() < MINIMUM_SPEED)
 					// stopped
 					endInteraction = true;
 			}
@@ -299,7 +284,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				if (newObservation.getSpeed().x < 0 ||
 						Math.abs(newObservation.getDirection()) > Math.PI/8)
 					endInteraction = true;
-				else if (newObservation.getSpeed().length() < .050f)
+				else if (newObservation.getSpeed().length() < MINIMUM_SPEED)
 					// stopped
 					endInteraction = true;
 			}
@@ -310,19 +295,19 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		int satisfaction = 0;
 
+		finalFeedback = m_initialObservation.getInstantaneousFeedback();
+
 		if (newAttractiveness >= 0)
 		{
 			// Positive attractiveness
 			{
-				finalFeedback = m_initialObservation.getInstantaneousFeedback();
-		
+				// Satisfaction
 				if (finalFeedback.equals("-"))
 					satisfaction = -100;
 				if (finalFeedback.equals("+"))
 					satisfaction = 20;
 
 				// Direction
-				
 				if (!finalFeedback.equals(""))
 				{
 					if (newDirection <= minFovea)
@@ -335,14 +320,13 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		else
 		{
 			// Negative attractiveness (repulsion)
-			
+			// Satisfaction
 			if (finalFeedback.equals("*"))
 				satisfaction = -100;
 			if (finalFeedback.equals("_"))
 				satisfaction = 20;
 			
-			// Direction feature
-			
+			// Direction
 			if (!finalFeedback.equals(""))
 			{
 				if (newDirection < -0.1f ) 
@@ -387,11 +371,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	{
 		String instantaneousFeedback = "";
 		
-		int   newAttractiveness = newObservation.getAttractiveness();
-		float newDirection = newObservation.getDirection();
-		int   previousAttractiveness = previousObservation.getAttractiveness();
-		
-		if (newObservation.getSpeed() == null)
+		// Compute the speed of tactile places TODO change this
+		if (newObservation.getSpeed().z == 1)
 		{
 			Vector3f relativeSpeed = new Vector3f(newObservation.getPosition());
 			relativeSpeed.sub(previousObservation.getPosition());
@@ -402,20 +383,18 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			relativeSpeed.add(rotationSpeed);
 			newObservation.setSpeed(relativeSpeed);
 		}
-//		else 
-//			relativeSpeed.set(newObservation.getSpeed());
 		
 		Vector3f relativeAcceleration = new Vector3f(newObservation.getSpeed());
 		relativeAcceleration.sub(previousObservation.getSpeed());
 		
-		if (newAttractiveness >= 0)
+		if (newObservation.getAttractiveness() >= 0)
 		{
 			// Positive attractiveness
 			// Move forward
 			if (m_primitiveAct != null && m_primitiveAct.getSchema().getLabel().equals(">"))
 			{
 				if (relativeAcceleration.dot(newObservation.getPosition()) < 0 &&
-					Math.abs(newDirection) < Math.PI/4)
+					Math.abs(newObservation.getDirection()) < Math.PI/4)
 					// Closer
 					instantaneousFeedback = "+";
 				else
@@ -436,27 +415,30 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		{
 			// Negative attractiveness (repulsion)
 			
-			if (previousAttractiveness >= 0)
+			if (previousObservation.getAttractiveness() >= 0)
 				// A wall appeared with a part of it in front of Ernest
 				instantaneousFeedback = "*";		
-			if (m_primitiveAct.getSchema().getLabel().equals(">"))
+			else 
 			{
-				if (relativeAcceleration.dot(newObservation.getPosition()) < 0 &&
-					Math.abs(newDirection) < Math.PI/4)
-					// Closer
-					instantaneousFeedback = "*";
+				// aleady in front of a wall.
+				if (m_primitiveAct.getSchema().getLabel().equals(">"))
+				{
+					if (relativeAcceleration.dot(newObservation.getPosition()) <= 0)
+						// Closer
+						instantaneousFeedback = "*";
+					else
+						// Farther
+						instantaneousFeedback = "_";
+				}
 				else
-					// Farther
-					instantaneousFeedback = "_";
-			}
-			else
-			{
-				if (relativeAcceleration.x > 0)
-					// More frontwards
-					instantaneousFeedback = "*";
-				else
-					// More backward
-					instantaneousFeedback = "_";
+				{
+					if (relativeAcceleration.x > 0)
+						// More to front
+						instantaneousFeedback = "*";
+					else
+						// More to the side
+						instantaneousFeedback = "_";
+				}
 			}
 		}	
 		
