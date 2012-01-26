@@ -54,6 +54,11 @@ public class Bundle implements IBundle
 		m_visualValue = visualValue;
 	}
 	
+	public void setTactileValue(int tactileValue) 
+	{
+		m_visualValue = tactileValue;
+	}
+	
 	public int getTactileValue() 
 	{
 		return m_tactileValue;

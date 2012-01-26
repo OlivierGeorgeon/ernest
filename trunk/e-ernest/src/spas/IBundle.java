@@ -22,11 +22,8 @@ public interface IBundle
 	 */
 	public void setVisualValue(int visualValue); 
 	
-	/**
-	 * @return The bundle's color  for tracing.
-	 */
-	//String getHexColor();
-
+	public void setTactileValue(int tactileValue);
+	
 	/**
 	 * @return The value of the visual stimulation if any, or of the tactile stimulation
 	 */
@@ -38,9 +35,9 @@ public interface IBundle
 	int getTactileValue();
 	
 	/**
-	 * @param gustatoryStimulation The bundle's gustatory stimulation.
+	 * @param gustatoryValue The bundle's gustatory stimulation.
 	 */
-	void setGustatoryValue(int  gustatoryValue); 
+	void setGustatoryValue(int gustatoryValue); 
 	
 	/**
 	 * @return The bundle's gustatory stimulation.
@@ -48,7 +45,7 @@ public interface IBundle
 	int getGustatoryValue();
 	
 	/**
-	 * @param kinematicStimulation The bundle's kinematic stimulation.
+	 * @param kinematicValue The bundle's kinematic stimulation.
 	 */
 	void setKinematicValue(int kinematicValue);
 	
