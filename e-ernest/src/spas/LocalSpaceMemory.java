@@ -169,30 +169,35 @@ public class LocalSpaceMemory
 					IPlace place = seePlace(direction);
 					if (place == null)
 					{
-						// Create a place.
+						// Nothing seen: create a tactile bundle and place it here.
 						IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 						place = addPlace(b, position);
 						place.setSpan(spanf);
-						place.setSpeed(new Vector3f(0,0,1));
+						place.setSpeed(new Vector3f(0,0,1)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
 					}
 					else
 					{
 						if (place.getBundle().getTactileValue() == tactileStimulation.getValue())
 						{
-							// move the visual place to the tactile radius.
+							// A bundle is seen with the same tactile value: This is it!
 							place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
+							// move the visual place to the tactile radius.
 							place.setPosition(position);
 							place.setSpan(spanf);
-							place.setSpeed(new Vector3f(0,0,1));
 						}
-						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY)
+						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY )//&& 
+								//place.getDistance() < Ernest.TACTILE_RADIUS + .1f)
 						{
+							// A bundle is seen in the same position with no tactile value.
+							
 							// Update the place and the bundle
 							IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 							place.setBundle(b);
+							
+							//place.getBundle().setTactileValue(tactileStimulation.getValue());
+							//place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
 							place.setPosition(position);							
 							place.setSpan(spanf);
-							place.setSpeed(new Vector3f(0,0,1));
 						}
 					}
 				}
