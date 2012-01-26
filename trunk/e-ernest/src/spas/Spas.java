@@ -146,7 +146,7 @@ public class Spas implements ISpas
 		
 		// Clean up the local space memory according to the tactile simulations.
 		
-		adjustLocalSpaceMemory(tactileStimulations);
+		//adjustLocalSpaceMemory(tactileStimulations);
 		
 		// Find the most attractive or the most repulsive place in the list (abs value) (The list is never empty)
 		

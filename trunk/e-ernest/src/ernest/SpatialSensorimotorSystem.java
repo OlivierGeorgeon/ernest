@@ -36,7 +36,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	private IStimulation m_gustatoryStimulation;
 
 	public final static float TRANSLATION_IMPULSION = .10f; // .10f; // .15f
-	final static float ROTATION_IMPULSION = 0.123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
+	final static float ROTATION_IMPULSION = 0.123f;// .123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
 	public final static float MINIMUM_SPEED = 0.02f;// .05f
 	
 	private int m_interactionTimer = 0;
