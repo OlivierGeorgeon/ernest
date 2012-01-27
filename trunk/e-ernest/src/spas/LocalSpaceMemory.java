@@ -177,16 +177,17 @@ public class LocalSpaceMemory
 					}
 					else
 					{
-						if (place.getBundle().getTactileValue() == tactileStimulation.getValue())
+						if (place.getBundle().getTactileValue() == tactileStimulation.getValue() &&
+							place.getDistance() < Ernest.TACTILE_RADIUS + .1f) // vision now provides distance
 						{
 							// A bundle is seen with the same tactile value: This is it!
 							place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
 							// move the visual place to the tactile radius.
-							place.setPosition(position);
+							place.setPosition(position); // Position is more precise with tactile perception, especially for long walls.
 							place.setSpan(spanf);
 						}
-						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY )//&& 
-								//place.getDistance() < Ernest.TACTILE_RADIUS + .1f)
+						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY && 
+								place.getDistance() < Ernest.TACTILE_RADIUS + .1f)
 						{
 							// A bundle is seen in the same position with no tactile value.
 							
@@ -363,6 +364,11 @@ public class LocalSpaceMemory
 		}		
 	}
 	
+	/**
+	 * Find the closest place whose span overlaps this direction.
+	 * @param direction The direction in which to look at.
+	 * @return The place.
+	 */
 	private IPlace seePlace(float direction)
 	{
 		IPlace place = null;
