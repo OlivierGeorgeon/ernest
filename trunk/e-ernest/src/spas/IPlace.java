@@ -91,5 +91,11 @@ public interface IPlace {
 	public void setSpeed(Vector3f speed);
 	
 	public Vector3f getSpeed();
+	
+	public void setFirstPosition(Vector3f position);
+	public void setSecondPosition(Vector3f position);
+	public Vector3f getFirstPosition();
+	public Vector3f getSecondPosition();
+	
 
 }

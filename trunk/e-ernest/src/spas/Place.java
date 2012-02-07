@@ -20,6 +20,9 @@ public class Place implements IPlace
 	float m_span;
 	int m_attractiveness;
 	
+	Vector3f m_firstPosition;
+	Vector3f m_secondPosition;
+	
 	int m_type = Spas.PLACE_SALIENCE;
 	
 	/**
@@ -198,5 +201,25 @@ public class Place implements IPlace
 	public Vector3f getSpeed() 
 	{
 		return m_speed;
+	}
+
+	public void setFirstPosition(Vector3f position) 
+	{
+		m_firstPosition = position;
+	}
+
+	public void setSecondPosition(Vector3f position) 
+	{
+		m_secondPosition = position;		
+	}
+
+	public Vector3f getFirstPosition() 
+	{
+		return m_firstPosition;
+	}
+
+	public Vector3f getSecondPosition() 
+	{
+		return m_secondPosition;
 	}
 }
