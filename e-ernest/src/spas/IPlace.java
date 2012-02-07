@@ -84,9 +84,12 @@ public interface IPlace {
 	 */
 	public boolean isFrontal();
 	
-	public void setFocus(boolean focus);
-	public boolean getFocus();
+	public void setType(int type);
+	
+	public int getType();
+	
 	public void setSpeed(Vector3f speed);
+	
 	public Vector3f getSpeed();
 
 }

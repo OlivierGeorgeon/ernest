@@ -65,6 +65,6 @@ public interface IObservation
 	 */
 	public IStimulation getGustatoryStimulation();
 	
-//	public void setPlace(IPlace place);
-//	public IPlace getPlace();
+	public void setType(int type);
+	public int getType();
 }

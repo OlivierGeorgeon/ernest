@@ -20,7 +20,7 @@ public class Place implements IPlace
 	float m_span;
 	int m_attractiveness;
 	
-	boolean m_focus;
+	int m_type = Spas.PLACE_SALIENCE;
 	
 	/**
 	 * @param bundle This place's bundle.
@@ -180,14 +180,14 @@ public class Place implements IPlace
 		m_position = position;
 	}
 
-	public void setFocus(boolean focus) 
+	public void setType(int type) 
 	{
-		m_focus = focus;
+		m_type = type;
 	}
 
-	public boolean getFocus() 
+	public int getType() 
 	{
-		return m_focus;
+		return m_type;
 	}
 
 	public void setSpeed(Vector3f speed) 

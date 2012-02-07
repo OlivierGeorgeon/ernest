@@ -217,43 +217,61 @@ public class LocalSpaceMemory
 	public void addKinematicPlace(int kinematicValue)
 	{
 		// Find the place in front of Ernest.
+		IPlace frontPlace = null;
 		IBundle frontBundle = null;
 		for (IPlace place : m_places)
 			if (place.isFrontal() && place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && place.getSpan() > Math.PI/6 + 0.01f )
-				frontBundle = place.getBundle();
+			{
+				frontPlace = place;
+//				place.setType(Spas.PLACE_KINEMATIC);
+//				frontBundle = place.getBundle();
+			}
 		
 		// Associate kinematic stimulation to the front bundle.
 
 		if (kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
 		{
-			if (frontBundle != null)
+			if (frontPlace != null)
 			{
-				m_persistenceMemory.addKinematicValue(frontBundle, kinematicValue);
+				frontPlace.setType(Spas.PLACE_KINEMATIC);
+				m_persistenceMemory.addKinematicValue(frontPlace.getBundle(), kinematicValue);
 			}
 		}
 	}
 	
 	public void addGustatoryPlace(int gustatoryValue)
 	{
-		IBundle frontBundle = getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
-		IBundle hereBundle = getBundle(LocalSpaceMemory.DIRECTION_HERE);
+		IPlace frontPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
+		IBundle frontBundle = null;
+		if (frontPlace != null) frontBundle = frontPlace.getBundle();
+		IPlace herePlace = getPlace(LocalSpaceMemory.DIRECTION_HERE);
+		IBundle hereBundle = null;
+		if (herePlace != null) hereBundle = herePlace.getBundle();
 
 		// Associate the tactile stimulation with the fish gustatory stimulation
 		
 		if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
 		{
 			// Discrete environment. The fish bundle is the hereBundle.
-			if (hereBundle != null && hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
+			if (hereBundle != null)
 			{
-				m_persistenceMemory.addGustatoryValue(hereBundle, gustatoryValue);
-				clearPlace(LocalSpaceMemory.DIRECTION_HERE); // The fish is eaten
+				herePlace.setType(Spas.PLACE_GUSTATORY);
+				if (hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
+				{
+					m_persistenceMemory.addGustatoryValue(hereBundle, gustatoryValue);
+					clearPlace(LocalSpaceMemory.DIRECTION_HERE); // The fish is eaten
+				}
 			}
 			
 			// Continuous environment. The fish bundle is the frontBundle
-			if (frontBundle != null && frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
+			if (frontBundle != null)
 			{
-				m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
-				clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
+				frontPlace.setType(Spas.PLACE_GUSTATORY);
+				if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
+				{
+					m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
+					clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
+				}
 			}
 		}
 		
@@ -261,12 +279,13 @@ public class LocalSpaceMemory
 		
 		if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE)
 		{
-			if (frontBundle != null && frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)
+			if (frontBundle != null)
 			{
-				m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
+				frontPlace.setType(Spas.PLACE_CUDDLE);
+				if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)
+					m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
 			}
-		}
-		
+		}		
 	}
 	
 	/**
@@ -399,6 +418,20 @@ public class LocalSpaceMemory
 		}	
 
 		return b;
+	}
+
+	/**
+	 * Get the first place found at a given position.
+	 * @param position The position of the location.
+	 * @return The place.
+	 */
+	public IPlace getPlace(Vector3f position)
+	{
+		for (IPlace p : m_places)
+			if (p.isInCell(position))
+				return p;
+
+		return null;
 	}
 
 	/**

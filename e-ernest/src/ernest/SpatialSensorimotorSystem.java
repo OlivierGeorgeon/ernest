@@ -151,6 +151,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     			m_tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
     			m_tracer.addSubelement(e, "kinematic", m_observation.getKinematicStimulation().getHexColor());
     			m_tracer.addSubelement(e, "gustatory", m_observation.getGustatoryStimulation().getHexColor());
+    			m_tracer.addSubelement(e, "type", m_observation.getType() + "");
     			
     			Object focusElmt = m_tracer.addEventElement("focus");
     			m_tracer.addSubelement(focusElmt, "salience", ErnestUtils.hexColor(m_observation.getBundle().getValue()));

@@ -20,6 +20,12 @@ public class Spas implements ISpas
 	
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
+	
+	public static int PLACE_SALIENCE = 0;
+	public static int PLACE_FOCUS = 1;
+	public static int PLACE_KINEMATIC = 2;
+	public static int PLACE_GUSTATORY  = 3;
+	public static int PLACE_CUDDLE = 4;
 
 	/** Ernest's persistence momory  */
 	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
@@ -83,7 +89,7 @@ public class Spas implements ISpas
 		IPlace focusPlace = null;
 		for (IPlace place : m_localSpaceMemory.getPlaceList())
 		{
-			place.setFocus(false);
+			place.setType(PLACE_SALIENCE); // Reset the type of all places
 			int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
 			if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
 			{
@@ -111,7 +117,7 @@ public class Spas implements ISpas
 		}
 		else
 		{
-			focusPlace.setFocus(true);
+			focusPlace.setType(PLACE_FOCUS);
 			mAttention = focusPlace.getBundle().getValue();
 			observation.setBundle(focusPlace.getBundle());
 			observation.setPosition(focusPlace.getPosition());
@@ -154,7 +160,7 @@ public class Spas implements ISpas
 		IPlace focusPlace = null;
 		for (IPlace place : m_localSpaceMemory.getPlaceList())
 		{
-			place.setFocus(false);
+			//place.setType(PLACE_SALIENCE);
 			int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
 			if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
 			{
@@ -180,12 +186,14 @@ public class Spas implements ISpas
 		}
 		else
 		{
-			focusPlace.setFocus(true);
+			if (focusPlace.getType() == 0)
+				focusPlace.setType(PLACE_FOCUS);
 			mAttention = focusPlace.getBundle().getValue();
 			observation.setBundle(focusPlace.getBundle());
 			observation.setPosition(focusPlace.getPosition());
 			observation.setSpan(focusPlace.getSpan());
 			observation.setSpeed(focusPlace.getSpeed());
+			observation.setType(focusPlace.getType());
 		}		
 
 		return observation;
