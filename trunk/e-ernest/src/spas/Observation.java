@@ -36,6 +36,8 @@ public class Observation implements IObservation
 	
 	/** The resulting stimuli of the enacted act. */
 	private String m_stimuli;
+	
+	private int m_type;
 
 	public void setAttractiveness(int attractiveness) 
 	{
@@ -135,5 +137,15 @@ public class Observation implements IObservation
 	public String getStimuli() 
 	{
 		return m_stimuli;
+	}
+
+	public void setType(int type) 
+	{
+		m_type = type;
+	}
+
+	public int getType() 
+	{
+		return m_type;
 	}
 }
