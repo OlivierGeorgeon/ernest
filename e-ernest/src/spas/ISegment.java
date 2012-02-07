@@ -32,5 +32,8 @@ public interface ISegment
 	 */
 	public Vector3f getSecondPosition();
 	
+	/**
+	 * @return The span of this segment from Ernest's viewpoint.
+	 */
 	public float getSpan();
 }

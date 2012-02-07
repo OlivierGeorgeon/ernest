@@ -121,6 +121,10 @@ public class LocalSpaceMemory
 		}
 	}
 	
+	/**
+	 * Add places from segments provided by Vacuum_SG.
+	 * @param segmentList The list of segments.
+	 */
 	public void addSegmentPlaces(ArrayList<ISegment> segmentList)
 	{
 		for (ISegment segment : segmentList)
@@ -131,6 +135,8 @@ public class LocalSpaceMemory
 			IPlace place = new Place(b,segment.getPosition());
 			place.setSpeed(segment.getSpeed());
 			place.setSpan(segment.getSpan());
+			place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
+			place.setSecondPosition(segment.getSecondPosition());
 			m_places.add(place);			
 		}
 	}
@@ -165,6 +171,8 @@ public class LocalSpaceMemory
 					// Create a tactile bundle.
 					float direction = sumDirection / span;
 					Vector3f position = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)direction)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)direction)), 0f);
+					float firstDirection = direction - spanf/ 2;
+					Vector3f firstPosition = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)firstDirection)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)firstDirection)), 0f);
 					// See in that direction.
 					IPlace place = seePlace(direction);
 					if (place == null)
@@ -172,6 +180,7 @@ public class LocalSpaceMemory
 						// Nothing seen: create a tactile bundle and place it here.
 						IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 						place = addPlace(b, position);
+						place.setFirstPosition(firstPosition);
 						place.setSpan(spanf);
 						place.setSpeed(new Vector3f(0,0,1)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
 					}
@@ -184,6 +193,7 @@ public class LocalSpaceMemory
 							place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
 							// move the visual place to the tactile radius.
 							place.setPosition(position); // Position is more precise with tactile perception, especially for long walls.
+							place.setFirstPosition(firstPosition);
 							place.setSpan(spanf);
 						}
 						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY && 
@@ -198,6 +208,7 @@ public class LocalSpaceMemory
 							//place.getBundle().setTactileValue(tactileStimulation.getValue());
 							//place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
 							place.setPosition(position);							
+							place.setFirstPosition(firstPosition);
 							place.setSpan(spanf);
 						}
 					}
