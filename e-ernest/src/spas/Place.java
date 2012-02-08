@@ -25,6 +25,8 @@ public class Place implements IPlace
 	
 	int m_type = Spas.PLACE_SALIENCE;
 	
+	int m_clock = 0;
+	
 	/**
 	 * @param bundle This place's bundle.
 	 * @param distance This place's distance.
@@ -221,5 +223,15 @@ public class Place implements IPlace
 	public Vector3f getSecondPosition() 
 	{
 		return m_secondPosition;
+	}
+
+	public void setUpdateCount(int clock) 
+	{
+		m_clock = clock;
+	}
+
+	public int getUpdateCount() 
+	{
+		return m_clock;
 	}
 }

@@ -123,6 +123,7 @@ public class LocalSpaceMemory
 	
 	/**
 	 * Add places from segments provided by Vacuum_SG.
+	 * Create or recognize the associated bundle.
 	 * @param segmentList The list of segments.
 	 */
 	public void addSegmentPlaces(ArrayList<ISegment> segmentList)
@@ -136,7 +137,8 @@ public class LocalSpaceMemory
 			place.setSpeed(segment.getSpeed());
 			place.setSpan(segment.getSpan());
 			place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
-			place.setSecondPosition(segment.getSecondPosition());
+			place.setSecondPosition(segment.getFirstPosition());
+			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 			m_places.add(place);			
 		}
 	}
@@ -173,6 +175,8 @@ public class LocalSpaceMemory
 					Vector3f position = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)direction)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)direction)), 0f);
 					float firstDirection = direction - spanf/ 2;
 					Vector3f firstPosition = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)firstDirection)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)firstDirection)), 0f);
+					float secondDirection = direction + spanf/ 2;
+					Vector3f secondPosition = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)secondDirection)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)secondDirection)), 0f);
 					// See in that direction.
 					IPlace place = seePlace(direction);
 					if (place == null)
@@ -181,8 +185,10 @@ public class LocalSpaceMemory
 						IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 						place = addPlace(b, position);
 						place.setFirstPosition(firstPosition);
+						place.setSecondPosition(secondPosition);
 						place.setSpan(spanf);
 						place.setSpeed(new Vector3f(0,0,1)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
+						place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 					}
 					else
 					{
@@ -194,7 +200,9 @@ public class LocalSpaceMemory
 							// move the visual place to the tactile radius.
 							place.setPosition(position); // Position is more precise with tactile perception, especially for long walls.
 							place.setFirstPosition(firstPosition);
+							place.setSecondPosition(secondPosition);
 							place.setSpan(spanf);
+							place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
 						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY && 
 								place.getDistance() < Ernest.TACTILE_RADIUS + .1f)
@@ -209,7 +217,9 @@ public class LocalSpaceMemory
 							//place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
 							place.setPosition(position);							
 							place.setFirstPosition(firstPosition);
+							place.setSecondPosition(secondPosition);
 							place.setSpan(spanf);
+							place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
 					}
 				}
@@ -229,9 +239,8 @@ public class LocalSpaceMemory
 	{
 		// Find the place in front of Ernest.
 		IPlace frontPlace = null;
-		IBundle frontBundle = null;
 		for (IPlace place : m_places)
-			if (place.isFrontal() && place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && place.getSpan() > Math.PI/6 + 0.01f )
+			if (place.isFrontal() && place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && place.getSpan() > Math.PI/6 + 0.01f && place.getUpdateCount() == m_persistenceMemory.getUpdateCount())
 			{
 				frontPlace = place;
 //				place.setType(Spas.PLACE_KINEMATIC);
@@ -307,11 +316,11 @@ public class LocalSpaceMemory
 	 * @param direction The direction of this place.
 	 * @return The new or already existing location.
 	 */
-	public IPlace addPlace(IBundle bundle, float distance, float direction)
-	{
-		Vector3f position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
-		return addPlace(bundle, position);
-	}
+//	public IPlace addPlace(IBundle bundle, float distance, float direction)
+//	{
+//		Vector3f position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
+//		return addPlace(bundle, position);
+//	}
 	
 	public IPlace addPlace(IBundle bundle, Vector3f position)
 	{
@@ -403,13 +412,14 @@ public class LocalSpaceMemory
 	{
 		IPlace place = null;
 
-		for (IPlace l : m_places)
+		for (IPlace p : m_places)
 		{
-			if (l.getDirection() - l.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
-				l.getDirection() + l.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
-				l.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN)
-				if (place == null || l.getDistance() < place.getDistance())
-					place = l;
+			if (p.getDirection() - p.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
+				p.getDirection() + p.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
+				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+				p.getUpdateCount() == m_persistenceMemory.getUpdateCount())
+				if (place == null || p.getDistance() < place.getDistance())
+					place = p;
 		}
 		return place;
 	}
@@ -422,10 +432,10 @@ public class LocalSpaceMemory
 	public IBundle getBundle(Vector3f position)
 	{
 		IBundle b = null;
-		for (IPlace l : m_places)
+		for (IPlace p : m_places)
 		{
-			if (l.isInCell(position))
-				b = l.getBundle();
+			if (p.isInCell(position) && p.getUpdateCount() == m_persistenceMemory.getUpdateCount())
+				b = p.getBundle();
 		}	
 
 		return b;
@@ -438,11 +448,13 @@ public class LocalSpaceMemory
 	 */
 	public IPlace getPlace(Vector3f position)
 	{
+		IPlace place = null;
 		for (IPlace p : m_places)
-			if (p.isInCell(position))
-				return p;
-
-		return null;
+		{
+			if (p.isInCell(position) && p.getUpdateCount() == m_persistenceMemory.getUpdateCount())
+				place = p;
+		}
+		return place;
 	}
 
 	/**
@@ -491,7 +503,15 @@ public class LocalSpaceMemory
 	
 	public void clear()
 	{
-		m_places.clear();
+		for (Iterator it = m_places.iterator(); it.hasNext();)
+		{
+			IPlace p = (IPlace)it.next();
+			p.setType(Spas.PLACE_SALIENCE);
+			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 5)
+				it.remove();
+		}
+
+		//m_places.clear();
 	}
 	
 	/**
@@ -534,4 +554,4 @@ public class LocalSpaceMemory
 	{
 		return m_places;
 	}
-	}
+}

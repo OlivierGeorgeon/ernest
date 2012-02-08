@@ -46,6 +46,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	public int[] update(int[][] stimuli) 
 	{
 		m_interactionTimer++;
+		m_spas.tick();
 		
 		int primitiveSchema[] = new int[2];
 		float translationx = (float) stimuli[2][8] / Ernest.INT_FACTOR; 
@@ -87,11 +88,10 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     	primitiveSchema[1] = 0;
     	
     	// Trigger a new cognitive loop when the speed is below a threshold.
-        //if ((speed <= .050f) && (Math.abs(m_rotation) <= .050f) && cognitiveMode > 0)
+    	
     	if (endInteraction && cognitiveMode > 0)
-        //if ((m_observation.getSpeed().length() <= .050f)  && cognitiveMode > 0)
         {
-        	m_spas.tick(); // Tick the clock of persistence memory
+        	m_spas.count(); // Tick the clock of persistence memory
     		m_interactionTimer = 0;
     		        	
     		IAct enactedPrimitiveAct = null;

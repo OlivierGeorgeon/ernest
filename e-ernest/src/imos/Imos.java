@@ -68,7 +68,7 @@ public class Imos implements IImos
 	 */
 	private IAct m_primitiveIntention = null;
 
-	/** The Tracer. */
+	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
 
 	/**

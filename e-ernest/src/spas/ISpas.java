@@ -77,6 +77,7 @@ public interface ISpas
 	public ArrayList<IPlace> getPlaceList();
 	
 	public void tick();
+	public void count();
 	public void traceLocalSpace();
 	public void setSegmentList(ArrayList<ISegment> segmentList);
 	
