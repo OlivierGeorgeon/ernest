@@ -18,8 +18,11 @@ public class PersistenceMemory
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
 
-	/** Ernest's internal clock  */
+	/** The counter of cognitive cycles  */
 	private int m_clock;
+
+	/** The counter of interaction cycles */
+	private int m_updateCounter = 0;
 
 	/** A list of all the stimulations ever identified. */
 	public List<IStimulation> m_stimulations = new ArrayList<IStimulation>(20);
@@ -36,10 +39,23 @@ public class PersistenceMemory
 	}
 
 	/**
-	 * Tick the persistence memory clock.
+	 * Tick the counter of interaction cycles.
+	 */
+	public void updateCount()
+	{
+		m_updateCounter++;
+	}
+	
+	public int getUpdateCount()
+	{
+		return m_updateCounter;
+	}
+	
+	/**
+	 * Increment the counter of cognitive cycles.
 	 * Used to simulate a decay in persistence memory
 	 */
-	public void tick()
+	public void count()
 	{
 		m_clock++;
 	}
@@ -67,57 +83,8 @@ public class PersistenceMemory
 			// The landmark already exists: return a pointer to it.
 			l =  m_stimulations.get(i);
 		return l;
-	}
-	
-	/**
-	 * Create a bundle with a visual and a tactile stimulation.
-	 * @param visualStimulation The visual stimulation.
-	 * @param tactileStimulation The tactile stimulation.
-	 * @return The bundle.
-	 */
-//	public IBundle createVisioTactileBundle(int visualValue, int tactileValue)
-//	{
-//		if (m_tracer != null)
-//		{
-//			Object e = m_tracer.addEventElement("cooccurrence");
-//			m_tracer.addSubelement(e, "stimulus_1", hexColor(visualValue));
-//			m_tracer.addSubelement(e, "stimulus_0", hexColor(tactileValue));
-//		}
-//		return addBundle(visualValue, tactileValue, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-//	}
-//	
-//	/**
-//	 * Create a bundle with a tactile and a gustatory stimulation.
-//	 * @param tactileStimulation The tactile stimulation.
-//	 * @param gustatoryStimulation The gustatory stimulation.
-//	 * @return The bundle
-//	 */
-//	public IBundle createTactoGustatoryBundle(int tactileValue, int gustatoryValue)
-//	{
-//		if (m_tracer != null)
-//		{
-//			Object e = m_tracer.addEventElement("cooccurrence");
-//			m_tracer.addSubelement(e, "stimulus_1", hexColor(gustatoryValue));
-//			m_tracer.addSubelement(e, "stimulus_0", hexColor(tactileValue));
-//		}
-//		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileValue, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryValue);
-//	}
-//	/**
-//	 * Create a bundle with a tactile and a gustatory stimulation.
-//	 * @param tactileStimulation The tactile stimulation.
-//	 * @param gustatoryStimulation The gustatory stimulation.
-//	 * @return The bundle
-//	 */
-//	public IBundle createTactoKinematicBundle(int tactileValue, int kinematicValue)
-//	{
-//		if (m_tracer != null)
-//		{
-//			Object e = m_tracer.addEventElement("cooccurrence");
-//			m_tracer.addSubelement(e, "stimulus_1", hexColor(kinematicValue));
-//			m_tracer.addSubelement(e, "stimulus_0", hexColor(tactileValue));
-//		}
-//		return  addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileValue, kinematicValue, Ernest.STIMULATION_GUSTATORY_NOTHING);
-//	}
+	}	
+
 	/**
 	 * Add a bundle to static memory if it does not already exist
 	 * @param visualStimulation The bundle's visual stimulation.
@@ -146,21 +113,6 @@ public class PersistenceMemory
 
 		return bundle;
 	}
-	
-//	public void addVisualValue(IBundle bundle, int visualValue)
-//	{
-//		// TODO Possibly change the visual value of an existing bundle.
-//		if (bundle.getVisualValue() == Ernest.STIMULATION_VISUAL_UNSEEN)
-//		{
-//			bundle.setVisualValue(visualValue);
-//			if (m_tracer != null)
-//			{
-//				Object e = m_tracer.addEventElement("cooccurrence");
-//				m_tracer.addSubelement(e, "stimulus_1", hexColor(visualValue));
-//				bundle.trace(m_tracer, "bundle");
-//			}
-//		}
-//	}
 	
 	public void addKinematicValue(IBundle bundle, int kinematiValue)
 	{

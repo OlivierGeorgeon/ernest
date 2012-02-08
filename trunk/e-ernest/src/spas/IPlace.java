@@ -3,11 +3,11 @@ package spas;
 import javax.vecmath.Vector3f;
 
 /**
- * A place is a location in the local space that holds a placeable item (stimulation, salience, or bundle).
+ * A place is a location in the local space where a bundle is placed.
  * @author Olivier
  */
-public interface IPlace {
-	
+public interface IPlace 
+{	
 	/**
 	 * @return The location's bundle.
 	 */
@@ -97,5 +97,6 @@ public interface IPlace {
 	public Vector3f getFirstPosition();
 	public Vector3f getSecondPosition();
 	
-
+	public void setUpdateCount(int count);
+	public int getUpdateCount();
 }

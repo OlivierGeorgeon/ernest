@@ -99,6 +99,8 @@ public interface IErnest
 	 */
 	public ArrayList<IPlace> getPlaceList();
 	
+	/**
+	 * @return The counter of cognitive cycles.
+	 */
 	public int getCounter();
-	
 }

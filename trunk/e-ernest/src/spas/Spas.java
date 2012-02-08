@@ -160,12 +160,15 @@ public class Spas implements ISpas
 		IPlace focusPlace = null;
 		for (IPlace place : m_localSpaceMemory.getPlaceList())
 		{
-			//place.setType(PLACE_SALIENCE);
-			int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
-			if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
+			if (place.getUpdateCount() == m_persistenceMemory.getUpdateCount())
 			{
-				maxAttractiveness = attractiveness;
-				focusPlace = place;
+				//place.setType(PLACE_SALIENCE);
+				int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
+				if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
+				{
+					maxAttractiveness = attractiveness;
+					focusPlace = place;
+				}
 			}
 		}
 
@@ -305,7 +308,12 @@ public class Spas implements ISpas
 
 	public void tick() 
 	{
-		m_persistenceMemory.tick();
+		m_persistenceMemory.updateCount();
+	}
+
+	public void count() 
+	{
+		m_persistenceMemory.count();
 	}
 
 	public void traceLocalSpace() 
