@@ -67,4 +67,7 @@ public interface IObservation
 	
 	public void setType(int type);
 	public int getType();
+	
+	public void setUpdateCount(int updateCount);
+	public int getUpdateCount();
 }
