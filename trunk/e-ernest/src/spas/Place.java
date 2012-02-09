@@ -103,8 +103,8 @@ public class Place implements IPlace
 	}
 
 	/**
-	 * Locations are equal if they are in the same grid cell (in egocentric referential). 
-	 * have the same bundle at the same position modulo the LOCATION_RADIUS. 
+	 * Places are equal if they have the same position modulo the LOCATION_RADIUS.
+	 * and the same updateCount 
 	 */
 	public boolean equals(Object o)
 	{
@@ -120,15 +120,10 @@ public class Place implements IPlace
 		{
 			IPlace other = (IPlace)o;
 			//ret = (other.getBundle() == m_bundle) && (m_position.epsilonEquals(other.getPosition(), LocalSpace.LOCATION_RADIUS));
-			ret = isInCell(other.getPosition());
+			ret = isInCell(other.getPosition()) && other.getUpdateCount() == getUpdateCount();
 		}		
 		return ret;
 	}
-
-//	private float polarAngle(Vector3f v) 
-//	{
-//		return (float)Math.atan2((double)v.y, (double)v.x);
-//	}
 
 	public float getDirection() 
 	{

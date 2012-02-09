@@ -24,7 +24,7 @@ public class LocalSpaceMemory
 	
 	/** The radius of a location. */
 	public static float LOCATION_RADIUS = 0.5f;
-	public static float LOCAL_SPACE_MEMORY_RADIUS = 4f;
+	public static float LOCAL_SPACE_MEMORY_RADIUS = 20f;//4f;
 	public static float DISTANCE_VISUAL_BACKGROUND = 10f;
 	public static float EXTRAPERSONAL_DISTANCE = 1.5f;
 	
@@ -183,7 +183,7 @@ public class LocalSpaceMemory
 					{
 						// Nothing seen: create a tactile bundle and place it here.
 						IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-						place = addPlace(b, position);
+						place = addOrReplacePlace(b, position);
 						place.setFirstPosition(firstPosition);
 						place.setSecondPosition(secondPosition);
 						place.setSpan(spanf);
@@ -202,7 +202,7 @@ public class LocalSpaceMemory
 							place.setFirstPosition(firstPosition);
 							place.setSecondPosition(secondPosition);
 							place.setSpan(spanf);
-							place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
 						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY && 
 								place.getDistance() < Ernest.TACTILE_RADIUS + .1f)
@@ -219,7 +219,7 @@ public class LocalSpaceMemory
 							place.setFirstPosition(firstPosition);
 							place.setSecondPosition(secondPosition);
 							place.setSpan(spanf);
-							place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
 					}
 				}
@@ -328,19 +328,32 @@ public class LocalSpaceMemory
 		// the position can be moved without changing the position used for intialization.
 		Vector3f p = new Vector3f(position);
 		
-		IPlace l = new Place(bundle, p);
+		IPlace place = new Place(bundle, p);
 		
-		int i = m_places.indexOf(l);
+		m_places.add(place);
+		return place;
+	}
+	
+	public IPlace addOrReplacePlace(IBundle bundle, Vector3f position)
+	{
+		// The initial position must be cloned so that 
+		// the position can be moved without changing the position used for intialization.
+		Vector3f pos = new Vector3f(position);
+		
+		IPlace p = new Place(bundle, pos);
+		p.setUpdateCount(m_persistenceMemory.getUpdateCount());
+		
+		int i = m_places.indexOf(p);
 		if (i == -1)
 			// The place does not exist
-			m_places.add(l);
+			m_places.add(p);
 		else 
 		{
 			// The place already exists: return a pointer to it.
-			l =  m_places.get(i);
-			l.setBundle(bundle);
+			p =  m_places.get(i);
+			p.setBundle(bundle);
 		}
-		return l;
+		return p;
 	}
 	
 	/**

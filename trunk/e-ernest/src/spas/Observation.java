@@ -38,6 +38,8 @@ public class Observation implements IObservation
 	private String m_stimuli;
 	
 	private int m_type;
+	
+	private int m_updateCount;
 
 	public void setAttractiveness(int attractiveness) 
 	{
@@ -147,5 +149,15 @@ public class Observation implements IObservation
 	public int getType() 
 	{
 		return m_type;
+	}
+
+	public void setUpdateCount(int updateCount)
+	{
+		m_updateCount = updateCount;
+	}
+
+	public int getUpdateCount() 
+	{
+		return m_updateCount;
 	}
 }

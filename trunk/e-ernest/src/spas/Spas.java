@@ -186,6 +186,7 @@ public class Spas implements ISpas
 			observation.setPosition(new Vector3f(1,0,0));
 			observation.setSpan(0);
 			observation.setSpeed(new Vector3f());
+			observation.setUpdateCount(-1);
 		}
 		else
 		{
@@ -197,6 +198,7 @@ public class Spas implements ISpas
 			observation.setSpan(focusPlace.getSpan());
 			observation.setSpeed(focusPlace.getSpeed());
 			observation.setType(focusPlace.getType());
+			observation.setUpdateCount(focusPlace.getUpdateCount());
 		}		
 
 		return observation;
