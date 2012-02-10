@@ -139,6 +139,7 @@ public class LocalSpaceMemory
 			place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
 			place.setSecondPosition(segment.getFirstPosition());
 			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+			place.setType(Spas.PLACE_SALIENCE);
 			m_places.add(place);			
 		}
 	}
@@ -189,6 +190,7 @@ public class LocalSpaceMemory
 						place.setSpan(spanf);
 						place.setSpeed(new Vector3f(0,0,1)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
 						place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+						place.setType(Spas.PLACE_TOUCH);
 					}
 					else
 					{
@@ -202,6 +204,7 @@ public class LocalSpaceMemory
 							place.setFirstPosition(firstPosition);
 							place.setSecondPosition(secondPosition);
 							place.setSpan(spanf);
+							place.setType(Spas.PLACE_TOUCH);
 							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
 						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY && 
@@ -219,6 +222,7 @@ public class LocalSpaceMemory
 							place.setFirstPosition(firstPosition);
 							place.setSecondPosition(secondPosition);
 							place.setSpan(spanf);
+							place.setType(Spas.PLACE_TOUCH);
 							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
 					}
@@ -240,12 +244,8 @@ public class LocalSpaceMemory
 		// Find the place in front of Ernest.
 		IPlace frontPlace = null;
 		for (IPlace place : m_places)
-			if (place.isFrontal() && place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && place.getSpan() > Math.PI/6 + 0.01f && place.getUpdateCount() == m_persistenceMemory.getUpdateCount())
-			{
+			if (place.isFrontal() && place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && place.getSpan() > Math.PI/6 + 0.01f && place.attractFocus(m_persistenceMemory.getUpdateCount()))
 				frontPlace = place;
-//				place.setType(Spas.PLACE_KINEMATIC);
-//				frontBundle = place.getBundle();
-			}
 		
 		// Associate kinematic stimulation to the front bundle.
 
@@ -253,8 +253,14 @@ public class LocalSpaceMemory
 		{
 			if (frontPlace != null)
 			{
-				frontPlace.setType(Spas.PLACE_KINEMATIC);
+				//frontPlace.setType(Spas.PLACE_KINEMATIC);
 				m_persistenceMemory.addKinematicValue(frontPlace.getBundle(), kinematicValue);
+				IPlace k = new Place(frontPlace.getBundle(), LocalSpaceMemory.DIRECTION_AHEAD);
+				k.setType(Spas.PLACE_KINEMATIC);
+				k.setFirstPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				k.setSecondPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+				m_places.add(k);
 			}
 		}
 	}
@@ -430,7 +436,7 @@ public class LocalSpaceMemory
 			if (p.getDirection() - p.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
 				p.getDirection() + p.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
 				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
-				p.getUpdateCount() == m_persistenceMemory.getUpdateCount())
+				p.attractFocus(m_persistenceMemory.getUpdateCount()))
 				if (place == null || p.getDistance() < place.getDistance())
 					place = p;
 		}
@@ -447,7 +453,7 @@ public class LocalSpaceMemory
 		IBundle b = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.getUpdateCount() == m_persistenceMemory.getUpdateCount())
+			if (p.isInCell(position) && p.attractFocus( m_persistenceMemory.getUpdateCount()))
 				b = p.getBundle();
 		}	
 
@@ -464,7 +470,7 @@ public class LocalSpaceMemory
 		IPlace place = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.getUpdateCount() == m_persistenceMemory.getUpdateCount())
+			if (p.isInCell(position) && p.attractFocus(m_persistenceMemory.getUpdateCount()))
 				place = p;
 		}
 		return place;
@@ -519,7 +525,7 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			p.setType(Spas.PLACE_SALIENCE);
+			if (p.getType() == Spas.PLACE_FOCUS) p.setType(Spas.PLACE_SALIENCE);
 			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 5)
 				it.remove();
 		}

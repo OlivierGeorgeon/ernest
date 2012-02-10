@@ -47,7 +47,7 @@ public class Place implements IPlace
 	public Place(IBundle bundle, Vector3f position)
 	{
 		m_bundle = bundle;
-		m_position = position;
+		m_position = new Vector3f(position);
 	}
 	
 	public void setBundle(IBundle bundle) 
@@ -120,7 +120,7 @@ public class Place implements IPlace
 		{
 			IPlace other = (IPlace)o;
 			//ret = (other.getBundle() == m_bundle) && (m_position.epsilonEquals(other.getPosition(), LocalSpace.LOCATION_RADIUS));
-			ret = isInCell(other.getPosition()) && other.getUpdateCount() == getUpdateCount();
+			ret = isInCell(other.getPosition()) && other.getUpdateCount() == getUpdateCount() && other.getType() == getType();
 		}		
 		return ret;
 	}
@@ -202,12 +202,12 @@ public class Place implements IPlace
 
 	public void setFirstPosition(Vector3f position) 
 	{
-		m_firstPosition = position;
+		m_firstPosition = new Vector3f(position);
 	}
 
 	public void setSecondPosition(Vector3f position) 
 	{
-		m_secondPosition = position;		
+		m_secondPosition = new Vector3f(position);		
 	}
 
 	public Vector3f getFirstPosition() 
@@ -228,5 +228,15 @@ public class Place implements IPlace
 	public int getUpdateCount() 
 	{
 		return m_clock;
+	}
+
+	public boolean attractFocus(int updateCount) 
+	{
+		boolean attractFocus = true;
+		
+		if (m_clock != updateCount) attractFocus = false;
+		if (m_type == Spas.PLACE_KINEMATIC) attractFocus = false; 	
+		
+		return attractFocus;
 	}
 }

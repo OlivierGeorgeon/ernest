@@ -22,10 +22,11 @@ public class Spas implements ISpas
 	private ITracer m_tracer = null; 
 	
 	public static int PLACE_SALIENCE = 0;
-	public static int PLACE_FOCUS = 1;
-	public static int PLACE_KINEMATIC = 2;
-	public static int PLACE_GUSTATORY  = 3;
-	public static int PLACE_CUDDLE = 4;
+	public static int PLACE_TOUCH = 1;
+	public static int PLACE_FOCUS = 2;
+	public static int PLACE_KINEMATIC = 3;
+	public static int PLACE_GUSTATORY  = 4;
+	public static int PLACE_CUDDLE = 5;
 
 	/** Ernest's persistence momory  */
 	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
@@ -160,7 +161,7 @@ public class Spas implements ISpas
 		IPlace focusPlace = null;
 		for (IPlace place : m_localSpaceMemory.getPlaceList())
 		{
-			if (place.getUpdateCount() == m_persistenceMemory.getUpdateCount())
+			if (place.attractFocus(m_persistenceMemory.getUpdateCount()))
 			{
 				//place.setType(PLACE_SALIENCE);
 				int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());

@@ -99,4 +99,6 @@ public interface IPlace
 	
 	public void setUpdateCount(int count);
 	public int getUpdateCount();
+	
+	public boolean attractFocus(int updateCount);
 }
