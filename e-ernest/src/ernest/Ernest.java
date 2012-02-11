@@ -65,6 +65,9 @@ public class Ernest implements IErnest
 	/** The radius of tactile sensors */
 	public static float TACTILE_RADIUS = 1;
 	
+	/** Ernest physical diameter (for eat and bump) */
+	public static float BOUNDING_RADIUS = .4f;
+	
 	/** A gustatory stimulation */
 	public static int STIMULATION_GUSTATORY = 0;
 	

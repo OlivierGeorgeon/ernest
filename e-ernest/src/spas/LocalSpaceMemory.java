@@ -139,7 +139,7 @@ public class LocalSpaceMemory
 			place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
 			place.setSecondPosition(segment.getFirstPosition());
 			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-			place.setType(Spas.PLACE_SALIENCE);
+			place.setType(Spas.PLACE_SEE);
 			m_places.add(place);			
 		}
 	}
@@ -253,12 +253,17 @@ public class LocalSpaceMemory
 		{
 			if (frontPlace != null)
 			{
+				// Add bump interaction to the bundle at this place.
 				//frontPlace.setType(Spas.PLACE_KINEMATIC);
 				m_persistenceMemory.addKinematicValue(frontPlace.getBundle(), kinematicValue);
-				IPlace k = new Place(frontPlace.getBundle(), LocalSpaceMemory.DIRECTION_AHEAD);
-				k.setType(Spas.PLACE_KINEMATIC);
-				k.setFirstPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				k.setSecondPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				
+				// Add a Bump place.
+				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+				pos.scale(Ernest.BOUNDING_RADIUS);
+				IPlace k = new Place(frontPlace.getBundle(), pos);
+				k.setType(Spas.PLACE_BUMP);
+				k.setFirstPosition(pos);
+				k.setSecondPosition(pos);
 				k.setUpdateCount(m_persistenceMemory.getUpdateCount());
 				m_places.add(k);
 			}
@@ -281,7 +286,7 @@ public class LocalSpaceMemory
 			// Discrete environment. The fish bundle is the hereBundle.
 			if (hereBundle != null)
 			{
-				herePlace.setType(Spas.PLACE_GUSTATORY);
+				// Add eat interaction to the bundle at this place
 				if (hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
 				{
 					m_persistenceMemory.addGustatoryValue(hereBundle, gustatoryValue);
@@ -292,13 +297,22 @@ public class LocalSpaceMemory
 			// Continuous environment. The fish bundle is the frontBundle
 			if (frontBundle != null)
 			{
-				frontPlace.setType(Spas.PLACE_GUSTATORY);
+				// Add eat interaction to the bundle at this place
 				if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
 				{
 					m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
 					clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
 				}
 			}
+			// Add an eat place.
+			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+			pos.scale(Ernest.BOUNDING_RADIUS);
+			IPlace k = new Place(hereBundle, pos);
+			k.setFirstPosition(pos);
+			k.setSecondPosition(pos);
+			k.setType(Spas.PLACE_EAT);
+			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+			m_places.add(k);
 		}
 		
 		// Associate the tactile stimulation with the cuddle stimulation
@@ -307,10 +321,22 @@ public class LocalSpaceMemory
 		{
 			if (frontBundle != null)
 			{
-				frontPlace.setType(Spas.PLACE_CUDDLE);
+				//frontPlace.setType(Spas.PLACE_CUDDLE);
+
+				// Add cuddle interaction to the bundle at this place
 				if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)
 					m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
+
 			}
+			// Add a cuddle place.
+			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+			pos.scale(Ernest.BOUNDING_RADIUS);
+			IPlace k = new Place(hereBundle, pos);
+			k.setType(Spas.PLACE_CUDDLE);
+			k.setFirstPosition(pos);
+			k.setSecondPosition(pos);
+			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+			m_places.add(k);
 		}		
 	}
 	
@@ -525,8 +551,8 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Spas.PLACE_FOCUS) p.setType(Spas.PLACE_SALIENCE);
-			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 5)
+			if (p.getType() == Spas.PLACE_FOCUS) p.setType(Spas.PLACE_SEE);
+			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 10)
 				it.remove();
 		}
 
