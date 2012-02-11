@@ -23,7 +23,7 @@ public class Place implements IPlace
 	Vector3f m_firstPosition;
 	Vector3f m_secondPosition;
 	
-	int m_type = Spas.PLACE_SALIENCE;
+	int m_type = Spas.PLACE_SEE;
 	
 	int m_clock = 0;
 	
@@ -73,6 +73,12 @@ public class Place implements IPlace
 		Vector3f oldPosition = m_position;
 		rot.transform(oldPosition, m_position); // (rot * m_position) is placed into m_position
 		
+		oldPosition = m_firstPosition;
+		rot.transform(oldPosition, m_firstPosition); 
+		
+		oldPosition = m_secondPosition;
+		rot.transform(oldPosition, m_secondPosition); 
+		
 		//parentVec.add(new Vector3f(m_x, m_y, 0));
 		//parentVec.add(mPosition); // now parentVec = (rotZ(mOrientation.z) * localVec) + mPosition.
 		
@@ -81,6 +87,8 @@ public class Place implements IPlace
 	public void translate(Vector3f translation) 
 	{
 		m_position.add(translation);
+		m_firstPosition.add(translation);
+		m_secondPosition.add(translation);
 	}
 	
 	public boolean isInCell(Vector3f position)
@@ -235,7 +243,9 @@ public class Place implements IPlace
 		boolean attractFocus = true;
 		
 		if (m_clock != updateCount) attractFocus = false;
-		if (m_type == Spas.PLACE_KINEMATIC) attractFocus = false; 	
+		if (m_type == Spas.PLACE_BUMP) attractFocus = false; 	
+		if (m_type == Spas.PLACE_EAT) attractFocus = false; 	
+		if (m_type == Spas.PLACE_CUDDLE) attractFocus = false; 	
 		
 		return attractFocus;
 	}

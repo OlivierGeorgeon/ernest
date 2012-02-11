@@ -21,12 +21,13 @@ public class Spas implements ISpas
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
 	
-	public static int PLACE_SALIENCE = 0;
+	public static int PLACE_SEE = 0;
 	public static int PLACE_TOUCH = 1;
 	public static int PLACE_FOCUS = 2;
-	public static int PLACE_KINEMATIC = 3;
-	public static int PLACE_GUSTATORY  = 4;
+	public static int PLACE_BUMP = 3;
+	public static int PLACE_EAT  = 4;
 	public static int PLACE_CUDDLE = 5;
+	public static int PLACE_PRIMITIVE = 6;
 
 	/** Ernest's persistence momory  */
 	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
@@ -90,7 +91,7 @@ public class Spas implements ISpas
 		IPlace focusPlace = null;
 		for (IPlace place : m_localSpaceMemory.getPlaceList())
 		{
-			place.setType(PLACE_SALIENCE); // Reset the type of all places
+			place.setType(PLACE_SEE); // Reset the type of all places
 			int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
 			if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
 			{
@@ -317,6 +318,12 @@ public class Spas implements ISpas
 	public void count() 
 	{
 		m_persistenceMemory.count();
+		
+		IPlace p = m_localSpaceMemory.addPlace(null, new Vector3f());
+		p.setType(Spas.PLACE_PRIMITIVE);
+		p.setFirstPosition(new Vector3f());
+		p.setSecondPosition(new Vector3f());
+		p.setUpdateCount(m_persistenceMemory.getUpdateCount());
 	}
 
 	public void traceLocalSpace() 
