@@ -36,4 +36,6 @@ public interface ISegment
 	 * @return The span of this segment from Ernest's viewpoint.
 	 */
 	public float getSpan();
+	
+	public float getWidth();
 }

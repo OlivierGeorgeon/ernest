@@ -130,17 +130,55 @@ public class LocalSpaceMemory
 	{
 		for (ISegment segment : segmentList)
 		{
-			IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
-			if (b == null)
-				b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-			IPlace place = new Place(b,segment.getPosition());
-			place.setSpeed(segment.getSpeed());
-			place.setSpan(segment.getSpan());
-			place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
-			place.setSecondPosition(segment.getFirstPosition());
-			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-			place.setType(Spas.PLACE_SEE);
-			m_places.add(place);			
+			if (segment.getWidth() < 1)
+			{
+				// Short segments are seen as segments.
+				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
+				if (b == null)
+					b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+				IPlace place = new Place(b,segment.getPosition());
+				place.setSpeed(segment.getSpeed());
+				place.setSpan(segment.getSpan());
+				place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
+				place.setSecondPosition(segment.getFirstPosition());
+				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+				place.setType(Spas.PLACE_SEE);
+				m_places.add(place);			
+			}
+			else
+			{
+				// Long segments are seen as two points.
+				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
+				if (b == null)
+					b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+				IPlace place = new Place(b,segment.getPosition());
+				place.setSpeed(segment.getSpeed());
+				place.setSpan(segment.getSpan());
+				place.setFirstPosition(segment.getFirstPosition()); // somehow inverted
+				Vector3f firstWall = new Vector3f(segment.getSecondPosition());
+				firstWall.sub(segment.getFirstPosition());
+				firstWall.normalize();
+				firstWall.scale(.3f);
+				firstWall.add(segment.getFirstPosition());
+				place.setSecondPosition(firstWall);
+				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+				place.setType(Spas.PLACE_SEE);
+				m_places.add(place);			
+
+				IPlace s = new Place(b,segment.getPosition());
+				s.setSpeed(segment.getSpeed());
+				s.setSpan(segment.getSpan());
+				s.setFirstPosition(segment.getSecondPosition()); // somehow inverted
+				Vector3f secondWall = new Vector3f(segment.getFirstPosition());
+				secondWall.sub(segment.getSecondPosition());
+				secondWall.normalize();
+				secondWall.scale(.3f);
+				secondWall.add(segment.getSecondPosition());
+				s.setSecondPosition(secondWall);
+				s.setUpdateCount(m_persistenceMemory.getUpdateCount());
+				s.setType(Spas.PLACE_BACKGROUND);
+				m_places.add(s);			
+			}
 		}
 	}
 

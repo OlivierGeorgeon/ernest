@@ -246,6 +246,7 @@ public class Place implements IPlace
 		if (m_type == Spas.PLACE_BUMP) attractFocus = false; 	
 		if (m_type == Spas.PLACE_EAT) attractFocus = false; 	
 		if (m_type == Spas.PLACE_CUDDLE) attractFocus = false; 	
+		if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
 		
 		return attractFocus;
 	}

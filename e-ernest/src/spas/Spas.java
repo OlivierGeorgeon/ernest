@@ -21,6 +21,7 @@ public class Spas implements ISpas
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
 	
+	public static int PLACE_BACKGROUND = -1;
 	public static int PLACE_SEE = 0;
 	public static int PLACE_TOUCH = 1;
 	public static int PLACE_FOCUS = 2;
