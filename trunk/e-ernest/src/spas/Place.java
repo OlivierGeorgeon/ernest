@@ -247,7 +247,19 @@ public class Place implements IPlace
 		if (m_type == Spas.PLACE_EAT) attractFocus = false; 	
 		if (m_type == Spas.PLACE_CUDDLE) attractFocus = false; 	
 		if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
+		if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
 		
 		return attractFocus;
+	}
+
+	public boolean anticipateTo(Vector3f position) 
+	{
+		boolean anticipateTo = false;
+		Vector3f anticipatedPosition = new Vector3f(m_position);
+		if (m_speed != null) anticipatedPosition.add(m_speed);
+		anticipatedPosition.sub(position);
+		if (anticipatedPosition.length() < .3f) anticipateTo = true;
+		
+		return anticipateTo;
 	}
 }

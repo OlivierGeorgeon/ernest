@@ -30,6 +30,8 @@ public class LocalSpaceMemory
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
+	
+	IPlace m_focusPlace = null;
 
 	/** The persistence memory. */
 	PersistenceMemory m_persistenceMemory;
@@ -71,7 +73,6 @@ public class LocalSpaceMemory
 			m_tracer.addSubelement(localSpace, "position_1", getHexColor(DIRECTION_RIGHT));
 			m_tracer.addSubelement(localSpace, "position_0", getHexColor(DIRECTION_BEHIND_RIGHT));
 		}
-
 	}
 	
 	/**
@@ -130,8 +131,8 @@ public class LocalSpaceMemory
 	{
 		for (ISegment segment : segmentList)
 		{
-			if (segment.getWidth() < 1)
-			{
+//			if (segment.getWidth() < 1)
+//			{
 				// Short segments are seen as segments.
 				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
 				if (b == null)
@@ -144,41 +145,41 @@ public class LocalSpaceMemory
 				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 				place.setType(Spas.PLACE_SEE);
 				m_places.add(place);			
-			}
-			else
-			{
-				// Long segments are seen as two points.
-				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
-				if (b == null)
-					b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-				IPlace place = new Place(b,segment.getPosition());
-				place.setSpeed(segment.getSpeed());
-				place.setSpan(segment.getSpan());
-				place.setFirstPosition(segment.getFirstPosition()); // somehow inverted
-				Vector3f firstWall = new Vector3f(segment.getSecondPosition());
-				firstWall.sub(segment.getFirstPosition());
-				firstWall.normalize();
-				firstWall.scale(.3f);
-				firstWall.add(segment.getFirstPosition());
-				place.setSecondPosition(firstWall);
-				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				place.setType(Spas.PLACE_SEE);
-				m_places.add(place);			
-
-				IPlace s = new Place(b,segment.getPosition());
-				s.setSpeed(segment.getSpeed());
-				s.setSpan(segment.getSpan());
-				s.setFirstPosition(segment.getSecondPosition()); // somehow inverted
-				Vector3f secondWall = new Vector3f(segment.getFirstPosition());
-				secondWall.sub(segment.getSecondPosition());
-				secondWall.normalize();
-				secondWall.scale(.3f);
-				secondWall.add(segment.getSecondPosition());
-				s.setSecondPosition(secondWall);
-				s.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				s.setType(Spas.PLACE_BACKGROUND);
-				m_places.add(s);			
-			}
+//			}
+//			else
+//			{
+//				// Long segments are seen as two points.
+//				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
+//				if (b == null)
+//					b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+//				IPlace place = new Place(b,segment.getPosition());
+//				place.setSpeed(segment.getSpeed());
+//				place.setSpan(segment.getSpan());
+//				place.setFirstPosition(segment.getFirstPosition()); // somehow inverted
+//				Vector3f firstWall = new Vector3f(segment.getSecondPosition());
+//				firstWall.sub(segment.getFirstPosition());
+//				firstWall.normalize();
+//				firstWall.scale(.3f);
+//				firstWall.add(segment.getFirstPosition());
+//				place.setSecondPosition(firstWall);
+//				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+//				place.setType(Spas.PLACE_SEE);
+//				m_places.add(place);			
+//
+//				IPlace s = new Place(b,segment.getPosition());
+//				s.setSpeed(segment.getSpeed());
+//				s.setSpan(segment.getSpan());
+//				s.setFirstPosition(segment.getSecondPosition()); // somehow inverted
+//				Vector3f secondWall = new Vector3f(segment.getFirstPosition());
+//				secondWall.sub(segment.getSecondPosition());
+//				secondWall.normalize();
+//				secondWall.scale(.3f);
+//				secondWall.add(segment.getSecondPosition());
+//				s.setSecondPosition(secondWall);
+//				s.setUpdateCount(m_persistenceMemory.getUpdateCount());
+//				s.setType(Spas.PLACE_BACKGROUND);
+//				m_places.add(s);			
+//			}
 		}
 	}
 
@@ -636,5 +637,26 @@ public class LocalSpaceMemory
 	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_places;
+	}
+	
+	public ArrayList<IPlace> getPersistentPlaceList()
+	{
+		ArrayList<IPlace> places = new ArrayList<IPlace>();
+		for (IPlace p : m_places)
+		{
+			if (p.getType() == Spas.PLACE_PERSISTENT)
+				places.add(p);
+		}
+		return places;
+	}
+	
+	public void setFocusPlace(IPlace focusPlace)
+	{
+		m_focusPlace = focusPlace;
+	}
+
+	public IPlace getFocusPlace()
+	{
+		return m_focusPlace;
 	}
 }

@@ -103,4 +103,6 @@ public interface IErnest
 	 * @return The counter of cognitive cycles.
 	 */
 	public int getCounter();
+	
+	public IPlace getFocusPlace();
 }

@@ -292,4 +292,9 @@ public class Ernest implements IErnest
 	{
 		return m_imos.getCounter();
 	}
+
+	public IPlace getFocusPlace() 
+	{
+		return m_spas.getFocusPlace();
+	}
 }

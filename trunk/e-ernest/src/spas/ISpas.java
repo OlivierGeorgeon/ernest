@@ -33,7 +33,7 @@ public interface ISpas
 	 * @param gustatoryStimulation The gustatory stimulation.
 	 * @return An observation to compute the impact on the imos.
 	 */
-	public IObservation step(IStimulation[] visualCortex, IStimulation[] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
+	//public IObservation step(IStimulation[] visualCortex, IStimulation[] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
 	public IObservation step(IStimulation[] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
 
 	/**
@@ -81,4 +81,5 @@ public interface ISpas
 	public void traceLocalSpace();
 	public void setSegmentList(ArrayList<ISegment> segmentList);
 	
+	public IPlace getFocusPlace();
 }

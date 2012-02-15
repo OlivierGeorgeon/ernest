@@ -101,4 +101,6 @@ public interface IPlace
 	public int getUpdateCount();
 	
 	public boolean attractFocus(int updateCount);
+	
+	public boolean anticipateTo(Vector3f position);
 }
