@@ -445,6 +445,10 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		}	
 		
 		newObservation.setInstantaneousFeedback(instantaneousFeedback);
+		
+		// Detects the change of attention
+		
+		
 	}
 	
 	public int impulsion(int intentionSchema) 
