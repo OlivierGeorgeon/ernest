@@ -70,4 +70,7 @@ public interface IObservation
 	
 	public void setUpdateCount(int updateCount);
 	public int getUpdateCount();
+	
+	public void setNewFocus(boolean newFocus);
+	public boolean getNewFocus();
 }

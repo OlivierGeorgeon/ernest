@@ -243,11 +243,12 @@ public class Place implements IPlace
 		boolean attractFocus = true;
 		
 		if (m_clock != updateCount) attractFocus = false;
+		if (m_bundle == null)  attractFocus = false;
 		if (m_type == Spas.PLACE_BUMP) attractFocus = false; 	
 		if (m_type == Spas.PLACE_EAT) attractFocus = false; 	
 		if (m_type == Spas.PLACE_CUDDLE) attractFocus = false; 	
 		if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
-		if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
+		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
 		
 		return attractFocus;
 	}
@@ -262,4 +263,16 @@ public class Place implements IPlace
 		
 		return anticipateTo;
 	}
+
+	public boolean from(Vector3f position) 
+	{
+		boolean from = false;
+		Vector3f compare = new Vector3f(m_position);
+		if (m_speed != null) compare.sub(m_speed);
+		compare.sub(position);
+		if (compare.length() < 1f) from = true;
+		
+		return from;
+	}
+
 }
