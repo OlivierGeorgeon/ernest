@@ -639,16 +639,16 @@ public class LocalSpaceMemory
 		return m_places;
 	}
 	
-	public ArrayList<IPlace> getPersistentPlaceList()
-	{
-		ArrayList<IPlace> places = new ArrayList<IPlace>();
-		for (IPlace p : m_places)
-		{
-			if (p.getType() == Spas.PLACE_PERSISTENT)
-				places.add(p);
-		}
-		return places;
-	}
+//	public ArrayList<IPlace> getPersistentPlaceList()
+//	{
+//		ArrayList<IPlace> places = new ArrayList<IPlace>();
+//		for (IPlace p : m_places)
+//		{
+//			if (p.getType() == Spas.PLACE_PERSISTENT)
+//				places.add(p);
+//		}
+//		return places;
+//	}
 	
 	public void setFocusPlace(IPlace focusPlace)
 	{

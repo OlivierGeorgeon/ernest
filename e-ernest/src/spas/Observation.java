@@ -40,6 +40,8 @@ public class Observation implements IObservation
 	private int m_type;
 	
 	private int m_updateCount;
+	
+	private boolean m_newFocus = false;
 
 	public void setAttractiveness(int attractiveness) 
 	{
@@ -159,5 +161,15 @@ public class Observation implements IObservation
 	public int getUpdateCount() 
 	{
 		return m_updateCount;
+	}
+
+	public void setNewFocus(boolean newFocus) 
+	{
+		m_newFocus = newFocus;
+	}
+
+	public boolean getNewFocus() 
+	{
+		return m_newFocus;
 	}
 }

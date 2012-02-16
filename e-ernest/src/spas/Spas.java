@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import utils.ErnestUtils;
+
 import ernest.Ernest;
 import ernest.ITracer;
 
@@ -30,7 +32,7 @@ public class Spas implements ISpas
 	public static int PLACE_EAT  = 4;
 	public static int PLACE_CUDDLE = 5;
 	public static int PLACE_PRIMITIVE = 6;
-	public static int PLACE_PERSISTENT = 7;
+	//public static int PLACE_PERSISTENT = 7;
 
 	/** Ernest's persistence momory  */
 	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
@@ -162,6 +164,7 @@ public class Spas implements ISpas
 		
 		// Find the most attractive or the most repulsive place in the list (abs value) 
 		
+		boolean newFocus = false;
 		int maxAttractiveness = 0;
 		for (IPlace place : m_places)
 		{
@@ -172,9 +175,15 @@ public class Spas implements ISpas
 				IPlace persistent = null;
 				for (IPlace p : m_localSpaceMemory.getPlaceList())
 				{
-					if (p.anticipateTo(place.getPosition()) && p.attractFocus(m_persistenceMemory.getUpdateCount()))
+					if (place.from(p.getPosition()) && p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
+							&& p.getBundle().equals(place.getBundle())
+							&& place.getType() == p.getType())
 					{
 						p.setPosition(place.getPosition());
+						p.setFirstPosition(place.getFirstPosition());
+						p.setSecondPosition(place.getSecondPosition());
+						p.setSpeed(place.getSpeed());
+						p.setSpan(place.getSpan());
 						p.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						newPlace = false;
 						persistent = p;
@@ -200,6 +209,7 @@ public class Spas implements ISpas
 					maxAttractiveness = attractiveness;
 					m_localSpaceMemory.setFocusPlace(persistent);
 					//focusPlace = place;
+					newFocus = newPlace;
 				}				
 			}
 		}
@@ -211,6 +221,7 @@ public class Spas implements ISpas
 		observation.setGustatory(gustatoryStimulation);
 		observation.setKinematic(kinematicStimulation);
 		observation.setAttractiveness(maxAttractiveness);
+		observation.setNewFocus(newFocus);
 
 		if (focusPlace == null)
 		{
@@ -223,8 +234,8 @@ public class Spas implements ISpas
 		}
 		else
 		{
-			if (focusPlace.getType() == 0)
-				focusPlace.setType(PLACE_FOCUS);
+			//if (focusPlace.getType() == 0)
+			//	focusPlace.setType(PLACE_FOCUS);
 			mAttention = focusPlace.getBundle().getValue();
 			observation.setBundle(focusPlace.getBundle());
 			observation.setPosition(focusPlace.getPosition());
@@ -534,12 +545,19 @@ public class Spas implements ISpas
 
 		for (IPlace p : m_places)
 		{
-			if (p.getDirection() - p.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
-				p.getDirection() + p.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
-				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
-				p.attractFocus(m_persistenceMemory.getUpdateCount()))
-				if (place == null || p.getDistance() < place.getDistance())
-					place = p;
+//			if (p.getDirection() - p.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
+//				p.getDirection() + p.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
+//				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+//				p.attractFocus(m_persistenceMemory.getUpdateCount()))
+//				if (place == null || p.getDistance() < place.getDistance())
+//					place = p;
+
+			if (ErnestUtils.polarAngle(p.getFirstPosition()) < direction && 
+					ErnestUtils.polarAngle(p.getSecondPosition()) > direction &&
+					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+					p.attractFocus(m_persistenceMemory.getUpdateCount()))
+					if (place == null || p.getDistance() < place.getDistance())
+						place = p;
 		}
 		return place;
 	}

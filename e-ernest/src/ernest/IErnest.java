@@ -4,6 +4,8 @@ import imos.IAct;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Vector3f;
+
 import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
@@ -104,5 +106,5 @@ public interface IErnest
 	 */
 	public int getCounter();
 	
-	public IPlace getFocusPlace();
+	public IPlace getFocusPlace();	
 }
