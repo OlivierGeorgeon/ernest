@@ -143,7 +143,10 @@ public class LocalSpaceMemory
 				place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
 				place.setSecondPosition(segment.getFirstPosition());
 				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				place.setType(Spas.PLACE_SEE);
+				if (segment.getWidth() < 1)
+					place.setType(Spas.PLACE_SEE);
+				else
+					place.setType(Spas.PLACE_BACKGROUND);
 				m_places.add(place);			
 //			}
 //			else
@@ -229,7 +232,8 @@ public class LocalSpaceMemory
 						place.setSpan(spanf);
 						place.setSpeed(new Vector3f(0,0,1)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
 						place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-						place.setType(Spas.PLACE_TOUCH);
+						if (place.getType() == Spas.PLACE_SEE)
+							place.setType(Spas.PLACE_TOUCH);
 					}
 					else
 					{
@@ -243,7 +247,8 @@ public class LocalSpaceMemory
 							place.setFirstPosition(firstPosition);
 							place.setSecondPosition(secondPosition);
 							place.setSpan(spanf);
-							place.setType(Spas.PLACE_TOUCH);
+							if (place.getType() == Spas.PLACE_SEE)
+								place.setType(Spas.PLACE_TOUCH);
 							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
 						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY && 
@@ -261,7 +266,8 @@ public class LocalSpaceMemory
 							place.setFirstPosition(firstPosition);
 							place.setSecondPosition(secondPosition);
 							place.setSpan(spanf);
-							place.setType(Spas.PLACE_TOUCH);
+							if (place.getType() == Spas.PLACE_SEE)
+								place.setType(Spas.PLACE_TOUCH);
 							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
 					}

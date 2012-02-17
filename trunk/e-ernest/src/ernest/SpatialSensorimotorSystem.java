@@ -424,7 +424,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			else 
 			{
 				// aleady in front of a wall.
-				if (m_primitiveAct.getSchema().getLabel().equals(">"))
+				if (m_primitiveAct != null && m_primitiveAct.getSchema().getLabel().equals(">"))
 				{
 					if (relativeAcceleration.dot(newObservation.getPosition()) <= 0)
 						// Closer

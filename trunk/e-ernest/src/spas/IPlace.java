@@ -104,4 +104,7 @@ public interface IPlace
 	public boolean from(Vector3f position); 
 	
 	public boolean anticipateTo(Vector3f position);
+	
+	public void setStick(int stick);
+	public int getStick();
 }

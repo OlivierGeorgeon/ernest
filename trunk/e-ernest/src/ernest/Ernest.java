@@ -39,7 +39,7 @@ public class Ernest implements IErnest
 	public static int ROW_RETINA = 1;
 	
 	/** The duration during which checked landmarks remain not motivating  */
-	public static int PERSISTENCE = 30; // (50 Ernest 9.3)
+	public static int PERSISTENCE = 100;//30; // (50 Ernest 9.3)
 	
 	/** 200 Base attractiveness of bundles that are not edible  */
 	public static int ATTRACTIVENESS_OF_UNKNOWN =  200;

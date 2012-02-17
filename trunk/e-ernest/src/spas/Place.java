@@ -27,6 +27,8 @@ public class Place implements IPlace
 	
 	int m_clock = 0;
 	
+	int m_stick;
+	
 	/**
 	 * @param bundle This place's bundle.
 	 * @param distance This place's distance.
@@ -157,18 +159,19 @@ public class Place implements IPlace
 	{
 		// If it is in the background (visual place).
 		if (getDistance() > LocalSpaceMemory.EXTRAPERSONAL_DISTANCE)
-			return (m_bundle.getExtrapersonalAttractiveness(clock) + (int)(5 * m_span / ((float)Math.PI / 12)));
+			//return (m_bundle.getExtrapersonalAttractiveness(clock) + (int)(5 * m_span / ((float)Math.PI / 12)));
+			return m_bundle.getExtrapersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
 		
 		// Attractiveness of wall in front
 		else if (isFrontal() && m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_WALL)
-			return m_bundle.getPeripersonalAttractiveness(clock);
+			return m_bundle.getPeripersonalAttractiveness(clock) + m_stick;
 		
 		// Attractiveness of fish 
-		else if (m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH 
-				|| m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
-			return m_bundle.getPeripersonalAttractiveness(clock);
+		//else if (m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH 
+		//		|| m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
+			return m_bundle.getPeripersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
 
-		return 0;
+		//return 0;
 	}
 	
 	public boolean isFrontal()
@@ -247,7 +250,7 @@ public class Place implements IPlace
 		if (m_type == Spas.PLACE_BUMP) attractFocus = false; 	
 		if (m_type == Spas.PLACE_EAT) attractFocus = false; 	
 		if (m_type == Spas.PLACE_CUDDLE) attractFocus = false; 	
-		if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
+		//if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
 		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
 		
 		return attractFocus;
@@ -273,6 +276,16 @@ public class Place implements IPlace
 		if (compare.length() < 1f) from = true;
 		
 		return from;
+	}
+
+	public void setStick(int stick) 
+	{
+		m_stick = stick;
+	}
+
+	public int getStick() 
+	{
+		return m_stick;
 	}
 
 }
