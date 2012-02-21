@@ -596,7 +596,6 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Spas.PLACE_FOCUS) p.setType(Spas.PLACE_SEE);
 			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 10)
 				it.remove();
 		}

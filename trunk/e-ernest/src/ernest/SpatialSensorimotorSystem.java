@@ -87,11 +87,11 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     	primitiveSchema[0] = 0;
     	primitiveSchema[1] = 0;
     	
-    	// Trigger a new cognitive loop when the speed is below a threshold.
+    	// Trigger a new cognitive loop when the previous interaction has ended.
     	
     	if (endInteraction && cognitiveMode > 0)
         {
-        	m_spas.count(); // Tick the clock of persistence memory
+        	m_spas.count(m_observation); // Tick the clock of persistence memory
     		m_interactionTimer = 0;
     		        	
     		IAct enactedPrimitiveAct = null;
