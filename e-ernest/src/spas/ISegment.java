@@ -38,4 +38,9 @@ public interface ISegment
 	public float getSpan();
 	
 	public float getWidth();
+	
+	public Vector3f getFirstPositionAllocentric(); 
+
+	public Vector3f getSecondPositionAllocentric(); 
+
 }

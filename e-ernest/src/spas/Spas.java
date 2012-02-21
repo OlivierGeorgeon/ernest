@@ -200,19 +200,6 @@ public class Spas implements ISpas
 					k.setType(place.getType());
 					persistent = k;
 				}
-
-				// Find the most attractive place
-//				if (place.getType() != Spas.PLACE_BACKGROUND)
-//				{
-//					int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
-//					if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
-//					{
-//						maxAttractiveness = attractiveness;
-//						m_localSpaceMemory.setFocusPlace(persistent);
-//						//focusPlace = place;
-//						newFocus = newPlace;
-//					}				
-//				}
 			}
 		}
 		
@@ -388,15 +375,24 @@ public class Spas implements ISpas
 		m_persistenceMemory.updateCount();
 	}
 
-	public void count() 
+	public void count(IObservation observation) 
 	{
+		// Update the decay counter in persistence memory
 		m_persistenceMemory.count();
 		
+		// The place where the agent is standing on start of a new interaction
 		IPlace p = m_localSpaceMemory.addPlace(null, new Vector3f());
 		p.setType(Spas.PLACE_PRIMITIVE);
 		p.setFirstPosition(new Vector3f());
 		p.setSecondPosition(new Vector3f());
 		p.setUpdateCount(m_persistenceMemory.getUpdateCount());
+		
+		// The place of the focus on start of a new interaction
+		IPlace f = m_localSpaceMemory.addPlace(null, observation.getPosition());
+		f.setType(Spas.PLACE_FOCUS);
+		f.setFirstPosition(observation.getPosition());
+		f.setSecondPosition(observation.getPosition());
+		f.setUpdateCount(m_persistenceMemory.getUpdateCount());
 	}
 
 	public void traceLocalSpace() 
@@ -418,8 +414,8 @@ public class Spas implements ISpas
 	{
 		for (ISegment segment : segmentList)
 		{
-			if (segment.getWidth() < 1)
-			{
+//			if (segment.getWidth() < 1)
+//			{
 				// Short segments are seen as segments.
 				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
 				if (b == null)
@@ -430,43 +426,46 @@ public class Spas implements ISpas
 				place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
 				place.setSecondPosition(segment.getFirstPosition());
 				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				place.setType(Spas.PLACE_SEE);
+				if (segment.getWidth() < 1)
+					place.setType(Spas.PLACE_SEE);
+				else 
+					place.setType(Spas.PLACE_BACKGROUND);
 				m_places.add(place);			
-			}
-			else
-			{
-				// Long segments are seen as two points.
-				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
-				if (b == null)
-					b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-				IPlace place = new Place(b,segment.getPosition());
-				place.setSpeed(segment.getSpeed());
-				place.setSpan(segment.getSpan());
-				place.setFirstPosition(segment.getFirstPosition()); // somehow inverted
-				Vector3f firstWall = new Vector3f(segment.getSecondPosition());
-				firstWall.sub(segment.getFirstPosition());
-				firstWall.normalize();
-				firstWall.scale(.3f);
-				firstWall.add(segment.getFirstPosition());
-				place.setSecondPosition(firstWall);
-				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				place.setType(Spas.PLACE_BACKGROUND);
-				m_places.add(place);			
-
-				IPlace s = new Place(b,segment.getPosition());
-				s.setSpeed(segment.getSpeed());
-				s.setSpan(segment.getSpan());
-				s.setFirstPosition(segment.getSecondPosition()); // somehow inverted
-				Vector3f secondWall = new Vector3f(segment.getFirstPosition());
-				secondWall.sub(segment.getSecondPosition());
-				secondWall.normalize();
-				secondWall.scale(.3f);
-				secondWall.add(segment.getSecondPosition());
-				s.setSecondPosition(secondWall);
-				s.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				s.setType(Spas.PLACE_BACKGROUND);
-				m_places.add(s);			
-			}
+//			}
+//			else
+//			{
+//				// Long segments are seen as two points.
+//				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
+//				if (b == null)
+//					b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+//				IPlace place = new Place(b,segment.getPosition());
+//				place.setSpeed(segment.getSpeed());
+//				place.setSpan(segment.getSpan());
+//				place.setFirstPosition(segment.getFirstPosition()); // somehow inverted
+//				Vector3f firstWall = new Vector3f(segment.getSecondPosition());
+//				firstWall.sub(segment.getFirstPosition());
+//				firstWall.normalize();
+//				firstWall.scale(.3f);
+//				firstWall.add(segment.getFirstPosition());
+//				place.setSecondPosition(firstWall);
+//				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+//				place.setType(Spas.PLACE_BACKGROUND);
+//				m_places.add(place);			
+//
+//				IPlace s = new Place(b,segment.getPosition());
+//				s.setSpeed(segment.getSpeed());
+//				s.setSpan(segment.getSpan());
+//				s.setFirstPosition(segment.getSecondPosition()); // somehow inverted
+//				Vector3f secondWall = new Vector3f(segment.getFirstPosition());
+//				secondWall.sub(segment.getSecondPosition());
+//				secondWall.normalize();
+//				secondWall.scale(.3f);
+//				secondWall.add(segment.getSecondPosition());
+//				s.setSecondPosition(secondWall);
+//				s.setUpdateCount(m_persistenceMemory.getUpdateCount());
+//				s.setType(Spas.PLACE_BACKGROUND);
+//				m_places.add(s);			
+//			}
 		}
 	}
 
@@ -582,10 +581,11 @@ public class Spas implements ISpas
 //				if (place == null || p.getDistance() < place.getDistance())
 //					place = p;
 
+			// TODO Fix the angular condition (case of positive and negative angles)
 			if (ErnestUtils.polarAngle(p.getFirstPosition()) < direction && 
-					ErnestUtils.polarAngle(p.getSecondPosition()) > direction &&
-					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
-					p.attractFocus(m_persistenceMemory.getUpdateCount()))
+				ErnestUtils.polarAngle(p.getSecondPosition()) > direction &&
+				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+				p.attractFocus(m_persistenceMemory.getUpdateCount()))
 					if (place == null || p.getDistance() < place.getDistance())
 						place = p;
 		}
