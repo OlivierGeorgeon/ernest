@@ -42,6 +42,8 @@ public class Imos implements IImos
 	
 	/** Random generator used to break a tie when selecting a schema... */
 	//private static Random m_rand = new Random(); 
+	
+	private boolean m_newIntention;
 
 	/**
 	 * The context to learn new schemas with the first learning mechanism.
@@ -324,11 +326,15 @@ public class Imos implements IImos
 		{
 			intentionAct = m_episodicMemory.selectAct(m_activationList);
 			m_intentionAct = intentionAct;
+			m_newIntention = true;
 		}
+		else 
+			m_newIntention = false;
 		
 		if (m_tracer != null) {
 			m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
 			m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
+			m_tracer.addEventElement("new_intention", m_newIntention ? "true" : "false");
 		}
 		
 		// Spread the selected intention's activation to primitive acts.
@@ -497,6 +503,16 @@ public class Imos implements IImos
 	public int getCounter() 
 	{
 		return m_imosCycle;
+	}
+
+	public boolean newIntention() 
+	{
+		return m_newIntention;
+	}
+
+	public boolean compositeIntention() 
+	{
+		return (m_intentionAct.getLength() > 1);
 	}
 
 }

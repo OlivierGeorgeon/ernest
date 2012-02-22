@@ -7,9 +7,11 @@ import imos.IAct;
 import org.w3c.dom.Element;
 
 import spas.IObservation;
+import spas.IPlace;
 import spas.IStimulation;
 import spas.LocalSpaceMemory;
 import spas.Observation;
+import spas.Spas;
 import spas.Stimulation;
 import utils.ErnestUtils;
 
@@ -91,7 +93,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     	
     	if (endInteraction && cognitiveMode > 0)
         {
-        	m_spas.count(m_observation); // Tick the clock of persistence memory
+        	m_spas.count(); // Tick the clock of persistence memory
+
     		m_interactionTimer = 0;
     		        	
     		IAct enactedPrimitiveAct = null;
@@ -135,6 +138,25 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		// Once the decision is made, compute the intensity.
     		
     		primitiveSchema[1] = impulsion(primitiveSchema[0]);
+
+			int shape = Spas.SHAPE_TRIANGLE;
+    		if (primitiveSchema[0] != '>')
+    			shape = Spas.SHAPE_PIE;
+    		float or = 0;
+    		if (primitiveSchema[0] == '^')
+    			or = (float)Math.PI;
+    		IPlace agentPlace = null;
+    		if (m_imos.newIntention())
+    		{
+    			if (m_imos.compositeIntention())
+    				agentPlace = m_spas.addPlace(new Vector3f(), Spas.PLACE_COMPOSITE, shape); // Mark the place where the agent is standing.
+    			else
+    				agentPlace = m_spas.addPlace(new Vector3f(), Spas.PLACE_PRIMITIVE, shape); // Mark the place where the agent is standing.
+    			m_spas.addPlace(m_observation.getPosition(), Spas.PLACE_FOCUS, Spas.SHAPE_CIRCLE); // Mark the place of focus.
+    		}
+    		else
+    			agentPlace = m_spas.addPlace(new Vector3f(), Spas.PLACE_INTERMEDIARY, shape); // Mark the place where the agent is standing.    		
+    		agentPlace.setOrientation(or);
     		
     		if (m_tracer != null)
     		{

@@ -19,15 +19,6 @@ public interface IImos
 	public IAct step(IAct primitiveEnaction); 
 
 	/**
-	 * Create a primitive act and a primitive schema.
-	 * @param actionLabel The schema's label that is interpreted by the environment.
-	 * @param status The act's succeed or fail status 
-	 * @param satisfaction The act's satisfaction 
-	 * @return the created primitive act.
-	 */
-	public IAct addPrimitiveAct(String actionLabel, boolean status, int satisfaction); 
-	
-	/**
 	 * Constructs a new interaction in episodic memory.
 	 * or retrieve the the interaction if it already exists.
 	 * The interaction's action is recorded as a primitive schema.
@@ -50,6 +41,15 @@ public interface IImos
 	 */
 	public String getInternalState();
 	
+	/**
+	 * The counter of cognitive cycles.
+	 * @return The current cognitive cycle number.
+	 */
 	public int getCounter();
 	
+	/**
+	 * @return True if this cycle starts a new composite interaction.
+	 */
+	public boolean newIntention();
+	public boolean compositeIntention();
 }
