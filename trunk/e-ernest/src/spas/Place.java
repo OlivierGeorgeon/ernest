@@ -25,6 +25,9 @@ public class Place implements IPlace
 	
 	int m_type = Spas.PLACE_SEE;
 	
+	int m_shape = Spas.SHAPE_CIRCLE;
+	float m_orientation = 0;
+	
 	int m_clock = 0;
 	
 	int m_stick;
@@ -81,9 +84,11 @@ public class Place implements IPlace
 		oldPosition = m_secondPosition;
 		rot.transform(oldPosition, m_secondPosition); 
 		
-		//parentVec.add(new Vector3f(m_x, m_y, 0));
-		//parentVec.add(mPosition); // now parentVec = (rotZ(mOrientation.z) * localVec) + mPosition.
-		
+		m_orientation += angle;
+		if (m_orientation > Math.PI)
+			m_orientation -= 2*Math.PI;		
+		if (m_orientation < Math.PI)
+			m_orientation += 2*Math.PI;		
 	}
 
 	public void translate(Vector3f translation) 
@@ -180,11 +185,11 @@ public class Place implements IPlace
 		return (getDirection() - m_span / 2 < - Math.PI/12 + 0.1 && getDirection() + m_span / 2 > Math.PI/12 - 0.1 );
 	}
 
-	public void setDistance(float distance)
-	{
-		m_position.normalize();
-		m_position.scale(distance);
-	}
+//	public void setDistance(float distance)
+//	{
+//		m_position.normalize();
+//		m_position.scale(distance);
+//	}
 
 	public void setPosition(Vector3f position) 
 	{
@@ -256,16 +261,16 @@ public class Place implements IPlace
 		return attractFocus;
 	}
 
-	public boolean anticipateTo(Vector3f position) 
-	{
-		boolean anticipateTo = false;
-		Vector3f anticipatedPosition = new Vector3f(m_position);
-		if (m_speed != null) anticipatedPosition.add(m_speed);
-		anticipatedPosition.sub(position);
-		if (anticipatedPosition.length() < .3f) anticipateTo = true;
-		
-		return anticipateTo;
-	}
+//	public boolean anticipateTo(Vector3f position) 
+//	{
+//		boolean anticipateTo = false;
+//		Vector3f anticipatedPosition = new Vector3f(m_position);
+//		if (m_speed != null) anticipatedPosition.add(m_speed);
+//		anticipatedPosition.sub(position);
+//		if (anticipatedPosition.length() < .3f) anticipateTo = true;
+//		
+//		return anticipateTo;
+//	}
 
 	public boolean from(Vector3f position) 
 	{
@@ -288,4 +293,23 @@ public class Place implements IPlace
 		return m_stick;
 	}
 
+	public void setShape(int shape) 
+	{
+		m_shape = shape;
+	}
+
+	public int getShape() 
+	{
+		return m_shape;
+	}
+
+	public void setOrientation(float orientation) 
+	{
+		m_orientation = orientation;
+	}
+
+	public float getOrientation() 
+	{
+		return m_orientation;
+	}
 }

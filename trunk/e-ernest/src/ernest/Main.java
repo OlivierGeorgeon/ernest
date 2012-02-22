@@ -33,23 +33,35 @@ public class Main
 
 		// Set Ernest's primitive interactions and motivations
 		
-		sms.addPrimitiveAct(">", true,   50); // Move
-		sms.addPrimitiveAct(">", false, -80); // Bump
+		//sms.addPrimitiveAct(">", true,   50); // Move
+		//sms.addPrimitiveAct(">", false, -80); // Bump
+		sms.addInteraction(">", "t",  50); // Move
+		sms.addInteraction(">", "f", -80); // Bump		
 		
-		sms.addPrimitiveAct("^", true,  -20); // Left toward empty
-		sms.addPrimitiveAct("^", false, -50); // Left toward wall
+		//sms.addPrimitiveAct("^", true,  -20); // Left toward empty
+		//sms.addPrimitiveAct("^", false, -50); // Left toward wall
+		sms.addInteraction("^", "t", -20); // Left toward empty
+		sms.addInteraction("^", "f", -50); // Left toward wall		
 
-		sms.addPrimitiveAct("v", true,  -20); // Right toward empty
-		sms.addPrimitiveAct("v", false, -50); // Right toward wall
+		//sms.addPrimitiveAct("v", true,  -20); // Right toward empty
+		//sms.addPrimitiveAct("v", false, -50); // Right toward wall
+		sms.addInteraction("v", "t", -20); // Right toward empty
+		sms.addInteraction("v", "f", -50); // Right toward wall		
 
-		sms.addPrimitiveAct("-", true,  -10); // Touch wall
-		sms.addPrimitiveAct("-", false, -10); // Touch empty
+		//sms.addPrimitiveAct("-", true,  -10); // Touch wall
+		//sms.addPrimitiveAct("-", false, -10); // Touch empty
+		sms.addInteraction("-", "t", -10); // Touch wall
+		sms.addInteraction("-", "f", -10); // Touch empty
 
-		sms.addPrimitiveAct("\\", true, -10); // Touch right wall
-		sms.addPrimitiveAct("\\", false,-10); // Touch right empty
+		//sms.addPrimitiveAct("\\", true, -10); // Touch right wall
+		//sms.addPrimitiveAct("\\", false,-10); // Touch right empty
+		sms.addInteraction("\\", "t", -10); // Touch right wall
+		sms.addInteraction("\\", "f", -10); // Touch right empty
 
-		sms.addPrimitiveAct("/", true,  -10); // Touch left wall
-		sms.addPrimitiveAct("/", false, -10); // Touch left empty
+		//sms.addPrimitiveAct("/", true,  -10); // Touch left wall
+		//sms.addPrimitiveAct("/", false, -10); // Touch left empty
+		sms.addInteraction("/", "t", -10); // Touch left wall
+		sms.addInteraction("/", "f", -10); // Touch left empty
 
 		// Run in an infinite loop
 		

@@ -77,9 +77,14 @@ public interface ISpas
 	public ArrayList<IPlace> getPlaceList();
 	
 	public void tick();
-	public void count(IObservation observation);
+	public void count();
 	public void traceLocalSpace();
 	public void setSegmentList(ArrayList<ISegment> segmentList);
 	
 	public IPlace getFocusPlace();
+	
+	/**
+	 * @param place The place to add in local space memory.
+	 */
+	public IPlace addPlace(Vector3f position, int type, int shape);
 }

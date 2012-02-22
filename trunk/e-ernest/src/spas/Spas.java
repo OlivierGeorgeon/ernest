@@ -27,12 +27,17 @@ public class Spas implements ISpas
 	public static int PLACE_BACKGROUND = -1;
 	public static int PLACE_SEE = 0;
 	public static int PLACE_TOUCH = 1;
-	public static int PLACE_FOCUS = 2;
-	public static int PLACE_BUMP = 3;
-	public static int PLACE_EAT  = 4;
-	public static int PLACE_CUDDLE = 5;
-	public static int PLACE_PRIMITIVE = 6;
-	//public static int PLACE_PERSISTENT = 7;
+	public static int PLACE_FOCUS = 10;
+	public static int PLACE_BUMP = 11;
+	public static int PLACE_EAT  = 12;
+	public static int PLACE_CUDDLE = 13;
+	public static int PLACE_PRIMITIVE = 14;
+	public static int PLACE_COMPOSITE = 15;
+	public static int PLACE_INTERMEDIARY = 16;
+	
+	public static int SHAPE_CIRCLE = 0;
+	public static int SHAPE_TRIANGLE = 1;
+	public static int SHAPE_PIE = 2;
 
 	/** Ernest's persistence momory  */
 	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
@@ -162,16 +167,14 @@ public class Spas implements ISpas
 		
 		//adjustLocalSpaceMemory(tactileStimulations);
 		
-		// Find the most attractive or the most repulsive place in the list (abs value) 
+		// Confirm or create persistent places in local space memory 
 		
-		int maxAttractiveness = 0;
 		for (IPlace place : m_places)
 		{
 			if (place.attractFocus(m_persistenceMemory.getUpdateCount()))
 			{
-				// Confirm a persistent place
 				boolean newPlace = true;
-				IPlace persistent = null;
+				// Look for a corresponding persistent place in local space memory.
 				for (IPlace p : m_localSpaceMemory.getPlaceList())
 				{
 					if (place.from(p.getPosition()) && p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
@@ -185,7 +188,6 @@ public class Spas implements ISpas
 						p.setSpan(place.getSpan());
 						p.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						newPlace = false;
-						persistent = p;
 					}
 				}
 				if (newPlace)
@@ -198,13 +200,13 @@ public class Spas implements ISpas
 					k.setSecondPosition(place.getSecondPosition());
 					k.setUpdateCount(m_persistenceMemory.getUpdateCount());
 					k.setType(place.getType());
-					persistent = k;
 				}
 			}
 		}
 		
-		// The most attractive place in local space memory gets the focus
+		// The most attractive place in local space memory gets the focus (abs value) 
 		
+		int maxAttractiveness = 0;
 		IPlace focusPlace = null;
 		boolean newFocus = false;
 		for (IPlace place : m_localSpaceMemory.getPlaceList())
@@ -375,24 +377,10 @@ public class Spas implements ISpas
 		m_persistenceMemory.updateCount();
 	}
 
-	public void count(IObservation observation) 
+	public void count() 
 	{
 		// Update the decay counter in persistence memory
 		m_persistenceMemory.count();
-		
-		// The place where the agent is standing on start of a new interaction
-		IPlace p = m_localSpaceMemory.addPlace(null, new Vector3f());
-		p.setType(Spas.PLACE_PRIMITIVE);
-		p.setFirstPosition(new Vector3f());
-		p.setSecondPosition(new Vector3f());
-		p.setUpdateCount(m_persistenceMemory.getUpdateCount());
-		
-		// The place of the focus on start of a new interaction
-		IPlace f = m_localSpaceMemory.addPlace(null, observation.getPosition());
-		f.setType(Spas.PLACE_FOCUS);
-		f.setFirstPosition(observation.getPosition());
-		f.setSecondPosition(observation.getPosition());
-		f.setUpdateCount(m_persistenceMemory.getUpdateCount());
 	}
 
 	public void traceLocalSpace() 
@@ -426,7 +414,7 @@ public class Spas implements ISpas
 				place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
 				place.setSecondPosition(segment.getFirstPosition());
 				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				if (segment.getWidth() < 1)
+				if (segment.getWidth() < 1.1f)
 					place.setType(Spas.PLACE_SEE);
 				else 
 					place.setType(Spas.PLACE_BACKGROUND);
@@ -740,5 +728,16 @@ public class Spas implements ISpas
 	{
 		return m_localSpaceMemory.getFocusPlace();
 	}
-	
+
+	public IPlace addPlace(Vector3f position, int type, int shape) 
+	{
+		IPlace place = m_localSpaceMemory.addPlace(null, position);
+		place.setFirstPosition(position);
+		place.setSecondPosition(position);
+		place.setType(type);
+		place.setShape(shape);
+		place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+		
+		return place;
+	}	
 }

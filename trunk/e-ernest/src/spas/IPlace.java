@@ -54,11 +54,6 @@ public interface IPlace
 	public float getDistance();
 	
 	/**
-	 * @param distance The place's distance.
-	 */
-	public void setDistance(float distance);
-	
-	/**
 	 * @param position The place's position.
 	 */
 	public void setPosition(Vector3f position);
@@ -88,6 +83,11 @@ public interface IPlace
 	
 	public int getType();
 	
+	public void setShape(int shape);
+	public int getShape();
+	public void setOrientation(float orientation);
+	public float getOrientation();
+	
 	public void setSpeed(Vector3f speed);
 	
 	public Vector3f getSpeed();
@@ -103,7 +103,7 @@ public interface IPlace
 	public boolean attractFocus(int updateCount);
 	public boolean from(Vector3f position); 
 	
-	public boolean anticipateTo(Vector3f position);
+	//public boolean anticipateTo(Vector3f position);
 	
 	public void setStick(int stick);
 	public int getStick();

@@ -28,11 +28,6 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		if (tracer == null) System.out.println("The method Ernest.setTracer() must be called before the method Ernest.setSensorymotorSystem.");
 	}
 	
-	public IAct addPrimitiveAct(String schemaLabel, boolean status, int satisfaction) 
-	{
-		return m_imos.addPrimitiveAct(schemaLabel, status, satisfaction);
-	}
-
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{
 		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
