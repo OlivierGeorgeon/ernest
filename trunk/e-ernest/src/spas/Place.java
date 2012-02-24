@@ -274,9 +274,9 @@ public class Place implements IPlace
 	{
 		boolean from = false;
 		Vector3f compare = new Vector3f(m_position);
-		if (m_speed != null) compare.sub(m_speed); // (speed is small compared to noise)
+		//if (m_speed != null) compare.sub(m_speed); // (speed is small compared to noise)
 		compare.sub(position);
-		if (compare.length() < 1.5f) 
+		if (compare.length() < .2f) 
 			from = true;
 		
 		return from;
