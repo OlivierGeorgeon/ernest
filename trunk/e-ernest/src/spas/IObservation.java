@@ -48,22 +48,22 @@ public interface IObservation
 	/**
 	 * @param kinematicStimulation
 	 */
-	void setKinematic(IStimulation kinematicStimulation);
+	public void setKinematicValue(int value);
 	
 	/**
 	 * @return This observation's kinematic stimulation
 	 */
-	IStimulation getKinematicStimulation();
+	public int getKinematicValue();
 	
 	/**
 	 * @param gustatoryStimulation The gustatory stimulation;
 	 */
-	public void setGustatory(IStimulation gustatoryStimulation);
+	public void setGustatoryValue(int value);
 	
 	/**
 	 * @return The gustatory stimulation;
 	 */
-	public IStimulation getGustatoryStimulation();
+	public int getGustatoryValue();
 	
 	public void setType(int type);
 	public int getType();
@@ -73,4 +73,10 @@ public interface IObservation
 	
 	public void setNewFocus(boolean newFocus);
 	public boolean getNewFocus();
+	
+	public void setTranslation(Vector3f translation);
+	public Vector3f getTranslation();
+	
+	public void setRotation(float rotation);
+	public float getRotation();
 }

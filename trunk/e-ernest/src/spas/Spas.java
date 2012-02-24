@@ -50,8 +50,7 @@ public class Spas implements ISpas
 	
 	ArrayList<ISegment> m_segmentList = new ArrayList<ISegment>();
 
-	int m_kinematicStimulation = Ernest.STIMULATION_KINEMATIC_FORWARD;
-	int m_gustatoryStimulation = Ernest.STIMULATION_GUSTATORY_NOTHING;
+	IObservation m_observation;
 	
 	/** The color of attention for display in the environment.  */
 	private int mAttention = Ernest.UNANIMATED_COLOR;
@@ -143,12 +142,16 @@ public class Spas implements ISpas
 //		return observation;
 //	}
 	
-	public IObservation step(IStimulation[] tactileStimulations, IStimulation kinematicStimulation,
-			IStimulation gustatoryStimulation) 
+	public void step(IStimulation[] tactileStimulations, IObservation observation) 
 	{		
+		m_persistenceMemory.updateCount();
+		m_observation = observation;
 		
-		m_gustatoryStimulation = gustatoryStimulation.getValue();
-		m_kinematicStimulation = kinematicStimulation.getValue();
+		// update the local space memory;
+		
+		Vector3f memoryTranslation = new Vector3f(observation.getTranslation());
+		memoryTranslation.scale(-1);
+		m_localSpaceMemory.update(memoryTranslation, - observation.getRotation());
 
 		// Construct the list of primitive bundles and places. 
 		
@@ -160,8 +163,8 @@ public class Spas implements ISpas
 		
 		// Create new bundles and place them in the local space memory.
 		
-		addKinematicPlace(m_kinematicStimulation);
-		addGustatoryPlace(m_gustatoryStimulation);
+		addKinematicPlace(observation.getKinematicValue());
+		addGustatoryPlace(observation.getGustatoryValue());
 		
 		// Clean up the local space memory according to the tactile simulations.
 		
@@ -239,9 +242,9 @@ public class Spas implements ISpas
 		
 		// The new observation.
 
-		IObservation observation = new Observation();
-		observation.setGustatory(gustatoryStimulation);
-		observation.setKinematic(kinematicStimulation);
+//		IObservation observation = new Observation();
+//		observation.setGustatory(gustatoryStimulation);
+//		observation.setKinematic(kinematicStimulation);
 		observation.setAttractiveness(maxAttractiveness);
 		observation.setNewFocus(newFocus);
 
@@ -266,8 +269,6 @@ public class Spas implements ISpas
 			observation.setType(focusPlace.getType());
 			observation.setUpdateCount(focusPlace.getUpdateCount());
 		}		
-
-		return observation;
 	}
 	
 	public IStimulation addStimulation(int type, int value) 
@@ -361,23 +362,17 @@ public class Spas implements ISpas
 //
 //	}
 
-	public void update(Vector3f translation, float rotation) 
-	{
-		// Clear previous background
-		//m_localSpaceMemory.clearBackground();
-
-		m_localSpaceMemory.update(translation, rotation);
-	}
+//	public void update(IObservation observation) 
+//	{
+//		Vector3f memoryTranslation = new Vector3f(observation.getTranslation());
+//		memoryTranslation.scale(-1);
+//		m_localSpaceMemory.update(memoryTranslation, - observation.getRotation());
+//	}
 
 	public ArrayList<IPlace> getPlaceList()
 	{
 		//return m_places;
 		return m_localSpaceMemory.getPlaceList();
-	}
-
-	public void tick() 
-	{
-		m_persistenceMemory.updateCount();
 	}
 
 	public void count() 
@@ -586,7 +581,7 @@ public class Spas implements ISpas
 		return p;
 	}
 	
-	public void addKinematicPlace(int kinematicValue)
+	private void addKinematicPlace(int kinematicValue)
 	{
 		// Find the place in front of Ernest.
 		IPlace frontPlace = null;
@@ -617,8 +612,26 @@ public class Spas implements ISpas
 			}
 		}
 	}
+
+	/**
+	 * Add affordances to bundles.
+	 * @param initialObservation The initial observation of the current interaction.
+	 * @param finalObservation The final observation of the current interaction.
+	 */
+	public void addAffordance(IObservation initialObservation, IObservation finalObservation)
+	{
+		// Eat fish or cuddle
+		int gustatoryValue = finalObservation.getGustatoryValue();
+		if (gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+		{
+			IBundle bundle = finalObservation.getBundle();
+			bundle.setGustatoryValue(gustatoryValue);
+			//TODO add context
+			bundle.addAffordance(">", 1, 0, new Vector3f(), new Vector3f(), 100);
+		}
+	}
 	
-	public void addGustatoryPlace(int gustatoryValue)
+	private void addGustatoryPlace(int gustatoryValue)
 	{
 		IPlace frontPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
 		IBundle frontBundle = null;
@@ -638,7 +651,7 @@ public class Spas implements ISpas
 				if (hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
 				{
 					m_persistenceMemory.addGustatoryValue(hereBundle, gustatoryValue);
-					clearPlace(LocalSpaceMemory.DIRECTION_HERE); // The fish is eaten
+					//clearPlace(LocalSpaceMemory.DIRECTION_HERE); // The fish is eaten
 				}
 			}
 			
@@ -649,7 +662,7 @@ public class Spas implements ISpas
 				if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
 				{
 					m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
-					clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
+					//clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
 				}
 			}
 			// Add an eat place.
@@ -661,8 +674,27 @@ public class Spas implements ISpas
 			k.setSecondPosition(pos);
 			k.setType(Spas.PLACE_EAT);
 			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
-			//m_places.add(k);
 		}
+        // Associate the tactile stimulation with the cuddle stimulation
+        
+        if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE)
+        {
+            if (frontBundle != null)
+            {
+                // Add cuddle interaction to the bundle at this place
+                if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)
+                        m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
+            }
+            // Add a cuddle place.
+            Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+            pos.scale(Ernest.BOUNDING_RADIUS);
+            //IPlace k = new Place(hereBundle, pos);
+			IPlace k = m_localSpaceMemory.addPlace(hereBundle, pos);
+            k.setType(Spas.PLACE_CUDDLE);
+            k.setFirstPosition(pos);
+            k.setSecondPosition(pos);
+            k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+        }               
 	}
 		
 	/**

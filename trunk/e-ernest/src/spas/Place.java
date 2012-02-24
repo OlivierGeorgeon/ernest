@@ -274,7 +274,11 @@ public class Place implements IPlace
 	{
 		boolean from = false;
 		Vector3f compare = new Vector3f(m_position);
-		//if (m_speed != null) compare.sub(m_speed); // (speed is small compared to noise)
+		
+		// TODO Should take the differential speed of mobile objects into account.
+		// (not the speed due to Ernest's movement but the part that is due to the object's movement)
+		//if (m_speed != null) compare.sub(m_speed);
+		
 		compare.sub(position);
 		if (compare.length() < .2f) 
 			from = true;

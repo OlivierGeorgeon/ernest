@@ -23,10 +23,10 @@ public class Observation implements IObservation
 	private int m_attractiveness = 0;
 
 	/** The kinematic stimulation. */
-	private IStimulation m_kinematicStimulation;
+	private int m_kinematicValue;
 	
 	/** The gustatory stimulation. */
-	private IStimulation m_gustatoryStimulation;
+	private int m_gustatoryValue;
 	
 	/** The focus bundle. */
 	private IBundle m_bundle; 
@@ -42,6 +42,9 @@ public class Observation implements IObservation
 	private int m_updateCount;
 	
 	private boolean m_newFocus = false;
+	
+	private Vector3f m_translation = new Vector3f();
+	private float m_rotation;
 
 	public void setAttractiveness(int attractiveness) 
 	{
@@ -53,24 +56,24 @@ public class Observation implements IObservation
 		return m_attractiveness;
 	}
 
-	public void setKinematic(IStimulation kinematicStimulation)
+	public void setKinematicValue(int value)
 	{
-		m_kinematicStimulation = kinematicStimulation;
+		m_kinematicValue = value;
 	}
 
-	public IStimulation getKinematicStimulation()
+	public int getKinematicValue()
 	{
-		return m_kinematicStimulation;
+		return m_kinematicValue;
 	}
 
-	public void setGustatory(IStimulation gustatoryStimulation)
+	public void setGustatoryValue(int Value)
 	{
-		m_gustatoryStimulation = gustatoryStimulation;
+		m_gustatoryValue = Value;
 	}
 	
-	public IStimulation getGustatoryStimulation()
+	public int getGustatoryValue()
 	{
-		return m_gustatoryStimulation;
+		return m_gustatoryValue;
 	}
 
 	public void setPosition(Vector3f position) 
@@ -171,5 +174,25 @@ public class Observation implements IObservation
 	public boolean getNewFocus() 
 	{
 		return m_newFocus;
+	}
+
+	public void setTranslation(Vector3f translation) 
+	{
+		m_translation.set(translation);
+	}
+
+	public Vector3f getTranslation() 
+	{
+		return m_translation;
+	}
+
+	public void setRotation(float rotation) 
+	{
+		m_rotation = rotation;
+	}
+
+	public float getRotation() 
+	{
+		return m_rotation;
 	}
 }
