@@ -33,6 +33,18 @@ public class Place implements IPlace
 	int m_stick;
 	
 	/**
+	 * Create a new place 
+	 * (The provided position is cloned so the place can be moved without changing the provided position).
+	 * @param bundle The bundle at this place.
+	 * @param position This place's position.
+	 */
+	public Place(IBundle bundle, Vector3f position)
+	{
+		m_bundle = bundle;
+		m_position = new Vector3f(position);
+	}
+	
+	/**
 	 * @param bundle This place's bundle.
 	 * @param distance This place's distance.
 	 * @param direction This place's direction. 
@@ -43,16 +55,6 @@ public class Place implements IPlace
 		m_bundle = bundle;
 		m_position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
 		m_span = span;
-	}
-	
-	/**
-	 * @param bundle The bundle at this place.
-	 * @param position This place's position.
-	 */
-	public Place(IBundle bundle, Vector3f position)
-	{
-		m_bundle = bundle;
-		m_position = new Vector3f(position);
 	}
 	
 	public void setBundle(IBundle bundle) 
@@ -84,6 +86,7 @@ public class Place implements IPlace
 		oldPosition = m_secondPosition;
 		rot.transform(oldPosition, m_secondPosition); 
 		
+		// Rotate the orientation (used for display when the place has a shape)
 		m_orientation += angle;
 		if (m_orientation > Math.PI)
 			m_orientation -= 2*Math.PI;		
@@ -143,7 +146,6 @@ public class Place implements IPlace
 	public float getDirection() 
 	{
 		return ErnestUtils.polarAngle(m_position);
-		//return (float)Math.atan2((double)m_position.y, (double)m_position.x);
 	}
 
 	public float getDistance() 
@@ -181,15 +183,11 @@ public class Place implements IPlace
 	
 	public boolean isFrontal()
 	{
+		return (ErnestUtils.polarAngle(m_firstPosition) < 0 && ErnestUtils.polarAngle(m_secondPosition) > 0);
+		
 		// Covers at least a pixel to the right and a pixel to the left of Ernest's axis.
-		return (getDirection() - m_span / 2 < - Math.PI/12 + 0.1 && getDirection() + m_span / 2 > Math.PI/12 - 0.1 );
+		//return (getDirection() - m_span / 2 < - Math.PI/12 + 0.1 && getDirection() + m_span / 2 > Math.PI/12 - 0.1 );
 	}
-
-//	public void setDistance(float distance)
-//	{
-//		m_position.normalize();
-//		m_position.scale(distance);
-//	}
 
 	public void setPosition(Vector3f position) 
 	{
@@ -276,9 +274,10 @@ public class Place implements IPlace
 	{
 		boolean from = false;
 		Vector3f compare = new Vector3f(m_position);
-		if (m_speed != null) compare.sub(m_speed);
+		if (m_speed != null) compare.sub(m_speed); // (speed is small compared to noise)
 		compare.sub(position);
-		if (compare.length() < 1f) from = true;
+		if (compare.length() < 1.5f) 
+			from = true;
 		
 		return from;
 	}

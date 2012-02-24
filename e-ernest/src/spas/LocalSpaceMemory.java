@@ -1,17 +1,9 @@
 package spas;
 
-
-import imos.IAct;
-
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
-import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
-
 import utils.ErnestUtils;
-
 import ernest.Ernest;
 import ernest.ITracer;
 
@@ -82,68 +74,19 @@ public class LocalSpaceMemory
 	 * Add a new place to the local space memory.
 	 * Replace the bundle if it already exists.
 	 * @param bundle The bundle in this location.
-	 * @param position The position of htis place.
+	 * @param position The position of this place.
 	 * @return The new or already existing location.
 	 */
 	public IPlace addPlace(IBundle bundle, Vector3f position)
 	{
-		// The initial position is cloned so that 
-		// the position can be moved without changing the position used for initialization.
-		
-		IPlace place = new Place(bundle, new Vector3f(position));		
+		IPlace place = new Place(bundle, position);		
 		m_places.add(place);
 		return place;
 	}
 	
 	/**
-	 * Add a new place to the local space memory if it does not yet exist.
-	 * Replace the bundle if it already exists.
-	 * @param bundle The bundle in this location.
-	 * @param position The position of htis place.
-	 * @return The new or already existing location.
-	 */
-//	public IPlace addOrReplacePlace(IBundle bundle, Vector3f position)
-//	{
-//		// The initial position must be cloned so that 
-//		// the position can be moved without changing the position used for intialization.
-//		
-//		IPlace p = new Place(bundle, new Vector3f(position));
-//		p.setUpdateCount(m_persistenceMemory.getUpdateCount());
-//		
-//		int i = m_places.indexOf(p);
-//		if (i == -1)
-//			// The place does not exist
-//			m_places.add(p);
-//		else 
-//		{
-//			// The place already exists: return a pointer to it.
-//			p =  m_places.get(i);
-//			p.setBundle(bundle);
-//		}
-//		return p;
-//	}
-	
-	/**
-	 * Update the local space memory according to the enacted interaction.
-	 * @param act The enacted act.
-	 * @param kinematicStimulation The kinematic stimulation.
-	 */
-//	public void update(IAct act, IStimulation kinematicStimulation)
-//	{
-//		if (act != null)
-//		{
-//			if (act.getSchema().getLabel().equals(">") && kinematicStimulation.getValue() != Ernest.STIMULATION_KINEMATIC_BUMP)
-//				translate(new Vector3f(-1f, 0,0));
-//			else if (act.getSchema().getLabel().equals("^"))
-//				rotate(- (float)Math.PI / 4);
-//			else if (act.getSchema().getLabel().equals("v"))
-//				rotate((float)Math.PI / 4);
-//		}
-//	}
-	
-	/**
 	 * Update the local space memory according to the agent's moves.
-	 * @param translation The translation value (provide the opposite value from the agent's movement).
+	 * @param translation The translation vector in egocentric referential (provide the opposite vector from the agent's movement).
 	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
 	 */
 	public void update(Vector3f translation, float rotation)
@@ -163,8 +106,8 @@ public class LocalSpaceMemory
 	}
 
 	/**
-	 * Translate the local space of the given vector.
-	 * Remove locations that are outside the local space memory radius.
+	 * Translate all the places of the given vector.
+	 * Remove places that are outside the local space memory radius.
 	 * @param translation The translation vector (provide the opposite vector from the agent's movement).
 	 */
 	private void translate(Vector3f translation)
@@ -192,12 +135,18 @@ public class LocalSpaceMemory
 //
 //		for (IPlace p : m_places)
 //		{
-//			if (p.getDirection() - p.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
-//				p.getDirection() + p.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
+////			if (p.getDirection() - p.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
+////				p.getDirection() + p.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
+////				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+////				p.attractFocus(m_persistenceMemory.getUpdateCount()))
+////				if (place == null || p.getDistance() < place.getDistance())
+////					place = p;
+//			if (ErnestUtils.polarAngle(p.getFirstPosition()) < direction && 
+//				ErnestUtils.polarAngle(p.getSecondPosition()) > direction &&
 //				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
 //				p.attractFocus(m_persistenceMemory.getUpdateCount()))
-//				if (place == null || p.getDistance() < place.getDistance())
-//					place = p;
+//					if (place == null || p.getDistance() < place.getDistance())
+//						place = p;
 //		}
 //		return place;
 //	}
@@ -308,7 +257,6 @@ public class LocalSpaceMemory
 			value = getValue(farPosition);
 		}
 		return ErnestUtils.hexColor(value);
-		//return getHexColor(getValue(position));
 	}
 
 	/**

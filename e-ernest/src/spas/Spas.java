@@ -177,9 +177,9 @@ public class Spas implements ISpas
 				// Look for a corresponding persistent place in local space memory.
 				for (IPlace p : m_localSpaceMemory.getPlaceList())
 				{
-					if (place.from(p.getPosition()) && p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
+					if (p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
 							&& p.getBundle().equals(place.getBundle())
-							&& place.getType() == p.getType())
+							&& place.getType() == p.getType() && place.from(p.getPosition()))
 					{
 						p.setPosition(place.getPosition());
 						p.setFirstPosition(place.getFirstPosition());
@@ -226,12 +226,15 @@ public class Spas implements ISpas
 		
 		if (focusPlace != null && focusPlace != m_localSpaceMemory.getFocusPlace())
 		{
+			// Reset the previous stick
 			if (m_localSpaceMemory.getFocusPlace() != null) m_localSpaceMemory.getFocusPlace().setStick(0);
+			// Set the new stick
 			focusPlace.setStick(20);
 			m_localSpaceMemory.setFocusPlace(focusPlace);
 			newFocus = true;
-//			try { Thread.sleep(500);
-//			} catch (InterruptedException e) {e.printStackTrace();}
+			
+			//try { Thread.sleep(500);
+			//} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		
 		// The new observation.
@@ -402,63 +405,29 @@ public class Spas implements ISpas
 	{
 		for (ISegment segment : segmentList)
 		{
-//			if (segment.getWidth() < 1)
-//			{
-				// Short segments are seen as segments.
-				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
-				if (b == null)
-					b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-				IPlace place = new Place(b,segment.getPosition());
-				place.setSpeed(segment.getSpeed());
-				place.setSpan(segment.getSpan());
-				place.setFirstPosition(segment.getSecondPosition()); // somehow inverted
-				place.setSecondPosition(segment.getFirstPosition());
-				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				if (segment.getWidth() < 1.1f)
-					place.setType(Spas.PLACE_SEE);
-				else 
-					place.setType(Spas.PLACE_BACKGROUND);
-				m_places.add(place);			
-//			}
-//			else
-//			{
-//				// Long segments are seen as two points.
-//				IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
-//				if (b == null)
-//					b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
-//				IPlace place = new Place(b,segment.getPosition());
-//				place.setSpeed(segment.getSpeed());
-//				place.setSpan(segment.getSpan());
-//				place.setFirstPosition(segment.getFirstPosition()); // somehow inverted
-//				Vector3f firstWall = new Vector3f(segment.getSecondPosition());
-//				firstWall.sub(segment.getFirstPosition());
-//				firstWall.normalize();
-//				firstWall.scale(.3f);
-//				firstWall.add(segment.getFirstPosition());
-//				place.setSecondPosition(firstWall);
-//				place.setUpdateCount(m_persistenceMemory.getUpdateCount());
-//				place.setType(Spas.PLACE_BACKGROUND);
-//				m_places.add(place);			
-//
-//				IPlace s = new Place(b,segment.getPosition());
-//				s.setSpeed(segment.getSpeed());
-//				s.setSpan(segment.getSpan());
-//				s.setFirstPosition(segment.getSecondPosition()); // somehow inverted
-//				Vector3f secondWall = new Vector3f(segment.getFirstPosition());
-//				secondWall.sub(segment.getSecondPosition());
-//				secondWall.normalize();
-//				secondWall.scale(.3f);
-//				secondWall.add(segment.getSecondPosition());
-//				s.setSecondPosition(secondWall);
-//				s.setUpdateCount(m_persistenceMemory.getUpdateCount());
-//				s.setType(Spas.PLACE_BACKGROUND);
-//				m_places.add(s);			
-//			}
+			IBundle b = m_persistenceMemory.seeBundle(segment.getValue());
+			if (b == null)
+				b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+			IPlace place = new Place(b,segment.getPosition());
+			place.setSpeed(segment.getSpeed());
+			place.setSpan(segment.getSpan());
+			//place.setFirstPosition(segment.getFirstPosition()); // First and second are in the trigonometric direction (counterclockwise). 
+			//place.setSecondPosition(segment.getSecondPosition());
+			place.setFirstPosition(segment.getSecondPosition()); 
+			place.setSecondPosition(segment.getFirstPosition());
+			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+			// Long segments are processed only for display (background).
+			if (segment.getWidth() < 1.1f)
+				place.setType(Spas.PLACE_SEE);
+			else 
+				place.setType(Spas.PLACE_BACKGROUND);
+			m_places.add(place);			
 		}
 	}
 
 	/**
 	 * Add places in the peripersonal space associated with tactile bundles.
+	 * TODO Handle a tactile place behind the agent (last place connected to first place).
 	 * @param tactileStimulations The list of visual stimulations.
 	 */
 	public void addTactilePlaces(IStimulation[] tactileStimulations)
@@ -501,7 +470,7 @@ public class Spas implements ISpas
 						place.setFirstPosition(firstPosition);
 						place.setSecondPosition(secondPosition);
 						place.setSpan(spanf);
-						place.setSpeed(new Vector3f(0,0,1)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
+						place.setSpeed(new Vector3f(0,0,.01f)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
 						place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						place.setType(Spas.PLACE_TOUCH);
 					}
@@ -570,12 +539,27 @@ public class Spas implements ISpas
 //					place = p;
 
 			// TODO Fix the angular condition (case of positive and negative angles)
-			if (ErnestUtils.polarAngle(p.getFirstPosition()) < direction && 
-				ErnestUtils.polarAngle(p.getSecondPosition()) > direction &&
-				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
-				p.attractFocus(m_persistenceMemory.getUpdateCount()))
-					if (place == null || p.getDistance() < place.getDistance())
-						place = p;
+			float firstAngle = ErnestUtils.polarAngle(p.getFirstPosition());
+			float secondAngle = ErnestUtils.polarAngle(p.getSecondPosition());
+			if (firstAngle < secondAngle)
+			{
+				// Does not overlap direction -PI
+				if (direction > firstAngle && direction < secondAngle && 
+					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+					p.attractFocus(m_persistenceMemory.getUpdateCount()))
+						if (place == null || p.getDistance() < place.getDistance())
+							place = p;
+			}
+			else
+			{
+				// Overlaps direction -PI
+				if (direction > firstAngle || direction < secondAngle &&
+					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+					p.attractFocus(m_persistenceMemory.getUpdateCount()))
+						if (place == null || p.getDistance() < place.getDistance())
+							place = p;
+				
+			}
 		}
 		return place;
 	}

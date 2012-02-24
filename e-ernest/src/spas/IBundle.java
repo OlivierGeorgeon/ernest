@@ -1,5 +1,9 @@
 package spas;
 
+import java.util.ArrayList;
+
+import javax.vecmath.Vector3f;
+
 import ernest.ITracer;
 
 /**
@@ -18,16 +22,14 @@ public interface IBundle
 	int getVisualValue(); 
 	
 	/**
-	 * @param stimulation The visual stimulation.
+	 * @param visualValue The visual value.
 	 */
 	public void setVisualValue(int visualValue); 
 	
-	public void setTactileValue(int tactileValue);
-	
 	/**
-	 * @return The value of the visual stimulation if any, or of the tactile stimulation
+	 * @param tactileValue The tactile value.
 	 */
-	int getValue();
+	public void setTactileValue(int tactileValue);
 	
 	/**
 	 * @return The bundle's tactile stimulation.
@@ -55,6 +57,11 @@ public interface IBundle
 	int getKinematicValue();
 	
 	/**
+	 * @return The value of the visual stimulation if any, or of the tactile stimulation
+	 */
+	int getValue();
+	
+	/**
 	 * ATTRACTIVENESS_OF_FISH (400) if this bundle's gustatory stimulation is STIMULATION_TASTE_FISH.
 	 * ATTRACTIVENESS_OF_FISH + 10 (410) if the fish is touched.
 	 * Otherwise ATTRACTIVENESS_OF_UNKNOWN (200) if this bundle has been forgotten,
@@ -63,6 +70,11 @@ public interface IBundle
 	 * @return This bundle's attractiveness at the given time.
 	 */
 	int getExtrapersonalAttractiveness(int clock);
+	
+	/**
+	 * @param clock Ernst's current clcok value.
+	 * @return The bundle's peripersonal attractiveness at a given time. 
+	 */
 	int getPeripersonalAttractiveness(int clock);
 
 	/**
@@ -77,5 +89,9 @@ public interface IBundle
 	 * @param label The label of the element that contains the bundle's data in the trace. 
 	 */
 	void trace(ITracer tracer, String label);
-	
+
+	void addAffordance(String label, float distance, float orientation, Vector3f agentSpeed, Vector3f bundleSpeed, int proclivity);
+
+	public ArrayList<IAffordance> getAffordanceList();
+
 }
