@@ -16,8 +16,7 @@ import spas.Stimulation;
 import utils.ErnestUtils;
 
 /**
- * Implement Ernest 10.0's sensorimotor system.
- * Ernest 10.0 has a visual resolution of 2x12 pixels and a kinesthetic resolution of 3x3 pixels.
+ * Implement Ernest 11.0's sensorimotor system.
  * @author ogeorgeon
  */
 public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
@@ -40,6 +39,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	public final static float TRANSLATION_IMPULSION = .10f; // .10f; // .15f
 	final static float ROTATION_IMPULSION = 0.123f;// .123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
 	public final static float MINIMUM_SPEED = 0.02f;// .05f
+	public final static int IMPULSE_DELAY = 1;
+	public final static int INTERACTION_ONGOING = 3;
 	
 	private int m_interactionTimer = 0;
 	private IObservation m_initialObservation = new Observation();
@@ -70,16 +71,19 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
     	// Update the feedback.
 		boolean endInteraction = false;
-		if (m_observation != null)
+		if (m_observation != null )//&& m_primitiveAct != null)
 		{
 			setInstantaneousFeedback(m_observation, newObservation);
 			endInteraction = setFinalFeedback(m_observation, newObservation);
 		}
 		else
+		{
 			newObservation.setSpeed(new Vector3f());
+			//endInteraction= true;
+		}
 
     	// Record the initial observation.
-    	if (m_interactionTimer == 2) // The acceleration is observed with a delay.
+    	if (m_interactionTimer == IMPULSE_DELAY) // The acceleration is observed with a delay.
     	{
     		m_initialObservation = newObservation;
     	}
@@ -287,14 +291,15 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		// Incorrect ending
 		// If the initial instantaneous feedback is not that expected then the interaction is ended.
-		if (m_interactionTimer > 2 && !m_expectedInstantaneousFeedback.equals(m_initialObservation.getInstantaneousFeedback()))
+		if (m_interactionTimer >= INTERACTION_ONGOING && !m_expectedInstantaneousFeedback.equals(m_initialObservation.getInstantaneousFeedback()))
 			endInteraction = true;
 		
 		// Correct ending
 		// If the current instantaneous feedback is no longer correct
-		if (m_interactionTimer > 3)
+		if (m_interactionTimer > INTERACTION_ONGOING )
 		{
-			if (m_primitiveAct.getSchema().getLabel().equals(">"))
+			if (m_primitiveAct != null && m_primitiveAct.getSchema().getLabel().equals(">"))
+			//if (m_primitiveAct.getSchema().getLabel().equals(">"))
 			{
 				if (newObservation.getPosition().dot(newObservation.getSpeed()) > 0 ||
 					Math.abs(newObservation.getDirection()) > Math.PI/4)
@@ -397,7 +402,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		String instantaneousFeedback = "";
 		
 		// Compute the speed of tactile places TODO change this
-		if (newObservation.getSpeed().z == 1)
+		if (newObservation.getSpeed().z == .01f)
 		{
 			Vector3f relativeSpeed = new Vector3f(newObservation.getPosition());
 			relativeSpeed.sub(previousObservation.getPosition());

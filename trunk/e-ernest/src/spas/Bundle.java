@@ -3,6 +3,8 @@ package spas;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Vector3f;
+
 import utils.ErnestUtils;
 import ernest.Ernest;
 import ernest.ITracer;
@@ -20,8 +22,11 @@ public class Bundle implements IBundle
 	int m_tactileValue;
 	int m_kinematicValue;
 	int m_gustatoryValue;
-
 	int m_lastTimeBundled;
+
+	/** The Local space structure. */
+	private ArrayList<IAffordance> m_affordances = new ArrayList<IAffordance>();
+	
 	
 	Bundle(int visualValue, int tactileValue, int kinematicValue, int gustatoryValue)
 	{
@@ -206,25 +211,23 @@ public class Bundle implements IBundle
 		tracer.addSubelement(element, "id", id);
 		tracer.addSubelement(element, "short_id", id.substring(id.length() - 6));
 		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
-		}
+	}
 
-//	private String hexColor(int value) 
-//	{
-//		int r = value/65536;
-//		int g = (value - r * 65536)/256;
-//		int b = value - r * 65536 - g * 256;
-//		String s = format(r) + format(g) + format(b);
-//
-//		return s;
-//	}
-//	
-//	private String format(int i)
-//	{
-//		if (i == 0)
-//			return "00";
-//		else if (i < 16)
-//			return "0" + Integer.toString(i, 16).toUpperCase();
-//		else
-//			return Integer.toString(i, 16).toUpperCase();
-//	}
+	public void addAffordance(String label, float distance, float orientation,
+			Vector3f agentSpeed, Vector3f bundleSpeed, int proclivity) 
+	{
+		IAffordance affordance = new Affordance(label, distance, orientation, agentSpeed, bundleSpeed, proclivity);
+		int i = m_affordances.indexOf(affordance);
+		if (i == -1)
+			// The affordance does not exist
+			m_affordances.add(affordance);
+		else 
+			// The affordance already exists: return a pointer to it.
+			affordance =  m_affordances.get(i);
+	}
+
+	public ArrayList<IAffordance> getAffordanceList() 
+	{
+		return m_affordances;
+	}
 }
