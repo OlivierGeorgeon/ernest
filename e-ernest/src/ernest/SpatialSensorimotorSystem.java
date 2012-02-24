@@ -29,12 +29,9 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	private int m_satisfaction = 0;
 	private boolean m_status;
 	private IAct m_primitiveAct = null;
-	private float m_rotation = 0;
 	
 	private IStimulation[] m_visualStimulations;
 	private IStimulation[] m_tactileStimulations;
-	private IStimulation m_kinematicStimulation;
-	private IStimulation m_gustatoryStimulation;
 
 	public final static float TRANSLATION_IMPULSION = .10f; // .10f; // .15f
 	final static float ROTATION_IMPULSION = 0.123f;// .123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
@@ -48,52 +45,47 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 
 	public int[] update(int[][] stimuli) 
 	{
+		IObservation newObservation  = new Observation();
+		
 		m_interactionTimer++;
-		m_spas.tick();
 		
 		int primitiveSchema[] = new int[2];
+		newObservation.setGustatoryValue(stimuli[0][8]); 
+		newObservation.setKinematicValue(stimuli[1][8]);
 		float translationx = (float) stimuli[2][8] / Ernest.INT_FACTOR; 
 		float translationy = (float) stimuli[3][8] / Ernest.INT_FACTOR;
-		m_rotation = (float) stimuli[4][8] / Ernest.INT_FACTOR;
-		float speed = (float) stimuli[5][8] / Ernest.INT_FACTOR;
+		float rotation = (float) stimuli[4][8] / Ernest.INT_FACTOR;
+		//float speed = (float) stimuli[5][8] / Ernest.INT_FACTOR;
 		int cognitiveMode = stimuli[6][8];
+		
+		newObservation.setTranslation(new Vector3f(translationx, translationy, 0));
+		newObservation.setRotation(rotation);
 
-		// Update the local space memory
-    	m_spas.update(new Vector3f(-translationx, -translationy, 0), - m_rotation);
-
-    	// Sense the environment
+    	// The Visual and tactile observation.
+		
     	sense(stimuli);
     	
-		// Generate a spatial observation ====
+		// The spatial observation.
 		
-		//IObservation newObservation = m_spas.step(m_visualStimulations, m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);		
-		IObservation newObservation = m_spas.step(m_tactileStimulations, m_kinematicStimulation, m_gustatoryStimulation);
+		m_spas.step(m_tactileStimulations, newObservation);
 		
-    	// Update the feedback.
+    	// The dynamic observation.
+		
 		boolean endInteraction = false;
-		if (m_observation != null )//&& m_primitiveAct != null)
-		{
-			setInstantaneousFeedback(m_observation, newObservation);
-			endInteraction = setFinalFeedback(m_observation, newObservation);
-		}
-		else
-		{
-			newObservation.setSpeed(new Vector3f());
-			//endInteraction= true;
-		}
+		if (m_observation != null )
+			endInteraction = dynamicFeedback(m_observation, newObservation);
 
-    	// Record the initial observation.
-    	if (m_interactionTimer == IMPULSE_DELAY) // The acceleration is observed with a delay.
-    	{
+    	// Memorize the initial observation.
+
+		if (m_interactionTimer == IMPULSE_DELAY) // The acceleration is observed with a delay.
     		m_initialObservation = newObservation;
-    	}
     		
 		m_observation = newObservation;
 
     	primitiveSchema[0] = 0;
     	primitiveSchema[1] = 0;
     	
-    	// Trigger a new cognitive loop when the previous interaction has ended.
+    	// Trigger a new cognitive loop when the previous interaction has ended =============
     	
     	if (endInteraction && cognitiveMode > 0)
         {
@@ -121,12 +113,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     				m_tracer.addEventElement("primitive_enacted_schema", m_primitiveAct.getSchema().getLabel());
     		}
     		
-    		// Let Ernest decide for the next primitive schema to enact.
+    		// Let Ernest decide for the next primitive schema to enact =========================
     		
     		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
     		primitiveSchema[0] = m_primitiveAct.getSchema().getLabel().toCharArray()[0];
     		
-    		// Expected instantaneous feedback
+    		// Expected instantaneous feedback ==================================================
     		
     		if (m_primitiveAct.getSchema().getLabel().indexOf("-") >= 0)
     			m_expectedInstantaneousFeedback = "-";
@@ -142,6 +134,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		// Once the decision is made, compute the intensity.
     		
     		primitiveSchema[1] = impulsion(primitiveSchema[0]);
+    		
+    		// Trace the interaction
 
 			int shape = Spas.SHAPE_TRIANGLE;
     		if (primitiveSchema[0] != '>')
@@ -175,8 +169,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     			m_tracer.addSubelement(e, "stimuli", m_stimuli);
     			m_tracer.addSubelement(e, "dynamic_feature", m_visualStimuli);
     			m_tracer.addSubelement(e, "satisfaction", m_satisfaction + "");
-    			m_tracer.addSubelement(e, "kinematic", m_observation.getKinematicStimulation().getHexColor());
-    			m_tracer.addSubelement(e, "gustatory", m_observation.getGustatoryStimulation().getHexColor());
+    			m_tracer.addSubelement(e, "kinematic", ErnestUtils.hexColor(m_observation.getKinematicValue()));
+    			m_tracer.addSubelement(e, "gustatory", ErnestUtils.hexColor(m_observation.getGustatoryValue()));
     			m_tracer.addSubelement(e, "type", m_observation.getType() + "");
     			m_tracer.addSubelement(e, "update_count", m_observation.getUpdateCount() + "");
     			if (m_observation.getNewFocus()) m_tracer.addSubelement(e, "new_focus");
@@ -211,74 +205,99 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		return primitiveSchema;    		
 	}
 	
-	public IAct enactedAct(IAct act, int[][] stimuli) 
-	{
-		// If the intended act was null (during the first cycle), then the enacted act is null.
-		IAct enactedAct = null;		
-
-		// Sense the environment ===
-		
-		sense(stimuli);
-		
-		// Compute the enacted act == 
-		
-		if (act != null)
-		{
-			if (act.getSchema().getLabel().equals(">"))
-				m_satisfaction = m_satisfaction + (m_status ? 20 : -100);
-			else
-				m_satisfaction = m_satisfaction + (m_status ? -10 : -20);
-		
-			enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), m_stimuli, m_satisfaction);
-
-			if (m_tracer != null) 
-				m_tracer.addEventElement("primitive_enacted_schema", act.getSchema().getLabel());
-		}
-		return enactedAct;
-	}
-	
-	public void sense(int[][] stimuli)
-	{
-		// Vision =====
-		
-		m_visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
-		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-		{
-			m_visualStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
-			float angle = (float) (- 11 * Math.PI/24 + i * Math.PI/12); 
-			Vector3f pos = new Vector3f((float) Math.cos(angle) * stimuli[i][0] / Ernest.INT_FACTOR, (float) Math.sin(angle) * stimuli[i][0] / Ernest.INT_FACTOR, 0);
-			m_visualStimulations[i].setPosition(pos);
-		}
-		
-		// Touch =====
-		
-		m_tactileStimulations = new IStimulation[9];
-		
-		for (int i = 0; i < 9; i++)
-			m_tactileStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9]);
-			
-		// Kinematic ====
-		
-		//IStimulation kinematicStimulation;
-		
-		m_kinematicStimulation = m_spas.addStimulation(Ernest.STIMULATION_KINEMATIC, stimuli[1][8]);
-
-		// Taste =====
-		
-		//IStimulation 
-		m_gustatoryStimulation = m_spas.addStimulation(Ernest.STIMULATION_GUSTATORY, stimuli[0][8]); 
-
-	}
-	
 	/**
-	 * Generate the dynamic stimuli from the impact in the local space memory.
-	 * The stimuli come from: 
-	 * - The kinematic feature.
-	 * - The variation in attractiveness and in direction of the object of interest. 
-	 * @param act The enacted act.
+	 * Generate the instantaneous feedback that is computed from the instantaneous relative acceleration of the focus.
+	 * @param previousObservation The observation made on the previous cycle.
+	 * @param newObservation The current observation .
 	 */
-	private boolean setFinalFeedback(IObservation previousObservation, IObservation newObservation)
+	//private void setInstantaneousFeedback(IObservation previousObservation, IObservation newObservation)
+	private boolean dynamicFeedback(IObservation previousObservation, IObservation newObservation)
 	{
+		String instantaneousFeedback = "";
+		
+		// Compute the speed of tactile places TODO change this
+		if (newObservation.getSpeed().z == .01f)
+		{
+			Vector3f relativeSpeed = new Vector3f(newObservation.getPosition());
+			relativeSpeed.sub(previousObservation.getPosition());
+			
+			Vector3f rotationSpeed = new Vector3f(- newObservation.getPosition().y, newObservation.getPosition().x, 0); // Orthogonal to the position vector.
+			rotationSpeed.normalize();
+			rotationSpeed.scale(- newObservation.getRotation());
+			relativeSpeed.add(rotationSpeed);
+			newObservation.setSpeed(relativeSpeed);
+		}
+		
+		Vector3f relativeAcceleration = new Vector3f(newObservation.getSpeed());
+		relativeAcceleration.sub(previousObservation.getSpeed());
+		
+		if (newObservation.getAttractiveness() >= 0)
+		{
+			// Positive attractiveness
+			// Move forward
+			if (m_primitiveAct != null && m_primitiveAct.getSchema().getLabel().equals(">"))
+			{
+				if (relativeAcceleration.dot(newObservation.getPosition()) < 0 &&
+					Math.abs(newObservation.getDirection()) < Math.PI/4)
+					// Closer
+					instantaneousFeedback = "+";
+				else
+					// Farther
+					instantaneousFeedback = "-";
+			}
+			else
+			{
+				if (relativeAcceleration.x > 0)
+					// More frontwards
+					instantaneousFeedback = "+";
+				else
+					// More backward
+					instantaneousFeedback = "-";
+			}
+		}
+		else
+		{
+			// Negative attractiveness (repulsion)
+			
+			if (previousObservation.getAttractiveness() >= 0)
+				// A wall appeared with a part of it in front of Ernest
+				instantaneousFeedback = "*";		
+			else 
+			{
+				// already in front of a wall.
+				if (m_primitiveAct != null && m_primitiveAct.getSchema().getLabel().equals(">"))
+				{
+					if (relativeAcceleration.dot(newObservation.getPosition()) <= 0)
+						// Closer
+						instantaneousFeedback = "*";
+					else
+						// Farther
+						instantaneousFeedback = "_";
+				}
+				else
+				{
+					if (relativeAcceleration.x > 0)
+						// More to front
+						instantaneousFeedback = "*";
+					else
+						// More to the side
+						instantaneousFeedback = "_";
+				}
+			}
+		}	
+		
+		newObservation.setInstantaneousFeedback(instantaneousFeedback);
+//	}
+//	
+//	/**
+//	 * Generate the dynamic stimuli from the impact in the local space memory.
+//	 * The stimuli come from: 
+//	 * - The kinematic feature.
+//	 * - The variation in attractiveness and in direction of the object of interest. 
+//	 * @param act The enacted act.
+//	 */
+//	private boolean setFinalFeedback(IObservation previousObservation, IObservation newObservation)
+//	{
 		boolean endInteraction = false;
 		
 		int   newAttractiveness = newObservation.getAttractiveness();
@@ -368,7 +387,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		// Gustatory
 		
-		if (newObservation.getGustatoryStimulation().getValue() != Ernest.STIMULATION_GUSTATORY_NOTHING)
+		if (newObservation.getGustatoryValue() != Ernest.STIMULATION_GUSTATORY_NOTHING)
 		{
 			finalFeedback = "e";
 			satisfaction = 100;
@@ -376,7 +395,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		// Kinematic
 		
-		m_status = (newObservation.getKinematicStimulation().getValue() != Ernest.STIMULATION_KINEMATIC_BUMP);
+		m_status = (newObservation.getKinematicValue() != Ernest.STIMULATION_KINEMATIC_BUMP);
 		
 		m_stimuli = (m_status ? " " : "w") + finalFeedback;
 
@@ -392,91 +411,27 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		return endInteraction;
 	}
 	
-	/**
-	 * Generate the instantaneous feedback that is computed from the instantaneous relative acceleration of the focus.
-	 * @param previousObservation The observation made on the previous cycle.
-	 * @param newObservation The current observation .
-	 */
-	private void setInstantaneousFeedback(IObservation previousObservation, IObservation newObservation)
+	
+	
+	public void sense(int[][] stimuli)
 	{
-		String instantaneousFeedback = "";
+		// Vision =====
 		
-		// Compute the speed of tactile places TODO change this
-		if (newObservation.getSpeed().z == .01f)
+		m_visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
+		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 		{
-			Vector3f relativeSpeed = new Vector3f(newObservation.getPosition());
-			relativeSpeed.sub(previousObservation.getPosition());
-			
-			Vector3f rotationSpeed = new Vector3f(- newObservation.getPosition().y, newObservation.getPosition().x, 0); // Orthogonal to the position vector.
-			rotationSpeed.normalize();
-			rotationSpeed.scale(- m_rotation);
-			relativeSpeed.add(rotationSpeed);
-			newObservation.setSpeed(relativeSpeed);
+			m_visualStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
+			float angle = (float) (- 11 * Math.PI/24 + i * Math.PI/12); 
+			Vector3f pos = new Vector3f((float) Math.cos(angle) * stimuli[i][0] / Ernest.INT_FACTOR, (float) Math.sin(angle) * stimuli[i][0] / Ernest.INT_FACTOR, 0);
+			m_visualStimulations[i].setPosition(pos);
 		}
 		
-		Vector3f relativeAcceleration = new Vector3f(newObservation.getSpeed());
-		relativeAcceleration.sub(previousObservation.getSpeed());
+		// Touch =====
 		
-		if (newObservation.getAttractiveness() >= 0)
-		{
-			// Positive attractiveness
-			// Move forward
-			if (m_primitiveAct != null && m_primitiveAct.getSchema().getLabel().equals(">"))
-			{
-				if (relativeAcceleration.dot(newObservation.getPosition()) < 0 &&
-					Math.abs(newObservation.getDirection()) < Math.PI/4)
-					// Closer
-					instantaneousFeedback = "+";
-				else
-					// Farther
-					instantaneousFeedback = "-";
-			}
-			else
-			{
-				if (relativeAcceleration.x > 0)
-					// More frontwards
-					instantaneousFeedback = "+";
-				else
-					// More backward
-					instantaneousFeedback = "-";
-			}
-		}
-		else
-		{
-			// Negative attractiveness (repulsion)
-			
-			if (previousObservation.getAttractiveness() >= 0)
-				// A wall appeared with a part of it in front of Ernest
-				instantaneousFeedback = "*";		
-			else 
-			{
-				// aleady in front of a wall.
-				if (m_primitiveAct != null && m_primitiveAct.getSchema().getLabel().equals(">"))
-				{
-					if (relativeAcceleration.dot(newObservation.getPosition()) <= 0)
-						// Closer
-						instantaneousFeedback = "*";
-					else
-						// Farther
-						instantaneousFeedback = "_";
-				}
-				else
-				{
-					if (relativeAcceleration.x > 0)
-						// More to front
-						instantaneousFeedback = "*";
-					else
-						// More to the side
-						instantaneousFeedback = "_";
-				}
-			}
-		}	
+		m_tactileStimulations = new IStimulation[9];
 		
-		newObservation.setInstantaneousFeedback(instantaneousFeedback);
-		
-		// Detects the change of attention
-		
-		
+		for (int i = 0; i < 9; i++)
+			m_tactileStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_TACTILE, stimuli[i][9]);
 	}
 	
 	public int impulsion(int intentionSchema) 

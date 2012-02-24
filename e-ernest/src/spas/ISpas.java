@@ -34,7 +34,7 @@ public interface ISpas
 	 * @return An observation to compute the impact on the imos.
 	 */
 	//public IObservation step(IStimulation[] visualCortex, IStimulation[] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
-	public IObservation step(IStimulation[] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
+	public void step(IStimulation[] tactileCortex, IObservation observation);
 
 	/**
 	 * Add a stimulation to static memory if it does not already exist.
@@ -65,18 +65,10 @@ public interface ISpas
 	public void setPlaceList(List<IPlace> placeList);
 
 	/**
-	 * Update the local space memory according to the agent's moves.
-	 * @param translation The translation value (provide the opposite value from the agent's movement).
-	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
-	 */
-	public void update(Vector3f translation, float rotation);
-
-	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
 	public ArrayList<IPlace> getPlaceList();
 	
-	public void tick();
 	public void count();
 	public void traceLocalSpace();
 	public void setSegmentList(ArrayList<ISegment> segmentList);
@@ -87,4 +79,7 @@ public interface ISpas
 	 * @param place The place to add in local space memory.
 	 */
 	public IPlace addPlace(Vector3f position, int type, int shape);
+	
+	public void addAffordance(IObservation initialObservation, IObservation finalObservation);
+
 }
