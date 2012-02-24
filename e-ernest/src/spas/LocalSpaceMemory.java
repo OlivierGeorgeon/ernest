@@ -91,8 +91,8 @@ public class LocalSpaceMemory
 	 */
 	public void update(Vector3f translation, float rotation)
 	{
-		translate(translation);
 		rotate(rotation);
+		translate(translation);
 	}
 	
 	/**
