@@ -2,7 +2,10 @@ package spas;
 
 import javax.vecmath.Vector3f;
 
+import utils.ErnestUtils;
+
 import ernest.Ernest;
+import ernest.ITracer;
 
 /**
  * An observation holds the significant consequences that the enacted interaction had on the spatial system.
@@ -45,7 +48,12 @@ public class Observation implements IObservation
 	
 	private Vector3f m_translation = new Vector3f();
 	private float m_rotation;
-
+	
+	private int m_satisfaction;
+	private String m_visualFeedback;
+	private int[] m_tactileStimuli = new int[9];
+	private int[] m_visualStimuli = new int[Ernest.RESOLUTION_RETINA];
+	
 	public void setAttractiveness(int attractiveness) 
 	{
 		m_attractiveness = attractiveness;
@@ -194,5 +202,86 @@ public class Observation implements IObservation
 	public float getRotation() 
 	{
 		return m_rotation;
+	}
+
+	public void trace(ITracer tracer) 
+	{
+		Object e = tracer.addEventElement("current_observation");
+		tracer.addSubelement(e, "direction", getDirection() + "");
+		tracer.addSubelement(e, "distance", getDistance() + "");
+		tracer.addSubelement(e, "span", getSpan() + "");
+		tracer.addSubelement(e, "attractiveness", getAttractiveness() + "");
+		tracer.addSubelement(e, "relative_speed_x", getSpeed().x + "");
+		tracer.addSubelement(e, "relative_speed_y", getSpeed().y + "");
+		tracer.addSubelement(e, "stimuli", m_stimuli);
+		tracer.addSubelement(e, "dynamic_feature", m_visualFeedback);
+		tracer.addSubelement(e, "satisfaction", getSatisfaction() + "");
+		tracer.addSubelement(e, "kinematic", ErnestUtils.hexColor(getKinematicValue()));
+		tracer.addSubelement(e, "gustatory", ErnestUtils.hexColor(getGustatoryValue()));
+		tracer.addSubelement(e, "type", getType() + "");
+		tracer.addSubelement(e, "update_count", getUpdateCount() + "");
+		if (getNewFocus()) tracer.addSubelement(e, "new_focus");
+		
+		Object focusElmt = tracer.addEventElement("focus");
+		tracer.addSubelement(focusElmt, "salience", ErnestUtils.hexColor(getBundle().getValue()));
+		getBundle().trace(tracer, "focus_bundle");
+
+		// Vision
+		Object retinaElmt = tracer.addEventElement("retina");
+		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
+			tracer.addSubelement(retinaElmt, "pixel_0_" + i, ErnestUtils.hexColor(m_visualStimuli[i]));
+
+		// Tactile
+		Object s = tracer.addEventElement("tactile");
+		tracer.addSubelement(s, "here", ErnestUtils.hexColor(m_tactileStimuli[8]));
+		tracer.addSubelement(s, "rear", ErnestUtils.hexColor(m_tactileStimuli[7]));
+		tracer.addSubelement(s, "touch_6", ErnestUtils.hexColor(m_tactileStimuli[6]));
+		tracer.addSubelement(s, "touch_5", ErnestUtils.hexColor(m_tactileStimuli[5]));
+		tracer.addSubelement(s, "touch_4", ErnestUtils.hexColor(m_tactileStimuli[4]));
+		tracer.addSubelement(s, "touch_3", ErnestUtils.hexColor(m_tactileStimuli[3]));
+		tracer.addSubelement(s, "touch_2", ErnestUtils.hexColor(m_tactileStimuli[2]));
+		tracer.addSubelement(s, "touch_1", ErnestUtils.hexColor(m_tactileStimuli[1]));
+		tracer.addSubelement(s, "touch_0", ErnestUtils.hexColor(m_tactileStimuli[0]));
+		
+	}
+
+	public void setSatisfaction(int satisfaction) 
+	{
+		m_satisfaction = satisfaction;
+	}
+
+	public int getSatisfaction() 
+	{
+		return m_satisfaction;
+	}
+
+	public void setVisualFeedback(String visualStimuli) 
+	{
+		m_visualFeedback = visualStimuli;
+	}
+
+	public String getVisualFeedback() 
+	{
+		return m_visualFeedback;
+	}
+
+	public void setTactileStimuli(int index, int value) 
+	{
+		m_tactileStimuli[index] = value;
+	}
+
+	public int[] getTactileStimuli() 
+	{
+		return m_tactileStimuli;
+	}
+
+	public void setVisualStimuli(int index, int value) 
+	{
+		m_visualStimuli[index] = value;
+	}
+
+	public int[] getVisualStimuli() 
+	{
+		return m_visualStimuli;
 	}
 }

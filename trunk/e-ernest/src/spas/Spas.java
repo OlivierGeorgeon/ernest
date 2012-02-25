@@ -65,84 +65,7 @@ public class Spas implements ISpas
 		m_localSpaceMemory = new LocalSpaceMemory(m_persistenceMemory, m_tracer);
 	}
 
-//	public IObservation step(IStimulation[] visualStimulations,
-//			IStimulation[] tactileStimulations, IStimulation kinematicStimulation,
-//			IStimulation gustatoryStimulation) 
-//	{
-//		// Tick the clock
-//		//m_persistenceMemory.tick();
-//		
-//		m_gustatoryStimulation = gustatoryStimulation.getValue();
-//		m_kinematicStimulation = kinematicStimulation.getValue();
-//
-//		// Update the local space memory
-//		//m_localSpaceMemory.update(act, kinematicStimulation);
-//		
-//		// Construct the list of primitive bundles and places. 
-//		
-//		List<IPlace> places;
-//		//places = getPrimitivePlaces(visualStimulations, tactileStimulations); // Places computed by Ernest.
-//		
-//		//m_localSpaceMemory.clearFront();
-//		
-//		m_localSpaceMemory.addVisualPlaces(visualStimulations);
-//		m_localSpaceMemory.addTactilePlaces(tactileStimulations);
-//		
-//		// Create new bundles and place them in the local space memory.
-//		
-//		m_localSpaceMemory.addKinematicPlace(m_kinematicStimulation);
-//		m_localSpaceMemory.addGustatoryPlace(m_gustatoryStimulation);
-//		
-//		// Clean up the local space memory according to the tactile simulations.
-//		
-//		adjustLocalSpaceMemory(tactileStimulations);
-//		
-//		// Find the most attractive or the most repulsive place in the list (abs value) (The list is never empty)
-//		
-//		int maxAttractiveness = 0;
-//		IPlace focusPlace = null;
-//		for (IPlace place : m_localSpaceMemory.getPlaceList())
-//		{
-//			place.setType(PLACE_SEE); // Reset the type of all places
-//			int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
-//			if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
-//			{
-//				maxAttractiveness = attractiveness;
-//				focusPlace = place;
-//			}
-//		}
-//
-//		//m_localSpaceMemory.clearBackground();
-//				
-//		// The new observation.
-//
-//		IObservation observation = new Observation();
-//		observation.setGustatory(gustatoryStimulation);
-//		observation.setKinematic(kinematicStimulation);
-//		observation.setAttractiveness(maxAttractiveness);
-//
-//		if (focusPlace == null)
-//		{
-//			mAttention = Ernest.UNANIMATED_COLOR;
-//			observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING));
-//			observation.setPosition(new Vector3f(1,0,0));
-//			observation.setSpan(0);
-//			observation.setSpeed(new Vector3f());
-//		}
-//		else
-//		{
-//			focusPlace.setType(PLACE_FOCUS);
-//			mAttention = focusPlace.getBundle().getValue();
-//			observation.setBundle(focusPlace.getBundle());
-//			observation.setPosition(focusPlace.getPosition());
-//			observation.setSpan(focusPlace.getSpan());
-//			observation.setSpeed(focusPlace.getSpeed());
-//		}		
-//		
-//		return observation;
-//	}
-	
-	public void step(IStimulation[] tactileStimulations, IObservation observation) 
+	public void step(IObservation observation) 
 	{		
 		m_persistenceMemory.updateCount();
 		m_observation = observation;
@@ -159,7 +82,7 @@ public class Spas implements ISpas
 		m_localSpaceMemory.clear();
 		
 		addSegmentPlaces(m_segmentList);
-		addTactilePlaces(tactileStimulations);
+		addTactilePlaces(observation.getTactileStimuli());
 		
 		// Create new bundles and place them in the local space memory.
 		
@@ -362,13 +285,6 @@ public class Spas implements ISpas
 //
 //	}
 
-//	public void update(IObservation observation) 
-//	{
-//		Vector3f memoryTranslation = new Vector3f(observation.getTranslation());
-//		memoryTranslation.scale(-1);
-//		m_localSpaceMemory.update(memoryTranslation, - observation.getRotation());
-//	}
-
 	public ArrayList<IPlace> getPlaceList()
 	{
 		//return m_places;
@@ -425,10 +341,10 @@ public class Spas implements ISpas
 	 * TODO Handle a tactile place behind the agent (last place connected to first place).
 	 * @param tactileStimulations The list of visual stimulations.
 	 */
-	public void addTactilePlaces(IStimulation[] tactileStimulations)
+	public void addTactilePlaces(int[] tactileStimulations)
 	{
 
-		IStimulation tactileStimulation = tactileStimulations[0];
+		int tactileStimulation = tactileStimulations[0];
 		int span = 1;
 		float theta = - 3 * (float)Math.PI / 4; 
 		float sumDirection = theta;
@@ -437,7 +353,7 @@ public class Spas implements ISpas
 		for (int i = 1 ; i <= 7; i++)
 		{
 			theta += (float)Math.PI / 4;
-			if ((i < 7) && tactileStimulations[i].equals(tactileStimulation))
+			if ((i < 7) && tactileStimulations[i] == tactileStimulation)
 			{
 				// measure the salience span and average direction
 				span++;
@@ -446,7 +362,7 @@ public class Spas implements ISpas
 			}
 			else 
 			{	
-				if (tactileStimulation.getValue() != Ernest.STIMULATION_TOUCH_EMPTY)
+				if (tactileStimulation != Ernest.STIMULATION_TOUCH_EMPTY)
 				{
 					// Create a tactile bundle.
 					float direction = sumDirection / span;
@@ -460,7 +376,7 @@ public class Spas implements ISpas
 					if (place == null)
 					{
 						// Nothing seen: create a tactile bundle and place it here.
-						IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+						IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 						place = addOrReplacePlace(b, position);
 						place.setFirstPosition(firstPosition);
 						place.setSecondPosition(secondPosition);
@@ -471,7 +387,7 @@ public class Spas implements ISpas
 					}
 					else
 					{
-						if (place.getBundle().getTactileValue() == tactileStimulation.getValue() &&
+						if (place.getBundle().getTactileValue() == tactileStimulation &&
 							place.getDistance() < Ernest.TACTILE_RADIUS + .1f) // vision now provides distance
 						{
 							// A bundle is seen with the same tactile value: This is it!
@@ -490,7 +406,7 @@ public class Spas implements ISpas
 							// A bundle is seen in the same position with no tactile value.
 							
 							// Update the place and the bundle
-							IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation.getValue(), Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+							IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 							place.setBundle(b);
 							
 							//place.getBundle().setTactileValue(tactileStimulation.getValue());

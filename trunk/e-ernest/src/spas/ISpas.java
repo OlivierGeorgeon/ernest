@@ -34,7 +34,7 @@ public interface ISpas
 	 * @return An observation to compute the impact on the imos.
 	 */
 	//public IObservation step(IStimulation[] visualCortex, IStimulation[] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
-	public void step(IStimulation[] tactileCortex, IObservation observation);
+	public void step(IObservation observation);
 
 	/**
 	 * Add a stimulation to static memory if it does not already exist.
