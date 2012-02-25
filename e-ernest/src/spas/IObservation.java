@@ -1,6 +1,7 @@
 package spas;
 
 import javax.vecmath.Vector3f;
+import ernest.ITracer;
 
 
 /**
@@ -11,16 +12,23 @@ import javax.vecmath.Vector3f;
  */
 public interface IObservation 
 {
+	public void trace(ITracer tracer);
+	
 	/**
 	 * @param position The position of the focus place.
 	 */
 	public void setPosition(Vector3f position);
+	
+	/**
+	 * @param span The angular span of the focus place.
+	 */
 	public void setSpan(float span);
 	
 	/**
-	 * @return The direction of the focus place.
+	 * @return The position of the focus place in egocentric referential.
 	 */
 	public Vector3f getPosition(); 
+	
 	public float getDirection();
 	public float getDistance();
 	public float getSpan();
@@ -79,4 +87,16 @@ public interface IObservation
 	
 	public void setRotation(float rotation);
 	public float getRotation();
+	
+	public void setSatisfaction(int satisfaction);
+	public int getSatisfaction();
+	
+	public void setVisualFeedback(String visualStimuli);
+	public String getVisualFeedback();
+	
+	public void setTactileStimuli(int index, int value);
+	public int[] getTactileStimuli();
+
+	public void setVisualStimuli(int index, int value);
+	public int[] getVisualStimuli();
 }
