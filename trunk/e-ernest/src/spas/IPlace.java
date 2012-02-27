@@ -107,4 +107,5 @@ public interface IPlace
 	
 	public void setStick(int stick);
 	public int getStick();
+	
 }

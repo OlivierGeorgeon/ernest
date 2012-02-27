@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -9,15 +11,18 @@ import javax.vecmath.Vector3f;
  */
 public interface IAffordance 
 {
-	String getLabel();
+	IAct getAct();
 	
-	float getDistance();
-	
-	float getOrientation();
-	
-	Vector3f getAgentSpeed();
-	
-	Vector3f getBundleSpeed();
+	IPlace getPlace();
 	
 	int getProclivity();
+	
+	//float getDistance();
+	
+	//float getOrientation();
+	
+	//Vector3f getAgentSpeed();
+	
+	//Vector3f getBundleSpeed();
+	
 }

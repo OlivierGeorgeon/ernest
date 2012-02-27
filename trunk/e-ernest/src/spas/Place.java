@@ -315,4 +315,5 @@ public class Place implements IPlace
 	{
 		return m_orientation;
 	}
+	
 }
