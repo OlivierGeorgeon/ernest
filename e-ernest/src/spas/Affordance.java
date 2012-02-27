@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -9,46 +11,34 @@ import javax.vecmath.Vector3f;
  */
 public class Affordance implements IAffordance 
 {
-	private String m_label;
-	private float m_distance;
-	private float m_orientation;
-	private Vector3f m_agentSpeed;
-	private Vector3f m_bundleSpeed;
+	private IAct m_act;
+	private IPlace m_place;
 	private int m_proclivity;
 	
-	Affordance(String label, float distance, float orientation, Vector3f agentSpeed, Vector3f bundleSpeed, int proclivity)
+	//private float m_distance;
+	//private float m_orientation;
+	//private Vector3f m_agentSpeed;
+	//private Vector3f m_bundleSpeed;
+	
+	Affordance(IAct act, IPlace place, int proclivity)
 	{
-		m_label = label;
-		m_distance = distance;
-		m_orientation = orientation;
-		m_agentSpeed.set(agentSpeed);
-		m_bundleSpeed.set(bundleSpeed);
+		m_act = act;
+		m_place = place;
 		m_proclivity = proclivity;
+//		m_distance = distance;
+//		m_orientation = orientation;
+//		m_agentSpeed.set(agentSpeed);
+//		m_bundleSpeed.set(bundleSpeed);
 	}
 
-	public String getLabel()
+	public IAct getAct()
 	{
-		return m_label;
+		return m_act;
 	}
 	
-	public float getDistance() 
+	public IPlace getPlace()
 	{
-		return m_distance;
-	}
-
-	public float getOrientation() 
-	{
-		return m_orientation;
-	}
-
-	public Vector3f getAgentSpeed() 
-	{
-		return m_agentSpeed;
-	}
-
-	public Vector3f getBundleSpeed() 
-	{
-		return m_bundleSpeed;
+		return m_place;
 	}
 	
 	public int getProclivity() 
@@ -56,6 +46,26 @@ public class Affordance implements IAffordance
 		return m_proclivity;
 	}
 
+//	public float getDistance() 
+//	{
+//		return m_distance;
+//	}
+//
+//	public float getOrientation() 
+//	{
+//		return m_orientation;
+//	}
+//
+//	public Vector3f getAgentSpeed() 
+//	{
+//		return m_agentSpeed;
+//	}
+//
+//	public Vector3f getBundleSpeed() 
+//	{
+//		return m_bundleSpeed;
+//	}
+	
 	/**
 	 * Defines the affordance equality measure
 	 * TODO: This should be learned. 
@@ -63,7 +73,7 @@ public class Affordance implements IAffordance
 	public boolean equals(Object o)
 	{
 		boolean ret = false;
-		float epsilon = .5f;
+		float epsilon = .1f;
 		
 		if (o == this)
 			ret = true;
@@ -74,11 +84,12 @@ public class Affordance implements IAffordance
 		else
 		{
 			IAffordance other = (IAffordance)o;
-			ret = other.getLabel().equals(m_label) && 	
-				  other.getDistance() > m_distance - epsilon && other.getDistance() < m_distance + epsilon &&
-				  other.getOrientation() > m_orientation - epsilon && other.getOrientation() < m_orientation + epsilon &&
-				  other.getAgentSpeed().epsilonEquals(m_agentSpeed,epsilon) &&
-				  other.getBundleSpeed().epsilonEquals(m_bundleSpeed, epsilon);
+			ret = other.getAct().getSchema().equals(m_act.getSchema()) &&
+				  other.getPlace().getPosition().epsilonEquals(m_place.getFirstPosition(), epsilon);
+				  //other.getDistance() > m_distance - epsilon && other.getDistance() < m_distance + epsilon &&
+				  //other.getOrientation() > m_orientation - epsilon && other.getOrientation() < m_orientation + epsilon &&
+				  //other.getAgentSpeed().epsilonEquals(m_agentSpeed,epsilon) &&
+				  //other.getBundleSpeed().epsilonEquals(m_bundleSpeed, epsilon);
 		}
 		return ret;
 	}

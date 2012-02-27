@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import javax.vecmath.Vector3f;
 import ernest.ITracer;
 
@@ -99,4 +101,11 @@ public interface IObservation
 
 	public void setVisualStimuli(int index, int value);
 	public int[] getVisualStimuli();
+	
+	public void setFocusPlace(IPlace focusPlace);
+	public IPlace getFocusPlace();
+	
+	public void setPrimitiveAct(IAct primitiveAct);
+	public IAct getPrimitiveAct();
 }
+

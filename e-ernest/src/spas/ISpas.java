@@ -33,8 +33,7 @@ public interface ISpas
 	 * @param gustatoryStimulation The gustatory stimulation.
 	 * @return An observation to compute the impact on the imos.
 	 */
-	//public IObservation step(IStimulation[] visualCortex, IStimulation[] tactileCortex, IStimulation kinematicStimulation, IStimulation gustatoryStimulation);
-	public void step(IObservation observation);
+	public void step(IPlace interactionPlace, IObservation observation);
 
 	/**
 	 * Add a stimulation to static memory if it does not already exist.
@@ -80,6 +79,6 @@ public interface ISpas
 	 */
 	public IPlace addPlace(Vector3f position, int type, int shape);
 	
-	public void addAffordance(IObservation initialObservation, IObservation finalObservation);
+	//public void addAffordance(IObservation initialObservation, IObservation finalObservation);
 
 }

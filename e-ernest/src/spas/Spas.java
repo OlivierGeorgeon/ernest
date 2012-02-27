@@ -65,7 +65,7 @@ public class Spas implements ISpas
 		m_localSpaceMemory = new LocalSpaceMemory(m_persistenceMemory, m_tracer);
 	}
 
-	public void step(IObservation observation) 
+	public void step(IPlace interactionPlace, IObservation observation) 
 	{		
 		m_persistenceMemory.updateCount();
 		m_observation = observation;
@@ -87,7 +87,7 @@ public class Spas implements ISpas
 		// Create new bundles and place them in the local space memory.
 		
 		addKinematicPlace(observation.getKinematicValue());
-		addGustatoryPlace(observation.getGustatoryValue());
+		//addGustatoryPlace(observation);
 		
 		// Clean up the local space memory according to the tactile simulations.
 		
@@ -164,13 +164,11 @@ public class Spas implements ISpas
 		}
 		
 		// The new observation.
-
-//		IObservation observation = new Observation();
-//		observation.setGustatory(gustatoryStimulation);
-//		observation.setKinematic(kinematicStimulation);
+		
+		observation.setFocusPlace(m_localSpaceMemory.getFocusPlace());
 		observation.setAttractiveness(maxAttractiveness);
 		observation.setNewFocus(newFocus);
-
+		
 		if (focusPlace == null)
 		{
 			mAttention = Ernest.UNANIMATED_COLOR;
@@ -182,6 +180,12 @@ public class Spas implements ISpas
 		}
 		else
 		{
+//			Vector3f absoluteFocusSpeed = new Vector3f(observation.getFocusPlace().getSpeed());
+//			absoluteFocusSpeed.add(observation.getTranslation());
+//			Vector3f rotationSpeed = new Vector3f(- observation.getRotation() * observation.getPosition().y,
+//												    observation.getRotation() * observation.getPosition().x, 0);
+//			absoluteFocusSpeed.sub(rotationSpeed);
+//			focusPlace.setOrientation(ErnestUtils.polarAngle(absoluteFocusSpeed) - observation.getDirection());
 			//if (focusPlace.getType() == 0)
 			//	focusPlace.setType(PLACE_FOCUS);
 			mAttention = focusPlace.getBundle().getValue();
@@ -192,6 +196,9 @@ public class Spas implements ISpas
 			observation.setType(focusPlace.getType());
 			observation.setUpdateCount(focusPlace.getUpdateCount());
 		}		
+		
+		addGustatoryPlace(interactionPlace, observation);
+
 	}
 	
 	public IStimulation addStimulation(int type, int value) 
@@ -326,6 +333,7 @@ public class Spas implements ISpas
 			//place.setSecondPosition(segment.getSecondPosition());
 			place.setFirstPosition(segment.getSecondPosition()); 
 			place.setSecondPosition(segment.getFirstPosition());
+			place.setOrientation(.1f);//segment.getAbsoluteOrientation());
 			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 			// Long segments are processed only for display (background).
 			if (segment.getWidth() < 1.1f)
@@ -449,7 +457,6 @@ public class Spas implements ISpas
 //				if (place == null || p.getDistance() < place.getDistance())
 //					place = p;
 
-			// TODO Fix the angular condition (case of positive and negative angles)
 			float firstAngle = ErnestUtils.polarAngle(p.getFirstPosition());
 			float secondAngle = ErnestUtils.polarAngle(p.getSecondPosition());
 			if (firstAngle < secondAngle)
@@ -534,83 +541,45 @@ public class Spas implements ISpas
 	 * @param initialObservation The initial observation of the current interaction.
 	 * @param finalObservation The final observation of the current interaction.
 	 */
-	public void addAffordance(IObservation initialObservation, IObservation finalObservation)
-	{
-		// Eat fish or cuddle
-		int gustatoryValue = finalObservation.getGustatoryValue();
-		if (gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
-		{
-			IBundle bundle = finalObservation.getBundle();
-			bundle.setGustatoryValue(gustatoryValue);
-			//TODO add context
-			bundle.addAffordance(">", 1, 0, new Vector3f(), new Vector3f(), 100);
-		}
-	}
-	
-	private void addGustatoryPlace(int gustatoryValue)
-	{
-		IPlace frontPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
-		IBundle frontBundle = null;
-		if (frontPlace != null) frontBundle = frontPlace.getBundle();
-		IPlace herePlace = getPlace(LocalSpaceMemory.DIRECTION_HERE);
-		IBundle hereBundle = null;
-		if (herePlace != null) hereBundle = herePlace.getBundle();
+//	public void addAffordance(IObservation initialObservation, IObservation finalObservation)
+//	{
+//		// Eat fish or cuddle
+//		int gustatoryValue = finalObservation.getGustatoryValue();
+//		if (gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+//		{
+//			IBundle bundle = finalObservation.getBundle();
+//			bundle.setGustatoryValue(gustatoryValue);
+//			//TODO add context
+//			bundle.addAffordance(">", finalObservation.getPosition(), 100);
+//		}
+//	}
 
-		// Associate the tactile stimulation with the fish gustatory stimulation
-		
-		if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH)
-		{
-			// Discrete environment. The fish bundle is the hereBundle.
-			if (hereBundle != null)
+	private void addGustatoryPlace(IPlace interactionPlace, IObservation observation)
+	{
+		int gustatoryValue= observation.getGustatoryValue();
+		//IPlace focusPlace = observation.getFocusPlace();
+		IPlace focusPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
+		IBundle focusBundle = null;
+		if (focusPlace != null) focusBundle = focusPlace.getBundle();
+
+		if (focusBundle != null) //&& //observation.getPosition().length() <= 1 && 
+			if	(((gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)) ||
+				(gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT))
 			{
-				// Add eat interaction to the bundle at this place
-				if (hereBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
-				{
-					m_persistenceMemory.addGustatoryValue(hereBundle, gustatoryValue);
-					//clearPlace(LocalSpaceMemory.DIRECTION_HERE); // The fish is eaten
-				}
+				// Add the gustatory stimulation to the bundle
+				//m_persistenceMemory.addGustatoryValue(focusBundle, gustatoryValue);
+				focusBundle.setGustatoryValue(gustatoryValue);
+				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, 100);
+	
+				// Add an interaction place.
+				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+				pos.scale(Ernest.BOUNDING_RADIUS);
+				IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
+				k.setFirstPosition(pos);
+				k.setSecondPosition(pos);
+				k.setType(Spas.PLACE_EAT);
+				k.setUpdateCount(m_persistenceMemory.getUpdateCount());
 			}
-			
-			// Continuous environment. The fish bundle is the frontBundle
-			if (frontBundle != null)
-			{
-				// Add eat interaction to the bundle at this place
-				if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)
-				{
-					m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
-					//clearPlace(LocalSpaceMemory.DIRECTION_AHEAD); // The fish is eaten
-				}
-			}
-			// Add an eat place.
-			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
-			pos.scale(Ernest.BOUNDING_RADIUS);
-			//IPlace k = new Place(hereBundle, pos);
-			IPlace k = m_localSpaceMemory.addPlace(hereBundle, pos);
-			k.setFirstPosition(pos);
-			k.setSecondPosition(pos);
-			k.setType(Spas.PLACE_EAT);
-			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
-		}
-        // Associate the tactile stimulation with the cuddle stimulation
-        
-        if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE)
-        {
-            if (frontBundle != null)
-            {
-                // Add cuddle interaction to the bundle at this place
-                if (frontBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)
-                        m_persistenceMemory.addGustatoryValue(frontBundle, gustatoryValue);
-            }
-            // Add a cuddle place.
-            Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
-            pos.scale(Ernest.BOUNDING_RADIUS);
-            //IPlace k = new Place(hereBundle, pos);
-			IPlace k = m_localSpaceMemory.addPlace(hereBundle, pos);
-            k.setType(Spas.PLACE_CUDDLE);
-            k.setFirstPosition(pos);
-            k.setSecondPosition(pos);
-            k.setUpdateCount(m_persistenceMemory.getUpdateCount());
-        }               
 	}
 		
 	/**

@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
@@ -90,7 +92,7 @@ public interface IBundle
 	 */
 	void trace(ITracer tracer, String label);
 
-	void addAffordance(String label, float distance, float orientation, Vector3f agentSpeed, Vector3f bundleSpeed, int proclivity);
+	void addAffordance(IAct act, IPlace place, int proclivity);
 
 	public ArrayList<IAffordance> getAffordanceList();
 

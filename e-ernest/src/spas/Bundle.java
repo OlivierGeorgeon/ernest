@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -213,10 +215,9 @@ public class Bundle implements IBundle
 		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
 	}
 
-	public void addAffordance(String label, float distance, float orientation,
-			Vector3f agentSpeed, Vector3f bundleSpeed, int proclivity) 
+	public void addAffordance(IAct act, IPlace place, int proclivity) 
 	{
-		IAffordance affordance = new Affordance(label, distance, orientation, agentSpeed, bundleSpeed, proclivity);
+		IAffordance affordance = new Affordance(act, place, proclivity);
 		int i = m_affordances.indexOf(affordance);
 		if (i == -1)
 			// The affordance does not exist

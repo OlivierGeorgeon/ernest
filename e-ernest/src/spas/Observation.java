@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import javax.vecmath.Vector3f;
 
 import utils.ErnestUtils;
@@ -53,6 +55,10 @@ public class Observation implements IObservation
 	private String m_visualFeedback;
 	private int[] m_tactileStimuli = new int[9];
 	private int[] m_visualStimuli = new int[Ernest.RESOLUTION_RETINA];
+	
+	private IPlace m_focusPlace;
+	
+	private IAct m_primitiveAct = null;
 	
 	public void setAttractiveness(int attractiveness) 
 	{
@@ -283,5 +289,25 @@ public class Observation implements IObservation
 	public int[] getVisualStimuli() 
 	{
 		return m_visualStimuli;
+	}
+
+	public void setFocusPlace(IPlace focusPlace) 
+	{
+		m_focusPlace = focusPlace;
+	}
+
+	public IPlace getFocusPlace() 
+	{
+		return m_focusPlace;
+	}
+
+	public void setPrimitiveAct(IAct primitiveAct) 
+	{
+		m_primitiveAct = primitiveAct;
+	}
+
+	public IAct getPrimitiveAct() 
+	{
+		return m_primitiveAct;
 	}
 }
