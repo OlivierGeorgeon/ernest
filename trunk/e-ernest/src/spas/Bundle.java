@@ -215,14 +215,16 @@ public class Bundle implements IBundle
 		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
 	}
 
-	public void addAffordance(IAct act, IPlace place, int proclivity) 
+	public void addAffordance(IAct act, IPlace place, Vector3f relativePosition, int proclivity) 
 	{
-		IPlace newPlace = new Place(place.getBundle(), place.getPosition());
-		newPlace.setOrientation(place.getOrientation());
-		newPlace.setType(place.getType());
-		newPlace.setShape(place.getShape());
 		
-		IAffordance affordance = new Affordance(act, newPlace, proclivity);
+		
+		IPlace relativePlace = new Place(place.getBundle(), relativePosition);
+		relativePlace.setOrientation(place.getOrientation());
+		relativePlace.setType(place.getType());
+		relativePlace.setShape(place.getShape());
+		
+		IAffordance affordance = new Affordance(act, relativePlace, proclivity);
 		int i = m_affordances.indexOf(affordance);
 		if (i == -1)
 			// The affordance does not exist
