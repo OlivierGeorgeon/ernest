@@ -217,7 +217,12 @@ public class Bundle implements IBundle
 
 	public void addAffordance(IAct act, IPlace place, int proclivity) 
 	{
-		IAffordance affordance = new Affordance(act, place, proclivity);
+		IPlace newPlace = new Place(place.getBundle(), place.getPosition());
+		newPlace.setOrientation(place.getOrientation());
+		newPlace.setType(place.getType());
+		newPlace.setShape(place.getShape());
+		
+		IAffordance affordance = new Affordance(act, newPlace, proclivity);
 		int i = m_affordances.indexOf(affordance);
 		if (i == -1)
 			// The affordance does not exist

@@ -1,5 +1,6 @@
 package utils;
 
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 /**
@@ -17,6 +18,19 @@ public final class ErnestUtils
 	{
 		return (float)Math.atan2((double)vector.y, (double)vector.x);
 	}
+	
+	/**
+	 * Rotate a vector around the z axis.
+	 * @param vector A vector.
+	 * @param angle The angle of rotation
+	 */
+	public static void rotate(Vector3f vector, float angle) 
+	{
+		Matrix3f rot = new Matrix3f();
+		rot.rotZ(angle);		
+		rot.transform(vector);
+	}	
+
 	
 	/**
 	 * @param value rgb integer value.

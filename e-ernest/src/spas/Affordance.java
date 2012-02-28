@@ -85,7 +85,7 @@ public class Affordance implements IAffordance
 		{
 			IAffordance other = (IAffordance)o;
 			ret = other.getAct().getSchema().equals(m_act.getSchema()) &&
-				  other.getPlace().getPosition().epsilonEquals(m_place.getFirstPosition(), epsilon);
+				  other.getPlace().getPosition().epsilonEquals(m_place.getPosition(), epsilon);
 				  //other.getDistance() > m_distance - epsilon && other.getDistance() < m_distance + epsilon &&
 				  //other.getOrientation() > m_orientation - epsilon && other.getOrientation() < m_orientation + epsilon &&
 				  //other.getAgentSpeed().epsilonEquals(m_agentSpeed,epsilon) &&
