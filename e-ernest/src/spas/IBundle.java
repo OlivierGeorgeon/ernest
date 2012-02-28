@@ -92,7 +92,7 @@ public interface IBundle
 	 */
 	void trace(ITracer tracer, String label);
 
-	void addAffordance(IAct act, IPlace place, int proclivity);
+	void addAffordance(IAct act, IPlace place, Vector3f relativePosition, int proclivity);
 
 	public ArrayList<IAffordance> getAffordanceList();
 

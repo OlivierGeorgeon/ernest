@@ -335,7 +335,14 @@ public class Spas implements ISpas
 			//place.setSecondPosition(segment.getSecondPosition());
 			place.setFirstPosition(segment.getSecondPosition()); 
 			place.setSecondPosition(segment.getFirstPosition());
-			place.setOrientation(segment.getAbsoluteOrientation());
+			if (segment.getAbsoluteOrientation() == Ernest.INFINITE)
+			{
+				Vector3f relativeOrientation = new Vector3f(segment.getFirstPosition());
+				relativeOrientation.sub(segment.getSecondPosition());
+				place.setOrientation(ErnestUtils.polarAngle(relativeOrientation));
+			}
+			else				
+				place.setOrientation(segment.getAbsoluteOrientation());
 			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 			// Long segments are processed only for display (background).
 			if (segment.getWidth() < 1.1f)
@@ -569,9 +576,13 @@ public class Spas implements ISpas
 				(gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT))
 			{
 				// Add the gustatory stimulation to the bundle
-				//m_persistenceMemory.addGustatoryValue(focusBundle, gustatoryValue);
 				focusBundle.setGustatoryValue(gustatoryValue);
-				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, 100);
+				
+				// The relative position
+				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
+				relativePosition.sub(new Vector3f(.4f, 0,0));
+				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
+				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, 100);
 	
 				// Add an interaction place.
 				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
