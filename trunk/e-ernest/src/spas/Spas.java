@@ -112,6 +112,7 @@ public class Spas implements ISpas
 						p.setSecondPosition(place.getSecondPosition());
 						p.setSpeed(place.getSpeed());
 						p.setSpan(place.getSpan());
+						p.setOrientation(place.getOrientation());
 						p.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						newPlace = false;
 					}
@@ -124,6 +125,7 @@ public class Spas implements ISpas
 					k.setSpan(place.getSpan());
 					k.setFirstPosition(place.getFirstPosition()); // somehow inverted
 					k.setSecondPosition(place.getSecondPosition());
+					k.setOrientation(place.getOrientation());
 					k.setUpdateCount(m_persistenceMemory.getUpdateCount());
 					k.setType(place.getType());
 				}
@@ -333,7 +335,7 @@ public class Spas implements ISpas
 			//place.setSecondPosition(segment.getSecondPosition());
 			place.setFirstPosition(segment.getSecondPosition()); 
 			place.setSecondPosition(segment.getFirstPosition());
-			place.setOrientation(.1f);//segment.getAbsoluteOrientation());
+			place.setOrientation(segment.getAbsoluteOrientation());
 			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 			// Long segments are processed only for display (background).
 			if (segment.getWidth() < 1.1f)
