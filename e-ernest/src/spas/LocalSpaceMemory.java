@@ -234,14 +234,14 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Spas.PLACE_COMPOSITE || p.getType() == Spas.PLACE_INTERMEDIARY || p.getType() == Spas.PLACE_PRIMITIVE || p.getType() == Spas.PLACE_TOUCH)
+			if (p.getType() == Spas.PLACE_SEE || p.getType() == Spas.PLACE_TOUCH)
 			{
-				if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - PERSISTENCE_DURATION)
+				if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 1)
 					it.remove();
 			}
 			else
 			{
-				if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 1)
+				if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - PERSISTENCE_DURATION)
 					it.remove();
 			}
 		}

@@ -103,9 +103,12 @@ public class Spas implements ISpas
 				// Look for a corresponding persistent place in local space memory.
 				for (IPlace p : m_localSpaceMemory.getPlaceList())
 				{
+//					if (p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
+//							&& p.getBundle().equals(place.getBundle())
+//							&& place.getType() == p.getType() && place.from(p.getPosition()))
 					if (p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
 							&& p.getBundle().equals(place.getBundle())
-							&& place.getType() == p.getType() && place.from(p.getPosition()))
+							&& place.from(p))
 					{
 						p.setPosition(place.getPosition());
 						p.setFirstPosition(place.getFirstPosition());
@@ -182,14 +185,6 @@ public class Spas implements ISpas
 		}
 		else
 		{
-//			Vector3f absoluteFocusSpeed = new Vector3f(observation.getFocusPlace().getSpeed());
-//			absoluteFocusSpeed.add(observation.getTranslation());
-//			Vector3f rotationSpeed = new Vector3f(- observation.getRotation() * observation.getPosition().y,
-//												    observation.getRotation() * observation.getPosition().x, 0);
-//			absoluteFocusSpeed.sub(rotationSpeed);
-//			focusPlace.setOrientation(ErnestUtils.polarAngle(absoluteFocusSpeed) - observation.getDirection());
-			//if (focusPlace.getType() == 0)
-			//	focusPlace.setType(PLACE_FOCUS);
 			mAttention = focusPlace.getBundle().getValue();
 			observation.setBundle(focusPlace.getBundle());
 			observation.setPosition(focusPlace.getPosition());
@@ -204,10 +199,10 @@ public class Spas implements ISpas
 
 	}
 	
-	public IStimulation addStimulation(int type, int value) 
-	{
-		return m_persistenceMemory.addStimulation(type, value);
-	}
+//	public IStimulation addStimulation(int type, int value) 
+//	{
+//		return m_persistenceMemory.addStimulation(type, value);
+//	}
 
 	public int getValue(int i, int j)
 	{
@@ -238,63 +233,7 @@ public class Spas implements ISpas
 	{
 		m_placeList = placeList;
 	}
-	
-	
-//	/**
-//	 * Remove the bundles in local space memory that are not consistent with the tactile stimuli.
-//     * TODO The criteria to decide whether the matching is correct or incorrect need to be learned ! 
-//	 * @param tactileStimulations The tactile stimuli.
-//	 */
-//	private void adjustLocalSpaceMemory(IStimulation[] tactileStimulations)
-//	{
-//
-//		// Check right
-//		IBundle bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_RIGHT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[1].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_RIGHT);
-//
-//		// Check ahead right
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[2].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_RIGHT);
-//
-//		// Check ahead 
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[3].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD);
-//
-//		// Check ahead left
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[4].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_AHEAD_LEFT);
-//
-//		// Check left
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_LEFT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[5].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_LEFT);
-//
-//		// Check here
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_HERE);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[8].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_HERE);
-//
-//		// Check behind left
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND_LEFT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[6].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND_LEFT);
-//
-//		// Check behind right
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[0].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND_RIGHT);
-//
-//		// Check behind
-//		bundle = m_localSpaceMemory.getBundle(LocalSpaceMemory.DIRECTION_BEHIND);
-//		if (bundle != null && bundle.getTactileValue() != tactileStimulations[7].getValue())
-//			m_localSpaceMemory.clearPlace(LocalSpaceMemory.DIRECTION_BEHIND);
-//
-//	}
-
+		
 	public ArrayList<IPlace> getPlaceList()
 	{
 		//return m_places;
@@ -336,14 +275,14 @@ public class Spas implements ISpas
 			//place.setSecondPosition(segment.getSecondPosition());
 			place.setFirstPosition(segment.getSecondPosition()); 
 			place.setSecondPosition(segment.getFirstPosition());
-			if (segment.getAbsoluteOrientation() == Ernest.INFINITE)
+			if (segment.getRelativeOrientation() == Ernest.INFINITE)
 			{
 				Vector3f relativeOrientation = new Vector3f(segment.getFirstPosition());
 				relativeOrientation.sub(segment.getSecondPosition());
 				place.setOrientation(ErnestUtils.polarAngle(relativeOrientation));
 			}
 			else				
-				place.setOrientation(segment.getAbsoluteOrientation());
+				place.setOrientation(segment.getRelativeOrientation());
 			place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 			// Long segments are processed only for display (background).
 			if (segment.getWidth() < 1.1f)
@@ -389,8 +328,10 @@ public class Spas implements ISpas
 					Vector3f firstPosition = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)firstDirection)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)firstDirection)), 0f);
 					float secondDirection = direction + spanf/ 2;
 					Vector3f secondPosition = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)secondDirection)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)secondDirection)), 0f);
-					// See in that direction.
+					
+					// See in that direction ====
 					IPlace place = seePlace(direction);
+					
 					if (place == null)
 					{
 						// Nothing seen: create a tactile bundle and place it here.
@@ -405,8 +346,8 @@ public class Spas implements ISpas
 					}
 					else
 					{
-						if (place.getBundle().getTactileValue() == tactileStimulation &&
-							place.getDistance() < Ernest.TACTILE_RADIUS + .1f) // vision now provides distance
+						if (place.getBundle().getTactileValue() == tactileStimulation )//&&
+							//place.getFrontDistance() < Ernest.TACTILE_RADIUS + .1f) // vision now provides distance
 						{
 							// A bundle is seen with the same tactile value: This is it!
 							place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
@@ -418,8 +359,8 @@ public class Spas implements ISpas
 							place.setType(Spas.PLACE_TOUCH);
 							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
 						}
-						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY && 
-								place.getDistance() < Ernest.TACTILE_RADIUS + .1f)
+						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY )//&& 
+								//place.getFrontDistance() < Ernest.TACTILE_RADIUS + .1f)
 						{
 							// A bundle is seen in the same position with no tactile value.
 							
@@ -472,7 +413,7 @@ public class Spas implements ISpas
 			if (firstAngle < secondAngle)
 			{
 				// Does not overlap direction -PI
-				if (direction > firstAngle && direction < secondAngle && 
+				if (direction > firstAngle + 0.1f && direction < secondAngle - .1f && 
 					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
 					p.attractFocus(m_persistenceMemory.getUpdateCount()))
 						if (place == null || p.getDistance() < place.getDistance())
@@ -481,12 +422,11 @@ public class Spas implements ISpas
 			else
 			{
 				// Overlaps direction -PI
-				if (direction > firstAngle || direction < secondAngle &&
+				if (direction > firstAngle + .1f || direction < secondAngle - .1f &&
 					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
 					p.attractFocus(m_persistenceMemory.getUpdateCount()))
 						if (place == null || p.getDistance() < place.getDistance())
-							place = p;
-				
+							place = p;				
 			}
 		}
 		return place;
@@ -521,7 +461,12 @@ public class Spas implements ISpas
 		// Find the place in front of Ernest.
 		IPlace focusPlace = null;
 		for (IPlace place : m_places)
-			if (place.isFrontal() && place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && place.attractFocus(m_persistenceMemory.getUpdateCount()))
+			if (place.isFrontal() && 
+				place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && 
+				place.attractFocus(m_persistenceMemory.getUpdateCount()) && 
+				place.getType() != Spas.PLACE_BACKGROUND && 
+				place.getFrontDistance() < 1)
+				
 				focusPlace = place;
 		
 		// Associate kinematic stimulation to the front bundle.
@@ -537,9 +482,10 @@ public class Spas implements ISpas
 				
 				// Add the affordance to the bundle
 				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
-				relativePosition.sub(focusPlace.getPosition());
+				//relativePosition.sub(focusPlace.getPosition());
+				relativePosition.sub(new Vector3f(.4f, 0,0));
 				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
-				focusBunble.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, 100);
+				focusBunble.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), 100);
 				
 				// Add a Bump place.
 				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
@@ -574,7 +520,7 @@ public class Spas implements ISpas
 				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
 				relativePosition.sub(new Vector3f(.4f, 0,0));
 				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
-				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, 100);
+				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), 100);
 	
 				// Add an interaction place.
 				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);

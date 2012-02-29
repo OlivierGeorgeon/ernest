@@ -102,10 +102,12 @@ public interface IPlace
 	
 	public boolean attractFocus(int updateCount);
 	public boolean from(Vector3f position); 
+	public boolean from(IPlace previousPlace); 
 	
 	//public boolean anticipateTo(Vector3f position);
 	
 	public void setStick(int stick);
 	public int getStick();
+	public float getFrontDistance();
 	
 }

@@ -25,7 +25,7 @@ public class PersistenceMemory
 	private int m_updateCounter = 0;
 
 	/** A list of all the stimulations ever identified. */
-	public List<IStimulation> m_stimulations = new ArrayList<IStimulation>(20);
+//	public List<IStimulation> m_stimulations = new ArrayList<IStimulation>(20);
 	
 	/** A list of all the bundles ever identified. */
 	public List<IBundle> m_bundles = new ArrayList<IBundle>(20);
@@ -71,19 +71,19 @@ public class PersistenceMemory
 	 * @param value The stimulation's value
 	 * @return the new landmark if created or the already existing landmark
 	 */
-	public IStimulation addStimulation(int type, int value)
-	{
-		IStimulation l = new Stimulation(type, value);
-		
-		int i = m_stimulations.indexOf(l);
-		if (i == -1)
-			// The landmark does not exist
-			m_stimulations.add(l);
-		else 
-			// The landmark already exists: return a pointer to it.
-			l =  m_stimulations.get(i);
-		return l;
-	}	
+//	public IStimulation addStimulation(int type, int value)
+//	{
+//		IStimulation l = new Stimulation(type, value);
+//		
+//		int i = m_stimulations.indexOf(l);
+//		if (i == -1)
+//			// The landmark does not exist
+//			m_stimulations.add(l);
+//		else 
+//			// The landmark already exists: return a pointer to it.
+//			l =  m_stimulations.get(i);
+//		return l;
+//	}	
 
 	/**
 	 * Add a bundle to static memory if it does not already exist
