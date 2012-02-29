@@ -43,6 +43,6 @@ public interface ISegment
 
 	public Vector3f getSecondPositionAllocentric(); 
 	
-	public float getAbsoluteOrientation();
+	public float getRelativeOrientation();
 
 }

@@ -41,7 +41,7 @@ public interface ISpas
 	 * @param value The stimulation's value.
 	 * @return the new stimulation if created or the already existing stimulation.
 	 */
-	public IStimulation addStimulation(int type, int value);
+	//public IStimulation addStimulation(int type, int value);
 	
 	/**
 	 * Provide a rgb code to display the local space map in the environment.

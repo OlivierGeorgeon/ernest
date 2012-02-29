@@ -8,11 +8,11 @@ import org.w3c.dom.Element;
 
 import spas.IObservation;
 import spas.IPlace;
-import spas.IStimulation;
+//import spas.IStimulation;
 import spas.LocalSpaceMemory;
 import spas.Observation;
 import spas.Spas;
-import spas.Stimulation;
+//import spas.Stimulation;
 import utils.ErnestUtils;
 
 /**

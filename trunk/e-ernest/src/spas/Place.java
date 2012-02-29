@@ -286,6 +286,32 @@ public class Place implements IPlace
 		return from;
 	}
 
+	public boolean from(IPlace previousPlace) 
+	{
+		boolean from = false;
+		
+		if (m_type == Spas.PLACE_SEE)
+		{
+			if (previousPlace.getType() == Spas.PLACE_SEE)
+			{
+				Vector3f compare = new Vector3f(m_position);
+				compare.sub(previousPlace.getPosition());
+				if (compare.length() < .2f) 
+					from = true;				
+			}
+		}
+		else if (m_type == Spas.PLACE_TOUCH)
+		{
+			if (previousPlace.getType() == Spas.PLACE_TOUCH)
+			{
+				if (Math.abs(getDirection() - previousPlace.getDirection()) < Math.PI/4)
+					from = true;
+			}
+		}
+		
+		return from;
+	}
+
 	public void setStick(int stick) 
 	{
 		m_stick = stick;
@@ -316,4 +342,9 @@ public class Place implements IPlace
 		return m_orientation;
 	}
 	
+	public float getFrontDistance()
+	{
+		return m_firstPosition.x - m_firstPosition.y * (m_firstPosition.x - m_secondPosition.x)/(m_firstPosition.y - m_secondPosition.y);
+		
+	}
 }

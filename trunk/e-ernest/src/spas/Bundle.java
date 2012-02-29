@@ -215,12 +215,12 @@ public class Bundle implements IBundle
 		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
 	}
 
-	public void addAffordance(IAct act, IPlace place, Vector3f relativePosition, int proclivity) 
+	public void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity) 
 	{
 		
 		
 		IPlace relativePlace = new Place(place.getBundle(), relativePosition);
-		relativePlace.setOrientation(place.getOrientation());
+		relativePlace.setOrientation(place.getOrientation() - relativeOrientation);
 		relativePlace.setType(place.getType());
 		relativePlace.setShape(place.getShape());
 		
