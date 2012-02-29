@@ -21,7 +21,7 @@ public class LocalSpaceMemory
 	public static float EXTRAPERSONAL_DISTANCE = 1.5f;
 	
 	/** The duration of persistence in local space memory. */
-	public static int PERSISTENCE_DURATION = 10;
+	public static int PERSISTENCE_DURATION = 20;
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
@@ -234,8 +234,16 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - PERSISTENCE_DURATION)
-				it.remove();
+			if (p.getType() == Spas.PLACE_COMPOSITE || p.getType() == Spas.PLACE_INTERMEDIARY || p.getType() == Spas.PLACE_PRIMITIVE || p.getType() == Spas.PLACE_TOUCH)
+			{
+				if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - PERSISTENCE_DURATION)
+					it.remove();
+			}
+			else
+			{
+				if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 1)
+					it.remove();
+			}
 		}
 		//m_places.clear();
 	}
