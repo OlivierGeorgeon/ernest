@@ -413,7 +413,7 @@ public class Spas implements ISpas
 			if (firstAngle < secondAngle)
 			{
 				// Does not overlap direction -PI
-				if (direction > firstAngle + 0.1f && direction < secondAngle - .1f && 
+				if (direction > firstAngle + 0.1f && direction < secondAngle - .05f && 
 					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
 					p.attractFocus(m_persistenceMemory.getUpdateCount()))
 						if (place == null || p.getDistance() < place.getDistance())
@@ -510,7 +510,7 @@ public class Spas implements ISpas
 		if (focusPlace != null) focusBundle = focusPlace.getBundle();
 
 		if (focusBundle != null) //&& //observation.getPosition().length() <= 1 && 
-			if	(((gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)) ||
+			if	((gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH) ||
 				(gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT))
 			{
 				// Add the gustatory stimulation to the bundle
@@ -531,6 +531,33 @@ public class Spas implements ISpas
 				k.setType(Spas.PLACE_EAT);
 				k.setUpdateCount(m_persistenceMemory.getUpdateCount());
 			}
+
+//		focusPlace = observation.getFocusPlace();
+//		focusBundle = null;
+//		if (focusPlace != null) focusBundle = focusPlace.getBundle();
+//
+//		if (focusBundle != null) //&& //observation.getPosition().length() <= 1 && 
+//			if	(((gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH)) ||
+//				(gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT))
+//			{
+//				// Add the gustatory stimulation to the bundle
+//				focusBundle.setGustatoryValue(gustatoryValue);
+//				
+//				// Add the affordance to the bundle
+//				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
+//				relativePosition.sub(new Vector3f(.4f, 0,0));
+//				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
+//				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), 100);
+//	
+//				// Add an interaction place.
+//				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+//				pos.scale(Ernest.BOUNDING_RADIUS);
+//				IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
+//				k.setFirstPosition(pos);
+//				k.setSecondPosition(pos);
+//				k.setType(Spas.PLACE_EAT);
+//				k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+//			}
 	}
 		
 	/**

@@ -164,21 +164,23 @@ public class Place implements IPlace
 	
 	public int getAttractiveness(int clock) 
 	{
-		// If it is in the background (visual place).
+		// Attractiveness of objects in the extrapersonal space.
 		if (getDistance() > LocalSpaceMemory.EXTRAPERSONAL_DISTANCE)
 			//return (m_bundle.getExtrapersonalAttractiveness(clock) + (int)(5 * m_span / ((float)Math.PI / 12)));
 			return m_bundle.getExtrapersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
 		
-		// Attractiveness of wall in front
+		// Attractiveness of wall in front in peripersonal space.
 		else if (isFrontal() && m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_WALL)
 			return m_bundle.getPeripersonalAttractiveness(clock) + m_stick;
-		
-		// Attractiveness of fish 
+
+		// Attractiveness of other things than wall in  peripersonal space. 
 		//else if (m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH 
 		//		|| m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
+		else if (m_bundle.getTactileValue() != Ernest.STIMULATION_TOUCH_WALL)
 			return m_bundle.getPeripersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
 
-		//return 0;
+
+		return 0;
 	}
 	
 	public boolean isFrontal()
