@@ -27,6 +27,9 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	final static float ROTATION_IMPULSION = 0.123f;// .123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
 	/** The minimum speed before starting a new interaction */
 	public final static float MINIMUM_SPEED = 0.05f;// .05f
+	
+	/** The maximum angle before starting a new interaction */
+	public final static float MAXIMUM_ANGLE = (float)Math.PI/8;
 	/** The delay when to measure the acceleration produced by the impulsion */
 	public final static int IMPULSE_DELAY = 1;
 	/** The delay when to consider an interaction succesfully enacted */
@@ -307,21 +310,24 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 			if (primitiveAct != null && primitiveAct.getSchema().getLabel().equals(">"))
 			// Move forward correct ending conditions
 			{
-				if (newObservation.getPosition().dot(newObservation.getSpeed()) > 0 ||
-					Math.abs(newObservation.getDirection()) > Math.PI/4)
+				//if (newObservation.getPosition().dot(newObservation.getSpeed()) > 0 || Math.abs(newObservation.getDirection()) > Math.PI/4)
+				if (newObservation.getSpeed().x < 0 || Math.abs(newObservation.getDirection()) > MAXIMUM_ANGLE)
 					// getting away
 					endInteraction = true;
-				else if (newObservation.getSpeed().length() < MINIMUM_SPEED)
+				//else if (newObservation.getSpeed().length() < MINIMUM_SPEED)
+				//else if (- newObservation.getPosition().dot(newObservation.getSpeed())/newObservation.getSpeed().length() < MINIMUM_SPEED)
+				else if (- newObservation.getSpeed().x < MINIMUM_SPEED)
 					// stopped
 					endInteraction = true;
 			}
 			else
 			// Turn correct ending conditions
 			{
-				if (newObservation.getSpeed().x < 0 ||
-						Math.abs(newObservation.getDirection()) > Math.PI/8)
+				if (newObservation.getSpeed().x < 0 || Math.abs(newObservation.getDirection()) > MAXIMUM_ANGLE)
 					endInteraction = true;
-				else if (newObservation.getSpeed().length() < MINIMUM_SPEED)
+				//else if (newObservation.getSpeed().length() < MINIMUM_SPEED)
+				//else if (- newObservation.getPosition().dot(newObservation.getSpeed())/newObservation.getSpeed().length() < MINIMUM_SPEED)
+				else if (- newObservation.getSpeed().x < MINIMUM_SPEED)
 					// stopped
 					endInteraction = true;
 			}

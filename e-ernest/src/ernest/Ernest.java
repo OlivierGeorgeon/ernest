@@ -51,7 +51,7 @@ public class Ernest implements IErnest
 	public static int ATTRACTIVENESS_OF_CUDDLE  =  300;
 	
 	/** -350 Attractiveness of bumping in a wall  */
-	public static int ATTRACTIVENESS_OF_BUMP  =  -350;//-500;
+	public static int ATTRACTIVENESS_OF_BUMP  =  -300;//-350;//-500;
 	
 	/** -200 Attractiveness of hard  */
 	public static int ATTRACTIVENESS_OF_HARD  =  -200;
