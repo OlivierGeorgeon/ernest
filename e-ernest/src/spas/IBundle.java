@@ -41,22 +41,22 @@ public interface IBundle
 	/**
 	 * @param gustatoryValue The bundle's gustatory stimulation.
 	 */
-	void setGustatoryValue(int gustatoryValue); 
+	//void setGustatoryValue(int gustatoryValue); 
 	
 	/**
 	 * @return The bundle's gustatory stimulation.
 	 */
-	int getGustatoryValue();
+	//int getGustatoryValue();
 	
 	/**
 	 * @param kinematicValue The bundle's kinematic stimulation.
 	 */
-	void setKinematicValue(int kinematicValue);
+	//void setKinematicValue(int kinematicValue);
 	
 	/**
 	 * @return The bundle's kinematic stimulation.
 	 */
-	int getKinematicValue();
+	//int getKinematicValue();
 	
 	/**
 	 * @return The value of the visual stimulation if any, or of the tactile stimulation
@@ -92,7 +92,7 @@ public interface IBundle
 	 */
 	void trace(ITracer tracer, String label);
 
-	void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity);
+	void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity, int value);
 
 	public ArrayList<IAffordance> getAffordanceList();
 

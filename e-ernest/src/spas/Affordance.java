@@ -14,21 +14,14 @@ public class Affordance implements IAffordance
 	private IAct m_act;
 	private IPlace m_place;
 	private int m_proclivity;
+	private int m_value;
 	
-	//private float m_distance;
-	//private float m_orientation;
-	//private Vector3f m_agentSpeed;
-	//private Vector3f m_bundleSpeed;
-	
-	Affordance(IAct act, IPlace place, int proclivity)
+	Affordance(IAct act, IPlace place, int proclivity, int value)
 	{
 		m_act = act;
 		m_place = place;
 		m_proclivity = proclivity;
-//		m_distance = distance;
-//		m_orientation = orientation;
-//		m_agentSpeed.set(agentSpeed);
-//		m_bundleSpeed.set(bundleSpeed);
+		m_value = value;
 	}
 
 	public IAct getAct()
@@ -46,26 +39,6 @@ public class Affordance implements IAffordance
 		return m_proclivity;
 	}
 
-//	public float getDistance() 
-//	{
-//		return m_distance;
-//	}
-//
-//	public float getOrientation() 
-//	{
-//		return m_orientation;
-//	}
-//
-//	public Vector3f getAgentSpeed() 
-//	{
-//		return m_agentSpeed;
-//	}
-//
-//	public Vector3f getBundleSpeed() 
-//	{
-//		return m_bundleSpeed;
-//	}
-	
 	/**
 	 * Defines the affordance equality measure
 	 * TODO: This should be learned. 
@@ -94,5 +67,14 @@ public class Affordance implements IAffordance
 		return ret;
 	}
 
+	public void setValue(int value) 
+	{
+		m_value = value;
+	}
+
+	public int getValue() 
+	{
+		return m_value;
+	}
 
 }

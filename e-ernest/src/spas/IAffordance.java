@@ -17,6 +17,10 @@ public interface IAffordance
 	
 	int getProclivity();
 	
+	public void setValue(int value);
+	
+	public int getValue();
+	
 	//float getDistance();
 	
 	//float getOrientation();
