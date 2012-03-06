@@ -91,9 +91,10 @@ public class PersistenceMemory
 	 * @param tactileStimulation The bundle's tactile stimulation.
 	 * @return the new bundle if created or the already existing bundle.
 	 */
-	public IBundle addBundle(int visualValue, int tactileValue, int kinematicValue, int gustatoryValue)
+	//public IBundle addBundle(int visualValue, int tactileValue, int kinematicValue, int gustatoryValue)
+	public IBundle addBundle(int visualValue, int tactileValue)
 	{
-		IBundle bundle = new Bundle(visualValue, tactileValue, kinematicValue, gustatoryValue);
+		IBundle bundle = new Bundle(visualValue, tactileValue);//, kinematicValue, gustatoryValue);
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
@@ -108,41 +109,41 @@ public class PersistenceMemory
 			bundle =  m_bundles.get(i);
 		
 		// This bundle is considered confirmed or visited
-		if (tactileValue != Ernest.STIMULATION_TOUCH_EMPTY || kinematicValue != Ernest.STIMULATION_KINEMATIC_FORWARD || gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+		if (tactileValue != Ernest.STIMULATION_TOUCH_EMPTY)// || kinematicValue != Ernest.STIMULATION_KINEMATIC_FORWARD || gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
 			bundle.setLastTimeBundled(m_clock);
 
 		return bundle;
 	}
 	
-	public void addKinematicValue(IBundle bundle, int kinematiValue)
-	{
-		// TODO Possibly change the kinematic stimulation of a bump bundle
-		if (bundle.getKinematicValue() == Ernest.STIMULATION_KINEMATIC_FORWARD)
-		{
-			bundle.setKinematicValue(kinematiValue);
-//			if (m_tracer != null)
-//			{
-//				Object e = m_tracer.addEventElement("cooccurrence");
-//				m_tracer.addSubelement(e, "stimulus_1", hexColor(kinematiValue));
-//				m_tracer.addSubelement(e, "stimulus_0", hexColor(bundle.getTactileValue()));
-//				bundle.trace(m_tracer, "bundle");
-//			}
-		}
-	}
+//	public void addKinematicValue(IBundle bundle, int kinematiValue)
+//	{
+//		// TODO Possibly change the kinematic stimulation of a bump bundle
+//		if (bundle.getKinematicValue() == Ernest.STIMULATION_KINEMATIC_FORWARD)
+//		{
+//			bundle.setKinematicValue(kinematiValue);
+////			if (m_tracer != null)
+////			{
+////				Object e = m_tracer.addEventElement("cooccurrence");
+////				m_tracer.addSubelement(e, "stimulus_1", hexColor(kinematiValue));
+////				m_tracer.addSubelement(e, "stimulus_0", hexColor(bundle.getTactileValue()));
+////				bundle.trace(m_tracer, "bundle");
+////			}
+//		}
+//	}
 	
-	public void addGustatoryValue(IBundle bundle, int gustatoryValue)
-	{
-		if (bundle.getGustatoryValue() != gustatoryValue)
-		{
-			bundle.setGustatoryValue(gustatoryValue);
-//			if (m_tracer != null)
-//			{
-//				Object e = m_tracer.addEventElement("cooccurrence");
-//				m_tracer.addSubelement(e, "stimulus_0", hexColor(gustatoryValue));
-//				bundle.trace(m_tracer, "bundle");
-//			}
-		}
-	}
+//	public void addGustatoryValue(IBundle bundle, int gustatoryValue)
+//	{
+//		if (bundle.getGustatoryValue() != gustatoryValue)
+//		{
+//			bundle.setGustatoryValue(gustatoryValue);
+////			if (m_tracer != null)
+////			{
+////				Object e = m_tracer.addEventElement("cooccurrence");
+////				m_tracer.addSubelement(e, "stimulus_0", hexColor(gustatoryValue));
+////				bundle.trace(m_tracer, "bundle");
+////			}
+//		}
+//	}
 
 	/**
 	 * Returns the first bundle found form a visual stimulation.
@@ -172,8 +173,8 @@ public class PersistenceMemory
 	{
 		for (IBundle bundle : m_bundles)
 			// So far, only consider bump and eat bundles
-			if (bundle.getTactileValue() == tactileValue && 
-					(bundle.getKinematicValue() != Ernest.STIMULATION_KINEMATIC_FORWARD || bundle.getGustatoryValue() != Ernest.STIMULATION_GUSTATORY_NOTHING))
+			if (bundle.getTactileValue() == tactileValue && bundle.getAffordanceList().size() > 0)
+					//(bundle.getKinematicValue() != Ernest.STIMULATION_KINEMATIC_FORWARD || bundle.getGustatoryValue() != Ernest.STIMULATION_GUSTATORY_NOTHING))
 				return bundle;
 
 		return null;
