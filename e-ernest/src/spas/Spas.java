@@ -195,8 +195,9 @@ public class Spas implements ISpas
 			observation.setUpdateCount(focusPlace.getUpdateCount());
 		}		
 		
-		addKinematicPlace(interactionPlace, observation);
-		addGustatoryPlace(interactionPlace, observation);
+		//addKinematicPlace(interactionPlace, observation);
+		//addGustatoryPlace(interactionPlace, observation);
+		synergy(interactionPlace, observation);
 
 	}
 	
@@ -458,97 +459,115 @@ public class Spas implements ISpas
 		return p;
 	}
 	
-	private void addKinematicPlace(IPlace interactionPlace, IObservation observation)
+//	private void addKinematicPlace(IPlace interactionPlace, IObservation observation)
+//	{
+//		int kinematicValue= observation.getKinematicValue();
+//
+//		// Find the place in front of Ernest.
+//		IPlace focusPlace = null;
+//		for (IPlace place : m_places)
+//			if (place.isFrontal() && 
+//				place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && 
+//				place.attractFocus(m_persistenceMemory.getUpdateCount()) && 
+//				place.getType() != Spas.PLACE_BACKGROUND && 
+//				place.getFrontDistance() < 1)
+//				
+//				focusPlace = place;
+//		
+//		// Associate kinematic stimulation to the front bundle.
+//
+//		if (kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
+//		{
+//			 focusPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
+//			IBundle focusBundle = null;
+//			if (focusPlace != null) focusBundle = focusPlace.getBundle();
+//
+//			if (focusBundle != null)
+//			{
+//				// Add bump interaction to the bundle at this place.
+//				//m_persistenceMemory.addKinematicValue(frontPlace.getBundle(), kinematicValue);
+//				//IBundle focusBunble = focusPlace.getBundle();
+//				//focusBunble.setKinematicValue(kinematicValue);
+//				
+//				// Add the affordance to the bundle
+//				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
+//				//relativePosition.sub(focusPlace.getPosition());
+//				relativePosition.sub(new Vector3f(.4f, 0,0));
+//				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
+//				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), Ernest.ATTRACTIVENESS_OF_BUMP, kinematicValue);
+//			}				
+//			// Add a Bump place.
+//			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+//			pos.scale(Ernest.BOUNDING_RADIUS);
+//			//IPlace k = new Place(frontPlace.getBundle(), pos);
+//			IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
+//			k.setType(Spas.PLACE_BUMP);
+//			k.setFirstPosition(pos);
+//			k.setSecondPosition(pos);
+//			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+//			//m_places.add(k);
+//		}
+//	}
+//
+//	private void addGustatoryPlace(IPlace interactionPlace, IObservation observation)
+//	{
+//		int gustatoryValue= observation.getGustatoryValue();
+//		//IPlace focusPlace = observation.getFocusPlace();
+//		
+//		if (gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+//		{
+//			IPlace focusPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
+//			IBundle focusBundle = null;
+//			if (focusPlace != null) focusBundle = focusPlace.getBundle();
+//	
+//			if (focusBundle != null)
+//			{
+//				// Add the affordance to the bundle
+//				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
+//				relativePosition.sub(new Vector3f(.4f, 0,0));
+//				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
+//				int attractiveness = Ernest.ATTRACTIVENESS_OF_FISH;
+//				if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) attractiveness = Ernest.ATTRACTIVENESS_OF_CUDDLE;
+//				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), attractiveness, gustatoryValue);
+//			}
+//			
+//			// Mark the eating place.
+//			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+//			pos.scale(Ernest.BOUNDING_RADIUS);
+//			IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
+//			k.setFirstPosition(pos);
+//			k.setSecondPosition(pos);
+//			k.setType(Spas.PLACE_EAT);
+//			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+//		}
+//	}
+//		
+	private void synergy(IPlace interactionPlace, IObservation observation)
 	{
-		int kinematicValue= observation.getKinematicValue();
-
-		// Find the place in front of Ernest.
-		IPlace focusPlace = null;
-		for (IPlace place : m_places)
-			if (place.isFrontal() && 
-				place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && 
-				place.attractFocus(m_persistenceMemory.getUpdateCount()) && 
-				place.getType() != Spas.PLACE_BACKGROUND && 
-				place.getFrontDistance() < 1)
-				
-				focusPlace = place;
+		int synergyValue= observation.getGustatoryValue();
+		if (observation.getKinematicValue() == Ernest.STIMULATION_KINEMATIC_BUMP)
+			synergyValue = observation.getKinematicValue();
 		
-		// Associate kinematic stimulation to the front bundle.
-
-		if (kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
+		if (synergyValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
 		{
-			if (focusPlace != null)
-			{
-				// Add bump interaction to the bundle at this place.
-				//m_persistenceMemory.addKinematicValue(frontPlace.getBundle(), kinematicValue);
-				IBundle focusBunble = focusPlace.getBundle();
-				//focusBunble.setKinematicValue(kinematicValue);
-				
-				// Add the affordance to the bundle
-				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
-				//relativePosition.sub(focusPlace.getPosition());
-				relativePosition.sub(new Vector3f(.4f, 0,0));
-				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
-				focusBunble.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), Ernest.ATTRACTIVENESS_OF_BUMP, kinematicValue);
-				
-				// Add a Bump place.
-				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
-				pos.scale(Ernest.BOUNDING_RADIUS);
-				//IPlace k = new Place(frontPlace.getBundle(), pos);
-				IPlace k = m_localSpaceMemory.addPlace(focusPlace.getBundle(), pos);
-				k.setType(Spas.PLACE_BUMP);
-				k.setFirstPosition(pos);
-				k.setSecondPosition(pos);
-				k.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				//m_places.add(k);
-			}
-		}
-	}
-
-	private void addGustatoryPlace(IPlace interactionPlace, IObservation observation)
-	{
-		int gustatoryValue= observation.getGustatoryValue();
-		//IPlace focusPlace = observation.getFocusPlace();
-		
-		if (gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
-		{
+			//IPlace focusPlace = observation.getFocusPlace();
 			IPlace focusPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
 			IBundle focusBundle = null;
 			if (focusPlace != null) focusBundle = focusPlace.getBundle();
 	
-			if (focusBundle == null)// || focusBundle.getGustatoryValue() == Ernest.STIMULATION_GUSTATORY_NOTHING) //&& //observation.getPosition().length() <= 1 &&
+			if (focusBundle != null)
 			{
-				// Create a gustatory bundle
-				//focusBundle = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, gustatoryValue);				
-				focusBundle = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY);				
-				focusPlace = addOrReplacePlace(focusBundle, new Vector3f(.4f, 0,0));
-				focusPlace.setFirstPosition(new Vector3f(.4f, 0,0));
-				focusPlace.setSecondPosition(new Vector3f(.4f, 0,0));
-				focusPlace.setSpan(0);
-				focusPlace.setSpeed(new Vector3f(0,0,.01f)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
-				focusPlace.setUpdateCount(m_persistenceMemory.getUpdateCount());
-				focusPlace.setType(Spas.PLACE_TOUCH);
+				// Add the affordance to the bundle
+				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
+				relativePosition.sub(new Vector3f(.4f, 0,0));
+				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
+				int attractiveness = Ernest.ATTRACTIVENESS_OF_FISH;
+				if (synergyValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) attractiveness = Ernest.ATTRACTIVENESS_OF_CUDDLE;
+				if (synergyValue == Ernest.STIMULATION_KINEMATIC_BUMP) attractiveness = Ernest.ATTRACTIVENESS_OF_BUMP;
+				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), attractiveness, synergyValue);
 			}
 			
-			else
-			{
-				// Append the gustatory stimulation
-//				if	((gustatoryValue == Ernest.STIMULATION_GUSTATORY_FISH) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH) ||
-//					(gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) && (focusBundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT))
-				{
-					// Add the gustatory value to the bundle
-//					focusBundle.setGustatoryValue(gustatoryValue);
-				}
-			}
-			// Add the affordance to the bundle
-			Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
-			relativePosition.sub(new Vector3f(.4f, 0,0));
-			ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
-			int attractiveness = Ernest.ATTRACTIVENESS_OF_FISH;
-			if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) attractiveness = Ernest.ATTRACTIVENESS_OF_CUDDLE;
-			focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), attractiveness, gustatoryValue);
-
-			// Add an interaction place.
+			// Mark the synergy place.
 			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
 			pos.scale(Ernest.BOUNDING_RADIUS);
 			IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
