@@ -22,15 +22,12 @@ public class Bundle implements IBundle
 {
 	int m_visualValue;
 	int m_tactileValue;
-	//int m_kinematicValue;
-	//int m_gustatoryValue;
 	int m_lastTimeBundled;
 
 	/** The affordances attached to this bundle. */
 	private ArrayList<IAffordance> m_affordances = new ArrayList<IAffordance>();
 	
 	Bundle(int visualValue, int tactileValue)
-	//Bundle(int visualValue, int tactileValue, int kinematicValue, int gustatoryValue)
 	{
 		m_visualValue = visualValue;
 		m_tactileValue = tactileValue;
@@ -68,26 +65,6 @@ public class Bundle implements IBundle
 	{
 		return m_tactileValue;
 	}
-//	public void setGustatoryValue(int  gustatoryValue) 
-//	{
-//		m_gustatoryValue = gustatoryValue;
-//	}
-//	
-//	public int getGustatoryValue() 
-//	{
-//		return m_gustatoryValue;
-//	}
-//	
-//	public void setKinematicValue(int kinematicValue)
-//	{
-//		m_kinematicValue = kinematicValue;
-//	}
-//	
-//	public int getKinematicValue()
-//	{
-//		return m_kinematicValue;
-//	}
-	
 	public void setLastTimeBundled(int clock)
 	{
 		m_lastTimeBundled = clock;
@@ -254,5 +231,20 @@ public class Bundle implements IBundle
 	public ArrayList<IAffordance> getAffordanceList() 
 	{
 		return m_affordances;
+	}
+
+	public IAct activateAffordance(Vector3f relativePosition) 
+	{
+		IAct act = null;
+		
+		for (IAffordance affordance : m_affordances)
+		{
+			Vector3f compare = new Vector3f(relativePosition);
+			compare.add(affordance.getPlace().getPosition());
+			if (compare.length() < .1f && affordance.getProclivity() > 0)
+				act = affordance.getAct();
+		}
+
+		return act;
 	}
 }

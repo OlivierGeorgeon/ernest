@@ -39,26 +39,6 @@ public interface IBundle
 	int getTactileValue();
 	
 	/**
-	 * @param gustatoryValue The bundle's gustatory stimulation.
-	 */
-	//void setGustatoryValue(int gustatoryValue); 
-	
-	/**
-	 * @return The bundle's gustatory stimulation.
-	 */
-	//int getGustatoryValue();
-	
-	/**
-	 * @param kinematicValue The bundle's kinematic stimulation.
-	 */
-	//void setKinematicValue(int kinematicValue);
-	
-	/**
-	 * @return The bundle's kinematic stimulation.
-	 */
-	//int getKinematicValue();
-	
-	/**
 	 * @return The value of the visual stimulation if any, or of the tactile stimulation
 	 */
 	int getValue();
@@ -95,5 +75,7 @@ public interface IBundle
 	void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity, int value);
 
 	public ArrayList<IAffordance> getAffordanceList();
+	
+	public IAct activateAffordance(Vector3f relativePosition);
 
 }
