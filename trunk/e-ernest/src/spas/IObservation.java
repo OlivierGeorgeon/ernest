@@ -107,5 +107,8 @@ public interface IObservation
 	
 	public void setPrimitiveAct(IAct primitiveAct);
 	public IAct getPrimitiveAct();
+	
+	public void setAffordanceAct(IAct affordanceAct);
+	public IAct getAffordanceAct();
 }
 

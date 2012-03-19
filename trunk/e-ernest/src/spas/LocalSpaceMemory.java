@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.vecmath.Vector3f;
@@ -21,7 +23,7 @@ public class LocalSpaceMemory
 	public static float EXTRAPERSONAL_DISTANCE = 1.5f;
 	
 	/** The duration of persistence in local space memory. */
-	public static int PERSISTENCE_DURATION = 20;
+	public static int PERSISTENCE_DURATION = 500;//20;
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
@@ -123,33 +125,6 @@ public class LocalSpaceMemory
 				it.remove();
 		}		
 	}
-	
-	/**
-	 * Find the closest place whose span overlaps this direction.
-	 * @param direction The direction in which to look at.
-	 * @return The place.
-	 */
-//	private IPlace seePlace(float direction)
-//	{
-//		IPlace place = null;
-//
-//		for (IPlace p : m_places)
-//		{
-////			if (p.getDirection() - p.getSpan() / 2 < direction - Math.PI/12 + 0.1 && 
-////				p.getDirection() + p.getSpan() / 2 > direction + Math.PI/12 - 0.1 &&
-////				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
-////				p.attractFocus(m_persistenceMemory.getUpdateCount()))
-////				if (place == null || p.getDistance() < place.getDistance())
-////					place = p;
-//			if (ErnestUtils.polarAngle(p.getFirstPosition()) < direction && 
-//				ErnestUtils.polarAngle(p.getSecondPosition()) > direction &&
-//				p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
-//				p.attractFocus(m_persistenceMemory.getUpdateCount()))
-//					if (place == null || p.getDistance() < place.getDistance())
-//						place = p;
-//		}
-//		return place;
-//	}
 	
 	/**
 	 * Get the bundle at a given position.
@@ -299,5 +274,110 @@ public class LocalSpaceMemory
 	public IPlace getFocusPlace()
 	{
 		return m_focusPlace;
+	}
+	
+	public void refresh(ArrayList<IPlace> places, IObservation observation)
+	{
+		// Clear the old traces in persistence memory
+		clear();
+		
+		// Confirm or create persistent places in local space memory 
+		
+		for (IPlace place : places)
+		{
+			if (place.attractFocus(m_persistenceMemory.getUpdateCount()))
+			{
+				boolean newPlace = true;
+				// Look for a corresponding persistent place in local space memory.
+				for (IPlace p :  m_places)
+				{
+					if (p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
+							&& p.getBundle().equals(place.getBundle())
+							&& place.from(p))
+					{
+						p.setPosition(place.getPosition());
+						p.setFirstPosition(place.getFirstPosition());
+						p.setSecondPosition(place.getSecondPosition());
+						p.setSpeed(place.getSpeed());
+						p.setSpan(place.getSpan());
+						p.setOrientation(place.getOrientation());
+						p.setUpdateCount(m_persistenceMemory.getUpdateCount());
+						newPlace = false;
+					}
+				}
+				if (newPlace)
+				{
+					// Add a new persistent place
+					IPlace k = addPlace(place.getBundle(),place.getPosition()); 
+					k.setSpeed(place.getSpeed());
+					k.setSpan(place.getSpan());
+					k.setFirstPosition(place.getFirstPosition()); // somehow inverted
+					k.setSecondPosition(place.getSecondPosition());
+					k.setOrientation(place.getOrientation());
+					k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+					k.setType(place.getType());
+				}
+			}
+		}
+		
+		// The most attractive place in local space memory gets the focus (abs value) 
+		
+		int maxAttractiveness = 0;
+		IPlace focusPlace = null;
+		boolean newFocus = false;
+		for (IPlace place : m_places)
+		{
+			if (place.attractFocus(m_persistenceMemory.getUpdateCount()) && place.getType() != Spas.PLACE_BACKGROUND)
+			{
+				int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
+				if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
+				{
+					maxAttractiveness = attractiveness;
+					focusPlace = place;
+				}				
+			}
+		}
+		
+		// Test if the focus has changed
+		
+		if (focusPlace != null && focusPlace != m_focusPlace)
+		{
+			// Reset the previous stick
+			if (m_focusPlace != null) m_focusPlace.setStick(0);
+			// Set the new stick
+			focusPlace.setStick(20);
+			m_focusPlace = focusPlace;
+			//m_localSpaceMemory.setFocusPlace(focusPlace);
+			newFocus = true;
+			
+			//try { Thread.sleep(500);
+			//} catch (InterruptedException e) {e.printStackTrace();}
+		}
+		// The new observation.
+		
+		observation.setFocusPlace(m_focusPlace);
+		observation.setAttractiveness(maxAttractiveness);
+		observation.setNewFocus(newFocus);
+		
+		if (focusPlace == null)
+		{
+			observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY));
+			observation.setPosition(new Vector3f(1,0,0));
+			observation.setSpan(0);
+			observation.setSpeed(new Vector3f());
+			observation.setUpdateCount(-1);
+		}
+		else
+		{
+			observation.setBundle(focusPlace.getBundle());
+			observation.setPosition(focusPlace.getPosition());
+			observation.setSpan(focusPlace.getSpan());
+			observation.setSpeed(focusPlace.getSpeed());
+			observation.setType(focusPlace.getType());
+			observation.setUpdateCount(focusPlace.getUpdateCount());
+			
+			IAct act = focusPlace.getBundle().activateAffordance(focusPlace.getPosition());
+			observation.setAffordanceAct(act);
+		}		
 	}
 }

@@ -52,9 +52,6 @@ public class Spas implements ISpas
 
 	IObservation m_observation;
 	
-	/** The color of attention for display in the environment.  */
-	private int mAttention = Ernest.UNANIMATED_COLOR;
-	
 	/** Temporary places.  */
 	ArrayList<IPlace> m_places = new ArrayList<IPlace>();
 
@@ -65,166 +62,56 @@ public class Spas implements ISpas
 		m_localSpaceMemory = new LocalSpaceMemory(m_persistenceMemory, m_tracer);
 	}
 
+	/**
+	 * The main routine of the Spatial System that is called on each interaction cycle.
+	 * Maintain the local space memory.
+	 * Construct bundles and affordances.
+	 * Maintain the current observation that is used by IMOS. 
+	 * @param interactionPlace The place where the ongoing interaction started.
+	 * @param observation The current observation.
+	 */
 	public void step(IPlace interactionPlace, IObservation observation) 
 	{		
 		m_persistenceMemory.updateCount();
 		m_observation = observation;
 		
-		// update the local space memory;
+		// translate and rotate the local space memory;
 		
 		Vector3f memoryTranslation = new Vector3f(observation.getTranslation());
 		memoryTranslation.scale(-1);
 		m_localSpaceMemory.update(memoryTranslation, - observation.getRotation());
 
-		// Construct the list of primitive bundles and places. 
+		// refresh local space memory from visual and tactile data. 
 		
-		clear();
-		m_localSpaceMemory.clear();
-		
+		m_places.clear();		
 		addSegmentPlaces(m_segmentList);
 		addTactilePlaces(observation.getTactileStimuli());
+		m_localSpaceMemory.refresh(m_places, observation);
 		
-		// Create new bundles and place them in the local space memory.
+		// Construct synergies associated with bundles in the peripersonal space.
 		
-		//addKinematicPlace(observation.getKinematicValue());
-		//addGustatoryPlace(observation);
-		
-		// Clean up the local space memory according to the tactile simulations.
-		
-		//adjustLocalSpaceMemory(tactileStimulations);
-		
-		// Confirm or create persistent places in local space memory 
-		
-		for (IPlace place : m_places)
-		{
-			if (place.attractFocus(m_persistenceMemory.getUpdateCount()))
-			{
-				boolean newPlace = true;
-				// Look for a corresponding persistent place in local space memory.
-				for (IPlace p : m_localSpaceMemory.getPlaceList())
-				{
-//					if (p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
-//							&& p.getBundle().equals(place.getBundle())
-//							&& place.getType() == p.getType() && place.from(p.getPosition()))
-					if (p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
-							&& p.getBundle().equals(place.getBundle())
-							&& place.from(p))
-					{
-						p.setPosition(place.getPosition());
-						p.setFirstPosition(place.getFirstPosition());
-						p.setSecondPosition(place.getSecondPosition());
-						p.setSpeed(place.getSpeed());
-						p.setSpan(place.getSpan());
-						p.setOrientation(place.getOrientation());
-						p.setUpdateCount(m_persistenceMemory.getUpdateCount());
-						newPlace = false;
-					}
-				}
-				if (newPlace)
-				{
-					// Add a new persistent place
-					IPlace k = m_localSpaceMemory.addPlace(place.getBundle(),place.getPosition()); 
-					k.setSpeed(place.getSpeed());
-					k.setSpan(place.getSpan());
-					k.setFirstPosition(place.getFirstPosition()); // somehow inverted
-					k.setSecondPosition(place.getSecondPosition());
-					k.setOrientation(place.getOrientation());
-					k.setUpdateCount(m_persistenceMemory.getUpdateCount());
-					k.setType(place.getType());
-				}
-			}
-		}
-		
-		// The most attractive place in local space memory gets the focus (abs value) 
-		
-		int maxAttractiveness = 0;
-		IPlace focusPlace = null;
-		boolean newFocus = false;
-		for (IPlace place : m_localSpaceMemory.getPlaceList())
-		{
-			if (place.attractFocus(m_persistenceMemory.getUpdateCount()) && place.getType() != Spas.PLACE_BACKGROUND)
-			{
-				int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
-				if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
-				{
-					maxAttractiveness = attractiveness;
-					focusPlace = place;
-				}				
-			}
-		}
-		
-		// Test if the focus has changed
-		
-		if (focusPlace != null && focusPlace != m_localSpaceMemory.getFocusPlace())
-		{
-			// Reset the previous stick
-			if (m_localSpaceMemory.getFocusPlace() != null) m_localSpaceMemory.getFocusPlace().setStick(0);
-			// Set the new stick
-			focusPlace.setStick(20);
-			m_localSpaceMemory.setFocusPlace(focusPlace);
-			newFocus = true;
-			
-			//try { Thread.sleep(500);
-			//} catch (InterruptedException e) {e.printStackTrace();}
-		}
-		
-		// The new observation.
-		
-		observation.setFocusPlace(m_localSpaceMemory.getFocusPlace());
-		observation.setAttractiveness(maxAttractiveness);
-		observation.setNewFocus(newFocus);
-		
-		if (focusPlace == null)
-		{
-			mAttention = Ernest.UNANIMATED_COLOR;
-			//observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING));
-			observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY));
-			observation.setPosition(new Vector3f(1,0,0));
-			observation.setSpan(0);
-			observation.setSpeed(new Vector3f());
-			observation.setUpdateCount(-1);
-		}
-		else
-		{
-			mAttention = focusPlace.getBundle().getValue();
-			observation.setBundle(focusPlace.getBundle());
-			observation.setPosition(focusPlace.getPosition());
-			observation.setSpan(focusPlace.getSpan());
-			observation.setSpeed(focusPlace.getSpeed());
-			observation.setType(focusPlace.getType());
-			observation.setUpdateCount(focusPlace.getUpdateCount());
-		}		
-		
-		//addKinematicPlace(interactionPlace, observation);
-		//addGustatoryPlace(interactionPlace, observation);
 		synergy(interactionPlace, observation);
 
 	}
 	
-//	public IStimulation addStimulation(int type, int value) 
-//	{
-//		return m_persistenceMemory.addStimulation(type, value);
-//	}
-
 	public int getValue(int i, int j)
 	{
-//		if (i == 1 && j == 0 && m_kinematicStimulation == Ernest.STIMULATION_KINEMATIC_BUMP)
-//			return Ernest.STIMULATION_KINEMATIC_BUMP;
-//		else if (i == 1 && j == 1 && m_gustatoryStimulation == Ernest.STIMULATION_GUSTATORY_FISH)
-//			return Ernest.STIMULATION_GUSTATORY_FISH;
-//		else
-//		{
-			Vector3f position = new Vector3f(1 - j, 1 - i, 0);
-			if (m_localSpaceMemory != null)
-				return m_localSpaceMemory.getValue(position);
-			else
-				return 0xFFFFFF;
-//		}
+		Vector3f position = new Vector3f(1 - j, 1 - i, 0);
+		if (m_localSpaceMemory != null)
+			return m_localSpaceMemory.getValue(position);
+		else
+			return 0xFFFFFF;
 	}
 
 	public int getAttention()
 	{
-		return mAttention;
+		int attention;
+		if (m_observation == null || m_observation.getFocusPlace() == null)
+			attention = Ernest.UNANIMATED_COLOR;
+		else
+			attention = m_observation.getFocusPlace().getBundle().getValue();
+
+		return attention;
 	}
 	
 	/**
@@ -459,97 +346,21 @@ public class Spas implements ISpas
 		return p;
 	}
 	
-//	private void addKinematicPlace(IPlace interactionPlace, IObservation observation)
-//	{
-//		int kinematicValue= observation.getKinematicValue();
-//
-//		// Find the place in front of Ernest.
-//		IPlace focusPlace = null;
-//		for (IPlace place : m_places)
-//			if (place.isFrontal() && 
-//				place.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN && 
-//				place.attractFocus(m_persistenceMemory.getUpdateCount()) && 
-//				place.getType() != Spas.PLACE_BACKGROUND && 
-//				place.getFrontDistance() < 1)
-//				
-//				focusPlace = place;
-//		
-//		// Associate kinematic stimulation to the front bundle.
-//
-//		if (kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
-//		{
-//			 focusPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
-//			IBundle focusBundle = null;
-//			if (focusPlace != null) focusBundle = focusPlace.getBundle();
-//
-//			if (focusBundle != null)
-//			{
-//				// Add bump interaction to the bundle at this place.
-//				//m_persistenceMemory.addKinematicValue(frontPlace.getBundle(), kinematicValue);
-//				//IBundle focusBunble = focusPlace.getBundle();
-//				//focusBunble.setKinematicValue(kinematicValue);
-//				
-//				// Add the affordance to the bundle
-//				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
-//				//relativePosition.sub(focusPlace.getPosition());
-//				relativePosition.sub(new Vector3f(.4f, 0,0));
-//				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
-//				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), Ernest.ATTRACTIVENESS_OF_BUMP, kinematicValue);
-//			}				
-//			// Add a Bump place.
-//			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
-//			pos.scale(Ernest.BOUNDING_RADIUS);
-//			//IPlace k = new Place(frontPlace.getBundle(), pos);
-//			IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
-//			k.setType(Spas.PLACE_BUMP);
-//			k.setFirstPosition(pos);
-//			k.setSecondPosition(pos);
-//			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
-//			//m_places.add(k);
-//		}
-//	}
-//
-//	private void addGustatoryPlace(IPlace interactionPlace, IObservation observation)
-//	{
-//		int gustatoryValue= observation.getGustatoryValue();
-//		//IPlace focusPlace = observation.getFocusPlace();
-//		
-//		if (gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
-//		{
-//			IPlace focusPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
-//			IBundle focusBundle = null;
-//			if (focusPlace != null) focusBundle = focusPlace.getBundle();
-//	
-//			if (focusBundle != null)
-//			{
-//				// Add the affordance to the bundle
-//				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
-//				relativePosition.sub(new Vector3f(.4f, 0,0));
-//				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
-//				int attractiveness = Ernest.ATTRACTIVENESS_OF_FISH;
-//				if (gustatoryValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) attractiveness = Ernest.ATTRACTIVENESS_OF_CUDDLE;
-//				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), attractiveness, gustatoryValue);
-//			}
-//			
-//			// Mark the eating place.
-//			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
-//			pos.scale(Ernest.BOUNDING_RADIUS);
-//			IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
-//			k.setFirstPosition(pos);
-//			k.setSecondPosition(pos);
-//			k.setType(Spas.PLACE_EAT);
-//			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
-//		}
-//	}
-//		
+	/**
+	 * Associate affordances to the bundle ahead.
+	 * @param interactionPlace The place where the ongoing interaction started.
+	 * @param observation The current observation.
+	 */
 	private void synergy(IPlace interactionPlace, IObservation observation)
 	{
 		int synergyValue= observation.getGustatoryValue();
-		if (observation.getKinematicValue() == Ernest.STIMULATION_KINEMATIC_BUMP)
+		//if (observation.getKinematicValue() == Ernest.STIMULATION_KINEMATIC_BUMP)
+		//	synergyValue = observation.getKinematicValue();
+		if (synergyValue == Ernest.STIMULATION_GUSTATORY_NOTHING)
 			synergyValue = observation.getKinematicValue();
 		
-		if (synergyValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
-		{
+		//if (synergyValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+		//{
 			//IPlace focusPlace = observation.getFocusPlace();
 			IPlace focusPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
 			IBundle focusBundle = null;
@@ -561,21 +372,24 @@ public class Spas implements ISpas
 				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
 				relativePosition.sub(new Vector3f(.4f, 0,0));
 				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
-				int attractiveness = Ernest.ATTRACTIVENESS_OF_FISH;
+				int attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+				if (synergyValue == Ernest.STIMULATION_GUSTATORY_FISH) attractiveness = Ernest.ATTRACTIVENESS_OF_FISH;
 				if (synergyValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) attractiveness = Ernest.ATTRACTIVENESS_OF_CUDDLE;
 				if (synergyValue == Ernest.STIMULATION_KINEMATIC_BUMP) attractiveness = Ernest.ATTRACTIVENESS_OF_BUMP;
 				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), attractiveness, synergyValue);
 			}
 			
-			// Mark the synergy place.
-			Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
-			pos.scale(Ernest.BOUNDING_RADIUS);
-			IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
-			k.setFirstPosition(pos);
-			k.setSecondPosition(pos);
-			k.setType(Spas.PLACE_EAT);
-			k.setUpdateCount(m_persistenceMemory.getUpdateCount());
-		}
+			if (synergyValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+			{
+				// Mark the synergy place.
+				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+				pos.scale(Ernest.BOUNDING_RADIUS);
+				IPlace k = m_localSpaceMemory.addPlace(focusBundle, pos);
+				k.setFirstPosition(pos);
+				k.setSecondPosition(pos);
+				k.setType(Spas.PLACE_BUMP);
+				k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+			}
 	}
 		
 	/**
@@ -614,18 +428,18 @@ public class Spas implements ISpas
 		}		
 	}
 		
-	public void clear()
-	{
-//		for (Iterator it = m_places.iterator(); it.hasNext();)
-//		{
-//			IPlace p = (IPlace)it.next();
-//			if (p.getType() == Spas.PLACE_FOCUS) p.setType(Spas.PLACE_SEE);
-//			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 10)
-//				it.remove();
-//		}
-
-		m_places.clear();
-	}
+//	public void clear()
+//	{
+////		for (Iterator it = m_places.iterator(); it.hasNext();)
+////		{
+////			IPlace p = (IPlace)it.next();
+////			if (p.getType() == Spas.PLACE_FOCUS) p.setType(Spas.PLACE_SEE);
+////			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 10)
+////				it.remove();
+////		}
+//
+//		m_places.clear();
+//	}
 
 	public IPlace getFocusPlace() 
 	{

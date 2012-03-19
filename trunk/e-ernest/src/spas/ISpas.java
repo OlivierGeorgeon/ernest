@@ -25,24 +25,12 @@ public interface ISpas
 	public void setTracer(ITracer tracer);
 	
 	/**
-	 * Processes the impact of the enacted interaction on the local space system.
-	 * @param act The enacted act.
-	 * @param visualCortex The set of visual stimulations in the visual cortex.
-	 * @param tactileCortex The set of tactile stimulations in the tactile cortex.
-	 * @param kinematicStimulation The kinematic stimulation.
-	 * @param gustatoryStimulation The gustatory stimulation.
-	 * @return An observation to compute the impact on the imos.
+	 * The main routine of the Spatial System that is called on each interaction cycle.
+	 * @param interactionPlace The place where the ongoing interaction started.
+	 * @param observation The current observation.
 	 */
 	public void step(IPlace interactionPlace, IObservation observation);
 
-	/**
-	 * Add a stimulation to static memory if it does not already exist.
-	 * @param type The stimulation's type.
-	 * @param value The stimulation's value.
-	 * @return the new stimulation if created or the already existing stimulation.
-	 */
-	//public IStimulation addStimulation(int type, int value);
-	
 	/**
 	 * Provide a rgb code to display the local space map in the environment.
 	 * @param i x coordinate.
@@ -52,7 +40,7 @@ public interface ISpas
 	public int getValue(int i, int j);
 
 	/**
-	 * Provide a rgb code to display the the object of Ernest's attention in the environment.
+	 * Provide a rgb code to display the object of Ernest's attention in the environment.
 	 * @return The value of the focus bundle.
 	 */
 	public int getAttention();
@@ -79,6 +67,4 @@ public interface ISpas
 	 */
 	public IPlace addPlace(Vector3f position, int type, int shape);
 	
-	//public void addAffordance(IObservation initialObservation, IObservation finalObservation);
-
 }

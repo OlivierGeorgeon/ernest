@@ -22,7 +22,7 @@ import utils.ErnestUtils;
 public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 {
 	/** The impulsion for translation */
-	public final static float TRANSLATION_IMPULSION = .10f; // .10f; // .15f
+	public final static float TRANSLATION_IMPULSION = .15f;//.10f; // .10f; // .15f
 	/** The impulsion for rotation */
 	final static float ROTATION_IMPULSION = 0.123f;// .123f;//(float)Math.toRadians(7f); // degrees   . 5.5f
 	/** The minimum speed before starting a new interaction */
@@ -91,6 +91,11 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		m_spas.step(m_interactionPlace, newObservation);
 		
+		// A spatial affordance was triggered
+		boolean affordance = false;
+		//if (newObservation.getAffordanceAct() != null)
+		//	affordance = true;
+		
     	// The dynamic observation ==========================================
 		
 		boolean endInteraction = false;
@@ -139,9 +144,13 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		
     		// Let Ernest decide for the next primitive schema to enact =========================
     		
-    		newPrimitiveAct = m_imos.step(enactedPrimitiveAct);
-    		newObservation.setPrimitiveAct(newPrimitiveAct);
-    		
+    		if (affordance)
+    			primitiveSchema[0] = newObservation.getAffordanceAct().getSchema().getLabel().toCharArray()[0];
+    		else
+    		{    		
+	    		newPrimitiveAct = m_imos.step(enactedPrimitiveAct);
+	    		newObservation.setPrimitiveAct(newPrimitiveAct);
+    		}   		
     		primitiveSchema[0] = newPrimitiveAct.getSchema().getLabel().toCharArray()[0];
     		
     		// Expected instantaneous feedback ==================================================
@@ -199,7 +208,6 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	 * @param previousObservation The observation made on the previous cycle.
 	 * @param newObservation The current observation .
 	 */
-	//private void setInstantaneousFeedback(IObservation previousObservation, IObservation newObservation)
 	private boolean dynamicFeedback(IObservation previousObservation, IObservation newObservation)
 	{
 		String instantaneousFeedback = "";
@@ -277,17 +285,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		}	
 		
 		newObservation.setInstantaneousFeedback(instantaneousFeedback);
-//	}
-//	
-//	/**
+
 //	 * Generate the dynamic stimuli from the impact in the local space memory.
 //	 * The stimuli come from: 
 //	 * - The kinematic feature.
 //	 * - The variation in attractiveness and in direction of the object of interest. 
-//	 * @param act The enacted act.
-//	 */
-//	private boolean setFinalFeedback(IObservation previousObservation, IObservation newObservation)
-//	{
+
 		boolean endInteraction = false;
 		
 		int   newAttractiveness = newObservation.getAttractiveness();
@@ -404,23 +407,6 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		
 		return endInteraction;
 	}
-	
-	
-	
-//	public void sense(int[][] stimuli)
-//	{
-//		// Vision =====
-//		
-//		m_visualStimulations = new Stimulation[Ernest.RESOLUTION_RETINA];
-//		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-//		{
-//			m_visualStimulations[i] = m_spas.addStimulation(Ernest.MODALITY_VISUAL, stimuli[i][1] * 65536 + stimuli[i][2] * 256 + stimuli[i][3]);
-//			float angle = (float) (- 11 * Math.PI/24 + i * Math.PI/12); 
-//			Vector3f pos = new Vector3f((float) Math.cos(angle) * stimuli[i][0] / Ernest.INT_FACTOR, (float) Math.sin(angle) * stimuli[i][0] / Ernest.INT_FACTOR, 0);
-//			m_visualStimulations[i].setPosition(pos);
-//		}
-//		
-//	}
 	
 	public int impulsion(int intentionSchema) 
 	{

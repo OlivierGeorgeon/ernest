@@ -60,6 +60,8 @@ public class Observation implements IObservation
 	
 	private IAct m_primitiveAct = null;
 	
+	private IAct m_affordanceAct = null;
+	
 	public void setAttractiveness(int attractiveness) 
 	{
 		m_attractiveness = attractiveness;
@@ -227,6 +229,8 @@ public class Observation implements IObservation
 		tracer.addSubelement(e, "type", getType() + "");
 		tracer.addSubelement(e, "update_count", getUpdateCount() + "");
 		if (getNewFocus()) tracer.addSubelement(e, "new_focus");
+		if (getAffordanceAct() != null)
+			tracer.addSubelement(e, "affordance_act", getAffordanceAct().getLabel());
 		
 		Object focusElmt = tracer.addEventElement("focus");
 		tracer.addSubelement(focusElmt, "salience", ErnestUtils.hexColor(getBundle().getValue()));
@@ -309,5 +313,15 @@ public class Observation implements IObservation
 	public IAct getPrimitiveAct() 
 	{
 		return m_primitiveAct;
+	}
+
+	public void setAffordanceAct(IAct affordanceAct) 
+	{
+		m_affordanceAct = affordanceAct;
+	}
+
+	public IAct getAffordanceAct() 
+	{
+		return m_affordanceAct;
 	}
 }

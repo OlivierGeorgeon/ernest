@@ -58,7 +58,7 @@ public interface IAct  extends Comparable<IAct>
 	public ISchema getSchema();
 
 	/**
-	 * @return The confidence status of that noème.
+	 * @return The confidence status .
 	 */
 	public int getConfidence();
 
@@ -68,7 +68,7 @@ public interface IAct  extends Comparable<IAct>
 	public int getActivation();
 
 	/**
-	 * @return The act's lenght (eigher its schema's length or 1 if the noème has no schema).
+	 * @return The act's length (eigher its schema's length or 1 if the noème has no schema).
 	 */
 	public int getLength();
 }
