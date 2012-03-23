@@ -39,7 +39,8 @@ public class Ernest implements IErnest
 	public static int ROW_RETINA = 1;
 	
 	/** The duration during which checked landmarks remain not motivating  */
-	public static int PERSISTENCE = 100;//30; // (50 Ernest 9.3)
+	//public static int PERSISTENCE = 100;//30; // (50 Ernest 9.3) (in IMOS clock)
+	public static int PERSISTENCE = 300;//Ernest 12 (in SPAS clock)
 	
 	/** 200 Base attractiveness of bundles that are not edible  */
 	public static int ATTRACTIVENESS_OF_UNKNOWN =  200;
@@ -146,10 +147,10 @@ public class Ernest implements IErnest
 	/** Ernest's intention is being inhibited by the anticipated observation */
 	private boolean m_inhibited = false;
 	
-	/** Ernest's static system. */
+	/** Ernest's spatial system. */
 	private ISpas m_spas = new Spas();
 
-	/** Ernest's motivational system. */
+	/** Ernest's Intrinsically motivated Schema Mechanism. */
 	private IImos m_imos ;
 	
 	/** Ernest's sensorymotor system. */
@@ -285,7 +286,7 @@ public class Ernest implements IErnest
 
 	public void setSegmentList(ArrayList<ISegment> segmentList) 
 	{
-		m_spas.setSegmentList(segmentList);
+		m_sensorymotorSystem.setSegmentList(segmentList);
 	}
 
 	public int getCounter() 
@@ -296,5 +297,10 @@ public class Ernest implements IErnest
 	public IPlace getFocusPlace() 
 	{
 		return m_spas.getFocusPlace();
+	}
+
+	public int getUpdateCount() 
+	{
+		return m_spas.getClock();
 	}
 }

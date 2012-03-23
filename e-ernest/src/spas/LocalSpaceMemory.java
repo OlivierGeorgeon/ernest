@@ -31,7 +31,8 @@ public class LocalSpaceMemory
 	IPlace m_focusPlace = null;
 
 	/** The persistence memory. */
-	PersistenceMemory m_persistenceMemory;
+	//PersistenceMemory m_persistenceMemory;
+	ISpas m_spas;
 	
 	/** The tracer. */
 	ITracer m_tracer;
@@ -49,9 +50,11 @@ public class LocalSpaceMemory
 	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
 	public final static float    SOMATO_RADIUS = 1f;
 	
-	LocalSpaceMemory(PersistenceMemory persistenceMemory, ITracer tracer)
+	//LocalSpaceMemory(PersistenceMemory persistenceMemory, ITracer tracer)
+	LocalSpaceMemory(ISpas spas, ITracer tracer)
 	{
-		m_persistenceMemory = persistenceMemory;
+		//m_persistenceMemory = persistenceMemory;
+		m_spas = spas;
 		m_tracer = tracer;
 	}
 
@@ -137,7 +140,7 @@ public class LocalSpaceMemory
 		IBundle b = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.attractFocus( m_persistenceMemory.getUpdateCount()))
+			if (p.isInCell(position) && p.attractFocus( m_spas.getClock()))
 				b = p.getBundle();
 		}	
 		return b;
@@ -153,7 +156,7 @@ public class LocalSpaceMemory
 		IPlace place = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.attractFocus(m_persistenceMemory.getUpdateCount()))
+			if (p.isInCell(position) && p.attractFocus(m_spas.getClock()))
 				place = p;
 		}
 		return place;
@@ -211,12 +214,12 @@ public class LocalSpaceMemory
 			IPlace p = (IPlace)it.next();
 			if (p.getType() == Spas.PLACE_SEE || p.getType() == Spas.PLACE_TOUCH)
 			{
-				if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 1)
+				if (p.getUpdateCount() < m_spas.getClock() - 1)
 					it.remove();
 			}
 			else
 			{
-				if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - PERSISTENCE_DURATION)
+				if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION)
 					it.remove();
 			}
 		}
@@ -276,7 +279,7 @@ public class LocalSpaceMemory
 		return m_focusPlace;
 	}
 	
-	public void refresh(ArrayList<IPlace> places, IObservation observation)
+	public void refresh(ArrayList<IPlace> places, IObservation observation, int clock)
 	{
 		// Clear the old traces in persistence memory
 		clear();
@@ -285,13 +288,13 @@ public class LocalSpaceMemory
 		
 		for (IPlace place : places)
 		{
-			if (place.attractFocus(m_persistenceMemory.getUpdateCount()))
+			if (place.attractFocus(m_spas.getClock()))
 			{
 				boolean newPlace = true;
 				// Look for a corresponding persistent place in local space memory.
 				for (IPlace p :  m_places)
 				{
-					if (p.attractFocus(m_persistenceMemory.getUpdateCount()-1) 
+					if (p.attractFocus(m_spas.getClock()-1) 
 							&& p.getBundle().equals(place.getBundle())
 							&& place.from(p))
 					{
@@ -301,7 +304,7 @@ public class LocalSpaceMemory
 						p.setSpeed(place.getSpeed());
 						p.setSpan(place.getSpan());
 						p.setOrientation(place.getOrientation());
-						p.setUpdateCount(m_persistenceMemory.getUpdateCount());
+						p.setUpdateCount(m_spas.getClock());
 						newPlace = false;
 					}
 				}
@@ -314,7 +317,7 @@ public class LocalSpaceMemory
 					k.setFirstPosition(place.getFirstPosition()); // somehow inverted
 					k.setSecondPosition(place.getSecondPosition());
 					k.setOrientation(place.getOrientation());
-					k.setUpdateCount(m_persistenceMemory.getUpdateCount());
+					k.setUpdateCount(m_spas.getClock());
 					k.setType(place.getType());
 				}
 			}
@@ -327,9 +330,9 @@ public class LocalSpaceMemory
 		boolean newFocus = false;
 		for (IPlace place : m_places)
 		{
-			if (place.attractFocus(m_persistenceMemory.getUpdateCount()) && place.getType() != Spas.PLACE_BACKGROUND)
+            if (place.attractFocus(m_spas.getClock()) && place.getType() != Spas.PLACE_BACKGROUND)
 			{
-				int attractiveness =  place.getAttractiveness(m_persistenceMemory.getClock());
+				int attractiveness =  place.getAttractiveness(clock);
 				if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
 				{
 					maxAttractiveness = attractiveness;
@@ -361,7 +364,7 @@ public class LocalSpaceMemory
 		
 		if (focusPlace == null)
 		{
-			observation.setBundle(m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY));
+			observation.setBundle(m_spas.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY));
 			observation.setPosition(new Vector3f(1,0,0));
 			observation.setSpan(0);
 			observation.setSpeed(new Vector3f());

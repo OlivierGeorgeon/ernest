@@ -49,7 +49,7 @@ public class Observation implements IObservation
 	private boolean m_newFocus = false;
 	
 	private Vector3f m_translation = new Vector3f();
-	private float m_rotation;
+	private float m_rotation = 0;
 	
 	private int m_satisfaction;
 	private String m_visualFeedback;

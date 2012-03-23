@@ -106,5 +106,10 @@ public interface IErnest
 	 */
 	public int getCounter();
 	
+	/**
+	 * @return The counter of updates from the spatial system.
+	 */
+	public int getUpdateCount();
+	
 	public IPlace getFocusPlace();	
 }
