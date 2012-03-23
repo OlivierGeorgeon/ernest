@@ -29,7 +29,7 @@ public interface ISpas
 	 * @param interactionPlace The place where the ongoing interaction started.
 	 * @param observation The current observation.
 	 */
-	public void step(IPlace interactionPlace, IObservation observation);
+	public void step(IObservation observation, ArrayList<IPlace> places);
 
 	/**
 	 * Provide a rgb code to display the local space map in the environment.
@@ -56,9 +56,10 @@ public interface ISpas
 	 */
 	public ArrayList<IPlace> getPlaceList();
 	
-	public void count();
+	//public void count();
+	public int getClock();
 	public void traceLocalSpace();
-	public void setSegmentList(ArrayList<ISegment> segmentList);
+	//public void setSegmentList(ArrayList<ISegment> segmentList);
 	
 	public IPlace getFocusPlace();
 	
@@ -66,5 +67,15 @@ public interface ISpas
 	 * @param place The place to add in local space memory.
 	 */
 	public IPlace addPlace(Vector3f position, int type, int shape);
+	public IPlace addPlace(IBundle bundle, Vector3f position);
 	
+	//public IPlace addOrReplacePlace(IBundle bundle, Vector3f position);
+	
+	public IBundle seeBundle(int value);
+	
+	//public IPlace seePlace(float direction);
+	
+	public IBundle addBundle(int visualValue, int tactileValue);
+	
+	public void tick();
 }

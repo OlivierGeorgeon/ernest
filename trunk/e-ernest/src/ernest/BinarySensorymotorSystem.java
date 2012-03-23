@@ -1,10 +1,13 @@
 package ernest;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import spas.IPlace;
+import spas.ISegment;
 import spas.ISpas;
 import imos.IAct;
 import imos.IImos;
-
-
 
 
 /**
@@ -45,12 +48,12 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		// The schema is null during the first cycle
 		if (act == null) return null;
 		
-		String actLabel;
-		
-		if (status)
-			actLabel = "(" + act.getSchema().getLabel() + ")";
-		else 
-			actLabel = "[" + act.getSchema().getLabel() + "]";
+//		String actLabel;
+//		
+//		if (status)
+//			actLabel = "(" + act.getSchema().getLabel() + ")";
+//		else 
+//			actLabel = "[" + act.getSchema().getLabel() + "]";
 			
 		// Create the act in episodic memory if it does not exist.	
 		//IAct enactedAct = m_imos.addAct(label, act.getSchema(), status, 0, Ernest.RELIABLE);
@@ -59,22 +62,14 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return enactedAct;
 	}
 
-	public IAct enactedAct(IAct act, int[][] matrix) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public IAct enactedAct(IAct act, int[][] matrix) { return null; }
 
-	public int impulsion(int intentionSchema) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	public int impulsion(int intentionSchema) { return 0; }
 
-	public void sense(int[][] stimuli)
-	{
-	}
+	public void sense(int[][] stimuli) { }
 
-	public int[] update(int[][] stimuli) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public int[] update(int[][] stimuli) { return null; }
+	
+	public void setSegmentList(ArrayList<ISegment> segmentList) {}
+	
 }

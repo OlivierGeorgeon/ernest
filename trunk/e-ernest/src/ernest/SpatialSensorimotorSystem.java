@@ -1,5 +1,9 @@
 package ernest;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.vecmath.Vector3f;
 
 import imos.IAct;
@@ -9,8 +13,11 @@ import org.w3c.dom.Element;
 import spas.IObservation;
 import spas.IPlace;
 //import spas.IStimulation;
+import spas.IBundle;
+import spas.ISegment;
 import spas.LocalSpaceMemory;
 import spas.Observation;
+import spas.Place;
 import spas.Spas;
 //import spas.Stimulation;
 import utils.ErnestUtils;
@@ -48,6 +55,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 	/** The place of the last interaction */
 	IPlace m_interactionPlace = null;
 
+	/** Temporary places.  */
+	ArrayList<IPlace> m_places = new ArrayList<IPlace>();
+	
+	/** Segments directly perceived.  */
+	ArrayList<ISegment> m_segmentList = new ArrayList<ISegment>();
+	
 	public int[] update(int[][] stimuli) 
 	{
 		IObservation newObservation  = new Observation();
@@ -89,7 +102,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     	
 		// The spatial observation ==========================================
 		
-		m_spas.step(m_interactionPlace, newObservation);
+		m_places.clear();	
+		m_spas.tick();
+		addSegmentPlaces(m_segmentList);
+		addTactilePlaces(newObservation.getTactileStimuli());
+		m_spas.step(newObservation, m_places);
+		synergy(m_interactionPlace, newObservation);
 		
 		// A spatial affordance was triggered
 		boolean affordance = false;
@@ -116,7 +134,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     	
     	if (endInteraction && cognitiveMode > 0)
         {
-        	m_spas.count(); // Tick the clock of persistence memory
+        	//m_spas.count(); // Tick the clock of persistence memory
     		IAct newPrimitiveAct = null;
 
         	
@@ -434,4 +452,287 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		}
 		return impulsion;
 	}
+	
+	public void setSegmentList(ArrayList<ISegment> segmentList) 
+	{
+		m_segmentList = segmentList;
+	}
+	
+	/**
+	 * Add places from segments provided by Vacuum_SG.
+	 * Create or recognize the associated bundle.
+	 * @param segmentList The list of segments.
+	 */
+	private void addSegmentPlaces(ArrayList<ISegment> segmentList)
+	{
+		for (ISegment segment : segmentList)
+		{
+			IBundle b = m_spas.seeBundle(segment.getValue());
+			if (b == null)
+				//b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+				b = m_spas.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY);
+			IPlace place = new Place(b,segment.getPosition());
+			place.setSpeed(segment.getSpeed());
+			place.setSpan(segment.getSpan());
+			//place.setFirstPosition(segment.getFirstPosition()); // First and second are in the trigonometric direction (counterclockwise). 
+			//place.setSecondPosition(segment.getSecondPosition());
+			place.setFirstPosition(segment.getSecondPosition()); 
+			place.setSecondPosition(segment.getFirstPosition());
+			if (segment.getRelativeOrientation() == Ernest.INFINITE)
+			{
+				Vector3f relativeOrientation = new Vector3f(segment.getFirstPosition());
+				relativeOrientation.sub(segment.getSecondPosition());
+				place.setOrientation(ErnestUtils.polarAngle(relativeOrientation));
+			}
+			else				
+				place.setOrientation(segment.getRelativeOrientation());
+			place.setUpdateCount(m_spas.getClock());
+			// Long segments are processed only for display (background).
+			if (segment.getWidth() < 1.1f)
+				place.setType(Spas.PLACE_SEE);
+			else 
+				place.setType(Spas.PLACE_BACKGROUND);
+			m_places.add(place);			
+		}
+	}
+
+	/**
+	 * Add places in the peripersonal space associated with tactile bundles.
+	 * TODO Handle a tactile place behind the agent (last place connected to first place).
+	 * @param tactileStimulations The list of tactile stimulations.
+	 */
+	private void addTactilePlaces(int[] tactileStimulations)
+	{
+
+		int tactileStimulation = tactileStimulations[0];
+		int span = 1;
+		float theta = - 3 * (float)Math.PI / 4; 
+		float sumDirection = theta;
+		float spanf = (float)Math.PI / 4;
+		
+		for (int i = 1 ; i <= 7; i++)
+		{
+			theta += (float)Math.PI / 4;
+			if ((i < 7) && tactileStimulations[i] == tactileStimulation)
+			{
+				// measure the salience span and average direction
+				span++;
+                sumDirection += theta;
+                spanf += (float)Math.PI / 4;
+			}
+			else 
+			{	
+				if (tactileStimulation != Ernest.STIMULATION_TOUCH_EMPTY)
+				{
+					// Create a tactile bundle.
+					float direction = sumDirection / span;
+					Vector3f position = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)direction)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)direction)), 0f);
+					float firstDirection = direction - spanf/ 2;
+					Vector3f firstPosition = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)firstDirection)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)firstDirection)), 0f);
+					float secondDirection = direction + spanf/ 2;
+					Vector3f secondPosition = new Vector3f((float)(Ernest.TACTILE_RADIUS * Math.cos((double)secondDirection)), (float)(Ernest.TACTILE_RADIUS * Math.sin((double)secondDirection)), 0f);
+					
+					// See in that direction ====
+					IPlace place = seePlace(direction);
+					
+					if (place == null)
+					{
+						// Nothing seen: create a tactile bundle and place it here.
+						//IBundle b = m_persistenceMemory.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+						IBundle b = m_spas.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, tactileStimulation);
+						place = addOrReplacePlace(b, position);
+						place.setFirstPosition(firstPosition);
+						place.setSecondPosition(secondPosition);
+						place.setSpan(spanf);
+						place.setSpeed(new Vector3f(0,0,.01f)); // (Keeping the speed "null" generates errors in the Local Space Memory display).
+						place.setUpdateCount(m_spas.getClock());
+						place.setType(Spas.PLACE_TOUCH);
+					}
+					else
+					{
+						if (place.getBundle().getTactileValue() == tactileStimulation )//&&
+							//place.getFrontDistance() < Ernest.TACTILE_RADIUS + .1f) // vision now provides distance
+						{
+							// A bundle is seen with the same tactile value: This is it!
+							place.getBundle().setLastTimeBundled(m_spas.getClock());//m_persistenceMemory.getClock());
+							// move the visual place to the tactile radius.
+							place.setPosition(position); // Position is more precise with tactile perception, especially for long walls.
+							place.setFirstPosition(firstPosition);
+							place.setSecondPosition(secondPosition);
+							place.setSpan(spanf);
+							place.setType(Spas.PLACE_TOUCH);
+							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+						}
+						else if (place.getBundle().getTactileValue() == Ernest.STIMULATION_TOUCH_EMPTY )//&& 
+								//place.getFrontDistance() < Ernest.TACTILE_RADIUS + .1f)
+						{
+							// A bundle is seen in the same position with no tactile value.
+							
+							// Update the place and the bundle
+							//IBundle b = m_persistenceMemory.addBundle(place.getBundle().getVisualValue(), tactileStimulation, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
+							IBundle b = m_spas.addBundle(place.getBundle().getVisualValue(), tactileStimulation);
+							place.setBundle(b);
+							
+							//place.getBundle().setTactileValue(tactileStimulation.getValue());
+							//place.getBundle().setLastTimeBundled(m_persistenceMemory.getClock());
+							place.setPosition(position);							
+							place.setFirstPosition(firstPosition);
+							place.setSecondPosition(secondPosition);
+							place.setSpan(spanf);
+							place.setType(Spas.PLACE_TOUCH);
+							//place.setUpdateCount(m_persistenceMemory.getUpdateCount());
+						}
+					}
+				}
+				// look for the next bundle
+				if (i < 7)
+				{
+					tactileStimulation = tactileStimulations[i];
+					span = 1;
+					spanf = (float)Math.PI / 4;
+					sumDirection = theta;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Associate affordances to the bundle ahead.
+	 * @param interactionPlace The place where the ongoing interaction started.
+	 * @param observation The current observation.
+	 */
+	private void synergy(IPlace interactionPlace, IObservation observation)
+	{
+		int synergyValue= observation.getGustatoryValue();
+		//if (observation.getKinematicValue() == Ernest.STIMULATION_KINEMATIC_BUMP)
+		//	synergyValue = observation.getKinematicValue();
+		if (synergyValue == Ernest.STIMULATION_GUSTATORY_NOTHING)
+			synergyValue = observation.getKinematicValue();
+		
+		//if (synergyValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+		//{
+			//IPlace focusPlace = observation.getFocusPlace();
+			IPlace focusPlace = getPlace(LocalSpaceMemory.DIRECTION_AHEAD);
+			IBundle focusBundle = null;
+			if (focusPlace != null) focusBundle = focusPlace.getBundle();
+	
+			if (focusBundle != null)
+			{
+				// Add the affordance to the bundle
+				Vector3f relativePosition = new Vector3f(interactionPlace.getPosition());
+				relativePosition.sub(new Vector3f(.4f, 0,0));
+				ErnestUtils.rotate(relativePosition, - focusPlace.getOrientation());
+				int attractiveness = Ernest.ATTRACTIVENESS_OF_UNKNOWN;
+				if (synergyValue == Ernest.STIMULATION_GUSTATORY_FISH) attractiveness = Ernest.ATTRACTIVENESS_OF_FISH;
+				if (synergyValue == Ernest.STIMULATION_GUSTATORY_CUDDLE) attractiveness = Ernest.ATTRACTIVENESS_OF_CUDDLE;
+				if (synergyValue == Ernest.STIMULATION_KINEMATIC_BUMP) attractiveness = Ernest.ATTRACTIVENESS_OF_BUMP;
+				focusBundle.addAffordance(observation.getPrimitiveAct(), interactionPlace, relativePosition, focusPlace.getOrientation(), attractiveness, synergyValue);
+			}
+			
+			if (synergyValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+			{
+				// Mark the synergy place.
+				Vector3f pos = new Vector3f(LocalSpaceMemory.DIRECTION_AHEAD);
+				pos.scale(Ernest.BOUNDING_RADIUS);
+				IPlace k = m_spas.addPlace(focusBundle, pos);
+				k.setFirstPosition(pos);
+				k.setSecondPosition(pos);
+				k.setType(Spas.PLACE_BUMP);
+				k.setUpdateCount(m_spas.getClock());
+			}
+	}
+	/**
+	 * Find the closest place whose span overlaps this direction.
+	 * @param direction The direction in which to look at.
+	 * @return The place.
+	 */
+	public IPlace seePlace(float direction)
+	{
+		IPlace place = null;
+
+		for (IPlace p : m_places)
+		{
+			float firstAngle = ErnestUtils.polarAngle(p.getFirstPosition());
+			float secondAngle = ErnestUtils.polarAngle(p.getSecondPosition());
+			if (firstAngle < secondAngle)
+			{
+				// Does not overlap direction -PI
+				if (direction > firstAngle + 0.1f && direction < secondAngle - .05f && 
+					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+					p.attractFocus(m_spas.getClock()))
+						if (place == null || p.getDistance() < place.getDistance())
+							place = p;
+			}
+			else
+			{
+				// Overlaps direction -PI
+				if (direction > firstAngle + .1f || direction < secondAngle - .1f &&
+					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
+					p.attractFocus(m_spas.getClock()))
+						if (place == null || p.getDistance() < place.getDistance())
+							place = p;				
+			}
+		}
+		return place;
+	}
+	
+	private IPlace addOrReplacePlace(IBundle bundle, Vector3f position)
+	{
+		// The initial position must be cloned so that 
+		// the position can be moved without changing the position used for intialization.
+		Vector3f pos = new Vector3f(position);
+		
+		IPlace p = new Place(bundle, pos);
+		p.setUpdateCount(m_spas.getClock());
+		
+		int i = m_places.indexOf(p);
+		if (i == -1)
+			// The place does not exist
+			m_places.add(p);
+		else 
+		{
+			// The place already exists: return a pointer to it.
+			p =  m_places.get(i);
+			p.setBundle(bundle);
+		}
+		return p;
+	}
+
+	/**
+	 * Get the first place found at a given position.
+	 * @param position The position of the location.
+	 * @return The place.
+	 */
+	private IPlace getPlace(Vector3f position)
+	{
+		IPlace place = null;
+		for (IPlace p : m_places)
+		{
+			if (p.attractFocus(m_spas.getClock()))
+			{
+				//if (p.isInCell(position) && p.attractFocus(m_persistenceMemory.getUpdateCount()))
+				Vector3f compare = new Vector3f(p.getPosition());
+				compare.sub(position);
+				if (compare.length() < 1f)
+					place = p;
+			}
+		}
+		return place;
+	}
+
+	/**
+	 * Clear a location in the local space memory.
+	 * @param position The position to clear.
+	 */
+	public void clearPlace(Vector3f position)
+	{
+		for (Iterator it = m_places.iterator(); it.hasNext();)
+		{
+			IPlace l = (IPlace)it.next();
+			if (l.isInCell(position))
+				it.remove();
+		}		
+	}
+
+
 }

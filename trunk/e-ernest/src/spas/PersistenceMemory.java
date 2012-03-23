@@ -19,10 +19,10 @@ public class PersistenceMemory
 	private ITracer m_tracer = null; 
 
 	/** The counter of cognitive cycles  */
-	private int m_clock;
+	//private int m_clock;
 
 	/** The counter of interaction cycles */
-	private int m_updateCounter = 0;
+	//private int m_updateCounter = 0;
 
 	/** A list of all the stimulations ever identified. */
 //	public List<IStimulation> m_stimulations = new ArrayList<IStimulation>(20);
@@ -41,29 +41,29 @@ public class PersistenceMemory
 	/**
 	 * Tick the counter of interaction cycles.
 	 */
-	public void updateCount()
-	{
-		m_updateCounter++;
-	}
-	
-	public int getUpdateCount()
-	{
-		return m_updateCounter;
-	}
+//	public void updateCount()
+//	{
+//		m_updateCounter++;
+//	}
+//	
+//	public int getUpdateCount()
+//	{
+//		return m_updateCounter;
+//	}
 	
 	/**
 	 * Increment the counter of cognitive cycles.
 	 * Used to simulate a decay in persistence memory
 	 */
-	public void count()
-	{
-		m_clock++;
-	}
+//	public void count()
+//	{
+//		m_clock++;
+//	}
 	
-	public int getClock()
-	{
-		return m_clock;
-	}
+//	public int getClock()
+//	{
+//		return m_clock;
+//	}
 		
 	/**
 	 * Add a stimulation to static memory if it does not already exist
@@ -92,7 +92,7 @@ public class PersistenceMemory
 	 * @return the new bundle if created or the already existing bundle.
 	 */
 	//public IBundle addBundle(int visualValue, int tactileValue, int kinematicValue, int gustatoryValue)
-	public IBundle addBundle(int visualValue, int tactileValue)
+	public IBundle addBundle(int visualValue, int tactileValue, int clock)
 	{
 		IBundle bundle = new Bundle(visualValue, tactileValue);//, kinematicValue, gustatoryValue);
 		
@@ -110,7 +110,7 @@ public class PersistenceMemory
 		
 		// This bundle is considered confirmed or visited
 		if (tactileValue != Ernest.STIMULATION_TOUCH_EMPTY)// || kinematicValue != Ernest.STIMULATION_KINEMATIC_FORWARD || gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
-			bundle.setLastTimeBundled(m_clock);
+			bundle.setLastTimeBundled(clock);
 
 		return bundle;
 	}
