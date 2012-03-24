@@ -38,6 +38,7 @@ public class Spas implements ISpas
 	public static int SHAPE_CIRCLE = 0;
 	public static int SHAPE_TRIANGLE = 1;
 	public static int SHAPE_PIE = 2;
+	public static int SHAPE_SQUARE = 3;
 
 	/** Ernest's persistence momory  */
 	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();

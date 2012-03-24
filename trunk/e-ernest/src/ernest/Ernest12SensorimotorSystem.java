@@ -2,6 +2,7 @@ package ernest;
 
 import imos.IAct;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.vecmath.Vector3f;
 
@@ -34,35 +35,63 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		IObservation observation = new Observation();
 		m_places.clear();
 		int type = Spas.PLACE_PRIMITIVE;
+		int value = 0x0FFFFFF;
 		int shape = Spas.SHAPE_PIE;
 		float x = 0; 
 		float y = 0; 
 		float o = 0;
-		if (act.getSchema().getLabel().equals(">") && status)
+		if (act.getSchema().getLabel().equals(">"))
 		{
-			observation.setTranslation(new Vector3f(1,0,0));
-			type = Spas.PLACE_PRIMITIVE;
 			shape = Spas.SHAPE_TRIANGLE;
 			x = .3f;
+			if (status)
+				observation.setTranslation(new Vector3f(1,0,0));
+			else				
+				value = 0x0FF0000;
 		}
 		if (act.getSchema().getLabel().equals("^"))
 		{
 			observation.setRotation((float) Math.PI / 2);
-			shape = Spas.SHAPE_CIRCLE;
+			shape = Spas.SHAPE_PIE;
 			y = .3f;
+			o = (float) Math.PI / 2;
+			if (!status)
+				value = 0x008000;
 		}
 		if (act.getSchema().getLabel().equals("v"))
 		{
 			observation.setRotation((float) - Math.PI / 2);
-			shape = Spas.SHAPE_CIRCLE;
+			shape = Spas.SHAPE_PIE;
 			y = -.3f;
-			o = (float) Math.PI;
+			o = (float) - Math.PI / 2;
+			if (!status)
+				value = 0x008000;
 		}
-		if (!status)
-			type = Spas.PLACE_BUMP;
+		if (act.getSchema().getLabel().equals("/"))
+		{
+			shape = Spas.SHAPE_SQUARE;
+			y = .5f;
+			if (status)
+				value = 0x008000;
+		}
+		if (act.getSchema().getLabel().equals("-"))
+		{
+			shape = Spas.SHAPE_SQUARE;
+			x = .3f; 
+			if (status)
+				value = 0x008000;
+		}
+		if (act.getSchema().getLabel().equals("\\"))
+		{
+			shape = Spas.SHAPE_SQUARE;
+			y = -.5f;
+			if (status)
+				value = 0x008000;
+		}
 
 		//IPlace place = new Place(null, new Vector3f(x,y,0));
 		IPlace place = m_spas.addPlace(new Vector3f(x,y,0), type, shape);
+		place.setValue(value);
 		//place.setType(type);
 		//place.setShape(shape);
 		place.setOrientation(o);
