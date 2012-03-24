@@ -32,6 +32,8 @@ public class Place implements IPlace
 	
 	int m_stick;
 	
+	int m_value;
+	
 	/**
 	 * Create a new place 
 	 * (The provided position is cloned so the place can be moved without changing the provided position).
@@ -350,5 +352,15 @@ public class Place implements IPlace
 	{
 		return m_firstPosition.x - m_firstPosition.y * (m_firstPosition.x - m_secondPosition.x)/(m_firstPosition.y - m_secondPosition.y);
 		
+	}
+
+	public void setValue(int value) 
+	{
+		m_value = value;
+	}
+
+	public int getValue() 
+	{
+		return m_value;
 	}
 }

@@ -57,6 +57,16 @@ public interface IPlace
 	 * @param position The place's position.
 	 */
 	public void setPosition(Vector3f position);
+	
+	/**
+	 * @param value The place's value, corresponds to a color to display.
+	 */
+	public void setValue(int value);
+	
+	/**
+	 * @return The place's value, corresponds to a color to display.
+	 */
+	public int getValue();
 
 	/**
 	 * @param clock The current time in Ernest's life.
