@@ -1,5 +1,7 @@
 package imos;
 
+import javax.vecmath.Vector3f;
+
 
 
 
@@ -68,7 +70,17 @@ public interface IAct  extends Comparable<IAct>
 	public int getActivation();
 
 	/**
-	 * @return The act's length (eigher its schema's length or 1 if the noème has no schema).
+	 * @return The act's length (eigher its schema's length or 1 if the act has no schema).
 	 */
 	public int getLength();
+	
+	/**
+	 * Methods related to space.
+	 */
+	
+	public void setBundleCode(int bundleCode);
+	public int getBundleCode();
+	public void setPosition(Vector3f position);
+	public Vector3f getPosition();
+	
 }
