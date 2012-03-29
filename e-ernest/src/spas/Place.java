@@ -166,8 +166,8 @@ public class Place implements IPlace
 	
 	public int getAttractiveness(int clock) 
 	{
-		//if (m_bundle != null)
-		//{
+		if (m_bundle != null)
+		{
 			// Attractiveness of objects in the extrapersonal space.
 			if (getDistance() > LocalSpaceMemory.EXTRAPERSONAL_DISTANCE)
 				//return (m_bundle.getExtrapersonalAttractiveness(clock) + (int)(5 * m_span / ((float)Math.PI / 12)));
@@ -182,7 +182,7 @@ public class Place implements IPlace
 			//		|| m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
 			else if (m_bundle.getTactileValue() != Ernest.STIMULATION_TOUCH_WALL)
 				return m_bundle.getPeripersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
-		//}
+		}
 
 		return 0;
 	}
@@ -250,31 +250,40 @@ public class Place implements IPlace
 		return m_clock;
 	}
 
-	public boolean attractFocus(int updateCount) 
+	public boolean evokePhenomenon(int clock) 
 	{
-		boolean attractFocus = true;
+		boolean evokePhenomenon = true;
 		
-		if (m_clock != updateCount) attractFocus = false;
-		if (m_bundle == null)  attractFocus = false;
-		if (m_type == Spas.PLACE_BUMP) attractFocus = false; 	
-		if (m_type == Spas.PLACE_EAT) attractFocus = false; 	
-		if (m_type == Spas.PLACE_CUDDLE) attractFocus = false; 	
+		if (m_bundle == null)  evokePhenomenon = false;
+		if (m_type == Spas.PLACE_BUMP) evokePhenomenon = false; 	
+		if (m_type == Spas.PLACE_EAT) evokePhenomenon = false; 	
+		if (m_type == Spas.PLACE_CUDDLE) evokePhenomenon = false; 	
 		//if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
 		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
 		
-		return attractFocus;
+		if (m_type == Spas.PLACE_EVOKE_PHENOMENON) evokePhenomenon = true; 	
+		if (m_clock != clock) evokePhenomenon = false;
+		
+		return evokePhenomenon;
 	}
-
-//	public boolean anticipateTo(Vector3f position) 
-//	{
-//		boolean anticipateTo = false;
-//		Vector3f anticipatedPosition = new Vector3f(m_position);
-//		if (m_speed != null) anticipatedPosition.add(m_speed);
-//		anticipatedPosition.sub(position);
-//		if (anticipatedPosition.length() < .3f) anticipateTo = true;
-//		
-//		return anticipateTo;
-//	}
+	
+	public boolean isPhenomenon(int clock)
+	{
+		boolean isPhenomenon = true;
+		
+		if (m_bundle == null)  isPhenomenon = false;
+		if (m_type == Spas.PLACE_BUMP) isPhenomenon = false; 	
+		if (m_type == Spas.PLACE_EAT) isPhenomenon = false; 	
+		if (m_type == Spas.PLACE_CUDDLE) isPhenomenon = false; 	
+		if (m_type == Spas.PLACE_BACKGROUND) isPhenomenon = false; 	
+		//if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
+		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
+		
+		if (m_type == Spas.PLACE_PHENOMENON)  isPhenomenon = true;
+		if (m_clock != clock) isPhenomenon = false;
+		
+		return isPhenomenon;
+	}
 
 	public boolean from(Vector3f position) 
 	{

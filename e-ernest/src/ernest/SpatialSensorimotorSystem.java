@@ -472,6 +472,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				//b = m_persistenceMemory.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY, Ernest.STIMULATION_KINEMATIC_FORWARD, Ernest.STIMULATION_GUSTATORY_NOTHING);
 				b = m_spas.addBundle(segment.getValue(), Ernest.STIMULATION_TOUCH_EMPTY);
 			IPlace place = new Place(b,segment.getPosition());
+			place.setValue(b.getValue());
 			place.setSpeed(segment.getSpeed());
 			place.setSpan(segment.getSpan());
 			//place.setFirstPosition(segment.getFirstPosition()); // First and second are in the trigonometric direction (counterclockwise). 
@@ -659,7 +660,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				// Does not overlap direction -PI
 				if (direction > firstAngle + 0.1f && direction < secondAngle - .05f && 
 					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
-					p.attractFocus(m_spas.getClock()))
+					p.evokePhenomenon(m_spas.getClock()))
 						if (place == null || p.getDistance() < place.getDistance())
 							place = p;
 			}
@@ -668,7 +669,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				// Overlaps direction -PI
 				if (direction > firstAngle + .1f || direction < secondAngle - .1f &&
 					p.getBundle().getVisualValue() != Ernest.STIMULATION_VISUAL_UNSEEN &&
-					p.attractFocus(m_spas.getClock()))
+					p.evokePhenomenon(m_spas.getClock()))
 						if (place == null || p.getDistance() < place.getDistance())
 							place = p;				
 			}
@@ -683,6 +684,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		Vector3f pos = new Vector3f(position);
 		
 		IPlace p = new Place(bundle, pos);
+		p.setValue(bundle.getValue());
 		p.setUpdateCount(m_spas.getClock());
 		
 		int i = m_places.indexOf(p);
@@ -708,7 +710,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		IPlace place = null;
 		for (IPlace p : m_places)
 		{
-			if (p.attractFocus(m_spas.getClock()))
+			if (p.evokePhenomenon(m_spas.getClock()))
 			{
 				//if (p.isInCell(position) && p.attractFocus(m_persistenceMemory.getUpdateCount()))
 				Vector3f compare = new Vector3f(p.getPosition());

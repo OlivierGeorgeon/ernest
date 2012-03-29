@@ -64,7 +64,7 @@ public interface IPlace
 	public void setValue(int value);
 	
 	/**
-	 * @return The place's value, corresponds to a color to display.
+	 * @return The place's value, corresponds to the color to display.
 	 */
 	public int getValue();
 
@@ -110,7 +110,8 @@ public interface IPlace
 	public void setUpdateCount(int count);
 	public int getUpdateCount();
 	
-	public boolean attractFocus(int updateCount);
+	public boolean evokePhenomenon(int clock);
+	public boolean isPhenomenon(int clock);
 	public boolean from(Vector3f position); 
 	public boolean from(IPlace previousPlace); 
 	

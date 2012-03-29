@@ -56,10 +56,8 @@ public interface ISpas
 	 */
 	public ArrayList<IPlace> getPlaceList();
 	
-	//public void count();
 	public int getClock();
 	public void traceLocalSpace();
-	//public void setSegmentList(ArrayList<ISegment> segmentList);
 	
 	public IPlace getFocusPlace();
 	
@@ -78,4 +76,7 @@ public interface ISpas
 	public IBundle addBundle(int visualValue, int tactileValue);
 	
 	public void tick();
+	
+	public ArrayList<IPlace> getPhenomena();
+
 }

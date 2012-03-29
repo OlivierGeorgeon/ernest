@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import spas.LocalSpaceMemory;
+
+import ernest.Ernest;
 import ernest.ITracer;
 
 /**
@@ -152,23 +155,23 @@ public class Imos implements IImos
 		boolean status = stimuliLabel.equals("t") || stimuliLabel.equals("w  ");
 		if (actionLabel.equals("/"))
 		{
-			a.setPosition(new Vector3f(0, 1, 0));
-			a.setBundleCode(status ? 1 : 0);
+			a.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
+			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
 		}
 		if (actionLabel.equals("\\"))
 		{
-			a.setPosition(new Vector3f(0, -1, 0));
-			a.setBundleCode(status ? 1 : 0);
+			a.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
 		}
 		if (actionLabel.equals("-"))
 		{
-			a.setPosition(new Vector3f(1, 0, 0));
-			a.setBundleCode(status ? 1 : 0);
+			a.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
 		}
 		if (actionLabel.equals(">") && (stimuliLabel.equals("f") || stimuliLabel.equals("w  ")))
 		{
-			a.setPosition(new Vector3f(1, 0, 0));
-			a.setBundleCode(1);
+			a.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+			a.setPhenomenon(Ernest.PHENOMENON_WALL);
 		}
 		
 		System.out.println("Primitive schema " + s);
