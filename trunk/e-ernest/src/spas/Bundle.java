@@ -170,6 +170,7 @@ public class Bundle implements IBundle
 		else
 		{
 			IBundle other = (IBundle)o;
+			//ret = (other.getValue() == getValue());
 			ret = (other.getVisualValue() == m_visualValue) && 	
 				  (other.getTactileValue() == m_tactileValue);
 				  //(other.getKinematicValue() == m_kinematicValue) &&
@@ -214,6 +215,8 @@ public class Bundle implements IBundle
 		
 		
 		IPlace relativePlace = new Place(place.getBundle(), relativePosition);
+		if (place.getBundle() != null)
+			relativePlace.setValue(place.getBundle().getValue());
 		relativePlace.setOrientation(place.getOrientation() - relativeOrientation);
 		relativePlace.setType(place.getType());
 		relativePlace.setShape(place.getShape());

@@ -93,6 +93,10 @@ public class Ernest implements IErnest
 	/** Visual stimulation of seeing nothing */
 	public static int STIMULATION_VISUAL_UNSEEN = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
 
+	
+	public static int PHENOMENON_EMPTY = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;	
+	public static int PHENOMENON_WALL  = 0x008000;//255 * 65536 + 255 * 256 + 255;
+
 	/** Color unanimated */
 	public static int UNANIMATED_COLOR = 0x808080;
 

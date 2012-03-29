@@ -78,8 +78,8 @@ public interface IAct  extends Comparable<IAct>
 	 * Methods related to space.
 	 */
 	
-	public void setBundleCode(int bundleCode);
-	public int getBundleCode();
+	public void setPhenomenon(int bundleCode);
+	public int getPhenomenon();
 	public void setPosition(Vector3f position);
 	public Vector3f getPosition();
 	

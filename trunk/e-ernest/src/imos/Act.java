@@ -2,6 +2,8 @@ package imos;
 
 import javax.vecmath.Vector3f;
 
+import ernest.Ernest;
+
 
 /**
  * An act is the association of a schema with the feedback the agent receives 
@@ -36,7 +38,7 @@ public class Act implements IAct
 	/** The length of the act's schema  */
 	private int m_length = 1;
 	
-	private int m_bundleCode = 0;
+	private int m_phenomenon = Ernest.PHENOMENON_EMPTY;
 	private Vector3f m_position = new Vector3f();
 	
 	/**
@@ -220,14 +222,14 @@ public class Act implements IAct
 		return new Integer(a.getActivation()).compareTo(m_activation);
 	}
 
-	public void setBundleCode(int bundleCode) 
+	public void setPhenomenon(int phenomenon) 
 	{
-		m_bundleCode = bundleCode;
+		m_phenomenon = phenomenon;
 	}
 
-	public int getBundleCode() 
+	public int getPhenomenon() 
 	{
-		return m_bundleCode;
+		return m_phenomenon;
 	}
 
 	public void setPosition(Vector3f position) 

@@ -31,7 +31,6 @@ public class LocalSpaceMemory
 	IPlace m_focusPlace = null;
 
 	/** The persistence memory. */
-	//PersistenceMemory m_persistenceMemory;
 	ISpas m_spas;
 	
 	/** The tracer. */
@@ -50,10 +49,8 @@ public class LocalSpaceMemory
 	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
 	public final static float    SOMATO_RADIUS = 1f;
 	
-	//LocalSpaceMemory(PersistenceMemory persistenceMemory, ITracer tracer)
 	LocalSpaceMemory(ISpas spas, ITracer tracer)
 	{
-		//m_persistenceMemory = persistenceMemory;
 		m_spas = spas;
 		m_tracer = tracer;
 	}
@@ -84,7 +81,9 @@ public class LocalSpaceMemory
 	 */
 	public IPlace addPlace(IBundle bundle, Vector3f position)
 	{
-		IPlace place = new Place(bundle, position);		
+		IPlace place = new Place(bundle, position);	
+		if (bundle != null)
+			place.setValue(bundle.getValue());
 		m_places.add(place);
 		return place;
 	}
@@ -140,7 +139,7 @@ public class LocalSpaceMemory
 		IBundle b = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.attractFocus( m_spas.getClock()))
+			if (p.isInCell(position) && p.evokePhenomenon( m_spas.getClock()))
 				b = p.getBundle();
 		}	
 		return b;
@@ -156,7 +155,7 @@ public class LocalSpaceMemory
 		IPlace place = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.attractFocus(m_spas.getClock()))
+			if (p.isInCell(position) && p.evokePhenomenon(m_spas.getClock()))
 				place = p;
 		}
 		return place;
@@ -279,46 +278,49 @@ public class LocalSpaceMemory
 		return m_focusPlace;
 	}
 	
-	public void refresh(ArrayList<IPlace> places, IObservation observation, int clock)
+	public void phenomenon(ArrayList<IPlace> places, IObservation observation, int clock)
 	{
 		// Clear the old traces in persistence memory
 		clear();
 		
 		// Confirm or create persistent places in local space memory 
 		
-		for (IPlace place : places)
+		for (IPlace interactionPlace : places)
 		{
-			if (place.attractFocus(m_spas.getClock()))
+			if (interactionPlace.evokePhenomenon(m_spas.getClock()))
 			{
 				boolean newPlace = true;
-				// Look for a corresponding persistent place in local space memory.
-				for (IPlace p :  m_places)
+				// Look for a corresponding existing persistent place in local space memory.
+				for (IPlace phenomenonPlace :  m_places)
 				{
-					if (p.attractFocus(m_spas.getClock()-1) 
-							&& p.getBundle().equals(place.getBundle())
-							&& place.from(p))
+					if (phenomenonPlace.isPhenomenon(m_spas.getClock() - 1)
+							&& phenomenonPlace.getValue() == interactionPlace.getValue() // Generates some confusion with walls in Ernest11
+							//&& bundlePlace.getBundle().equals(interactionPlace.getBundle()) // This version works wih Ernest11
+							&& interactionPlace.from(phenomenonPlace))
 					{
-						p.setPosition(place.getPosition());
-						p.setFirstPosition(place.getFirstPosition());
-						p.setSecondPosition(place.getSecondPosition());
-						p.setSpeed(place.getSpeed());
-						p.setSpan(place.getSpan());
-						p.setOrientation(place.getOrientation());
-						p.setUpdateCount(m_spas.getClock());
+						phenomenonPlace.setPosition(interactionPlace.getPosition());
+						phenomenonPlace.setFirstPosition(interactionPlace.getFirstPosition());
+						phenomenonPlace.setSecondPosition(interactionPlace.getSecondPosition());
+						phenomenonPlace.setSpeed(interactionPlace.getSpeed());
+						phenomenonPlace.setSpan(interactionPlace.getSpan());
+						phenomenonPlace.setOrientation(interactionPlace.getOrientation());
+						phenomenonPlace.setUpdateCount(m_spas.getClock());
 						newPlace = false;
 					}
 				}
 				if (newPlace)
 				{
 					// Add a new persistent place
-					IPlace k = addPlace(place.getBundle(),place.getPosition()); 
-					k.setSpeed(place.getSpeed());
-					k.setSpan(place.getSpan());
-					k.setFirstPosition(place.getFirstPosition()); // somehow inverted
-					k.setSecondPosition(place.getSecondPosition());
-					k.setOrientation(place.getOrientation());
+					IPlace k = addPlace(interactionPlace.getBundle(),interactionPlace.getPosition()); 
+					k.setSpeed(interactionPlace.getSpeed());
+					k.setSpan(interactionPlace.getSpan());
+					k.setFirstPosition(interactionPlace.getFirstPosition()); 
+					k.setSecondPosition(interactionPlace.getSecondPosition());
+					k.setOrientation(interactionPlace.getOrientation());
 					k.setUpdateCount(m_spas.getClock());
-					k.setType(place.getType());
+					//k.setType(interactionPlace.getType());
+					k.setType(Spas.PLACE_PHENOMENON);
+					k.setValue(interactionPlace.getValue());
 				}
 			}
 		}
@@ -330,7 +332,7 @@ public class LocalSpaceMemory
 		boolean newFocus = false;
 		for (IPlace place : m_places)
 		{
-            if (place.attractFocus(m_spas.getClock()) && place.getType() != Spas.PLACE_BACKGROUND)
+            if (place.isPhenomenon(m_spas.getClock()))
 			{
 				int attractiveness =  place.getAttractiveness(clock);
 				if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
@@ -362,7 +364,7 @@ public class LocalSpaceMemory
 		observation.setAttractiveness(maxAttractiveness);
 		observation.setNewFocus(newFocus);
 		
-		if (focusPlace == null)
+		if (focusPlace == null || focusPlace.getBundle() == null)
 		{
 			observation.setBundle(m_spas.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY));
 			observation.setPosition(new Vector3f(1,0,0));
@@ -383,4 +385,21 @@ public class LocalSpaceMemory
 			observation.setAffordanceAct(act);
 		}		
 	}
+	
+	/**
+	 * @param clock The current clock of Spas
+	 * @return the list of phenomena in local space memory
+	 */
+	public ArrayList<IPlace> getPhenomena(int clock) 
+	{
+		ArrayList<IPlace> phenomena = new ArrayList<IPlace>();
+		
+		for (IPlace place : m_places)
+		{
+			if (place.getPosition().length() < 1.9 && place.isPhenomenon(clock));
+				phenomena.add(place);
+		}
+		return phenomena;
+	}	
+
 }
