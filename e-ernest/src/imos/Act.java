@@ -1,5 +1,7 @@
 package imos;
 
+import javax.vecmath.Vector3f;
+
 
 /**
  * An act is the association of a schema with the feedback the agent receives 
@@ -33,6 +35,9 @@ public class Act implements IAct
 	
 	/** The length of the act's schema  */
 	private int m_length = 1;
+	
+	private int m_bundleCode = 0;
+	private Vector3f m_position = new Vector3f();
 	
 	/**
 	 * Constructor for a succeeding act. 
@@ -213,5 +218,25 @@ public class Act implements IAct
 	public int compareTo(IAct a) 
 	{
 		return new Integer(a.getActivation()).compareTo(m_activation);
+	}
+
+	public void setBundleCode(int bundleCode) 
+	{
+		m_bundleCode = bundleCode;
+	}
+
+	public int getBundleCode() 
+	{
+		return m_bundleCode;
+	}
+
+	public void setPosition(Vector3f position) 
+	{
+		m_position.set(position);
+	}
+
+	public Vector3f getPosition() 
+	{
+		return m_position;
 	}
 }

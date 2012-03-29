@@ -55,8 +55,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			shape = Spas.SHAPE_PIE;
 			y = .3f;
 			o = (float) Math.PI / 2;
-			if (!status)
-				value = 0x008000;
+			//if (!status)
+			//	value = 0x008000;
 		}
 		if (act.getSchema().getLabel().equals("v"))
 		{
@@ -64,8 +64,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			shape = Spas.SHAPE_PIE;
 			y = -.3f;
 			o = (float) - Math.PI / 2;
-			if (!status)
-				value = 0x008000;
+			//if (!status)
+			//	value = 0x008000;
 		}
 		if (act.getSchema().getLabel().equals("/"))
 		{
@@ -89,11 +89,10 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				value = 0x008000;
 		}
 
-		//IPlace place = new Place(null, new Vector3f(x,y,0));
-		IPlace place = m_spas.addPlace(new Vector3f(x,y,0), type, shape);
+		//IPlace place = m_spas.addPlace(new Vector3f(x,y,0), type, shape);
+		IPlace place = m_spas.addPlace(enactedAct.getPosition(), type, shape);
+		
 		place.setValue(value);
-		//place.setType(type);
-		//place.setShape(shape);
 		place.setOrientation(o);
 		place.setUpdateCount(m_spas.getClock());
 		//m_places.add(place);
