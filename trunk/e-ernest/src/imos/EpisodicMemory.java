@@ -9,6 +9,7 @@ import java.util.Random;
 import org.w3c.dom.Element;
 
 import spas.IObservation;
+import spas.IPlace;
 import spas.PersistenceMemory;
 
 import ernest.Ernest;
@@ -236,7 +237,7 @@ public class EpisodicMemory
 	 * @param activationList The list of acts that activate episodic memory.
 	 * @return The selected act.
 	 */
-	public IAct selectAct(List<IAct> activationList)
+	public IAct selectAct(List<IAct> activationList, List<IPlace> phenomenaList)
 	{
 
 		List<IProposition> proposals = new ArrayList<IProposition>();	
@@ -323,6 +324,27 @@ public class EpisodicMemory
 				if (!proposals.contains(p))
 					proposals.add(p);
 			}
+			
+		}
+
+		// Acts that match a phenomenon propose their schemas if they are primitive
+		for (IAct a : m_acts)
+		{
+			if (a.getSchema().isPrimitive())
+			{
+				for (IPlace place : phenomenaList)
+				{
+					if (a.getPhenomenon() == place.getValue() && a.getPosition().epsilonEquals(place.getPosition(), .1f))
+					{
+						IProposition p = new Proposition(a.getSchema(), a.getSatisfaction(), 1);
+						int i = proposals.indexOf(p);
+						if (i == -1)
+							proposals.add(p);
+						else
+							proposals.get(i).update(a.getSatisfaction(), 1);
+					}
+				}
+			}
 		}
 
 		System.out.println("Propose: ");
@@ -345,6 +367,7 @@ public class EpisodicMemory
 			//IObservation anticipation = m_ernest.getStaticSystem().anticipate(p.getAct());
 			// Adjust the proposition's weight based on the anticipation in the local map 
 		}
+		
 		
 		// sort by weighted proposition...
 		Collections.sort(proposals);

@@ -60,15 +60,15 @@ public class LocalSpaceMemory
 		if (m_tracer != null && !m_places.isEmpty())
 		{
 			Object localSpace = m_tracer.addEventElement("local_space");
-			m_tracer.addSubelement(localSpace, "position_8", getHexColor(DIRECTION_HERE));
-			m_tracer.addSubelement(localSpace, "position_7", getHexColor(DIRECTION_BEHIND));
-			m_tracer.addSubelement(localSpace, "position_6", getHexColor(DIRECTION_BEHIND_LEFT));
-			m_tracer.addSubelement(localSpace, "position_5", getHexColor(DIRECTION_LEFT));
-			m_tracer.addSubelement(localSpace, "position_4", getHexColor(DIRECTION_AHEAD_LEFT));
-			m_tracer.addSubelement(localSpace, "position_3", getHexColor(DIRECTION_AHEAD));
-			m_tracer.addSubelement(localSpace, "position_2", getHexColor(DIRECTION_AHEAD_RIGHT));
-			m_tracer.addSubelement(localSpace, "position_1", getHexColor(DIRECTION_RIGHT));
-			m_tracer.addSubelement(localSpace, "position_0", getHexColor(DIRECTION_BEHIND_RIGHT));
+			m_tracer.addSubelement(localSpace, "position_8", ErnestUtils.hexColor(getValue(DIRECTION_HERE)));
+			m_tracer.addSubelement(localSpace, "position_7", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND)));
+			m_tracer.addSubelement(localSpace, "position_6", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND_LEFT)));
+			m_tracer.addSubelement(localSpace, "position_5", ErnestUtils.hexColor(getValue(DIRECTION_LEFT)));
+			m_tracer.addSubelement(localSpace, "position_4", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD_LEFT)));
+			m_tracer.addSubelement(localSpace, "position_3", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD)));
+			m_tracer.addSubelement(localSpace, "position_2", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD_RIGHT)));
+			m_tracer.addSubelement(localSpace, "position_1", ErnestUtils.hexColor(getValue(DIRECTION_RIGHT)));
+			m_tracer.addSubelement(localSpace, "position_0", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND_RIGHT)));
 		}
 	}
 	
@@ -139,10 +139,27 @@ public class LocalSpaceMemory
 		IBundle b = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.evokePhenomenon( m_spas.getClock()))
+			if (p.isInCell(position) && p.isPhenomenon())
 				b = p.getBundle();
 		}	
 		return b;
+	}
+
+	/**
+	 * Get the phenomena value at a given position.
+	 * (The last bundle found in the list of places that match this position)
+	 * @param position The position of the location.
+	 * @return The bundle.
+	 */
+	public int getValue(Vector3f position)
+	{
+		int value = Ernest.UNANIMATED_COLOR;
+		for (IPlace p : m_places)
+		{
+			if (p.isInCell(position) && p.isPhenomenon())
+				value = p.getValue();
+		}	
+		return value;
 	}
 
 	/**
@@ -230,19 +247,19 @@ public class LocalSpaceMemory
 	 * @param position The position.
 	 * @return The Hexadecimal color code.
 	 */
-	public String getHexColor(Vector3f position) 
-	{
-		int value = getValue(position);
-		if (value == Ernest.STIMULATION_VISUAL_UNSEEN)
-		{
-			Vector3f farPosition = new Vector3f(position);
-			farPosition.scale(2f);
-			//Vector3f farPosition = new Vector3f();
-			//farPosition.scale(2f, position);
-			value = getValue(farPosition);
-		}
-		return ErnestUtils.hexColor(value);
-	}
+//	public String getHexColor(Vector3f position) 
+//	{
+//		int value = getValue(position);
+//		if (value == Ernest.STIMULATION_VISUAL_UNSEEN)
+//		{
+//			Vector3f farPosition = new Vector3f(position);
+//			farPosition.scale(2f);
+//			//Vector3f farPosition = new Vector3f();
+//			//farPosition.scale(2f, position);
+//			value = getValue(farPosition);
+//		}
+//		return ErnestUtils.hexColor(value);
+//	}
 
 	/**
 	 * Get the value of the first bundle found in a given position.
@@ -250,15 +267,15 @@ public class LocalSpaceMemory
 	 * @param position The position.
 	 * @return The value.
 	 */
-	public int getValue(Vector3f position)
-	{
-		int value = Ernest.STIMULATION_VISUAL_UNSEEN;
-
-		IBundle b = getBundle(position);
-		if (b != null)
-			value = b.getValue();
-		return value;
-	}
+//	public int getValue(Vector3f position)
+//	{
+//		int value = Ernest.STIMULATION_VISUAL_UNSEEN;
+//
+//		IBundle b = getBundle(position);
+//		if (b != null)
+//			value = b.getValue();
+//		return value;
+//	}
 	
 	/**
 	 * @return The list of places in Local Spave Memory
@@ -293,7 +310,7 @@ public class LocalSpaceMemory
 				// Look for a corresponding existing persistent place in local space memory.
 				for (IPlace phenomenonPlace :  m_places)
 				{
-					if (phenomenonPlace.isPhenomenon(m_spas.getClock() - 1)
+					if (phenomenonPlace.isPhenomenon()
 							&& phenomenonPlace.getValue() == interactionPlace.getValue() // Generates some confusion with walls in Ernest11
 							//&& bundlePlace.getBundle().equals(interactionPlace.getBundle()) // This version works wih Ernest11
 							&& interactionPlace.from(phenomenonPlace))
@@ -332,7 +349,7 @@ public class LocalSpaceMemory
 		boolean newFocus = false;
 		for (IPlace place : m_places)
 		{
-            if (place.isPhenomenon(m_spas.getClock()))
+            if (place.isPhenomenon())
 			{
 				int attractiveness =  place.getAttractiveness(clock);
 				if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
@@ -390,13 +407,13 @@ public class LocalSpaceMemory
 	 * @param clock The current clock of Spas
 	 * @return the list of phenomena in local space memory
 	 */
-	public ArrayList<IPlace> getPhenomena(int clock) 
+	public ArrayList<IPlace> getPhenomena() 
 	{
 		ArrayList<IPlace> phenomena = new ArrayList<IPlace>();
 		
 		for (IPlace place : m_places)
 		{
-			if (place.getPosition().length() < 1.9 && place.isPhenomenon(clock));
+			if (place.getPosition().length() < 1.9 && place.getPosition().length() > .1 && place.isPhenomenon())
 				phenomena.add(place);
 		}
 		return phenomena;
