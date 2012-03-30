@@ -111,7 +111,7 @@ public interface IPlace
 	public int getUpdateCount();
 	
 	public boolean evokePhenomenon(int clock);
-	public boolean isPhenomenon(int clock);
+	public boolean isPhenomenon();
 	public boolean from(Vector3f position); 
 	public boolean from(IPlace previousPlace); 
 	

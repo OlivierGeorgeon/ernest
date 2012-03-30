@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import spas.IPlace;
 import spas.LocalSpaceMemory;
 
 import ernest.Ernest;
@@ -77,6 +78,8 @@ public class Imos implements IImos
 
 	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
+	
+	private ArrayList<IPlace> m_phenomenaList = new ArrayList<IPlace>();
 
 	/**
 	 * Constructor for the Intrinsic Motivation system.
@@ -353,7 +356,7 @@ public class Imos implements IImos
 		
 		if (intentionAct == null)
 		{
-			intentionAct = m_episodicMemory.selectAct(m_activationList);
+			intentionAct = m_episodicMemory.selectAct(m_activationList, m_phenomenaList);
 			m_intentionAct = intentionAct;
 			m_newIntention = true;
 		}
@@ -544,4 +547,8 @@ public class Imos implements IImos
 		return (m_intentionAct.getLength() > 1);
 	}
 
+	public void setPhenomena(ArrayList<IPlace> phenomenaList) 
+	{
+		m_phenomenaList = phenomenaList;
+	}
 }

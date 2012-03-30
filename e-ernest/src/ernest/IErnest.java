@@ -93,7 +93,7 @@ public interface IErnest
 	/**
 	 * @param placeList The list of places in Ernest's local space memory.
 	 */
-	public void setPlaceList(ArrayList<IPlace> placeList);
+	//public void setPlaceList(ArrayList<IPlace> placeList);
 	public void setSegmentList(ArrayList<ISegment> segmentList);
 	
 	/**

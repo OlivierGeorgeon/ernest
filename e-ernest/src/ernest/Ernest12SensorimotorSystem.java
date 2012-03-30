@@ -28,7 +28,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), (status ? "t" : "f"), 0);
 		
-		// Mark the place
+		
+		// Mark the place ========
 		
 		m_spas.tick();
 		IObservation observation = new Observation();
@@ -83,6 +84,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		interactionPlaces.add(place);
 		
 		m_spas.step(observation, interactionPlaces);
+		
+		// Pass the phenomena in the surrounding space to imos for activation of schemas
+		//m_imos.setPhenomena(m_spas.getPhenomena());
 		
 		return enactedAct;
 	}

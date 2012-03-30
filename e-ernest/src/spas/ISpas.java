@@ -49,7 +49,7 @@ public interface ISpas
 	 * Set the place list (from Simon's local space map).
 	 * @param placeList The list of place in Ernest's local space memory.
 	 */
-	public void setPlaceList(List<IPlace> placeList);
+	//public void setPlaceList(List<IPlace> placeList);
 
 	/**
 	 * @return The list of places in Ernest's local space memory.
@@ -77,6 +77,10 @@ public interface ISpas
 	
 	public void tick();
 	
+	/**
+	 * Generate a list of places that represents the phenomena in the local space.
+	 * @return the list of places. 
+	 */
 	public ArrayList<IPlace> getPhenomena();
 
 }

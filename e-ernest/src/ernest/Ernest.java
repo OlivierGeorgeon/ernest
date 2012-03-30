@@ -278,10 +278,10 @@ public class Ernest implements IErnest
 		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
 
-	public void setPlaceList(ArrayList<IPlace> placeList)
-	{
-		m_spas.setPlaceList(placeList);
-	}
+//	public void setPlaceList(ArrayList<IPlace> placeList)
+//	{
+//		m_spas.setPlaceList(placeList);
+//	}
 
 	public ArrayList<IPlace> getPlaceList()
 	{

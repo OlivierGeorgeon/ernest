@@ -262,12 +262,13 @@ public class Place implements IPlace
 		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
 		
 		if (m_type == Spas.PLACE_EVOKE_PHENOMENON) evokePhenomenon = true; 	
+		if (m_type == Spas.PLACE_PHENOMENON)  evokePhenomenon = false;
 		if (m_clock != clock) evokePhenomenon = false;
 		
 		return evokePhenomenon;
 	}
 	
-	public boolean isPhenomenon(int clock)
+	public boolean isPhenomenon()
 	{
 		boolean isPhenomenon = true;
 		
@@ -278,9 +279,9 @@ public class Place implements IPlace
 		if (m_type == Spas.PLACE_BACKGROUND) isPhenomenon = false; 	
 		//if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
 		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
+		if (m_type == Spas.PLACE_EVOKE_PHENOMENON)  isPhenomenon = false;
 		
 		if (m_type == Spas.PLACE_PHENOMENON)  isPhenomenon = true;
-		if (m_clock != clock) isPhenomenon = false;
 		
 		return isPhenomenon;
 	}
