@@ -221,7 +221,7 @@ public class Imos implements IImos
 	 * @param performedAct The act that was performed during the terminating decision cycle.
 	 * @param contextList The additional acts to add to the new context list
 	 */
-	private void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList)
+	private void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList, ArrayList<IPlace> phenomenaList)
 	{
 		// The current context list becomes the base context list
 		m_baseContextList = new ArrayList<IAct>(m_contextList);
@@ -239,6 +239,10 @@ public class Imos implements IImos
 		// if the actually enacted act is not primitive, its intention also belongs to the context
 		if (!enactedAct.getSchema().isPrimitive())
 			addActivationAct(enactedAct.getSchema().getIntentionAct());	
+		
+		// Acts that match a phenomenon propose their schemas if they are primitive
+		m_episodicMemory.evokeAct(m_activationList, phenomenaList); 
+		m_episodicMemory.evokeAct(m_contextList, phenomenaList); 
 		
 		// add the streamcontext list to the context list
 		addContextList(contextList);
@@ -331,9 +335,12 @@ public class Imos implements IImos
 				}
 			}			
 
-			// Update the context.
+			// Update the context. =========
 			
-			shiftDecisionCycle(enactedAct, performedAct, streamContextList);
+			// Acts that match a phenomenon are added to the activation list			
+			//m_episodicMemory.evokeAct(m_activationList, m_phenomenaList);
+
+			shiftDecisionCycle(enactedAct, performedAct, streamContextList, m_phenomenaList);
 			
 		}
 		
@@ -356,6 +363,7 @@ public class Imos implements IImos
 		
 		if (intentionAct == null)
 		{
+
 			intentionAct = m_episodicMemory.selectAct(m_activationList, m_phenomenaList);
 			m_intentionAct = intentionAct;
 			m_newIntention = true;

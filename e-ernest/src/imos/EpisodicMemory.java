@@ -240,6 +240,24 @@ public class EpisodicMemory
 	public IAct selectAct(List<IAct> activationList, List<IPlace> phenomenaList)
 	{
 
+//		// Acts that match a phenomenon are added to the activation list
+//		for (IAct a : m_acts)
+//		{
+//			//if (a.getSchema().isPrimitive())
+//			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("\\") || a.getSchema().getLabel().equals("/"))
+//			{
+//				for (IPlace place : phenomenaList)
+//				{
+//					if (a.getPhenomenon() == place.getValue() && a.getPosition().epsilonEquals(place.getPosition(), .1f))
+//					{
+//						int i = activationList.indexOf(a);
+//						if (i == -1)
+//							activationList.add(a);
+//					}
+//				}
+//			}
+//		}
+		
 		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
 		// Browse all the existing schemas 
@@ -328,24 +346,24 @@ public class EpisodicMemory
 		}
 
 		// Acts that match a phenomenon propose their schemas if they are primitive
-		for (IAct a : m_acts)
-		{
-			if (a.getSchema().isPrimitive())
-			{
-				for (IPlace place : phenomenaList)
-				{
-					if (a.getPhenomenon() == place.getValue() && a.getPosition().epsilonEquals(place.getPosition(), .1f))
-					{
-						IProposition p = new Proposition(a.getSchema(), a.getSatisfaction(), 1);
-						int i = proposals.indexOf(p);
-						if (i == -1)
-							proposals.add(p);
-						else
-							proposals.get(i).update(a.getSatisfaction(), 1);
-					}
-				}
-			}
-		}
+//		for (IAct a : m_acts)
+//		{
+//			if (a.getSchema().isPrimitive())
+//			{
+//				for (IPlace place : phenomenaList)
+//				{
+//					if (a.getPhenomenon() == place.getValue() && a.getPosition().epsilonEquals(place.getPosition(), .1f))
+//					{
+//						IProposition p = new Proposition(a.getSchema(), a.getSatisfaction(), 1);
+//						int i = proposals.indexOf(p);
+//						if (i == -1)
+//							proposals.add(p);
+//						else
+//							proposals.get(i).update(a.getSatisfaction(), 1);
+//					}
+//				}
+//			}
+//		}
 
 		System.out.println("Propose: ");
 		Object proposalElmt = null;
@@ -434,5 +452,29 @@ public class EpisodicMemory
 		return anticipateInteraction;
 	}
 
-
+	/**
+	 * @param activationList The list of activated acts.
+	 * @param phenomenaList The list of phenomena places that can activte acts.
+	 */
+	public void evokeAct(List<IAct> activationList, ArrayList<IPlace> phenomenaList) 
+	{
+		// Acts that match a phenomenon are added to the activation list
+		for (IAct a : m_acts)
+		{
+			//if (a.getSchema().isPrimitive())
+			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("\\") || a.getSchema().getLabel().equals("/"))
+			{
+				for (IPlace place : phenomenaList)
+				{
+					if (a.getPhenomenon() == place.getValue() && a.getPosition().epsilonEquals(place.getPosition(), .1f))
+					{
+						int i = activationList.indexOf(a);
+						if (i == -1)
+							activationList.add(a);
+					}
+				}
+			}
+		}
+		
+	}
 }
