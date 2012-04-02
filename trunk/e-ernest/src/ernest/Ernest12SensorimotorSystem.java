@@ -86,7 +86,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		m_spas.step(observation, interactionPlaces);
 		
 		// Pass the phenomena in the surrounding space to imos for activation of schemas
-		//m_imos.setPhenomena(m_spas.getPhenomena());
+		m_imos.setPhenomena(m_spas.getPhenomena());
 		
 		return enactedAct;
 	}
