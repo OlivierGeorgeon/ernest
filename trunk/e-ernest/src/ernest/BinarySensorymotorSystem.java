@@ -71,5 +71,15 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	public int[] update(int[][] stimuli) { return null; }
 	
 	public void setSegmentList(ArrayList<ISegment> segmentList) {}
+
+	public ArrayList<IPlace> getPhenomena() 
+	{
+		return new ArrayList<IPlace>();
+	}
+
+	public boolean checkConsistency(IAct act) 
+	{
+		return true;
+	}
 	
 }

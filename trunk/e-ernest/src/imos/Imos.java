@@ -9,8 +9,8 @@ import javax.vecmath.Vector3f;
 
 import spas.IPlace;
 import spas.LocalSpaceMemory;
-
 import ernest.Ernest;
+import ernest.ISensorymotorSystem;
 import ernest.ITracer;
 
 /**
@@ -79,7 +79,9 @@ public class Imos implements IImos
 	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
 	
-	private ArrayList<IPlace> m_phenomenaList = new ArrayList<IPlace>();
+	//private ArrayList<IPlace> m_phenomenaList = new ArrayList<IPlace>();
+	
+	private ISensorymotorSystem m_sensorimotorSystem = null;
 
 	/**
 	 * Constructor for the Intrinsic Motivation system.
@@ -113,6 +115,12 @@ public class Imos implements IImos
 		m_episodicMemory.setTracer(tracer);
 	}
 	
+	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem)
+	{
+		m_sensorimotorSystem = sensorimotorSystem;
+		m_episodicMemory.setSensorimotorSystem(sensorimotorSystem);
+	}
+	
 	/**
 	 * Get a string description of the imos's internal state for display in the environment.
 	 * @return A representation of the imos's internal state
@@ -121,18 +129,6 @@ public class Imos implements IImos
 	{
 		return m_internalState;
 	}
-
-	/**
-	 * Used by the environment to set the primitive binary sensorymotor acts.
-	 * @param actionLabel The schema's label that is interpreted by the environment.
-	 * @param status The act's succeed or fail status 
-	 * @param satisfaction The act's satisfaction 
-	 * @return the created primitive act
-	 */
-//	public IAct addPrimitiveAct(String actionLabel, boolean status, int satisfaction) 
-//	{
-//		return addInteraction( actionLabel, "",  satisfaction);
-//	}
 
 	/**
 	 * Construct a new interaction or retrieve the interaction if it already exists.
@@ -263,7 +259,8 @@ public class Imos implements IImos
 		IAct intentionAct = null;
 		IAct enactedAct = null;
 		
-		// If Ernest had a primitive intention then we follow up the current enaction.
+		
+		// We follow up the current enaction (Accept on startup when the primitive intention is null).
 
 		if (m_primitiveIntention != null)
 		{
@@ -279,9 +276,14 @@ public class Imos implements IImos
 			// Compute the next sub-intention, null if we have reached the end of the previous intended act.
 			
 			intentionAct = nextAct(m_primitiveIntention, primitiveEnaction);
+			
+			// Check the consistency with Spas
+			if (intentionAct != null && !m_sensorimotorSystem.checkConsistency(intentionAct))
+				intentionAct = null;
 		}	
+		
 
-		// If we have a context and the current enaction is over then we record and we shift the context.
+		// If we have a context and the current enaction is over then we record and we shift the context. ========
 
 		if (intentionAct == null && enactedAct != null)
 		{
@@ -340,7 +342,8 @@ public class Imos implements IImos
 			// Acts that match a phenomenon are added to the activation list			
 			//m_episodicMemory.evokeAct(m_activationList, m_phenomenaList);
 
-			shiftDecisionCycle(enactedAct, performedAct, streamContextList, m_phenomenaList);
+			ArrayList<IPlace> phenomenaList = m_sensorimotorSystem.getPhenomena();
+			shiftDecisionCycle(enactedAct, performedAct, streamContextList, phenomenaList);
 			
 		}
 		
@@ -358,13 +361,14 @@ public class Imos implements IImos
 		if (m_tracer != null)
 			m_tracer.addEventElement("learn_count", m_episodicMemory.getLearnCount() + "");
 		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
-			
-		// If we don't have an ongoing intention then we choose a new intention.
+		
+		
+		// If we don't have an ongoing intention then we choose a new intention. ======
 		
 		if (intentionAct == null)
 		{
 
-			intentionAct = m_episodicMemory.selectAct(m_activationList, m_phenomenaList);
+			intentionAct = m_episodicMemory.selectAct(m_activationList);
 			m_intentionAct = intentionAct;
 			m_newIntention = true;
 		}
@@ -378,20 +382,23 @@ public class Imos implements IImos
 		}
 		
 		// Spread the selected intention's activation to primitive acts.
-		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)
-		
-		IAct activePrimitiveAct = spreadActivation(intentionAct);
-		List<IAct> activePrimitiveActs = new ArrayList<IAct>(10);
-		activePrimitiveActs.add(activePrimitiveAct);
-		
+		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)		
+		//IAct activePrimitiveAct = spreadActivation(intentionAct);
+		//List<IAct> activePrimitiveActs = new ArrayList<IAct>(10);
+		//activePrimitiveActs.add(activePrimitiveAct);
 		// Sensorymotor acts compete and Ernest selects that with the highest activation
-		IAct nextPrimitiveAct = selectAct(activePrimitiveActs);		
-		m_primitiveIntention = nextPrimitiveAct;
+		//IAct nextPrimitiveAct = selectAct(activePrimitiveActs);		
+		//m_primitiveIntention = nextPrimitiveAct;
+		
+		//m_primitiveIntention = selectAct(activePrimitiveActs);		
+
+		m_primitiveIntention = spreadActivation(intentionAct);
 		
 		if (m_tracer != null)
-			m_tracer.addEventElement("next_primitive_intention", nextPrimitiveAct.getLabel());
+			m_tracer.addEventElement("next_primitive_intention", m_primitiveIntention.getLabel());
 		
-		return nextPrimitiveAct;
+		//return nextPrimitiveAct;
+		return m_primitiveIntention;
 				
 	}
 	
@@ -439,9 +446,9 @@ public class Imos implements IImos
 	{
 		IAct nextAct = null;
 		ISchema prescriberSchema = prescribedAct.getPrescriberSchema();
-		int activation = prescribedAct.getActivation();
+		//int activation = prescribedAct.getActivation();
 		prescribedAct.setPrescriberSchema(null); 
-		prescribedAct.setActivation(0); // (It might be the case that the same act will be prescribed again)
+		//prescribedAct.setActivation(0); // (It might be the case that the same act will be prescribed again)
 		
 		if (prescriberSchema != null)
 		{
@@ -456,7 +463,7 @@ public class Imos implements IImos
 					prescriberSchema.setPointer(1);
 					nextAct = prescriberSchema.getIntentionAct();
 					nextAct.setPrescriberSchema(prescriberSchema);
-					nextAct.setActivation(activation);
+					//nextAct.setActivation(activation);
 				}
 				else
 				{
@@ -513,7 +520,7 @@ public class Imos implements IImos
 	
 	/**
 	 * Recursively prescribe an act's subacts and subschemas.
-	 * Set the subacts' activation equal to the prescribing act's activation.
+	 * (Set the subacts' activation equal to the prescribing act's activation, not used)
 	 * @param The prescriber act.
 	 * @return The prescribed act.
 	 */
@@ -530,7 +537,7 @@ public class Imos implements IImos
 			subschema.setPointer(0);
 			IAct subact = subschema.getContextAct();
 			subact.setPrescriberSchema(subschema);
-			subact.setActivation(a.getActivation());
+			//subact.setActivation(a.getActivation());
 			primitiveAct = spreadActivation(subact);
 		}
 		
@@ -555,8 +562,8 @@ public class Imos implements IImos
 		return (m_intentionAct.getLength() > 1);
 	}
 
-	public void setPhenomena(ArrayList<IPlace> phenomenaList) 
-	{
-		m_phenomenaList = phenomenaList;
-	}
+//	public void setPhenomena(ArrayList<IPlace> phenomenaList) 
+//	{
+//		m_phenomenaList = phenomenaList;
+//	}
 }

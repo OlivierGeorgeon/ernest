@@ -1,6 +1,7 @@
 package ernest;
 
 import imos.IAct;
+import imos.ISchema;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import javax.vecmath.Vector3f;
 
 import spas.IObservation;
 import spas.IPlace;
+import spas.LocalSpaceMemory;
 import spas.Observation;
 import spas.Place;
 import spas.Spas;
@@ -86,8 +88,52 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		m_spas.step(observation, interactionPlaces);
 		
 		// Pass the phenomena in the surrounding space to imos for activation of schemas
-		m_imos.setPhenomena(m_spas.getPhenomena());
+		//m_imos.setPhenomena(m_spas.getPhenomena());
 		
 		return enactedAct;
 	}
+	
+	public ArrayList<IPlace> getPhenomena()
+	{
+		return m_spas.getPhenomena();
+	}
+
+	public boolean checkConsistency(IAct act) 
+	{
+		ISchema s = act.getSchema();
+		if (s.isPrimitive())
+		{
+			if (s.getLabel().equals(">"))
+			{
+				if (m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD) == Ernest.UNANIMATED_COLOR)
+					return true;
+				else
+					return act.getPhenomenon() == m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD);
+			}
+//			if (s.getLabel().equals("-"))
+//			{
+//				if (m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD) == Ernest.UNANIMATED_COLOR)
+//					return true;
+//				else
+//					return act.getPhenomenon() == m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD);
+//			}
+//			if (s.getLabel().equals("\\"))
+//			{
+//				if (m_spas.getValue(LocalSpaceMemory.DIRECTION_RIGHT) == Ernest.UNANIMATED_COLOR)
+//					return true;
+//				else
+//					return act.getPhenomenon() == m_spas.getValue(LocalSpaceMemory.DIRECTION_RIGHT);
+//			}
+//			if (s.getLabel().equals("/"))
+//			{
+//				if (m_spas.getValue(LocalSpaceMemory.DIRECTION_LEFT) == Ernest.UNANIMATED_COLOR)
+//					return true;
+//				else
+//					return act.getPhenomenon() == m_spas.getValue(LocalSpaceMemory.DIRECTION_LEFT);
+//			}
+		}
+
+		return true;
+	}
+
 }

@@ -14,6 +14,7 @@ import spas.PersistenceMemory;
 
 import ernest.Ernest;
 import ernest.IErnest;
+import ernest.ISensorymotorSystem;
 import ernest.ITracer;
 
 
@@ -27,6 +28,8 @@ public class EpisodicMemory
 {
 	/** The tracer */
 	private ITracer m_tracer;
+	
+	private ISensorymotorSystem m_sensorimotorSystem;
 	
 	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
 	private int m_regularitySensibilityThreshold;
@@ -63,6 +66,10 @@ public class EpisodicMemory
 		m_tracer = tracer;
 	}
 
+	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem)
+	{
+		m_sensorimotorSystem = sensorimotorSystem;
+	}
 	/**
 	 * @param threshold The regularity sensibility threshold
 	 */
@@ -237,27 +244,8 @@ public class EpisodicMemory
 	 * @param activationList The list of acts that activate episodic memory.
 	 * @return The selected act.
 	 */
-	public IAct selectAct(List<IAct> activationList, List<IPlace> phenomenaList)
+	public IAct selectAct(List<IAct> activationList)
 	{
-
-//		// Acts that match a phenomenon are added to the activation list
-//		for (IAct a : m_acts)
-//		{
-//			//if (a.getSchema().isPrimitive())
-//			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("\\") || a.getSchema().getLabel().equals("/"))
-//			{
-//				for (IPlace place : phenomenaList)
-//				{
-//					if (a.getPhenomenon() == place.getValue() && a.getPosition().epsilonEquals(place.getPosition(), .1f))
-//					{
-//						int i = activationList.indexOf(a);
-//						if (i == -1)
-//							activationList.add(a);
-//					}
-//				}
-//			}
-//		}
-		
 		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
 		// Browse all the existing schemas 
@@ -302,36 +290,42 @@ public class EpisodicMemory
 						//e = s.getWeight() * (anticipation.getStatus() ? 1 : -1);
 					}
 					
-					// If the intention is reliable
-					if ((proposedAct.getConfidence() == Imos.RELIABLE ) &&						 
-						(proposedAct.getSchema().getLength() <= m_maxSchemaLength ))
+					// If consistent 
+					//if (m_sensorimotorSystem.checkConsistency(proposedAct))
 					{
-						IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
-	
-						int i = proposals.indexOf(p);
-						if (i == -1)
-							proposals.add(p);
-						else
-							proposals.get(i).update(w, e);
-					}
-					// if the intention's schema has not passed the threshold then  
-					// the activation is propagated to the intention's schema's context
-					else
-					{
-						if (!proposedAct.getSchema().isPrimitive())
+					
+						// If the intention is reliable then a proposition is constructed
+						if ((proposedAct.getConfidence() == Imos.RELIABLE ) &&						 
+							(proposedAct.getSchema().getLength() <= m_maxSchemaLength ))
 						{
-							// only if the intention's intention is positive (this is some form of positive anticipation)
-							if (proposedAct.getSchema().getIntentionAct().getSatisfaction() > 0)
+							IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
+		
+							int i = proposals.indexOf(p);
+							if (i == -1)
+								proposals.add(p);
+							else
+								proposals.get(i).update(w, e);
+						}
+						// If the intention is not reliable
+						// if the intention's schema has not passed the threshold then  
+						// the activation is propagated to the intention's schema's context
+						else
+						{
+							if (!proposedAct.getSchema().isPrimitive())
 							{
-								IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
-								int i = proposals.indexOf(p);
-								if (i == -1)
-									proposals.add(p);
-								else
-									proposals.get(i).update(w, e);
+								// only if the intention's intention is positive (this is some form of positive anticipation)
+								if (proposedAct.getSchema().getIntentionAct().getSatisfaction() > 0)
+								{
+									IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
+									int i = proposals.indexOf(p);
+									if (i == -1)
+										proposals.add(p);
+									else
+										proposals.get(i).update(w, e);
+								}
 							}
 						}
-					}
+					}//
 				}
 			}
 
@@ -344,26 +338,6 @@ public class EpisodicMemory
 			}
 			
 		}
-
-		// Acts that match a phenomenon propose their schemas if they are primitive
-//		for (IAct a : m_acts)
-//		{
-//			if (a.getSchema().isPrimitive())
-//			{
-//				for (IPlace place : phenomenaList)
-//				{
-//					if (a.getPhenomenon() == place.getValue() && a.getPosition().epsilonEquals(place.getPosition(), .1f))
-//					{
-//						IProposition p = new Proposition(a.getSchema(), a.getSatisfaction(), 1);
-//						int i = proposals.indexOf(p);
-//						if (i == -1)
-//							proposals.add(p);
-//						else
-//							proposals.get(i).update(a.getSatisfaction(), 1);
-//					}
-//				}
-//			}
-//		}
 
 		System.out.println("Propose: ");
 		Object proposalElmt = null;

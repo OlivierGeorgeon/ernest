@@ -2,6 +2,8 @@ package imos;
 
 import java.util.ArrayList;
 import spas.IPlace;
+import spas.ISpas;
+import ernest.ISensorymotorSystem;
 import ernest.ITracer;
 
 
@@ -55,5 +57,6 @@ public interface IImos
 	public boolean newIntention();
 	public boolean compositeIntention();
 	
-	public void setPhenomena(ArrayList<IPlace> phenomenaList);
+	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem);
+	//public void setPhenomena(ArrayList<IPlace> phenomenaList);
 }

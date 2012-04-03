@@ -181,6 +181,7 @@ public class Ernest implements IErnest
 	{
 		m_sensorymotorSystem = sensor;
 		m_sensorymotorSystem.init(m_spas, m_imos, m_tracer);
+		m_imos.setSensorimotorSystem(m_sensorymotorSystem);
 	};
 	
 	/**
