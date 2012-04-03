@@ -82,5 +82,9 @@ public interface ISpas
 	 * @return the list of places. 
 	 */
 	public ArrayList<IPlace> getPhenomena();
+	
+	public boolean checkAct(IAct act);
+	
+	public int getValue(Vector3f position);
 
 }

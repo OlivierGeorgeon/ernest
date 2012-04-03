@@ -2,6 +2,7 @@ package ernest;
 
 import java.util.ArrayList;
 
+import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
 import imos.IAct;
@@ -50,5 +51,8 @@ public interface ISensorymotorSystem
 	public void sense(int[][] stimuli);
 	public int impulsion(int intentionSchema);
 	public void setSegmentList(ArrayList<ISegment> segmentList);
+	
+	public ArrayList<IPlace> getPhenomena();
+	public boolean checkConsistency(IAct act);
 
 }
