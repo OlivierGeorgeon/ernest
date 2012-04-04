@@ -8,7 +8,7 @@ import utils.ErnestUtils;
 import ernest.Ernest;
 
 /**
- * A place is a location in the local space that holds a bundle.
+ * A place is a location in the local space that marks someting.
  * @author Olivier
  */
 public class Place implements IPlace 
@@ -33,7 +33,9 @@ public class Place implements IPlace
 	int m_stick;
 	
 	int m_value;
-	
+
+	Vector3f m_simulatedPosition = new Vector3f();
+
 	/**
 	 * Create a new place 
 	 * (The provided position is cloned so the place can be moved without changing the provided position).
@@ -107,17 +109,19 @@ public class Place implements IPlace
 	{
 		boolean ret;
 		// Is in the same cell in egocentric Cartesian referential.
-		//ret = (Math.round(m_position.x) == Math.round(position.x)) && (Math.round(m_position.y) == Math.round(position.y)); 
+		ret = (Math.round(m_position.x) == Math.round(position.x)) && (Math.round(m_position.y) == Math.round(position.y)); 
 		
 		// Is in the same cell in egocentric polar referential.
-		if (m_position.length() < .5f && position.length() < .5f)
-			ret = true;
-		else if (Math.round(ErnestUtils.polarAngle(m_position) / (float)Math.PI * 4) ==
- 			     Math.round(ErnestUtils.polarAngle(  position) / (float)Math.PI * 4) &&
- 			     (Math.round(m_position.length()) == Math.round(position.length())))
-			ret = true;
-		else 
-			ret = false;
+		
+		// Does not work for the cell behind !!
+//		if (m_position.length() < .5f && position.length() < .5f)
+//			ret = true;
+//		else if (Math.round(ErnestUtils.polarAngle(m_position) / (float)Math.PI * 4) ==
+// 			     Math.round(ErnestUtils.polarAngle(  position) / (float)Math.PI * 4) &&
+// 			     (Math.round(m_position.length()) == Math.round(position.length())))
+//			ret = true;
+//		else 
+//			ret = false;
 		
 		return ret;		
 	}
@@ -372,5 +376,43 @@ public class Place implements IPlace
 	public int getValue() 
 	{
 		return m_value;
+	}
+
+	public void initSimulation() 
+	{
+		m_simulatedPosition.set(m_position);
+	}
+
+	public void translateSimulation(Vector3f translation) 
+	{
+		m_simulatedPosition.add(translation);
+	}
+
+	public void rotateSimulation(float angle) 
+	{
+		Matrix3f rot = new Matrix3f();
+		rot.rotZ(angle);
+		
+		Vector3f oldPosition = m_simulatedPosition;
+		rot.transform(oldPosition, m_simulatedPosition); // (rot * m_position) is placed into m_position
+	}
+
+	public boolean isInCellSimulation(Vector3f position) 
+	{
+		boolean ret;
+		// Is in the same cell in egocentric Cartesian referential.
+		ret = (Math.round(m_position.x) == Math.round(position.x)) && (Math.round(m_position.y) == Math.round(position.y)); 
+		
+		// Is in the same cell in egocentric polar referential.
+//		if (m_position.length() < .5f && position.length() < .5f)
+//			ret = true;
+//		else if (Math.round(ErnestUtils.polarAngle(m_position) / (float)Math.PI * 4) ==
+// 			     Math.round(ErnestUtils.polarAngle(  position) / (float)Math.PI * 4) &&
+// 			     (Math.round(m_position.length()) == Math.round(position.length())))
+//			ret = true;
+//		else 
+//			ret = false;
+		
+		return ret;		
 	}
 }

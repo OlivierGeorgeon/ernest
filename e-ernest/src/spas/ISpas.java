@@ -86,5 +86,10 @@ public interface ISpas
 	public boolean checkAct(IAct act);
 	
 	public int getValue(Vector3f position);
+	
+	public void initSimulation();
+	public void translateSimulation(Vector3f translation);
+	public void rotateSimulation(float angle);
+	public int getValueSimulation(Vector3f position);
 
 }

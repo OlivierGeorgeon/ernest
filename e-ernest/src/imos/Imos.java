@@ -252,13 +252,19 @@ public class Imos implements IImos
 	 */
 	public IAct step(IAct primitiveEnaction) 
 	{
-		m_imosCycle++;
-		
+		m_imosCycle++;		
 		m_internalState= "";
 
+		// Trace the new event
+		
+		if (m_tracer != null)
+		{
+            m_tracer.startNewEvent(getCounter());
+			m_tracer.addEventElement("clock", getCounter() + "");
+		}                
+		
 		IAct intentionAct = null;
 		IAct enactedAct = null;
-		
 		
 		// We follow up the current enaction (Accept on startup when the primitive intention is null).
 
@@ -267,7 +273,10 @@ public class Imos implements IImos
 			if (m_tracer != null) {
 				m_tracer.addEventElement("primitive_intended_act", m_primitiveIntention.getLabel());
 				m_tracer.addEventElement("primitive_enacted_act", primitiveEnaction.getLabel());
+				m_tracer.addEventElement("primitive_enacted_schema", primitiveEnaction.getSchema().getLabel());
+				m_tracer.addEventElement("satisfaction", primitiveEnaction.getSatisfaction()/10 + "");
 			}
+
 			// Compute the actually enacted act
 			
 			enactedAct = enactedAct(m_primitiveIntention.getSchema(), primitiveEnaction);

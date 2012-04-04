@@ -121,4 +121,9 @@ public interface IPlace
 	public int getStick();
 	public float getFrontDistance();
 	
+	public void initSimulation();
+	public void translateSimulation(Vector3f translation);
+	public void rotateSimulation(float angle);
+	public boolean isInCellSimulation(Vector3f position);
+	
 }

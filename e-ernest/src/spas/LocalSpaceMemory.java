@@ -55,7 +55,7 @@ public class LocalSpaceMemory
 		m_tracer = tracer;
 	}
 
-	public void Trace()
+	public void trace()
 	{
 		if (m_tracer != null && !m_places.isEmpty())
 		{
@@ -110,6 +110,16 @@ public class LocalSpaceMemory
 	}
 
 	/**
+	 * Simulate the rotation of all the places of the given angle.
+	 * @param angle The angle (provide the opposite angle from the agent's movement).
+	 */
+	public void rotateSimulation(float angle)
+	{
+		for (IPlace l : m_places)
+			l.rotateSimulation(angle);
+	}
+
+	/**
 	 * Translate all the places of the given vector.
 	 * Remove places that are outside the local space memory radius.
 	 * @param translation The translation vector (provide the opposite vector from the agent's movement).
@@ -128,6 +138,27 @@ public class LocalSpaceMemory
 		}		
 	}
 	
+	/**
+	 * Simulate the translation of all the places of the given vector.
+	 * Remove places that are outside the local space memory radius.
+	 * @param translation The translation vector (provide the opposite vector from the agent's movement).
+	 */
+	public void translateSimulation(Vector3f translation)
+	{
+		for (IPlace p : m_places)
+			p.translateSimulation(translation);			
+	}
+	
+	/**
+	 * Rotate all the places of the given angle.
+	 * @param angle The angle (provide the opposite angle from the agent's movement).
+	 */
+	public void initSimulation()
+	{
+		for (IPlace p : m_places)
+			p.initSimulation();
+	}
+
 	/**
 	 * Get the bundle at a given position.
 	 * (The last bundle found in the list of places that match this position)
@@ -152,6 +183,23 @@ public class LocalSpaceMemory
 	 * @return The bundle.
 	 */
 	public int getValue(Vector3f position)
+	{
+		int value = Ernest.UNANIMATED_COLOR;
+		for (IPlace p : m_places)
+		{
+			if (p.isInCell(position) && p.isPhenomenon())
+				value = p.getValue();
+		}	
+		return value;
+	}
+
+	/**
+	 * Get the phenomena value at a given position in the simulation.
+	 * (The last bundle found in the list of places that match this position)
+	 * @param position The position of the location.
+	 * @return The bundle.
+	 */
+	public int getValueSimulation(Vector3f position)
 	{
 		int value = Ernest.UNANIMATED_COLOR;
 		for (IPlace p : m_places)
@@ -241,41 +289,6 @@ public class LocalSpaceMemory
 		}
 		//m_places.clear();
 	}
-	
-	/**
-	 * Get the color of a given position.
-	 * @param position The position.
-	 * @return The Hexadecimal color code.
-	 */
-//	public String getHexColor(Vector3f position) 
-//	{
-//		int value = getValue(position);
-//		if (value == Ernest.STIMULATION_VISUAL_UNSEEN)
-//		{
-//			Vector3f farPosition = new Vector3f(position);
-//			farPosition.scale(2f);
-//			//Vector3f farPosition = new Vector3f();
-//			//farPosition.scale(2f, position);
-//			value = getValue(farPosition);
-//		}
-//		return ErnestUtils.hexColor(value);
-//	}
-
-	/**
-	 * Get the value of the first bundle found in a given position.
-	 * or STIMULATION_VISUAL_UNSEEN if no bundle found in that position.
-	 * @param position The position.
-	 * @return The value.
-	 */
-//	public int getValue(Vector3f position)
-//	{
-//		int value = Ernest.STIMULATION_VISUAL_UNSEEN;
-//
-//		IBundle b = getBundle(position);
-//		if (b != null)
-//			value = b.getValue();
-//		return value;
-//	}
 	
 	/**
 	 * @return The list of places in Local Spave Memory
@@ -404,7 +417,6 @@ public class LocalSpaceMemory
 	}
 	
 	/**
-	 * @param clock The current clock of Spas
 	 * @return the list of phenomena in local space memory
 	 */
 	public ArrayList<IPlace> getPhenomena() 
@@ -416,6 +428,8 @@ public class LocalSpaceMemory
 			if (place.getPosition().length() < 1.9 && place.getPosition().length() > .1 && place.isPhenomenon())
 				phenomena.add(place);
 		}
+		
+		trace();
 		return phenomena;
 	}	
 
