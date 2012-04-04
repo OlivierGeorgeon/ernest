@@ -291,7 +291,7 @@ public class EpisodicMemory
 					}
 					
 					// If consistent 
-					//if (m_sensorimotorSystem.checkConsistency(proposedAct))
+					if (m_sensorimotorSystem.checkConsistency(proposedAct))
 					{
 					
 						// If the intention is reliable then a proposition is constructed

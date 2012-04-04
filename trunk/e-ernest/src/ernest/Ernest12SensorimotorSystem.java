@@ -100,40 +100,63 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 	public boolean checkConsistency(IAct act) 
 	{
+		m_spas.initSimulation();
+		
+		return simulate(act);		
+	}
+	
+	private boolean simulate(IAct act)
+	{
+		boolean consistent = false;
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
-		{
+		{			
 			if (s.getLabel().equals(">"))
 			{
-				if (m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD) == Ernest.UNANIMATED_COLOR)
-					return true;
+				if (m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_AHEAD) == Ernest.UNANIMATED_COLOR)
+					consistent = true;
 				else
-					return act.getPhenomenon() == m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD);
+					consistent = act.getPhenomenon() == m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
-//			if (s.getLabel().equals("-"))
-//			{
-//				if (m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD) == Ernest.UNANIMATED_COLOR)
-//					return true;
-//				else
-//					return act.getPhenomenon() == m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD);
-//			}
-//			if (s.getLabel().equals("\\"))
-//			{
-//				if (m_spas.getValue(LocalSpaceMemory.DIRECTION_RIGHT) == Ernest.UNANIMATED_COLOR)
-//					return true;
-//				else
-//					return act.getPhenomenon() == m_spas.getValue(LocalSpaceMemory.DIRECTION_RIGHT);
-//			}
-//			if (s.getLabel().equals("/"))
-//			{
-//				if (m_spas.getValue(LocalSpaceMemory.DIRECTION_LEFT) == Ernest.UNANIMATED_COLOR)
-//					return true;
-//				else
-//					return act.getPhenomenon() == m_spas.getValue(LocalSpaceMemory.DIRECTION_LEFT);
-//			}
+			if (s.getLabel().equals("-"))
+			{
+				if (m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_AHEAD) == Ernest.UNANIMATED_COLOR)
+					consistent = true;
+				else
+					consistent = act.getPhenomenon() == m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_AHEAD);
+			}
+			if (s.getLabel().equals("\\"))
+			{
+				if (m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_RIGHT) == Ernest.UNANIMATED_COLOR)
+					consistent = true;
+				else
+					consistent = act.getPhenomenon() == m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_RIGHT);
+			}
+			if (s.getLabel().equals("/"))
+			{
+				if (m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_LEFT) == Ernest.UNANIMATED_COLOR)
+					consistent = true;
+				else
+					consistent = act.getPhenomenon() == m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_LEFT);
+			}
+			
+			if (consistent)
+			{
+				if (act.getLabel().equals(">t") || act.getLabel().equals(">   ") )
+					m_spas.translateSimulation(new Vector3f(-1, 0,0));
+				if (s.getLabel().equals("^"))
+					m_spas.rotateSimulation((float) - Math.PI/2);
+				if (s.getLabel().equals("v"))
+					m_spas.rotateSimulation((float) Math.PI/2);
+			}
 		}
-
-		return true;
+		else 
+		{
+			consistent = simulate(act.getSchema().getContextAct());
+			if (consistent)
+				consistent = simulate(act.getSchema().getIntentionAct());
+		}
+		return consistent;
 	}
 
 }

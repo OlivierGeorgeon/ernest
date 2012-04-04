@@ -142,11 +142,12 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		        	
     		IAct enactedPrimitiveAct = null;
  
-    		if (m_tracer != null)
-    		{
-                m_tracer.startNewEvent(m_imos.getCounter());
-    			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-    		}                
+    		// Now traced in IMOS
+//    		if (m_tracer != null)
+//    		{
+//                m_tracer.startNewEvent(m_imos.getCounter());
+//    			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+//    		}                
 
     		// If the intended act was null (during the first cycle), then the enacted act is null.
 
@@ -156,8 +157,9 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		{
     			enactedPrimitiveAct = m_imos.addInteraction(newObservation.getPrimitiveAct().getSchema().getLabel(), newObservation.getStimuli(), newObservation.getSatisfaction());
 
-    			if (m_tracer != null) 
-    				m_tracer.addEventElement("primitive_enacted_schema", newObservation.getPrimitiveAct().getSchema().getLabel());
+        		// Now traced in IMOS
+//    			if (m_tracer != null) 
+//    				m_tracer.addEventElement("primitive_enacted_schema", newObservation.getPrimitiveAct().getSchema().getLabel());
     		}
     		
     		// Let Ernest decide for the next primitive schema to enact =========================
@@ -212,7 +214,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
     		if (m_tracer != null)
     		{
     			newObservation.trace(m_tracer);
-    			m_spas.traceLocalSpace();
+    			// Now traced in Spas.getPhenomena 
+    			//m_spas.traceLocalSpace();
     		}
         }
     	
@@ -735,6 +738,4 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 				it.remove();
 		}		
 	}
-
-
 }

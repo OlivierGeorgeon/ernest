@@ -121,36 +121,8 @@ public class Spas implements ISpas
 
 	public void traceLocalSpace() 
 	{
-		m_localSpaceMemory.Trace();
+		m_localSpaceMemory.trace();
 	}
-
-
-//	/**
-//	 * Clear a location in the local space memory.
-//	 * @param position The position to clear.
-//	 */
-//	public void clearPlace(Vector3f position)
-//	{
-//		for (Iterator it = m_places.iterator(); it.hasNext();)
-//		{
-//			IPlace l = (IPlace)it.next();
-//			if (l.isInCell(position))
-//				it.remove();
-//		}		
-//	}
-		
-//	public void clear()
-//	{
-////		for (Iterator it = m_places.iterator(); it.hasNext();)
-////		{
-////			IPlace p = (IPlace)it.next();
-////			if (p.getType() == Spas.PLACE_FOCUS) p.setType(Spas.PLACE_SEE);
-////			if (p.getUpdateCount() < m_persistenceMemory.getUpdateCount() - 10)
-////				it.remove();
-////		}
-//
-//		m_places.clear();
-//	}
 
 	public IPlace getFocusPlace() 
 	{
@@ -208,5 +180,25 @@ public class Spas implements ISpas
 	public int getValue(Vector3f position) 
 	{
 		return m_localSpaceMemory.getValue(position);
+	}
+
+	public void initSimulation() 
+	{
+		m_localSpaceMemory.initSimulation();
+	}
+
+	public void translateSimulation(Vector3f translation) 
+	{
+		m_localSpaceMemory.translateSimulation(translation);
+	}
+
+	public void rotateSimulation(float angle) 
+	{
+		m_localSpaceMemory.rotateSimulation(angle);
+	}
+
+	public int getValueSimulation(Vector3f position) 
+	{
+		return m_localSpaceMemory.getValueSimulation(position);
 	}	
 }
