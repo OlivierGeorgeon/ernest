@@ -401,7 +401,7 @@ public class Place implements IPlace
 	{
 		boolean ret;
 		// Is in the same cell in egocentric Cartesian referential.
-		ret = (Math.round(m_position.x) == Math.round(position.x)) && (Math.round(m_position.y) == Math.round(position.y)); 
+		ret = (Math.round(m_simulatedPosition.x) == Math.round(position.x)) && (Math.round(m_simulatedPosition.y) == Math.round(position.y)); 
 		
 		// Is in the same cell in egocentric polar referential.
 //		if (m_position.length() < .5f && position.length() < .5f)

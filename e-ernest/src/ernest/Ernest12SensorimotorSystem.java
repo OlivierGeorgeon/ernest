@@ -139,6 +139,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				else
 					consistent = act.getPhenomenon() == m_spas.getValueSimulation(LocalSpaceMemory.DIRECTION_LEFT);
 			}
+			if (s.getLabel().equals("^") || s.getLabel().equals("v"))
+				consistent = true;
 			
 			if (consistent)
 			{

@@ -250,8 +250,12 @@ public class EpisodicMemory
 		
 		// Browse all the existing schemas 
 		Object activations = null;
+		Object inconsistences = null;
 		if (m_tracer != null)
-			activations = m_tracer.addEventElement("activations", false);
+		{
+			activations = m_tracer.addEventElement("activations", true);
+			inconsistences = m_tracer.addEventElement("inconsistences", true);
+		}
 		for (ISchema s : m_schemas)
 		{
 			if (!s.isPrimitive())
@@ -264,7 +268,7 @@ public class EpisodicMemory
 					{
 						activated = true;
 						if (m_tracer != null)
-							m_tracer.addSubelement(activations, "activation", s + " s=" + s.getIntentionAct().getSatisfaction());
+							m_tracer.addSubelement(activations, "activation", s + " expected_satisfaction=" + s.getIntentionAct().getSatisfaction());
 						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
@@ -326,6 +330,11 @@ public class EpisodicMemory
 							}
 						}
 					}//
+					else
+					{
+						if (m_tracer != null)
+							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
+					}
 				}
 			}
 
@@ -342,14 +351,14 @@ public class EpisodicMemory
 		System.out.println("Propose: ");
 		Object proposalElmt = null;
 		if (m_tracer != null)
-			proposalElmt = m_tracer.addEventElement("proposals", false);
+			proposalElmt = m_tracer.addEventElement("proposals", true);
 		
-//		for (IProposition p : proposals)
-//		{
-//			if (m_tracer != null)
-//				m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
-//			//System.out.println(p);
-//		}
+		for (IProposition p : proposals)
+		{
+			if (m_tracer != null)
+				m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
+			//System.out.println(p);
+		}
 		
 		// TODO Update the expected satisfaction of each proposed schema based on the local map anticipation
 

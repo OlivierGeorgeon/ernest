@@ -23,7 +23,7 @@ public class LocalSpaceMemory
 	public static float EXTRAPERSONAL_DISTANCE = 1.5f;
 	
 	/** The duration of persistence in local space memory. */
-	public static int PERSISTENCE_DURATION = 50;//20;
+	public static int PERSISTENCE_DURATION = 10;//20;
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
@@ -204,7 +204,7 @@ public class LocalSpaceMemory
 		int value = Ernest.UNANIMATED_COLOR;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.isPhenomenon())
+			if (p.isInCellSimulation(position) && p.isPhenomenon())
 				value = p.getValue();
 		}	
 		return value;
