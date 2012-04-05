@@ -109,7 +109,7 @@ public class Proposition implements IProposition
 	public String toString()
 	{
 			
-		String s = m_schema + " w=" + m_weight;
+		String s = m_schema + " proposition_weight=" + m_weight;
 		return s;
 	}
 	

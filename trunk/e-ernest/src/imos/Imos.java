@@ -288,7 +288,11 @@ public class Imos implements IImos
 			
 			// Check the consistency with Spas
 			if (intentionAct != null && !m_sensorimotorSystem.checkConsistency(intentionAct))
+			{
+				if (m_tracer != null)
+					m_tracer.addEventElement("interrupted", intentionAct.getLabel());
 				intentionAct = null;
+			}
 		}	
 		
 
