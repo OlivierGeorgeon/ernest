@@ -237,8 +237,8 @@ public class Imos implements IImos
 			addActivationAct(enactedAct.getSchema().getIntentionAct());	
 		
 		// Acts that match a phenomenon propose their schemas if they are primitive
-		m_episodicMemory.evokeAct(m_activationList, phenomenaList); 
-		m_episodicMemory.evokeAct(m_contextList, phenomenaList); 
+		//m_episodicMemory.evokeAct(m_activationList, phenomenaList); 
+		//m_episodicMemory.evokeAct(m_contextList, phenomenaList); 
 		
 		// add the streamcontext list to the context list
 		addContextList(contextList);
@@ -287,12 +287,12 @@ public class Imos implements IImos
 			intentionAct = nextAct(m_primitiveIntention, primitiveEnaction);
 			
 			// Check the consistency with Spas
-			if (intentionAct != null && !m_sensorimotorSystem.checkConsistency(intentionAct))
-			{
-				if (m_tracer != null)
-					m_tracer.addEventElement("interrupted", intentionAct.getLabel());
-				intentionAct = null;
-			}
+//			if (intentionAct != null && !m_sensorimotorSystem.checkConsistency(intentionAct))
+//			{
+//				if (m_tracer != null)
+//					m_tracer.addEventElement("interrupted", intentionAct.getLabel());
+//				intentionAct = null;
+//			}
 		}	
 		
 
