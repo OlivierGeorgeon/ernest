@@ -108,7 +108,7 @@ public class Place implements IPlace
 	public boolean isInCell(Vector3f position)
 	{
 		boolean ret;
-		// Is in the same cell in egocentric Cartesian referential.
+		// Is in the same cell.
 		ret = (Math.round(m_position.x) == Math.round(position.x)) && (Math.round(m_position.y) == Math.round(position.y)); 
 		
 		// Is in the same cell in egocentric polar referential.

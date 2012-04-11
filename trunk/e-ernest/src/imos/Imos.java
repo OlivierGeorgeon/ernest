@@ -236,9 +236,10 @@ public class Imos implements IImos
 		if (!enactedAct.getSchema().isPrimitive())
 			addActivationAct(enactedAct.getSchema().getIntentionAct());	
 		
-		// Acts that match a phenomenon propose their schemas if they are primitive
+		// Acts that match a phenomenon are added to the context
 		//m_episodicMemory.evokeAct(m_activationList, phenomenaList); 
 		//m_episodicMemory.evokeAct(m_contextList, phenomenaList); 
+		addActivationAct(m_sensorimotorSystem.situationAct());
 		
 		// add the streamcontext list to the context list
 		addContextList(contextList);
@@ -574,6 +575,15 @@ public class Imos implements IImos
 	{
 		return (m_intentionAct.getLength() > 1);
 	}
+	
+    public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct)
+    {
+    	
+    	IAct act =  m_episodicMemory.addCompositeInteraction(contextAct, intentionAct).getSucceedingAct();
+    	//act.setConfidence(Imos.RELIABLE);
+    	act.setConfidence(Imos.HYPOTHETICAL);
+    	return act;
+    }
 
 //	public void setPhenomena(ArrayList<IPlace> phenomenaList) 
 //	{

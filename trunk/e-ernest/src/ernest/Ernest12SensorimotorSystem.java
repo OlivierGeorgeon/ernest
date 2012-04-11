@@ -2,6 +2,7 @@ package ernest;
 
 import imos.IAct;
 import imos.ISchema;
+import imos.Imos;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -159,6 +160,40 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				consistent = simulate(act.getSchema().getIntentionAct());
 		}
 		return consistent;
+	}
+	
+	public IAct situationAct() 
+	{
+		IAct situationAct = null;
+		int left = m_spas.getValue(LocalSpaceMemory.DIRECTION_LEFT);
+		int front = m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD);
+		int right = m_spas.getValue(LocalSpaceMemory.DIRECTION_RIGHT);
+		
+		IAct frontWall = m_imos.addInteraction("-", "t", 0);
+		IAct leftWall = m_imos.addInteraction("/", "t", 0);
+		IAct leftEmpty = m_imos.addInteraction("/", "f", 0);
+
+		// Left Corner
+		if (front == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_EMPTY)
+		{
+			situationAct = m_imos.addCompositeInteraction(frontWall, leftWall);
+			situationAct.getSchema().incWeight(6);
+			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
+				m_tracer.addEventElement("situation", "left-corner");
+		}
+		
+		// right Corner
+		if (front == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_EMPTY )
+		{
+			situationAct = m_imos.addCompositeInteraction(frontWall, leftEmpty);
+			situationAct.getSchema().incWeight(6);
+			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
+				m_tracer.addEventElement("situation", "right-corner");
+		}
+		if (situationAct != null && situationAct.getConfidence() == Imos.RELIABLE)
+			return situationAct;
+		else 
+			return null;
 	}
 
 }
