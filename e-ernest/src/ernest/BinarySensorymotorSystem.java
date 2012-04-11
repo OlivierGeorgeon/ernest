@@ -81,5 +81,10 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	{
 		return true;
 	}
+
+	public IAct situationAct() 
+	{
+		return null;
+	}
 	
 }

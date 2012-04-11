@@ -59,4 +59,6 @@ public interface IImos
 	
 	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem);
 	//public void setPhenomena(ArrayList<IPlace> phenomenaList);
+    public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct);
+
 }

@@ -23,7 +23,7 @@ public class LocalSpaceMemory
 	public static float EXTRAPERSONAL_DISTANCE = 1.5f;
 	
 	/** The duration of persistence in local space memory. */
-	public static int PERSISTENCE_DURATION = 10;//20;
+	public static int PERSISTENCE_DURATION = 50;//20;
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();

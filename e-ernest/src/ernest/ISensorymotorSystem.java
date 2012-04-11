@@ -54,5 +54,7 @@ public interface ISensorymotorSystem
 	
 	public ArrayList<IPlace> getPhenomena();
 	public boolean checkConsistency(IAct act);
+	
+	public IAct situationAct();
 
 }
