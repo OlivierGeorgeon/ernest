@@ -40,6 +40,8 @@ public class Act implements IAct
 	
 	private int m_phenomenon = Ernest.PHENOMENON_EMPTY;
 	private Vector3f m_position = new Vector3f();
+	private Vector3f m_translation = new Vector3f();
+	private float m_rotation = 0;
 	
 	/**
 	 * Constructor for a succeeding act. 
@@ -240,5 +242,25 @@ public class Act implements IAct
 	public Vector3f getPosition() 
 	{
 		return m_position;
+	}
+
+	public void setTranslation(Vector3f translation) 
+	{
+		m_translation = translation;
+	}
+
+	public Vector3f getTranslation() 
+	{
+		return m_translation;
+	}
+
+	public void setRotation(float rotation) 
+	{
+		m_rotation = rotation;
+	}
+
+	public float getRotation() 
+	{
+		return m_rotation;
 	}
 }

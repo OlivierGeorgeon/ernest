@@ -276,7 +276,8 @@ public class Ernest implements IErnest
 
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{
-		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+		//return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+		return m_sensorymotorSystem.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
 
 //	public void setPlaceList(ArrayList<IPlace> placeList)

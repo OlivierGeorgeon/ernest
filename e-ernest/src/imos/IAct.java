@@ -76,11 +76,29 @@ public interface IAct  extends Comparable<IAct>
 	
 	/**
 	 * Methods related to space.
-	 */
-	
+	 * @param bundleCode The phenomenon's code.
+	 */	
 	public void setPhenomenon(int bundleCode);
+	
+	/**
+	 * @return the phenomenon's code.
+	 */
 	public int getPhenomenon();
+	
+	/**
+	 * @param position The relative position of the phenomenon evoked by this interaction.
+	 */
 	public void setPosition(Vector3f position);
+	
+	/**
+	 * @return The relative position of the phenomenon evoked by this interaction.
+	 */
 	public Vector3f getPosition();
+	
+	public void setTranslation(Vector3f translation);
+	public Vector3f getTranslation();
+	
+	public void setRotation(float rotation);
+	public float getRotation();
 	
 }
