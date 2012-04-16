@@ -149,30 +149,30 @@ public class Imos implements IImos
 		// (this value does not impact the agent's behavior)
 		a = m_episodicMemory.addAct(actLabel, s, true,  satisfaction * 10,  RELIABLE);
 		
-		// Hard-coded positions and bundle codes
-		// TODO positions must be learned
-		boolean status = stimuliLabel.equals("t") || stimuliLabel.equals("w  ");
-		if (actionLabel.equals("/"))
-		{
-			a.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
-			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
-		}
-		if (actionLabel.equals("\\"))
-		{
-			a.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
-		}
-		if (actionLabel.equals("-"))
-		{
-			a.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
-		}
-		if (actionLabel.equals(">") && (stimuliLabel.equals("f") || stimuliLabel.equals("w  ")))
-		{
-			a.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-			a.setPhenomenon(Ernest.PHENOMENON_WALL);
-		}
-		
+//		// Hard-coded positions and bundle codes
+//		// TODO positions must be learned
+//		boolean status = stimuliLabel.equals("t") || stimuliLabel.equals("w  ");
+//		if (actionLabel.equals("/"))
+//		{
+//			a.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
+//			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
+//		}
+//		if (actionLabel.equals("\\"))
+//		{
+//			a.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+//			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
+//		}
+//		if (actionLabel.equals("-"))
+//		{
+//			a.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+//			a.setPhenomenon(status ? Ernest.PHENOMENON_WALL : Ernest.PHENOMENON_EMPTY);
+//		}
+//		if (actionLabel.equals(">") && (stimuliLabel.equals("f") || stimuliLabel.equals("w  ")))
+//		{
+//			a.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+//			a.setPhenomenon(Ernest.PHENOMENON_WALL);
+//		}
+//		
 		System.out.println("Primitive schema " + s);
 		return a;
 		

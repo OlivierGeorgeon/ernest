@@ -22,6 +22,88 @@ import spas.Spas;
  */
 public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem 
 {
+	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
+	{
+		// Create the act in imos
+		
+		IAct act = m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+		
+		// Add the spatial properties ========
+		
+		if (schemaLabel.equals(">"))
+		{
+			if (stimuliLabel.equals("t") || stimuliLabel.equals("  "))
+			{
+				act.setTranslation(new Vector3f(1,0,0));
+				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setPosition(LocalSpaceMemory.DIRECTION_HERE);
+			}
+			else
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+			}
+		}
+
+		if (schemaLabel.equals("^"))
+		{
+			act.setRotation((float) Math.PI / 2);
+			act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+			act.setPosition(LocalSpaceMemory.DIRECTION_HERE);
+		}
+		
+		if (schemaLabel.equals("v"))
+		{
+			act.setRotation((float) - Math.PI / 2);
+			act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+			act.setPosition(LocalSpaceMemory.DIRECTION_HERE);
+		}
+		
+		if (act.getSchema().getLabel().equals("/") )
+		{
+			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
+			}
+			else
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
+			}
+		}
+		
+		if (act.getSchema().getLabel().equals("-"))
+		{
+			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+			}
+			else
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+			}
+		}
+		
+		if (act.getSchema().getLabel().equals("\\"))
+		{
+			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			}
+			else
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			}
+		}
+
+		return act;
+	}
+
 	public IAct enactedAct(IAct act, boolean status) 
 	{
 		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
@@ -36,48 +118,49 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		m_spas.tick();
 		IObservation observation = new Observation();
+		
+		observation.setTranslation(enactedAct.getTranslation());
+		observation.setRotation(enactedAct.getRotation());
 
-		//int value = 0x0FFFFFF;
-		int type = Spas.PLACE_PRIMITIVE;
+		//int type = Spas.PLACE_PRIMITIVE;
 		int shape = Spas.SHAPE_PIE;
 		float o = 0;
 		if (act.getSchema().getLabel().equals(">"))
 		{
 			shape = Spas.SHAPE_TRIANGLE;
-			if (status)
-				observation.setTranslation(new Vector3f(1,0,0));
-			else	
-				type = Spas.PLACE_EVOKE_PHENOMENON;
+			//if (status)
+			//	observation.setTranslation(new Vector3f(1,0,0));
+			//else	
+			//	type = Spas.PLACE_EVOKE_PHENOMENON;
 		}
 		if (act.getSchema().getLabel().equals("^"))
 		{
-			observation.setRotation((float) Math.PI / 2);
+			//observation.setRotation((float) Math.PI / 2);
 			shape = Spas.SHAPE_PIE;
 			o = (float) Math.PI / 2;
 		}
 		if (act.getSchema().getLabel().equals("v"))
 		{
-			observation.setRotation((float) - Math.PI / 2);
+			//observation.setRotation((float) - Math.PI / 2);
 			shape = Spas.SHAPE_PIE;
 			o = (float) - Math.PI / 2;
 		}
 		if (act.getSchema().getLabel().equals("/"))
 		{
 			shape = Spas.SHAPE_SQUARE;
-			type = Spas.PLACE_EVOKE_PHENOMENON;
+			//type = Spas.PLACE_EVOKE_PHENOMENON;
 		}
 		if (act.getSchema().getLabel().equals("-"))
 		{
 			shape = Spas.SHAPE_SQUARE;
-			type = Spas.PLACE_EVOKE_PHENOMENON;
+			//type = Spas.PLACE_EVOKE_PHENOMENON;
 		}
 		if (act.getSchema().getLabel().equals("\\"))
 		{
 			shape = Spas.SHAPE_SQUARE;
-			type = Spas.PLACE_EVOKE_PHENOMENON;
+			//type = Spas.PLACE_EVOKE_PHENOMENON;
 		}
 
-		//IPlace place = m_spas.addPlace(new Vector3f(x,y,0), type, shape);
 		IPlace place = m_spas.addPlace(enactedAct.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, shape);
 		
 		//place.setValue(value);
