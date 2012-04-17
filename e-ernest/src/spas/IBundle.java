@@ -71,6 +71,10 @@ public interface IBundle
 	 * @param label The label of the element that contains the bundle's data in the trace. 
 	 */
 	void trace(ITracer tracer, String label);
+	
+	public void addAct(IAct act); 
+	public boolean hasAct(IAct act);
+	public boolean isConsistent(IAct act);
 
 	void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity, int value);
 

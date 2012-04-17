@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import javax.vecmath.Vector3f;
 
 /**
@@ -126,7 +128,9 @@ public interface IPlace
 	public void rotateSimulation(float angle);
 	public boolean isInCellSimulation(Vector3f position);
 	
-	public void setLabel(String label);
-	public String getLabel();
-	
+	//public void setLabel(String label);
+	//public String getLabel();
+	public void setAct(IAct act); 
+	public IAct getAct(); 
+
 }

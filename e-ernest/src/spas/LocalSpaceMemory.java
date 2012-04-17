@@ -210,6 +210,17 @@ public class LocalSpaceMemory
 		return value;
 	}
 
+	public IBundle getBundleSimulation(Vector3f position)
+	{
+		IBundle bundle = null;
+		for (IPlace p : m_places)
+		{
+			if (p.isInCellSimulation(position) && p.isPhenomenon())
+				bundle = p.getBundle();
+		}	
+		return bundle;
+	}
+
 	/**
 	 * Get the last place found at a given position.
 	 * @param position The position of the location.
@@ -323,10 +334,14 @@ public class LocalSpaceMemory
 				// Look for a corresponding existing persistent place in local space memory.
 				for (IPlace phenomenonPlace :  m_places)
 				{
-					if (phenomenonPlace.isPhenomenon()
-							&& phenomenonPlace.getValue() == interactionPlace.getValue() // Generates some confusion with walls in Ernest11
+					// If the interaction overlaps a phenomenon already constituted 
+					// Then the phenomenon is refreshed 
+					// TODO Add the interaction to the bundle list.
+					
+					if (phenomenonPlace.isPhenomenon() && interactionPlace.from(phenomenonPlace))
+							//&& phenomenonPlace.getValue() == interactionPlace.getValue() // Generates some confusion with walls in Ernest11
 							//&& bundlePlace.getBundle().equals(interactionPlace.getBundle()) // This version works wih Ernest11
-							&& interactionPlace.from(phenomenonPlace))
+							
 					{
 						phenomenonPlace.setPosition(interactionPlace.getPosition());
 						phenomenonPlace.setFirstPosition(interactionPlace.getFirstPosition());
@@ -335,12 +350,21 @@ public class LocalSpaceMemory
 						phenomenonPlace.setSpan(interactionPlace.getSpan());
 						phenomenonPlace.setOrientation(interactionPlace.getOrientation());
 						phenomenonPlace.setUpdateCount(m_spas.getClock());
+						phenomenonPlace.getBundle().addAct(interactionPlace.getAct());
 						newPlace = false;
 					}
 				}
 				if (newPlace)
 				{
-					// Add a new persistent place
+					// Create a new bundle if it does not yet exist
+					IBundle bundle = m_spas.evokeBundle(interactionPlace.getAct());
+					if (bundle == null)
+					{
+						bundle = new Bundle(interactionPlace.getValue());
+						bundle.addAct(interactionPlace.getAct());
+					}
+					
+					// Add a new phenomenon place
 					IPlace k = addPlace(interactionPlace.getBundle(),interactionPlace.getPosition()); 
 					k.setSpeed(interactionPlace.getSpeed());
 					k.setSpan(interactionPlace.getSpan());
@@ -348,9 +372,9 @@ public class LocalSpaceMemory
 					k.setSecondPosition(interactionPlace.getSecondPosition());
 					k.setOrientation(interactionPlace.getOrientation());
 					k.setUpdateCount(m_spas.getClock());
-					//k.setType(interactionPlace.getType());
 					k.setType(Spas.PLACE_PHENOMENON);
 					k.setValue(interactionPlace.getValue());
+					k.setBundle(bundle);
 				}
 			}
 		}
