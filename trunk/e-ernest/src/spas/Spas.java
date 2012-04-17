@@ -74,7 +74,8 @@ public class Spas implements ISpas
 		
 		Vector3f memoryTranslation = new Vector3f(observation.getTranslation());
 		memoryTranslation.scale(-1);
-		m_localSpaceMemory.update(memoryTranslation, - observation.getRotation());
+		//m_localSpaceMemory.update(memoryTranslation, - observation.getRotation());
+		m_localSpaceMemory.update(observation.getTranslation(), observation.getRotation());
 
 		// Create and maintain phenomenon places from interaction places. 
 		

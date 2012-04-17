@@ -126,4 +126,7 @@ public interface IPlace
 	public void rotateSimulation(float angle);
 	public boolean isInCellSimulation(Vector3f position);
 	
+	public void setLabel(String label);
+	public String getLabel();
+	
 }

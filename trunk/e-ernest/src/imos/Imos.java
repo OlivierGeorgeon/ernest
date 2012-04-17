@@ -79,8 +79,6 @@ public class Imos implements IImos
 	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
 	
-	//private ArrayList<IPlace> m_phenomenaList = new ArrayList<IPlace>();
-	
 	private ISensorymotorSystem m_sensorimotorSystem = null;
 
 	/**
@@ -584,9 +582,4 @@ public class Imos implements IImos
     	act.setConfidence(Imos.HYPOTHETICAL);
     	return act;
     }
-
-//	public void setPhenomena(ArrayList<IPlace> phenomenaList) 
-//	{
-//		m_phenomenaList = phenomenaList;
-//	}
 }
