@@ -20,16 +20,24 @@ import ernest.ITracer;
  */
 public class Bundle implements IBundle 
 {
-	int m_visualValue;
-	int m_tactileValue;
-	int m_lastTimeBundled;
+	int m_value;
+	int m_tactileValue = 0;
+	int m_lastTimeBundled = - Ernest.PERSISTENCE;
 
+	/** The acts attached to this bundle. */
+	private ArrayList<IAct> m_acts = new ArrayList<IAct>();
+	
 	/** The affordances attached to this bundle. */
 	private ArrayList<IAffordance> m_affordances = new ArrayList<IAffordance>();
 	
+	Bundle(int value)
+	{
+		m_value = value;
+	}
+	
 	Bundle(int visualValue, int tactileValue)
 	{
-		m_visualValue = visualValue;
+		m_value = visualValue;
 		m_tactileValue = tactileValue;
 		// When created, the bundle is not yet confirmed visited.
 		m_lastTimeBundled = - Ernest.PERSISTENCE;
@@ -38,27 +46,49 @@ public class Bundle implements IBundle
 	public int getValue()
 	{
 		int value = 0;
-		if (m_visualValue == Ernest.STIMULATION_VISUAL_UNSEEN)
+		if (m_value == Ernest.STIMULATION_VISUAL_UNSEEN)
 			value = m_tactileValue;
 		else 
-			value = m_visualValue;
+			value = m_value;
 		
 		return value;
 	}
 	
+	public void addAct(IAct act) 
+	{
+		int i = m_acts.indexOf(act);
+		if (i == -1)
+			// The affordance does not exist
+			m_acts.add(act);
+		else 
+			// The affordance already exists: return a pointer to it.
+			act =  m_acts.get(i);
+	}
+
+	public boolean hasAct(IAct act)
+	{
+		boolean hasAct = false;
+		for (IAct a : m_acts)
+		{
+			if (a.equals(act))
+				hasAct = true;
+		}
+		return hasAct;
+	}
+	
 	public int getVisualValue() 
 	{
-		return m_visualValue;
+		return m_value;
 	}
 	
 	public void setVisualValue(int visualValue) 
 	{
-		m_visualValue = visualValue;
+		m_value = visualValue;
 	}
 	
 	public void setTactileValue(int tactileValue) 
 	{
-		m_visualValue = tactileValue;
+		m_value = tactileValue;
 	}
 	
 	public int getTactileValue() 
@@ -171,7 +201,7 @@ public class Bundle implements IBundle
 		{
 			IBundle other = (IBundle)o;
 			//ret = (other.getValue() == getValue());
-			ret = (other.getVisualValue() == m_visualValue) && 	
+			ret = (other.getVisualValue() == m_value) && 	
 				  (other.getTactileValue() == m_tactileValue);
 				  //(other.getKinematicValue() == m_kinematicValue) &&
 				  //(other.getGustatoryValue() == m_gustatoryValue);
@@ -187,7 +217,7 @@ public class Bundle implements IBundle
 		Object element = tracer.addEventElement(label);
 		
 		// Visual stimulation
-		tracer.addSubelement(element, "visual", ErnestUtils.hexColor(m_visualValue));
+		tracer.addSubelement(element, "visual", ErnestUtils.hexColor(m_value));
 		
 		// Trace gustatory stimulation if not nothing.
 		//if (m_gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
@@ -249,5 +279,21 @@ public class Bundle implements IBundle
 		}
 
 		return act;
+	}
+
+	/**
+	 * The act is inconsistent with the bundle if 
+	 * The schema belongs to the bundle with a different status. 
+	 */
+	public boolean isConsistent(IAct act) 
+	{
+		boolean isConsistent = true;
+		for (IAct a : m_acts)
+		{
+			if (a.getSchema().equals(act.getSchema()))
+				if (!a.getLabel().equals(act.getLabel()))
+					isConsistent = false;
+		}
+		return isConsistent;
 	}
 }

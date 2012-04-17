@@ -37,8 +37,11 @@ public class Spas implements ISpas
 	public static int SHAPE_PIE = 2;
 	public static int SHAPE_SQUARE = 3;
 
+	/** A list of all the bundles ever identified. */
+	public List<IBundle> m_bundles = new ArrayList<IBundle>(20);
+	
 	/** Ernest's persistence momory  */
-	private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
+	//private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
 	
 	/** Ernest's local space memory  */
 	private LocalSpaceMemory m_localSpaceMemory;
@@ -54,7 +57,7 @@ public class Spas implements ISpas
 	public void setTracer(ITracer tracer) 
 	{
 		m_tracer = tracer;
-		m_persistenceMemory.setTracer(tracer);
+		//m_persistenceMemory.setTracer(tracer);
 		m_localSpaceMemory = new LocalSpaceMemory(this, m_tracer);
 	}
 
@@ -142,14 +145,45 @@ public class Spas implements ISpas
 		return place;
 	}
 
-	public IBundle seeBundle(int value) 
-	{
-		return m_persistenceMemory.seeBundle(value);
-	}
-
 	public IBundle addBundle(int visualValue, int tactileValue) 
 	{
-		return m_persistenceMemory.addBundle(visualValue, tactileValue, m_clock);
+		IBundle bundle = new Bundle(visualValue, tactileValue);//, kinematicValue, gustatoryValue);
+		
+		int i = m_bundles.indexOf(bundle);
+		if (i == -1)
+		{
+			m_bundles.add(bundle);
+			if (m_tracer != null) {
+				bundle.trace(m_tracer, "bundle");
+			}
+		}
+		else 
+			// The bundle already exists: return a pointer to it.
+			bundle =  m_bundles.get(i);
+		
+		// This bundle is considered confirmed or visited
+		if (tactileValue != Ernest.STIMULATION_TOUCH_EMPTY)// || kinematicValue != Ernest.STIMULATION_KINEMATIC_FORWARD || gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+			bundle.setLastTimeBundled(m_clock);
+
+		return bundle;
+	}
+
+	public IBundle addBundle(int value) 
+	{
+		IBundle bundle = new Bundle(value);
+		
+		int i = m_bundles.indexOf(bundle);
+		if (i == -1)
+		{
+			m_bundles.add(bundle);
+			//if (m_tracer != null) 
+			//	bundle.trace(m_tracer, "bundle");
+		}
+		else 
+			// The bundle already exists: return a pointer to it.
+			bundle =  m_bundles.get(i);
+		
+		return bundle;
 	}
 
 	public int getClock() 
@@ -202,4 +236,59 @@ public class Spas implements ISpas
 	{
 		return m_localSpaceMemory.getValueSimulation(position);
 	}	
+	
+	public IBundle getBundleSimulation(Vector3f position) 
+	{
+		return m_localSpaceMemory.getBundleSimulation(position);
+	}	
+	
+	/**
+	 * Returns the first bundle found that contains this act.
+	 * @param act The act to check.
+	 * @return The bundle that match this act.
+	 */
+	public IBundle evokeBundle(IAct act)
+	{
+		for (IBundle bundle : m_bundles)
+			if (bundle.hasAct(act))
+				return bundle;
+
+		return null;
+	}
+
+	/**
+	 * Returns the first bundle found form a visual stimulation.
+	 * TODO manage different bundles that have the same color.
+	 * TODO manage different bundles with more than one visual stimulation.
+	 * TODO manage bundles that have no tactile stimulation. 
+	 * @param stimulation The visual stimulation.
+	 * @return The bundle that match this stimulation.
+	 */
+	public IBundle seeBundle(int visualValue)
+	{
+		for (IBundle bundle : m_bundles)
+			// Return only bundles that have also a tactile stimulation
+			if (bundle.getVisualValue() == visualValue && bundle.getTactileValue() != Ernest.STIMULATION_TOUCH_EMPTY)
+				return bundle;
+
+		return null;
+	}
+
+	/**
+	 * Returns the first bundle found form a tactile stimulation.
+	 * TODO evoke different kind of bundles 
+	 * @param stimulation The visual stimulation.
+	 * @return The bundle that match this stimulation.
+	 */
+//	public IBundle touchBundle(int tactileValue)
+//	{
+//		for (IBundle bundle : m_bundles)
+//			// So far, only consider bump and eat bundles
+//			if (bundle.getTactileValue() == tactileValue && bundle.getAffordanceList().size() > 0)
+//					//(bundle.getKinematicValue() != Ernest.STIMULATION_KINEMATIC_FORWARD || bundle.getGustatoryValue() != Ernest.STIMULATION_GUSTATORY_NOTHING))
+//				return bundle;
+//
+//		return null;
+//	}
+
 }

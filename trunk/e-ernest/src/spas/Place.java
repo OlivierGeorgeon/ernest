@@ -1,5 +1,7 @@
 package spas;
 
+import imos.IAct;
+
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -34,7 +36,8 @@ public class Place implements IPlace
 	
 	int m_value;
 	
-	String m_label;
+	IAct m_act;
+	//String m_label;
 
 	Vector3f m_simulatedPosition = new Vector3f();
 
@@ -418,13 +421,22 @@ public class Place implements IPlace
 		return ret;		
 	}
 
-	public void setLabel(String label) 
+//	public void setLabel(String label) 
+//	{
+//		m_label = label;
+//	}
+//
+//	public String getLabel() 
+//	{
+//		return m_label;
+//	}
+	public void setAct(IAct act) 
 	{
-		m_label = label;
+		m_act = act;
 	}
 
-	public String getLabel() 
+	public IAct getAct() 
 	{
-		return m_label;
+		return m_act;
 	}
 }
