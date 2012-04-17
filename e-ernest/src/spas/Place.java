@@ -33,6 +33,8 @@ public class Place implements IPlace
 	int m_stick;
 	
 	int m_value;
+	
+	String m_label;
 
 	Vector3f m_simulatedPosition = new Vector3f();
 
@@ -414,5 +416,15 @@ public class Place implements IPlace
 //			ret = false;
 		
 		return ret;		
+	}
+
+	public void setLabel(String label) 
+	{
+		m_label = label;
+	}
+
+	public String getLabel() 
+	{
+		return m_label;
 	}
 }

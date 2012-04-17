@@ -81,8 +81,8 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		//float speed = (float) stimuli[5][8] / Ernest.INT_FACTOR;
 		int cognitiveMode = stimuli[6][8];
 		
-		newObservation.setTranslation(new Vector3f(translationx, translationy, 0));
-		newObservation.setRotation(rotation);
+		newObservation.setTranslation(new Vector3f(- translationx, - translationy, 0)); // Now represents the translation to apply to local space memory
+		newObservation.setRotation(- rotation); // Now represents the rotation to apply to local space memory
 
 		// Touch =====
 		
