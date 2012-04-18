@@ -23,7 +23,7 @@ public class LocalSpaceMemory
 	public static float EXTRAPERSONAL_DISTANCE = 1.5f;
 	
 	/** The duration of persistence in local space memory. */
-	public static int PERSISTENCE_DURATION = 50;//20;
+	public static int PERSISTENCE_DURATION = 10;//50;
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
@@ -360,7 +360,7 @@ public class LocalSpaceMemory
 					IBundle bundle = m_spas.evokeBundle(interactionPlace.getAct());
 					if (bundle == null)
 					{
-						bundle = new Bundle(interactionPlace.getValue());
+						bundle = m_spas.addBundle(interactionPlace.getAct().getPhenomenon());
 						bundle.addAct(interactionPlace.getAct());
 					}
 					

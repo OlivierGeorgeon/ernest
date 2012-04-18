@@ -296,4 +296,9 @@ public class Bundle implements IBundle
 		}
 		return isConsistent;
 	}
+
+	public ArrayList<IAct> getActList() 
+	{
+		return m_acts;
+	}
 }
