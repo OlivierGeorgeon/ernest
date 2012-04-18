@@ -347,7 +347,11 @@ public class Imos implements IImos
 					if (streamAct2.getSchema().getWeight() > ACTIVATION_THRESH)
 						m_episodicMemory.record(m_baseContextList, streamAct2);
 				}
-			}			
+			}	
+			
+			// Learn from the phenomena
+			
+			m_episodicMemory.record(m_contextList,m_sensorimotorSystem.situationAct());
 
 			// Update the context. =========
 			

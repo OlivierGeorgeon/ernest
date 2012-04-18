@@ -24,6 +24,7 @@ import spas.Spas;
 public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem 
 {
 	/**
+	 * The agent's self model is hard coded in the interactions.
 	 * TODO The phenomenon code, position, and spatial transformation should be learned rather than hard coded.
 	 */
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
@@ -110,7 +111,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 	public IAct enactedAct(IAct act, boolean status) 
 	{
-		// Add the interaction in IMOS ==================
+		// Add the interaction in IMOS =======================
 		
 		// The schema is null during the first cycle
 		if (act == null) return null;
@@ -118,55 +119,21 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), (status ? "t" : "f"), 0);
 		
 		
-		// Mark the place of the interaction in SPAS ====
+		// Mark the place of the interaction in SPAS =========
 		
 		m_spas.tick();
+		IPlace place = m_spas.addPlace(enactedAct.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+		place.setValue(enactedAct.getPhenomenon());
+		place.setUpdateCount(m_spas.getClock());
+		place.setAct(enactedAct);
+		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
+		interactionPlaces.add(place);
+
+		// Update the spatial system to construct phenomena ==
+		
 		IObservation observation = new Observation();		
 		observation.setTranslation(enactedAct.getTranslation());
 		observation.setRotation(enactedAct.getRotation());
-
-//		int shape = Spas.SHAPE_PIE;
-//		float orientation = 0;
-//
-//		if (act.getSchema().getLabel().equals(">"))
-//			shape = Spas.SHAPE_TRIANGLE;
-//
-//		if (act.getSchema().getLabel().equals("^"))
-//		{
-//			shape = Spas.SHAPE_PIE;
-//			orientation = (float) Math.PI / 2;
-//		}
-//		
-//		if (act.getSchema().getLabel().equals("v"))
-//		{
-//			shape = Spas.SHAPE_PIE;
-//			orientation = (float) - Math.PI / 2;
-//		}
-//		
-//		if (act.getSchema().getLabel().equals("/"))
-//			shape = Spas.SHAPE_SQUARE;
-//
-//		if (act.getSchema().getLabel().equals("-"))
-//			shape = Spas.SHAPE_SQUARE;
-//
-//		if (act.getSchema().getLabel().equals("\\"))
-//			shape = Spas.SHAPE_SQUARE;
-
-		IPlace place = m_spas.addPlace(enactedAct.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
-		
-		
-		// The way a place's value is computed determines the construction of phenomena.
-		
-		place.setValue(enactedAct.getPhenomenon());
-
-//		place.setOrientation(orientation);
-		place.setUpdateCount(m_spas.getClock());
-		place.setAct(enactedAct);
-
-		// Update the spatial system to place phenomena ====
-		
-		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
-		interactionPlaces.add(place);
 		m_spas.step(observation, interactionPlaces);
 		
 		return enactedAct;
@@ -197,15 +164,15 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			m_spas.translateSimulation(act.getTranslation());
 			m_spas.rotateSimulation(act.getRotation());
 
-			if (m_spas.getValueSimulation(act.getPosition()) == Ernest.UNANIMATED_COLOR)
-				consistent = true;
-			else
-				consistent = act.getPhenomenon() == m_spas.getValueSimulation(act.getPosition());
-//			IBundle bundle = m_spas.getBundleSimulation(act.getPosition());
-//			if (bundle == null)	
+//			if (m_spas.getValueSimulation(act.getPosition()) == Ernest.UNANIMATED_COLOR)
 //				consistent = true;
 //			else
-//				consistent =  m_spas.getBundleSimulation(act.getPosition()).isConsistent(act);
+//				consistent = act.getPhenomenon() == m_spas.getValueSimulation(act.getPosition());
+			IBundle bundle = m_spas.getBundleSimulation(act.getPosition());
+			if (bundle == null)	
+				consistent = true;
+			else
+				consistent =  m_spas.getBundleSimulation(act.getPosition()).isConsistent(act);
 		}
 		else 
 		{
@@ -230,12 +197,16 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		IAct frontWall = m_imos.addInteraction("-", "t", 0);
 		IAct leftWall = m_imos.addInteraction("/", "t", 0);
 		IAct leftEmpty = m_imos.addInteraction("/", "f", 0);
+		IAct leftTurn = m_imos.addInteraction("^", "f", 0);
+		IAct rightTurn = m_imos.addInteraction("v", "f", 0);
 
 		// Left Corner
 		if (front == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_EMPTY)
 		{
 			situationAct = m_imos.addCompositeInteraction(frontWall, leftWall);
 			situationAct.getSchema().incWeight(6);
+			//IAct leftCorner = m_imos.addCompositeInteraction(situationAct, rightTurn);
+			//leftCorner.getSchema().incWeight(1);
 			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
 				m_tracer.addEventElement("situation", "left-corner");
 		}
@@ -245,6 +216,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			situationAct = m_imos.addCompositeInteraction(frontWall, leftEmpty);
 			situationAct.getSchema().incWeight(6);
+			//IAct rightCorner =m_imos.addCompositeInteraction(situationAct, leftTurn);
+			//rightCorner.getSchema().incWeight(1);
 			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
 				m_tracer.addEventElement("situation", "right-corner");
 		}

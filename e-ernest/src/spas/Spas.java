@@ -250,9 +250,14 @@ public class Spas implements ISpas
 	public IBundle evokeBundle(IAct act)
 	{
 		for (IBundle bundle : m_bundles)
+		{
 			if (bundle.hasAct(act))
 				return bundle;
-
+			// presuppose the value of phenomena
+			//if (bundle.getValue() == act.getPhenomenon())
+			//	return bundle;
+				
+		}
 		return null;
 	}
 

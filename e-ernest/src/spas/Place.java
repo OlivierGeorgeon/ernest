@@ -17,13 +17,13 @@ public class Place implements IPlace
 {
 
 	IBundle m_bundle;
-	Vector3f m_position;
-	Vector3f m_speed;
+	Vector3f m_position = new Vector3f();
+	Vector3f m_speed = new Vector3f();
 	float m_span;
 	int m_attractiveness;
 	
-	Vector3f m_firstPosition;
-	Vector3f m_secondPosition;
+	Vector3f m_firstPosition = new Vector3f();
+	Vector3f m_secondPosition = new Vector3f();
 	
 	int m_type = Spas.PLACE_SEE;
 	
@@ -50,7 +50,7 @@ public class Place implements IPlace
 	public Place(IBundle bundle, Vector3f position)
 	{
 		m_bundle = bundle;
-		m_position = new Vector3f(position);
+		m_position.set(position);
 	}
 	
 	/**
@@ -206,7 +206,7 @@ public class Place implements IPlace
 
 	public void setPosition(Vector3f position) 
 	{
-		m_position = position;
+		m_position.set(position);
 	}
 
 	public void setType(int type) 
@@ -221,7 +221,7 @@ public class Place implements IPlace
 
 	public void setSpeed(Vector3f speed) 
 	{
-		m_speed = speed;
+		m_speed.set(speed);
 	}
 
 	public Vector3f getSpeed() 
@@ -231,12 +231,12 @@ public class Place implements IPlace
 
 	public void setFirstPosition(Vector3f position) 
 	{
-		m_firstPosition = new Vector3f(position);
+		m_firstPosition.set(position);
 	}
 
 	public void setSecondPosition(Vector3f position) 
 	{
-		m_secondPosition = new Vector3f(position);		
+		m_secondPosition.set(position);		
 	}
 
 	public Vector3f getFirstPosition() 
@@ -318,6 +318,16 @@ public class Place implements IPlace
 		if (m_type == Spas.PLACE_SEE)
 		{
 			if (previousPlace.getType() == Spas.PLACE_SEE)
+			{
+				Vector3f compare = new Vector3f(m_position);
+				compare.sub(previousPlace.getPosition());
+				if (compare.length() < .2f) 
+					from = true;				
+			}
+		}
+		if (m_type == Spas.PLACE_EVOKE_PHENOMENON)
+		{
+			if (previousPlace.getType() == Spas.PLACE_PHENOMENON)
 			{
 				Vector3f compare = new Vector3f(m_position);
 				compare.sub(previousPlace.getPosition());
