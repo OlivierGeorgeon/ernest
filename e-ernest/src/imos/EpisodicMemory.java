@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 
 import spas.IObservation;
 import spas.IPlace;
+import spas.LocalSpaceMemory;
 import spas.PersistenceMemory;
 
 import ernest.Ernest;
@@ -244,7 +245,7 @@ public class EpisodicMemory
 	 * @param activationList The list of acts that activate episodic memory.
 	 * @return The selected act.
 	 */
-	public IAct selectAct(List<IAct> activationList)
+	public IAct selectAct(List<IAct> activationList, List<IProposition> propositionList)
 	{
 		List<IProposition> proposals = new ArrayList<IProposition>();	
 		
@@ -345,9 +346,21 @@ public class EpisodicMemory
 				if (!proposals.contains(p))
 					proposals.add(p);
 			}
-			
+		}
+		
+		// Add the propositions form the spatial system 
+		
+		for (IProposition proposition : propositionList)
+		{
+			int i = proposals.indexOf(proposition);
+			if (i == -1)
+				proposals.add(proposition);
+			else
+				proposals.get(i).update(proposition.getWeight(), proposition.getExpectation());
 		}
 
+		// Log the propositions
+		
 		System.out.println("Propose: ");
 		Object proposalElmt = null;
 		if (m_tracer != null)

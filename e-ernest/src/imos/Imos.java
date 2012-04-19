@@ -148,7 +148,6 @@ public class Imos implements IImos
 		a = m_episodicMemory.addAct(actLabel, s, true,  satisfaction * 10,  RELIABLE);
 		
 //		// Hard-coded positions and bundle codes
-//		// TODO positions must be learned
 //		boolean status = stimuliLabel.equals("t") || stimuliLabel.equals("w  ");
 //		if (actionLabel.equals("/"))
 //		{
@@ -383,8 +382,8 @@ public class Imos implements IImos
 		
 		if (intentionAct == null)
 		{
-
-			intentionAct = m_episodicMemory.selectAct(m_activationList);
+			ArrayList<IProposition> propositionList = m_sensorimotorSystem.getPropositionList();
+			intentionAct = m_episodicMemory.selectAct(m_activationList, propositionList);
 			m_intentionAct = intentionAct;
 			m_newIntention = true;
 		}
