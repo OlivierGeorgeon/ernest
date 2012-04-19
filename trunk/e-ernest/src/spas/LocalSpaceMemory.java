@@ -453,7 +453,7 @@ public class LocalSpaceMemory
 				phenomena.add(place);
 		}
 		
-		trace();
+		//trace();
 		return phenomena;
 	}	
 

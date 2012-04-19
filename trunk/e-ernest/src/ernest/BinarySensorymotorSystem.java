@@ -8,6 +8,7 @@ import spas.ISegment;
 import spas.ISpas;
 import imos.IAct;
 import imos.IImos;
+import imos.IProposition;
 
 
 /**
@@ -84,6 +85,11 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 
 	public IAct situationAct() 
 	{
+		return null;
+	}
+
+	public ArrayList<IProposition> getPropositionList() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	

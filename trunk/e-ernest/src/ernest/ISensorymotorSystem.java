@@ -7,6 +7,7 @@ import spas.ISegment;
 import spas.ISpas;
 import imos.IAct;
 import imos.IImos;
+import imos.IProposition;
 
 
 
@@ -56,5 +57,6 @@ public interface ISensorymotorSystem
 	public boolean checkConsistency(IAct act);
 	
 	public IAct situationAct();
+	public ArrayList<IProposition> getPropositionList();
 
 }

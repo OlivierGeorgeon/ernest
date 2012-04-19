@@ -71,6 +71,8 @@ public class Spas implements ISpas
 	 */
 	public void step(IObservation observation, ArrayList<IPlace> places) 
 	{		
+		m_localSpaceMemory.trace();
+
 		m_observation = observation;
 		
 		// translate and rotate the local space memory;
@@ -84,6 +86,7 @@ public class Spas implements ISpas
 		
 		m_localSpaceMemory.phenomenon(places, observation, m_clock);
 		
+
 		// Construct synergies associated with bundles in the peripersonal space.		
 		//synergy(interactionPlace, observation);
 	}

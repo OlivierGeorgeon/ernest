@@ -1,8 +1,10 @@
 package ernest;
 
 import imos.IAct;
+import imos.IProposition;
 import imos.ISchema;
 import imos.Imos;
+import imos.Proposition;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -41,7 +43,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			{
 				act.setTranslation(new Vector3f(-1,0,0));
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-				act.setPosition(LocalSpaceMemory.DIRECTION_HERE);
+				act.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else
 			{
@@ -187,44 +189,109 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	 * Generates a composite act that represents a useful situation recognized in local space memory.
 	 * TODO Should learn to categorize useful situations autonomously.
 	 */
-	public IAct situationAct() 
+//	public IAct situationAct() 
+//	{
+//		IAct situationAct = null;
+//		int left = m_spas.getValue(LocalSpaceMemory.DIRECTION_LEFT);
+//		int front = m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD);
+//		int right = m_spas.getValue(LocalSpaceMemory.DIRECTION_RIGHT);
+//		
+//		IAct frontWall = m_imos.addInteraction("-", "t", 0);
+//		IAct leftWall = m_imos.addInteraction("/", "t", 0);
+//		IAct leftEmpty = m_imos.addInteraction("/", "f", 0);
+//		IAct leftTurn = m_imos.addInteraction("^", "f", 0);
+//		IAct rightTurn = m_imos.addInteraction("v", "f", 0);
+//
+//		// Left Corner
+//		if (front == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_EMPTY)
+//		{
+//			situationAct = m_imos.addCompositeInteraction(frontWall, leftWall);
+//			situationAct.getSchema().incWeight(6);
+//			//IAct leftCorner = m_imos.addCompositeInteraction(situationAct, rightTurn);
+//			//leftCorner.getSchema().incWeight(1);
+//			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
+//				m_tracer.addEventElement("situation", "left-corner");
+//		}
+//		
+//		// right Corner
+//		if (front == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_EMPTY )
+//		{
+//			situationAct = m_imos.addCompositeInteraction(frontWall, leftEmpty);
+//			situationAct.getSchema().incWeight(6);
+//			//IAct rightCorner =m_imos.addCompositeInteraction(situationAct, leftTurn);
+//			//rightCorner.getSchema().incWeight(1);
+//			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
+//				m_tracer.addEventElement("situation", "right-corner");
+//		}
+//		if (situationAct != null && situationAct.getConfidence() == Imos.RELIABLE)
+//			return situationAct;
+//		else 
+//			return null;
+//	}
+	
+	public ArrayList<IProposition> getPropositionList()
 	{
-		IAct situationAct = null;
-		int left = m_spas.getValue(LocalSpaceMemory.DIRECTION_LEFT);
-		int front = m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD);
-		int right = m_spas.getValue(LocalSpaceMemory.DIRECTION_RIGHT);
-		
-		IAct frontWall = m_imos.addInteraction("-", "t", 0);
-		IAct leftWall = m_imos.addInteraction("/", "t", 0);
-		IAct leftEmpty = m_imos.addInteraction("/", "f", 0);
+		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
 		IAct leftTurn = m_imos.addInteraction("^", "f", 0);
 		IAct rightTurn = m_imos.addInteraction("v", "f", 0);
+		IAct step = m_imos.addInteraction(">", "t", 0);
 
-		// Left Corner
-		if (front == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_EMPTY)
+		Object activations = null;
+		if (m_tracer != null)
+			activations = m_tracer.addEventElement("phenomena_activations", true);
+
+		boolean frontWall = false;
+		for (IPlace place : m_spas.getPhenomena())
 		{
-			situationAct = m_imos.addCompositeInteraction(frontWall, leftWall);
-			situationAct.getSchema().incWeight(6);
-			//IAct leftCorner = m_imos.addCompositeInteraction(situationAct, rightTurn);
-			//leftCorner.getSchema().incWeight(1);
-			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
-				m_tracer.addEventElement("situation", "left-corner");
+			if (place.isInCell(LocalSpaceMemory.DIRECTION_AHEAD) && place.getValue() == Ernest.PHENOMENON_EMPTY)
+			{
+				IProposition p = new Proposition(step.getSchema(), 1001, 1001);
+				int i = propositionList.indexOf(p);
+				if (i == -1)
+					propositionList.add(p);
+				else
+					propositionList.get(i).update(1001, 1001);
+				if (m_tracer != null)
+					m_tracer.addSubelement(activations, "activation", "front_empty");
+			}
+			if (place.isInCell(LocalSpaceMemory.DIRECTION_AHEAD) && place.getValue() == Ernest.PHENOMENON_WALL)
+			{
+				if (m_tracer != null)
+					m_tracer.addSubelement(activations, "activation", "front_wall");
+				frontWall = true;
+			}
 		}
-		
-		// right Corner
-		if (front == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_EMPTY )
+		if (frontWall)
 		{
-			situationAct = m_imos.addCompositeInteraction(frontWall, leftEmpty);
-			situationAct.getSchema().incWeight(6);
-			//IAct rightCorner =m_imos.addCompositeInteraction(situationAct, leftTurn);
-			//rightCorner.getSchema().incWeight(1);
-			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
-				m_tracer.addEventElement("situation", "right-corner");
+			for (IPlace place : m_spas.getPhenomena())
+			{
+				{
+					if (place.isInCell(LocalSpaceMemory.DIRECTION_LEFT) && place.getValue() == Ernest.PHENOMENON_EMPTY)
+					{
+						IProposition p = new Proposition(leftTurn.getSchema(), 1001, 1001);
+						int i = propositionList.indexOf(p);
+						if (i == -1)
+							propositionList.add(p);
+						else
+							propositionList.get(i).update(1001, 1001);
+						if (m_tracer != null)
+							m_tracer.addSubelement(activations, "activation", "right_corner");
+					}
+					if (place.isInCell(LocalSpaceMemory.DIRECTION_RIGHT) && place.getValue() == Ernest.PHENOMENON_EMPTY)
+					{
+						IProposition p = new Proposition(rightTurn.getSchema(), 1001, 1001);
+						int i = propositionList.indexOf(p);
+						if (i == -1)
+							propositionList.add(p);
+						else
+							propositionList.get(i).update(1001, 1001);
+						if (m_tracer != null)
+							m_tracer.addSubelement(activations, "activation", "left_corner");
+					}
+				}
+			}
 		}
-		if (situationAct != null && situationAct.getConfidence() == Imos.RELIABLE)
-			return situationAct;
-		else 
-			return null;
+		return propositionList;
 	}
 
 }
