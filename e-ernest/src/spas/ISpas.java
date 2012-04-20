@@ -85,8 +85,10 @@ public interface ISpas
 	
 	public boolean checkAct(IAct act);
 	
-	public IBundle addBundle(int value); 
+	public IBundle addBundle(int value);
+	public IBundle addBundle(IAct act);
 	public IBundle evokeBundle(IAct act);
+	public void aggregateBundle(IBundle bundle, IAct act); 
 
 	public int getValue(Vector3f position);
 	

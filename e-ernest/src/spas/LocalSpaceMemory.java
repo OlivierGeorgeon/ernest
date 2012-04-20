@@ -350,19 +350,25 @@ public class LocalSpaceMemory
 						phenomenonPlace.setSpan(interactionPlace.getSpan());
 						phenomenonPlace.setOrientation(interactionPlace.getOrientation());
 						phenomenonPlace.setUpdateCount(m_spas.getClock());
-						phenomenonPlace.getBundle().addAct(interactionPlace.getAct());
+						//phenomenonPlace.getBundle().addAct(interactionPlace.getAct());
+						m_spas.aggregateBundle(phenomenonPlace.getBundle(), interactionPlace.getAct());
 						newPlace = false;
 					}
 				}
 				if (newPlace)
 				{
 					// Create a new bundle if it does not yet exist
-					IBundle bundle = m_spas.evokeBundle(interactionPlace.getAct());
-					if (bundle == null)
-					{
-						bundle = m_spas.addBundle(interactionPlace.getAct().getPhenomenon());
-						bundle.addAct(interactionPlace.getAct());
-					}
+					//IBundle bundle = m_spas.evokeBundle(interactionPlace.getAct());
+					//if (bundle == null)
+					//{
+					
+						//IBundle bundle = m_spas.addBundle(interactionPlace.getAct().getPhenomenon());
+						//bundle.addAct(interactionPlace.getAct());
+					//}
+
+					// Create a new bundle 
+					// we can't assume it's the same as an existing bundle unless this very interaction already belongs to a bundle
+					IBundle bundle = m_spas.addBundle(interactionPlace.getAct());
 					
 					// Add a new phenomenon place
 					IPlace k = addPlace(interactionPlace.getBundle(),interactionPlace.getPosition()); 

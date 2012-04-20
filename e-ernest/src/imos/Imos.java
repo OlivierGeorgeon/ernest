@@ -253,14 +253,14 @@ public class Imos implements IImos
 		m_imosCycle++;		
 		m_internalState= "";
 
-		// Trace the new event
-		
-		if (m_tracer != null)
-		{
-            m_tracer.startNewEvent(getCounter());
-			m_tracer.addEventElement("clock", getCounter() + "");
-		}                
-		
+//		// Trace the new event
+//		
+//		if (m_tracer != null)
+//		{
+//            m_tracer.startNewEvent(getCounter());
+//			m_tracer.addEventElement("clock", getCounter() + "");
+//		}                
+//		
 		IAct intentionAct = null;
 		IAct enactedAct = null;
 		

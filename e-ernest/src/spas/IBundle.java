@@ -72,7 +72,7 @@ public interface IBundle
 	 */
 	void trace(ITracer tracer, String label);
 	
-	public void addAct(IAct act); 
+	public boolean addAct(IAct act); 
 	public boolean hasAct(IAct act);
 	public ArrayList<IAct> getActList();
 	public boolean isConsistent(IAct act);
