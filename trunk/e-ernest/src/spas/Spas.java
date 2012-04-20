@@ -175,18 +175,81 @@ public class Spas implements ISpas
 	{
 		IBundle bundle = new Bundle(value);
 		
-		int i = m_bundles.indexOf(bundle);
-		if (i == -1)
-		{
+		//int i = m_bundles.indexOf(bundle);
+		//if (i == -1)
+		//{
 			m_bundles.add(bundle);
 			//if (m_tracer != null) 
 			//	bundle.trace(m_tracer, "bundle");
-		}
-		else 
-			// The bundle already exists: return a pointer to it.
-			bundle =  m_bundles.get(i);
+		//}
+		//else 
+		//	// The bundle already exists: return a pointer to it.
+		//	bundle =  m_bundles.get(i);
 		
 		return bundle;
+	}
+
+	public IBundle addBundle(IAct act)
+	{
+		IBundle bundle = null;
+		
+		for (IBundle b : m_bundles)
+		{
+			if (b.hasAct(act))
+				bundle = b;
+		}
+		
+		if (bundle == null)
+		{
+			bundle = new Bundle(act);
+			m_bundles.add(bundle);
+			if (m_tracer != null)
+				bundle.trace(m_tracer, "bundle");
+		}
+		return bundle;
+	}
+	
+	public void aggregateBundle(IBundle bundle, IAct act) 
+	{			
+		// See if this act already belongs to another bundle
+		IBundle aggregate = null;
+		for (IBundle b : m_bundles)
+		{
+			if (b != bundle && b.hasAct(act))
+				aggregate = b;
+		}
+		
+		if (aggregate == null)
+		{
+			boolean added = bundle.addAct(act);
+			if (m_tracer != null && added)
+				bundle.trace(m_tracer, "bundle");
+		}
+		else
+		{
+			// Merge this other bundle into the bundle that was already found in the list
+			boolean added = false;
+			for (IAct a : bundle.getActList())
+			{
+				boolean add = aggregate.addAct(a);
+				added = added || add;
+			}
+			if (m_tracer != null)
+				bundle.trace(m_tracer, "remove_bundle");
+			int i = 0; int in = -1;
+			for (IBundle bu : m_bundles)
+			{ 
+				if (bu == bundle)
+					in = i;
+				i++;	
+			}
+			if (in >= 0)
+				m_bundles.remove(in);
+			// The aggregate bundle becomes associated with the phenomenon.
+			bundle = aggregate;
+			if (m_tracer != null )
+				bundle.trace(m_tracer, "bundle");
+		}		
 	}
 
 	public int getClock() 

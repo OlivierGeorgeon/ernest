@@ -35,6 +35,12 @@ public class Bundle implements IBundle
 		m_value = value;
 	}
 	
+	Bundle(IAct act)
+	{
+		m_value = act.getPhenomenon();
+		m_acts.add(act);
+	}
+	
 	Bundle(int visualValue, int tactileValue)
 	{
 		m_value = visualValue;
@@ -54,15 +60,20 @@ public class Bundle implements IBundle
 		return value;
 	}
 	
-	public void addAct(IAct act) 
+	public boolean addAct(IAct act) 
 	{
+		boolean added = false;
 		int i = m_acts.indexOf(act);
 		if (i == -1)
+		{
 			// The affordance does not exist
 			m_acts.add(act);
+			added = true;
+		}
 		else 
 			// The affordance already exists: return a pointer to it.
 			act =  m_acts.get(i);
+		return added;
 	}
 
 	public boolean hasAct(IAct act)
@@ -216,28 +227,15 @@ public class Bundle implements IBundle
 	{
 		Object element = tracer.addEventElement(label);
 		
-		// Visual stimulation
-		tracer.addSubelement(element, "visual", ErnestUtils.hexColor(m_value));
+		for (IAct a : m_acts)
+			tracer.addSubelement(element, "act", a.getLabel());		
 		
-		// Trace gustatory stimulation if not nothing.
-		//if (m_gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
-		//	tracer.addSubelement(element, "gustatory", ErnestUtils.hexColor(m_gustatoryValue));
-		//else
-		//	tracer.addSubelement(element, "gustatory", ErnestUtils.hexColor(m_visualValue));
-		
-		// Tactile stimulation
-		tracer.addSubelement(element, "tactile", ErnestUtils.hexColor(m_tactileValue));
-
-		// Only trace bump kinematic stimulation.
-		//if (m_kinematicValue == Ernest.STIMULATION_KINEMATIC_BUMP)
-		//	tracer.addSubelement(element, "kinematic", ErnestUtils.hexColor(m_kinematicValue));
-		//else
-		//	tracer.addSubelement(element, "kinematic", ErnestUtils.hexColor(m_tactileValue));
-		
-		String id = this.toString();
-		tracer.addSubelement(element, "id", id);
-		tracer.addSubelement(element, "short_id", id.substring(id.length() - 6));
-		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
+//		tracer.addSubelement(element, "visual", ErnestUtils.hexColor(m_value));		
+//		tracer.addSubelement(element, "tactile", ErnestUtils.hexColor(m_tactileValue));
+//		String id = this.toString();
+		tracer.addSubelement(element, "id", toString());
+		tracer.addSubelement(element, "short_id", toString().substring(toString().length() - 6));
+//		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
 	}
 
 	public void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity, int value) 

@@ -119,7 +119,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		if (act == null) return null;
 		
 		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), (status ? "t" : "f"), 0);
+
+		// Trace the new event
 		
+		if (m_tracer != null)
+		{
+            m_tracer.startNewEvent(m_imos.getCounter());
+			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+		}                
 		
 		// Mark the place of the interaction in SPAS =========
 		
