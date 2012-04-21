@@ -287,9 +287,9 @@ public class LocalSpaceMemory
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Spas.PLACE_SEE || p.getType() == Spas.PLACE_TOUCH)
+			if (p.getType() == Spas.PLACE_SEE || p.getType() == Spas.PLACE_TOUCH || p.getType() == Spas.PLACE_EVOKE_PHENOMENON)
 			{
-				if (p.getUpdateCount() < m_spas.getClock() - 1)
+				if (p.getUpdateCount() < m_spas.getClock() ) // -1
 					it.remove();
 			}
 			else

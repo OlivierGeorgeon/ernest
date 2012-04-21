@@ -170,18 +170,23 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{			
-			m_spas.translateSimulation(act.getTranslation());
-			m_spas.rotateSimulation(act.getRotation());
+//			m_spas.translateSimulation(act.getTranslation());
+//			m_spas.rotateSimulation(act.getRotation());
 
 //			if (m_spas.getValueSimulation(act.getPosition()) == Ernest.UNANIMATED_COLOR)
 //				consistent = true;
 //			else
 //				consistent = act.getPhenomenon() == m_spas.getValueSimulation(act.getPosition());
+			
 			IBundle bundle = m_spas.getBundleSimulation(act.getPosition());
+//			IBundle bundle = m_spas.getBundleSimulation(LocalSpaceMemory.DIRECTION_HERE);
 			if (bundle == null)	
 				consistent = true;
 			else
-				consistent =  m_spas.getBundleSimulation(act.getPosition()).isConsistent(act);
+				consistent =  bundle.isConsistent(act);
+			m_spas.translateSimulation(act.getTranslation());
+			m_spas.rotateSimulation(act.getRotation());
+
 		}
 		else 
 		{
