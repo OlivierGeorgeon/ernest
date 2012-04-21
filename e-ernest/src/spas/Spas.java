@@ -71,7 +71,6 @@ public class Spas implements ISpas
 	 */
 	public void step(IObservation observation, ArrayList<IPlace> places) 
 	{		
-		m_localSpaceMemory.trace();
 
 		m_observation = observation;
 		
@@ -86,6 +85,7 @@ public class Spas implements ISpas
 		
 		m_localSpaceMemory.phenomenon(places, observation, m_clock);
 		
+		m_localSpaceMemory.trace();
 
 		// Construct synergies associated with bundles in the peripersonal space.		
 		//synergy(interactionPlace, observation);
@@ -231,10 +231,10 @@ public class Spas implements ISpas
 			boolean added = false;
 			for (IAct a : bundle.getActList())
 			{
-				boolean add = aggregate.addAct(a);
-				added = added || add;
+				//boolean add = aggregate.addAct(a);
+				added = aggregate.addAct(a) || added;
 			}
-			if (m_tracer != null)
+			if (m_tracer != null && added)
 				bundle.trace(m_tracer, "remove_bundle");
 			int i = 0; int in = -1;
 			for (IBundle bu : m_bundles)
@@ -247,7 +247,7 @@ public class Spas implements ISpas
 				m_bundles.remove(in);
 			// The aggregate bundle becomes associated with the phenomenon.
 			bundle = aggregate;
-			if (m_tracer != null )
+			if (m_tracer != null && added)
 				bundle.trace(m_tracer, "bundle");
 		}		
 	}
