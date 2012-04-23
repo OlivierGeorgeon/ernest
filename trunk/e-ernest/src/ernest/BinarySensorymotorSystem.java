@@ -92,5 +92,15 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public void stepSpas(IAct act) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateSpas(IAct act) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

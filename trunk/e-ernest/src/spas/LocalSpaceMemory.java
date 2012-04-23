@@ -165,16 +165,16 @@ public class LocalSpaceMemory
 	 * @param position The position of the location.
 	 * @return The bundle.
 	 */
-	public IBundle getBundle(Vector3f position)
-	{
-		IBundle b = null;
-		for (IPlace p : m_places)
-		{
-			if (p.isInCell(position) && p.isPhenomenon())
-				b = p.getBundle();
-		}	
-		return b;
-	}
+//	public IBundle getBundle(Vector3f position)
+//	{
+//		IBundle b = null;
+//		for (IPlace p : m_places)
+//		{
+//			if (p.isInCell(position) && p.isPhenomenon())
+//				b = p.getBundle();
+//		}	
+//		return b;
+//	}
 
 	/**
 	 * Get the phenomena value at a given position.
@@ -231,7 +231,8 @@ public class LocalSpaceMemory
 		IPlace place = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.evokePhenomenon(m_spas.getClock()))
+			//if (p.isInCell(position) && p.evokePhenomenon(m_spas.getClock()))
+			if (p.isInCell(position) && p.isPhenomenon())
 				place = p;
 		}
 		return place;
@@ -289,7 +290,7 @@ public class LocalSpaceMemory
 			IPlace p = (IPlace)it.next();
 			if (p.getType() == Spas.PLACE_SEE || p.getType() == Spas.PLACE_TOUCH || p.getType() == Spas.PLACE_EVOKE_PHENOMENON)
 			{
-				if (p.getUpdateCount() < m_spas.getClock() ) // -1
+				if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION +1) // -1
 					it.remove();
 			}
 			else
@@ -319,16 +320,33 @@ public class LocalSpaceMemory
 		return m_focusPlace;
 	}
 	
-	public void phenomenon(ArrayList<IPlace> places, IObservation observation, int clock)
+	private ArrayList<IPlace> getEvokeList()
+	{
+		ArrayList<IPlace> evokeList = new ArrayList<IPlace>();
+		for (IPlace p : m_places)
+			if (p.evokePhenomenon(m_spas.getClock()))
+				evokeList.add(p);
+
+		
+		return evokeList;
+	}
+	
+	public void phenomenon(IObservation observation, int clock)//ArrayList<IPlace> places, IObservation observation, int clock)
 	{
 		// Clear the old traces in persistence memory
 		clear();
 		
-		// Confirm or create persistent places in local space memory 
+		// Get the list of places that can evoke phenomena.
+		ArrayList<IPlace> evokePlaceList = new ArrayList<IPlace>();
+		for (IPlace p : m_places)
+			if (p.evokePhenomenon(m_spas.getClock()))
+				evokePlaceList.add(p);
+
+		// Confirm or create phenomenon places in local space memory 
 		
-		for (IPlace interactionPlace : places)
+		for (IPlace interactionPlace : evokePlaceList)//places)
 		{
-			if (interactionPlace.evokePhenomenon(m_spas.getClock()))
+			if (interactionPlace.getAct().getSchema().isPrimitive() || interactionPlace.getAct().getLabel().equals("(^f>t)") || interactionPlace.getAct().getLabel().equals("(vf>t)"))
 			{
 				boolean newPlace = true;
 				// Look for a corresponding existing persistent place in local space memory.

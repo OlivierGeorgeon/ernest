@@ -293,11 +293,18 @@ public class Imos implements IImos
 //			}
 		}	
 		
+		if (enactedAct != null)
+			m_sensorimotorSystem.stepSpas(enactedAct);
+		
+		if (m_primitiveIntention != null)
+			m_sensorimotorSystem.updateSpas(primitiveEnaction);
 
 		// If we have a context and the current enaction is over then we record and we shift the context. ========
 
 		if (intentionAct == null && enactedAct != null)
 		{
+			//m_sensorimotorSystem.stepSpas(enactedAct);
+			
 			// log the previous decision cycle
 
 			// TODO also compute surprise in the case of primitive intention acts.  

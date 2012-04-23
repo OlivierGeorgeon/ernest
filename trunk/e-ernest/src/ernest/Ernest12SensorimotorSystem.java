@@ -122,30 +122,48 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 		// Trace the new event
 		
-		if (m_tracer != null)
-		{
-            m_tracer.startNewEvent(m_imos.getCounter());
-			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-		}                
 		
-		// Mark the place of the interaction in SPAS =========
+//		// Mark the place of the interaction in SPAS =========
+//		
+//		m_spas.tick();
+//		IPlace place = m_spas.addPlace(enactedAct.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+//		place.setValue(enactedAct.getPhenomenon());
+//		place.setUpdateCount(m_spas.getClock());
+//		place.setAct(enactedAct);
+//		///ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
+//		//interactionPlaces.add(place);
+//
+//		// Update the spatial system to construct phenomena ==
+//		
+//		IObservation observation = new Observation();		
+//		observation.setTranslation(enactedAct.getTranslation());
+//		observation.setRotation(enactedAct.getRotation());
+//		m_spas.step(observation);//, interactionPlaces);
 		
+		return enactedAct;
+	}
+	
+	public void stepSpas(IAct act)
+	{
 		m_spas.tick();
-		IPlace place = m_spas.addPlace(enactedAct.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
-		place.setValue(enactedAct.getPhenomenon());
+		IPlace place = m_spas.addPlace(act.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+		place.setValue(act.getPhenomenon());
 		place.setUpdateCount(m_spas.getClock());
-		place.setAct(enactedAct);
-		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
-		interactionPlaces.add(place);
+		place.setAct(act);
+		//ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
+		//interactionPlaces.add(place);
+	}
+	
+	public void updateSpas(IAct act)
+	{
 
 		// Update the spatial system to construct phenomena ==
 		
 		IObservation observation = new Observation();		
-		observation.setTranslation(enactedAct.getTranslation());
-		observation.setRotation(enactedAct.getRotation());
-		m_spas.step(observation, interactionPlaces);
-		
-		return enactedAct;
+		observation.setTranslation(act.getTranslation());
+		observation.setRotation(act.getRotation());
+		m_spas.step(observation);//, interactionPlaces);
+
 	}
 	
 	public ArrayList<IPlace> getPhenomena()
@@ -158,6 +176,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		m_spas.initSimulation();
 		
 		return simulate(act);		
+	}
+	
+	public Vector3f situate(IAct act) 
+	{
+		IPlace flag = new Place(null, new Vector3f());
+		m_spas.initSimulation();
+		simulate(act);
+		return  flag.getPosition();
 	}
 	
 	/**
@@ -243,67 +269,170 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	
 	public ArrayList<IProposition> getPropositionList()
 	{
+		int  PHENOMENA_WEIGHT = 11;
+		int UNKNOWN_WEIGHT = 2001;
+		
 		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
-		IAct leftTurn = m_imos.addInteraction("^", "f", 0);
-		IAct rightTurn = m_imos.addInteraction("v", "f", 0);
-		IAct step = m_imos.addInteraction(">", "t", 0);
+		IAct touchAhead = m_imos.addInteraction("-", "f", 0);
+		IAct touchLeft = m_imos.addInteraction("/", "f", 0);
+		IAct touchRight = m_imos.addInteraction("\\", "t", 0);
+		IAct turnLeft = m_imos.addInteraction("^", "f", 0);
+		IAct turnRight = m_imos.addInteraction("v", "f", 0);
 
 		Object activations = null;
 		if (m_tracer != null)
-			activations = m_tracer.addEventElement("phenomena_activations", true);
+			activations = m_tracer.addEventElement("phenomena_propositions", true);
 
-		boolean frontWall = false;
-		for (IPlace place : m_spas.getPhenomena())
+		IPlace frontPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_AHEAD);		
+		if (frontPlace == null)
 		{
-			if (place.isInCell(LocalSpaceMemory.DIRECTION_AHEAD) && place.getValue() == Ernest.PHENOMENON_EMPTY)
-			{
-				IProposition p = new Proposition(step.getSchema(), 1001, 1001);
-				int i = propositionList.indexOf(p);
-				if (i == -1)
-					propositionList.add(p);
-				else
-					propositionList.get(i).update(1001, 1001);
-				if (m_tracer != null)
-					m_tracer.addSubelement(activations, "activation", "front_empty");
-			}
-			if (place.isInCell(LocalSpaceMemory.DIRECTION_AHEAD) && place.getValue() == Ernest.PHENOMENON_WALL)
-			{
-				if (m_tracer != null)
-					m_tracer.addSubelement(activations, "activation", "front_wall");
-				frontWall = true;
-			}
+			IProposition p = new Proposition(touchAhead.getSchema(), UNKNOWN_WEIGHT, 1001);
+			propositionList.add(p);
+			if (m_tracer != null)
+				m_tracer.addSubelement(activations, "propose", touchAhead.getLabel() + " weight: " + UNKNOWN_WEIGHT);
 		}
-		if (frontWall)
+		else
 		{
-			for (IPlace place : m_spas.getPhenomena())
+			for (IAct a : frontPlace.getBundle().getActList())
 			{
+				if (a.getPosition().equals(LocalSpaceMemory.DIRECTION_AHEAD))
 				{
-					if (place.isInCell(LocalSpaceMemory.DIRECTION_LEFT) && place.getValue() == Ernest.PHENOMENON_EMPTY)
-					{
-						IProposition p = new Proposition(leftTurn.getSchema(), 1001, 1001);
-						int i = propositionList.indexOf(p);
-						if (i == -1)
-							propositionList.add(p);
-						else
-							propositionList.get(i).update(1001, 1001);
-						if (m_tracer != null)
-							m_tracer.addSubelement(activations, "activation", "right_corner");
-					}
-					if (place.isInCell(LocalSpaceMemory.DIRECTION_RIGHT) && place.getValue() == Ernest.PHENOMENON_EMPTY)
-					{
-						IProposition p = new Proposition(rightTurn.getSchema(), 1001, 1001);
-						int i = propositionList.indexOf(p);
-						if (i == -1)
-							propositionList.add(p);
-						else
-							propositionList.get(i).update(1001, 1001);
-						if (m_tracer != null)
-							m_tracer.addSubelement(activations, "activation", "left_corner");
-					}
+					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
+					propositionList.add(p);
+					if (m_tracer != null)
+						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
 				}
 			}
 		}
+		
+		IPlace leftPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_LEFT);		
+		if (leftPlace == null)
+		{
+			IProposition p = new Proposition(touchLeft.getSchema(), UNKNOWN_WEIGHT, 1001);
+			propositionList.add(p);
+			if (m_tracer != null)
+				m_tracer.addSubelement(activations, "propose", touchLeft.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+		}
+		else
+		{
+			for (IAct a : leftPlace.getBundle().getActList())
+			{
+				if (a.getPosition().equals(LocalSpaceMemory.DIRECTION_LEFT))
+				{
+					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
+					propositionList.add(p);
+					if (m_tracer != null)
+						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+				}
+				if (a.getLabel().equals("/f"))
+				{
+					int w = 1001;
+					IProposition p = new Proposition(turnLeft.getSchema(), w, PHENOMENA_WEIGHT);
+					//propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "propose", turnLeft.getLabel() + " weight: " + w);
+				}
+			}
+		}
+		
+		IPlace rightPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_RIGHT);		
+		if (rightPlace == null)
+		{
+			IProposition p = new Proposition(touchRight.getSchema(), UNKNOWN_WEIGHT, 1001);
+			propositionList.add(p);
+			if (m_tracer != null)
+				m_tracer.addSubelement(activations, "propose", touchRight.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+		}
+		else
+		{
+			for (IAct a : rightPlace.getBundle().getActList())
+			{
+				if (a.getPosition().equals(LocalSpaceMemory.DIRECTION_RIGHT))
+				{
+					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
+					propositionList.add(p);
+					if (m_tracer != null)
+						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+				}
+				if (a.getLabel().equals("\\f"))
+				{
+					int w = 1001;
+					IProposition p = new Proposition(turnRight.getSchema(), w, PHENOMENA_WEIGHT);
+					//propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "propose", turnRight.getLabel() + " weight: " + w);
+				}
+			}
+		}
+		
 		return propositionList;
 	}
 
+//	public ArrayList<IProposition> getPropositionList()
+//	{
+//		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
+//		IAct leftTurn = m_imos.addInteraction("^", "f", 0);
+//		IAct rightTurn = m_imos.addInteraction("v", "f", 0);
+//		IAct step = m_imos.addInteraction(">", "t", 0);
+//
+//		Object activations = null;
+//		if (m_tracer != null)
+//			activations = m_tracer.addEventElement("phenomena_activations", true);
+//
+//		boolean frontWall = false;
+//		for (IPlace place : m_spas.getPhenomena())
+//		{
+//			if (place.isInCell(LocalSpaceMemory.DIRECTION_AHEAD) && place.getValue() == Ernest.PHENOMENON_EMPTY)
+//			{
+//				IProposition p = new Proposition(step.getSchema(), 1001, 1001);
+//				int i = propositionList.indexOf(p);
+//				if (i == -1)
+//					propositionList.add(p);
+//				else
+//					propositionList.get(i).update(1001, 1001);
+//				if (m_tracer != null)
+//					m_tracer.addSubelement(activations, "activation", "front_empty");
+//			}
+//			if (place.isInCell(LocalSpaceMemory.DIRECTION_AHEAD) && place.getValue() == Ernest.PHENOMENON_WALL)
+//			{
+//				if (m_tracer != null)
+//					m_tracer.addSubelement(activations, "activation", "front_wall");
+//				frontWall = true;
+//			}
+//		}
+////		if (frontWall)
+//		{
+//			for (IPlace place : m_spas.getPhenomena())
+//			{
+//				{
+//					if (place.isInCell(LocalSpaceMemory.DIRECTION_LEFT) && place.getValue() == Ernest.PHENOMENON_EMPTY)
+//					{
+//						IProposition p = new Proposition(leftTurn.getSchema(), 1001, 1001);
+//						int i = propositionList.indexOf(p);
+//						if (i == -1)
+//							propositionList.add(p);
+//						else
+//							propositionList.get(i).update(1001, 1001);
+//						if (m_tracer != null)
+//							m_tracer.addSubelement(activations, "activation", "right_corner");
+//					}
+//					if (place.isInCell(LocalSpaceMemory.DIRECTION_RIGHT) && place.getValue() == Ernest.PHENOMENON_EMPTY)
+//					{
+//						IProposition p = new Proposition(rightTurn.getSchema(), 1001, 1001);
+//						int i = propositionList.indexOf(p);
+//						if (i == -1)
+//							propositionList.add(p);
+//						else
+//							propositionList.get(i).update(1001, 1001);
+//						if (m_tracer != null)
+//							m_tracer.addSubelement(activations, "activation", "left_corner");
+//					}
+//				}
+//			}
+//		}
+//		return propositionList;
+//	}
 }

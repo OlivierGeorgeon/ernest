@@ -58,5 +58,7 @@ public interface ISensorymotorSystem
 	
 	public IAct situationAct();
 	public ArrayList<IProposition> getPropositionList();
+	public void stepSpas(IAct act);
+	public void updateSpas(IAct act);
 
 }

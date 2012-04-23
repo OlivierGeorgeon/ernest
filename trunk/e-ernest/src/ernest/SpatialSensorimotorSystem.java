@@ -106,7 +106,7 @@ public class SpatialSensorimotorSystem  extends BinarySensorymotorSystem
 		m_spas.tick();
 		addSegmentPlaces(m_segmentList);
 		addTactilePlaces(newObservation.getTactileStimuli());
-		m_spas.step(newObservation, m_places);
+		m_spas.step(newObservation);//, m_places); Not checked 
 		synergy(m_interactionPlace, newObservation);
 		
 		// A spatial affordance was triggered

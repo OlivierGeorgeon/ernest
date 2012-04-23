@@ -69,7 +69,7 @@ public class Spas implements ISpas
 	 * @param interactionPlace The place where the ongoing interaction started.
 	 * @param observation The current observation.
 	 */
-	public void step(IObservation observation, ArrayList<IPlace> places) 
+	public void step(IObservation observation)//, ArrayList<IPlace> places) 
 	{		
 
 		m_observation = observation;
@@ -83,7 +83,7 @@ public class Spas implements ISpas
 
 		// Create and maintain phenomenon places from interaction places. 
 		
-		m_localSpaceMemory.phenomenon(places, observation, m_clock);
+		m_localSpaceMemory.phenomenon(observation, m_clock);//(places, observation, m_clock);
 		
 		m_localSpaceMemory.trace();
 
@@ -281,6 +281,11 @@ public class Spas implements ISpas
 	public int getValue(Vector3f position) 
 	{
 		return m_localSpaceMemory.getValue(position);
+	}
+
+	public IPlace getPlace(Vector3f position) 
+	{
+		return m_localSpaceMemory.getPlace(position);
 	}
 
 	public void initSimulation() 
