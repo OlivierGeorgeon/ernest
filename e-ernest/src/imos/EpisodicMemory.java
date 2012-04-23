@@ -167,6 +167,13 @@ public class EpisodicMemory
 			m_schemas.add(s);
 			m_acts.add(a);
 			m_learnCount++;
+			
+			// Its relative position is equal to its spatial simulation
+			m_sensorimotorSystem.checkConsistency(a);
+			if (a.getLabel().equals("(^f>t)"))
+				a.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
+			if (a.getLabel().equals("(vf>t)"))
+				a.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 		}
 		else
 			// The schema already exists: return a pointer to it.

@@ -212,6 +212,11 @@ public class Ernest implements IErnest
 	 */
 	public String step(boolean status) 
 	{
+		if (m_tracer != null)
+		{
+            m_tracer.startNewEvent(m_imos.getCounter());
+			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+		}                
 		// Determine the primitive enacted act from the enacted schema and the data sensed in the environment.
 		
 		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);

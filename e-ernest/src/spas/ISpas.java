@@ -29,7 +29,7 @@ public interface ISpas
 	 * @param interactionPlace The place where the ongoing interaction started.
 	 * @param observation The current observation.
 	 */
-	public void step(IObservation observation, ArrayList<IPlace> places);
+	public void step(IObservation observation);//, ArrayList<IPlace> places);
 
 	/**
 	 * Provide a rgb code to display the local space map in the environment.
@@ -91,6 +91,7 @@ public interface ISpas
 	public void aggregateBundle(IBundle bundle, IAct act); 
 
 	public int getValue(Vector3f position);
+	public IPlace getPlace(Vector3f position);
 	
 	public void initSimulation();
 	public void translateSimulation(Vector3f translation);
