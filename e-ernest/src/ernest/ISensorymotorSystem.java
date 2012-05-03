@@ -45,6 +45,7 @@ public interface ISensorymotorSystem
 	 * @return The enacted act
 	 */
 	public IAct enactedAct(IAct act, boolean status);
+	public IAct enactedAct(IAct act, String status); 
 	
 	public IAct enactedAct(IAct act, int[][] matrix);
 	
