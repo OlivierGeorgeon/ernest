@@ -368,7 +368,7 @@ public class EpisodicMemory
 
 		// Log the propositions
 		
-		System.out.println("Propose: ");
+		//System.out.println("Propose: ");
 		Object proposalElmt = null;
 		if (m_tracer != null)
 			proposalElmt = m_tracer.addEventElement("proposals", true);
@@ -384,7 +384,7 @@ public class EpisodicMemory
 
 		for (IProposition p : proposals)
 		{
-			System.out.println(p);
+			//System.out.println(p);
 			//IObservation anticipation = m_ernest.getStaticSystem().anticipate(p.getAct());
 			// Adjust the proposition's weight based on the anticipation in the local map 
 		}

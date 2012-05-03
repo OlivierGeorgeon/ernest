@@ -369,21 +369,13 @@ public class LocalSpaceMemory
 						phenomenonPlace.setOrientation(interactionPlace.getOrientation());
 						phenomenonPlace.setUpdateCount(m_spas.getClock());
 						//phenomenonPlace.getBundle().addAct(interactionPlace.getAct());
-						m_spas.aggregateBundle(phenomenonPlace.getBundle(), interactionPlace.getAct());
+						IBundle aggregate = m_spas.aggregateBundle(phenomenonPlace.getBundle(), interactionPlace.getAct());
+						//phenomenonPlace.setBundle(aggregate);
 						newPlace = false;
 					}
 				}
 				if (newPlace)
 				{
-					// Create a new bundle if it does not yet exist
-					//IBundle bundle = m_spas.evokeBundle(interactionPlace.getAct());
-					//if (bundle == null)
-					//{
-					
-						//IBundle bundle = m_spas.addBundle(interactionPlace.getAct().getPhenomenon());
-						//bundle.addAct(interactionPlace.getAct());
-					//}
-
 					// Create a new bundle 
 					// we can't assume it's the same as an existing bundle unless this very interaction already belongs to a bundle
 					IBundle bundle = m_spas.addBundle(interactionPlace.getAct());
@@ -473,7 +465,8 @@ public class LocalSpaceMemory
 		
 		for (IPlace place : m_places)
 		{
-			if (place.getPosition().length() < 1.9 && place.getPosition().length() > .1 && place.isPhenomenon())
+			//if (place.getPosition().length() < 1.9 && place.getPosition().length() > .1 && place.isPhenomenon())
+			if (place.isPhenomenon())
 				phenomena.add(place);
 		}
 		
