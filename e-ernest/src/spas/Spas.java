@@ -209,7 +209,7 @@ public class Spas implements ISpas
 		return bundle;
 	}
 	
-	public void aggregateBundle(IBundle bundle, IAct act) 
+	public IBundle aggregateBundle(IBundle bundle, IAct act) 
 	{			
 		// See if this act already belongs to another bundle
 		IBundle aggregate = null;
@@ -245,11 +245,12 @@ public class Spas implements ISpas
 			}
 			if (in >= 0)
 				m_bundles.remove(in);
-			// The aggregate bundle becomes associated with the phenomenon.
+			// The aggregate bundle replaces the previous bundle of this phenomenon.
 			bundle = aggregate;
 			if (m_tracer != null && added)
 				bundle.trace(m_tracer, "bundle");
 		}		
+		return bundle;
 	}
 
 	public int getClock() 
