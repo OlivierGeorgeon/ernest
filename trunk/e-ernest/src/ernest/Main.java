@@ -75,7 +75,8 @@ public class Main
 			System.out.println("Step #" + iCycle);
 			//tracer.startNewEvent(iCycle++);
 			
-			schema = ernest.step(status);
+			//schema = ernest.step(status);
+			schema = ernest.step(status ? "t" : "f");
 			status = environment.enact(schema);
 			
 			//tracer.close(); // Needed with the XMLTracer to save the xml file each time.

@@ -231,6 +231,27 @@ public class Ernest implements IErnest
 		return m_primitiveAct.getSchema().getLabel();
 	}
 
+	public String step(String status) 
+	{
+		if (m_tracer != null)
+		{
+            m_tracer.startNewEvent(m_imos.getCounter());
+			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+		}                
+		// Determine the primitive enacted act from the enacted schema and the data sensed in the environment.
+		
+		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
+		
+		// Let Ernest decide for the next primitive schema to enact.
+		
+		//m_spas.tick();
+		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
+		
+		// Return the schema to enact.
+		
+		return m_primitiveAct.getSchema().getLabel();
+	}
+
 	/**
 	 * Ernest's main cognitive loop in the case of an environment that provides a matrix of stimuli.
 	 * @param stimuli The matrix of stimuli privided by the environment.
