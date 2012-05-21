@@ -2,6 +2,7 @@ package ernest;
 
 import tracing.KTBSTracer;
 import tracing.Tracer;
+import tracing.XMLStreamTracer;
 
 /**
  * The main program.  
@@ -23,12 +24,14 @@ public class Main
 		IErnest ernest = new Ernest();
 		BinarySensorymotorSystem sms = new BinarySensorymotorSystem();
 		//ITracer tracer = new KTBSTracer("http://localhost:8001/IDEAL/", "http://salade.dyndns.org/nomodel#");
+        //ITracer tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        ITracer tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/lite/php/stream/","ZHfSTfpjRdsLxcrfdfTyXgofSLdFWG");
 		//ITracer tracer = new Tracer(null);
 		
 		// Initialize the Ernest 
 		
 		ernest.setParameters(6, 6);
-		//ernest.setTracer(tracer);
+		ernest.setTracer(tracer);
 		ernest.setSensorymotorSystem(sms);
 
 		// Set Ernest's primitive interactions and motivations
@@ -72,7 +75,7 @@ public class Main
 		while (true)
 		{
 			// --> Insert breakpoint below to easily follow Ernest in Eclipse debug mode. 
-			System.out.println("Step #" + iCycle);
+			System.out.println("Step #" + iCycle++);
 			//tracer.startNewEvent(iCycle++);
 			
 			//schema = ernest.step(status);
