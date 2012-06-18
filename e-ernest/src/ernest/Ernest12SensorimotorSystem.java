@@ -120,38 +120,18 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), (status ? "t" : "f"), 0);
 
-		// Trace the new event
-		
-		
-//		// Mark the place of the interaction in SPAS =========
-//		
-//		m_spas.tick();
-//		IPlace place = m_spas.addPlace(enactedAct.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
-//		place.setValue(enactedAct.getPhenomenon());
-//		place.setUpdateCount(m_spas.getClock());
-//		place.setAct(enactedAct);
-//		///ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
-//		//interactionPlaces.add(place);
-//
-//		// Update the spatial system to construct phenomena ==
-//		
-//		IObservation observation = new Observation();		
-//		observation.setTranslation(enactedAct.getTranslation());
-//		observation.setRotation(enactedAct.getRotation());
-//		m_spas.step(observation);//, interactionPlaces);
-		
 		return enactedAct;
 	}
 	
 	public void stepSpas(IAct act)
 	{
+		// Add this act in spatial memory
+		
 		m_spas.tick();
 		IPlace place = m_spas.addPlace(act.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
 		place.setValue(act.getPhenomenon());
 		place.setUpdateCount(m_spas.getClock());
 		place.setAct(act);
-		//ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
-		//interactionPlaces.add(place);
 	}
 	
 	public void updateSpas(IAct act)
@@ -162,7 +142,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		IObservation observation = new Observation();		
 		observation.setTranslation(act.getTranslation());
 		observation.setRotation(act.getRotation());
-		m_spas.step(observation);//, interactionPlaces);
+		m_spas.step(observation);
 
 	}
 	

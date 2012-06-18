@@ -66,7 +66,6 @@ public class Spas implements ISpas
 	 * Maintain the local space memory.
 	 * Construct bundles and affordances.
 	 * Maintain the current observation that is used by IMOS. 
-	 * @param interactionPlace The place where the ongoing interaction started.
 	 * @param observation The current observation.
 	 */
 	public void step(IObservation observation)//, ArrayList<IPlace> places) 
