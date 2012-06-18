@@ -25,8 +25,8 @@ public class Main
 		BinarySensorymotorSystem sms = new BinarySensorymotorSystem();
 		//ITracer tracer = new KTBSTracer("http://localhost:8001/IDEAL/", "http://salade.dyndns.org/nomodel#");
         //ITracer tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
-        ITracer tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/lite/php/stream/","ZHfSTfpjRdsLxcrfdfTyXgofSLdFWG");
-		//ITracer tracer = new Tracer(null);
+        //ITracer tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/lite/php/stream/","ZHfSTfpjRdsLxcrfdfTyXgofSLdFWG");
+		ITracer tracer = new Tracer(null);
 		
 		// Initialize the Ernest 
 		

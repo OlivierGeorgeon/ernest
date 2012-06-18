@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import spas.IObservation;
 import spas.IPlace;
 import spas.LocalSpaceMemory;
-import spas.PersistenceMemory;
+//import spas.PersistenceMemory;
 
 import ernest.Ernest;
 import ernest.IErnest;
