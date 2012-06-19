@@ -331,7 +331,12 @@ public class LocalSpaceMemory
 		return evokeList;
 	}
 	
-	public void phenomenon(IObservation observation, int clock)//ArrayList<IPlace> places, IObservation observation, int clock)
+	/**
+	 * Maintain the list of active phenomena in spatial memory
+	 * @param observation The observation 
+	 * @param clock The time in the spatial memory
+	 */
+	public void phenomenon(IObservation observation, int clock)
 	{
 		// Clear the old traces in persistence memory
 		clear();

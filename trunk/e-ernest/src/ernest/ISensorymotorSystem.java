@@ -2,9 +2,12 @@ package ernest;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Vector3f;
+
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
+import spas.Place;
 import imos.IAct;
 import imos.IImos;
 import imos.IProposition;
@@ -61,5 +64,6 @@ public interface ISensorymotorSystem
 	public ArrayList<IProposition> getPropositionList();
 	public void stepSpas(IAct act);
 	public void updateSpas(IAct act);
+	public Vector3f situate(IAct act); 
 
 }

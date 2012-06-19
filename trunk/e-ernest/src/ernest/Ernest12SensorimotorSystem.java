@@ -43,12 +43,15 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			{
 				act.setTranslation(new Vector3f(-1,0,0));
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-				act.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			}
 			else
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_WALL);
-				act.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 		}
 
@@ -56,14 +59,16 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			act.setRotation((float) - Math.PI / 2);
 			act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-			act.setPosition(LocalSpaceMemory.DIRECTION_HERE);
+			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
+			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 		}
 		
 		if (schemaLabel.equals("v"))
 		{
 			act.setRotation((float) Math.PI / 2);
 			act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-			act.setPosition(LocalSpaceMemory.DIRECTION_HERE);
+			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
+			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 		}
 		
 		if (act.getSchema().getLabel().equals("/") )
@@ -71,12 +76,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-				act.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 			else
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_WALL);
-				act.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 		}
 		
@@ -85,12 +92,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-				act.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_WALL);
-				act.setPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 		}
 		
@@ -99,12 +108,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-				act.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 			}
 			else
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_WALL);
-				act.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 			}
 		}
 
@@ -125,10 +136,10 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	
 	public void stepSpas(IAct act)
 	{
-		// Add this act in spatial memory
+		// Add this act into spatial memory
 		
 		m_spas.tick();
-		IPlace place = m_spas.addPlace(act.getPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+		IPlace place = m_spas.addPlace(act.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
 		place.setValue(act.getPhenomenon());
 		place.setUpdateCount(m_spas.getClock());
 		place.setAct(act);
@@ -136,7 +147,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	
 	public void updateSpas(IAct act)
 	{
-
 		// Update the spatial system to construct phenomena ==
 		
 		IObservation observation = new Observation();		
@@ -160,10 +170,30 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	
 	public Vector3f situate(IAct act) 
 	{
-		IPlace flag = new Place(null, new Vector3f());
+		//IPlace flag = new Place(null, new Vector3f());
+		IPlace flag = m_spas.addPlace(null, new Vector3f());
 		m_spas.initSimulation();
-		simulate(act);
-		return  flag.getPosition();
+		sit(act);
+		//return  flag.getPosition();
+		return  flag.getSimulatedPosition();
+	}
+	
+	/**
+	 * The recursive function that tracks back the origin of an act.
+	 */
+	private void sit(IAct act)
+	{
+		ISchema s = act.getSchema();
+		if (s.isPrimitive())
+		{			
+			m_spas.translateSimulation(act.getTranslation());
+			m_spas.rotateSimulation(act.getRotation());
+		}
+		else 
+		{
+			sit(s.getIntentionAct());
+			sit(s.getContextAct());
+		}
 	}
 	
 	/**
@@ -176,23 +206,13 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{			
-//			m_spas.translateSimulation(act.getTranslation());
-//			m_spas.rotateSimulation(act.getRotation());
-
-//			if (m_spas.getValueSimulation(act.getPosition()) == Ernest.UNANIMATED_COLOR)
-//				consistent = true;
-//			else
-//				consistent = act.getPhenomenon() == m_spas.getValueSimulation(act.getPosition());
-			
-			IBundle bundle = m_spas.getBundleSimulation(act.getPosition());
-//			IBundle bundle = m_spas.getBundleSimulation(LocalSpaceMemory.DIRECTION_HERE);
+			IBundle bundle = m_spas.getBundleSimulation(act.getEndPosition());
 			if (bundle == null)	
 				consistent = true;
 			else
 				consistent =  bundle.isConsistent(act);
 			m_spas.translateSimulation(act.getTranslation());
 			m_spas.rotateSimulation(act.getRotation());
-
 		}
 		else 
 		{
@@ -263,6 +283,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		if (m_tracer != null)
 			activations = m_tracer.addEventElement("phenomena_propositions", true);
 
+		// Bundle ahead
 		IPlace frontPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_AHEAD);		
 		if (frontPlace == null)
 		{
@@ -275,7 +296,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			for (IAct a : frontPlace.getBundle().getActList())
 			{
-				if (a.getPosition().equals(LocalSpaceMemory.DIRECTION_AHEAD))
+				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_AHEAD))
 				{
 					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
 					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
@@ -286,6 +307,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			}
 		}
 		
+		// Bundle left
 		IPlace leftPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_LEFT);		
 		if (leftPlace == null)
 		{
@@ -298,7 +320,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			for (IAct a : leftPlace.getBundle().getActList())
 			{
-				if (a.getPosition().equals(LocalSpaceMemory.DIRECTION_LEFT))
+				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_LEFT))
 				{
 					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
 					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
@@ -317,6 +339,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			}
 		}
 		
+		// Bundle right
 		IPlace rightPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_RIGHT);		
 		if (rightPlace == null)
 		{
@@ -329,7 +352,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			for (IAct a : rightPlace.getBundle().getActList())
 			{
-				if (a.getPosition().equals(LocalSpaceMemory.DIRECTION_RIGHT))
+				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_RIGHT))
 				{
 					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
 					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);

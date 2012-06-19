@@ -40,9 +40,6 @@ public class Spas implements ISpas
 	/** A list of all the bundles ever identified. */
 	public List<IBundle> m_bundles = new ArrayList<IBundle>(20);
 	
-	/** Ernest's persistence momory  */
-	//private PersistenceMemory m_persistenceMemory = new PersistenceMemory();
-	
 	/** Ernest's local space memory  */
 	private LocalSpaceMemory m_localSpaceMemory;
 	
@@ -57,7 +54,6 @@ public class Spas implements ISpas
 	public void setTracer(ITracer tracer) 
 	{
 		m_tracer = tracer;
-		//m_persistenceMemory.setTracer(tracer);
 		m_localSpaceMemory = new LocalSpaceMemory(this, m_tracer);
 	}
 

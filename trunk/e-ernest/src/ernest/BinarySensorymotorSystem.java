@@ -3,9 +3,12 @@ package ernest;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Vector3f;
+
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
+import spas.Place;
 import imos.IAct;
 import imos.IImos;
 import imos.IProposition;
@@ -122,5 +125,10 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		// TODO Auto-generated method stub
 		
 	}
+	public Vector3f situate(IAct act) 
+	{
+		return null;
+	}
+
 	
 }
