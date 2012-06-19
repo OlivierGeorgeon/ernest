@@ -431,15 +431,6 @@ public class Place implements IPlace
 		return ret;		
 	}
 
-//	public void setLabel(String label) 
-//	{
-//		m_label = label;
-//	}
-//
-//	public String getLabel() 
-//	{
-//		return m_label;
-//	}
 	public void setAct(IAct act) 
 	{
 		m_act = act;
@@ -449,4 +440,10 @@ public class Place implements IPlace
 	{
 		return m_act;
 	}
+
+	public Vector3f getSimulatedPosition()
+	{
+		return m_simulatedPosition;
+	}
+
 }

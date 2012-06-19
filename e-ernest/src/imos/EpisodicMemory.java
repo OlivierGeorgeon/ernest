@@ -6,12 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import javax.vecmath.Vector3f;
+
 import org.w3c.dom.Element;
 
 import spas.IObservation;
 import spas.IPlace;
 import spas.LocalSpaceMemory;
-//import spas.PersistenceMemory;
 
 import ernest.Ernest;
 import ernest.IErnest;
@@ -168,12 +169,18 @@ public class EpisodicMemory
 			m_acts.add(a);
 			m_learnCount++;
 			
-			// Its relative position is equal to its spatial simulation
-			m_sensorimotorSystem.checkConsistency(a);
-			if (a.getLabel().equals("(^f>t)"))
-				a.setPosition(LocalSpaceMemory.DIRECTION_LEFT);
-			if (a.getLabel().equals("(vf>t)"))
-				a.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			// Compute the relative position of this act
+//			if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)"))
+			{
+				Vector3f p = m_sensorimotorSystem.situate(a);
+				a.setStartPosition(p);
+			}
+//			if (a.getLabel().equals("(vf>t)"))
+//			{
+//				//a.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+//				Vector3f p = m_sensorimotorSystem.situate(a);
+//				a.setPosition(p);
+//			}
 		}
 		else
 			// The schema already exists: return a pointer to it.

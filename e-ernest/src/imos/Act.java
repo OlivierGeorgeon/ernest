@@ -39,7 +39,8 @@ public class Act implements IAct
 	private int m_length = 1;
 	
 	private int m_phenomenon = Ernest.PHENOMENON_EMPTY;
-	private Vector3f m_position = new Vector3f();
+	private Vector3f m_startPosition = new Vector3f();
+	private Vector3f m_endPosition = new Vector3f();
 	private Vector3f m_translation = new Vector3f();
 	private float m_rotation = 0;
 	
@@ -234,14 +235,18 @@ public class Act implements IAct
 		return m_phenomenon;
 	}
 
-	public void setPosition(Vector3f position) 
+	public void setEndPosition(Vector3f position) 
 	{
-		m_position.set(position);
+		if (m_schema.isPrimitive())
+			m_endPosition.set(position);
 	}
 
-	public Vector3f getPosition() 
+	public Vector3f getEndPosition() 
 	{
-		return m_position;
+		if (m_schema.isPrimitive())
+			return m_endPosition;
+		else
+			return (m_schema.getIntentionAct().getEndPosition());
 	}
 
 	public void setTranslation(Vector3f translation) 
@@ -262,5 +267,15 @@ public class Act implements IAct
 	public float getRotation() 
 	{
 		return m_rotation;
+	}
+
+	public void setStartPosition(Vector3f position) 
+	{
+		m_startPosition.set(position);
+	}
+
+	public Vector3f getStartPosition() 
+	{
+		return m_startPosition;
 	}
 }

@@ -86,14 +86,17 @@ public interface IAct  extends Comparable<IAct>
 	public int getPhenomenon();
 	
 	/**
-	 * @param position The relative position of the phenomenon evoked by this interaction.
+	 * @param position The position of the phenomena that is concerned by the enaction of this act.
 	 */
-	public void setPosition(Vector3f position);
+	public void setEndPosition(Vector3f position);
 	
 	/**
-	 * @return The relative position of the phenomenon evoked by this interaction.
+	 * @return The position of the phenomena that is concerned by the enaction of this act.
 	 */
-	public Vector3f getPosition();
+	public Vector3f getEndPosition();
+	
+	public void setStartPosition(Vector3f position);
+	public Vector3f getStartPosition();
 	
 	public void setTranslation(Vector3f translation);
 	public Vector3f getTranslation();
