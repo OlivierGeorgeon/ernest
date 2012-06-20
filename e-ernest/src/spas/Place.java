@@ -108,6 +108,9 @@ public class Place implements IPlace
 		m_position.add(translation);
 		m_firstPosition.add(translation);
 		m_secondPosition.add(translation);
+//		m_position.sub(translation);
+//		m_firstPosition.sub(translation);
+//		m_secondPosition.sub(translation);
 	}
 	
 	public boolean isInCell(Vector3f position)

@@ -98,7 +98,7 @@ public interface IAct  extends Comparable<IAct>
 	public void setStartPosition(Vector3f position);
 	public Vector3f getStartPosition();
 	
-	public void setTranslation(Vector3f translation);
+	//public void setTranslation(Vector3f translation);
 	public Vector3f getTranslation();
 	
 	public void setRotation(float rotation);

@@ -249,14 +249,17 @@ public class Act implements IAct
 			return (m_schema.getIntentionAct().getEndPosition());
 	}
 
-	public void setTranslation(Vector3f translation) 
-	{
-		m_translation = translation;
-	}
+//	public void setTranslation(Vector3f translation) 
+//	{
+//		m_translation = translation;
+//	}
 
 	public Vector3f getTranslation() 
 	{
-		return m_translation;
+		//return m_translation;
+		Vector3f translation = new Vector3f(m_endPosition);
+		translation.sub(m_startPosition);
+		return translation;
 	}
 
 	public void setRotation(float rotation) 

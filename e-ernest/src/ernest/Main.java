@@ -26,12 +26,12 @@ public class Main
 		//ITracer tracer = new KTBSTracer("http://localhost:8001/IDEAL/", "http://salade.dyndns.org/nomodel#");
         //ITracer tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
         //ITracer tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/lite/php/stream/","ZHfSTfpjRdsLxcrfdfTyXgofSLdFWG");
-		ITracer tracer = new Tracer(null);
+		//ITracer tracer = new Tracer(null);
 		
 		// Initialize the Ernest 
 		
 		ernest.setParameters(6, 6);
-		ernest.setTracer(tracer);
+		//ernest.setTracer(tracer);
 		ernest.setSensorymotorSystem(sms);
 
 		// Set Ernest's primitive interactions and motivations

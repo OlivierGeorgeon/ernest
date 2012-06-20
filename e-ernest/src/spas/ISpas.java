@@ -98,5 +98,7 @@ public interface ISpas
 	public void rotateSimulation(float angle);
 	public int getValueSimulation(Vector3f position);
 	public IBundle getBundleSimulation(Vector3f position);
+	
+	public void followUp(IAct act);
 
 }

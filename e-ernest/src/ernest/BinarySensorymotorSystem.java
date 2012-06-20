@@ -125,10 +125,13 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		// TODO Auto-generated method stub
 		
 	}
+	public void updateSpas(IAct primitiveAct, IAct topAct) {
+		// TODO Auto-generated method stub
+		
+	}
 	public Vector3f situate(IAct act) 
 	{
-		return null;
+		return new Vector3f();
 	}
 
-	
 }

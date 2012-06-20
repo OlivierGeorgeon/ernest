@@ -272,11 +272,11 @@ public class Imos implements IImos
 		
 		// Update spatial memory
 		
-		if (enactedAct != null)
-			m_sensorimotorSystem.stepSpas(enactedAct);
+		//if (enactedAct != null)
+		//	m_sensorimotorSystem.stepSpas(enactedAct);
 
-		if (m_primitiveIntention != null)
-			m_sensorimotorSystem.updateSpas(primitiveEnaction);
+		//if (m_primitiveIntention != null)
+			m_sensorimotorSystem.updateSpas(primitiveEnaction, enactedAct);
 
 		//if (enactedAct != null)
 		//	m_sensorimotorSystem.stepSpas(enactedAct);

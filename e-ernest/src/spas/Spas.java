@@ -71,10 +71,11 @@ public class Spas implements ISpas
 		
 		// translate and rotate the local space memory;
 		
-		Vector3f memoryTranslation = new Vector3f(observation.getTranslation());
-		memoryTranslation.scale(-1);
+		//Vector3f memoryTranslation = new Vector3f(observation.getTranslation());
+		//memoryTranslation.scale(-1);
 		//m_localSpaceMemory.update(memoryTranslation, - observation.getRotation());
-		m_localSpaceMemory.update(observation.getTranslation(), observation.getRotation());
+		//m_localSpaceMemory.followUp(observation.getTranslation(), observation.getRotation());
+		//followUp(observation.getPrimitiveAct());
 
 		// Create and maintain phenomenon places from interaction places. 
 		
@@ -344,6 +345,11 @@ public class Spas implements ISpas
 				return bundle;
 
 		return null;
+	}
+
+	public void followUp(IAct act) 
+	{
+		m_localSpaceMemory.followUp(act.getTranslation(), act.getRotation());		
 	}
 
 	/**
