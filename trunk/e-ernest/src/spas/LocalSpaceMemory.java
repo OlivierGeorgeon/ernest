@@ -93,7 +93,7 @@ public class LocalSpaceMemory
 	 * @param translation The translation vector in egocentric referential (provide the opposite vector from the agent's movement).
 	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
 	 */
-	public void update(Vector3f translation, float rotation)
+	public void followUp(Vector3f translation, float rotation)
 	{
 		rotate(rotation);
 		translate(translation);

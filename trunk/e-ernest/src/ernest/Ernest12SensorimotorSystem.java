@@ -41,11 +41,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			if (stimuliLabel.equals("t") || stimuliLabel.equals("  "))
 			{
-				act.setTranslation(new Vector3f(-1,0,0));
+				//act.setTranslation(new Vector3f(-1,0,0));
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			}
 			else
 			{
@@ -139,6 +139,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		// Add this act into spatial memory
 		
 		m_spas.tick();
+		m_spas.followUp(act);
 		IPlace place = m_spas.addPlace(act.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
 		place.setValue(act.getPhenomenon());
 		place.setUpdateCount(m_spas.getClock());
@@ -149,10 +150,33 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	{
 		// Update the spatial system to construct phenomena ==
 		
-		IObservation observation = new Observation();		
+		IObservation observation = new Observation();
+		observation.setPrimitiveAct(act);
 		observation.setTranslation(act.getTranslation());
 		observation.setRotation(act.getRotation());
 		m_spas.step(observation);
+	}
+	
+	public void updateSpas(IAct primitiveAct, IAct topAct)
+	{
+		// Add this act into spatial memory
+		
+		m_spas.tick();
+		if (primitiveAct != null)
+		{
+			m_spas.followUp(primitiveAct);
+			IPlace place = m_spas.addPlace(topAct.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+			place.setValue(topAct.getPhenomenon());
+			place.setUpdateCount(m_spas.getClock());
+			place.setAct(topAct);
+			// Update the spatial system to construct phenomena ==
+			
+			IObservation observation = new Observation();
+			observation.setPrimitiveAct(primitiveAct);
+			observation.setTranslation(primitiveAct.getTranslation());
+			observation.setRotation(primitiveAct.getRotation());
+			m_spas.step(observation);
+		}
 
 	}
 	
@@ -206,7 +230,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{			
-			IBundle bundle = m_spas.getBundleSimulation(act.getEndPosition());
+			IBundle bundle = m_spas.getBundleSimulation(act.getStartPosition());
 			if (bundle == null)	
 				consistent = true;
 			else
