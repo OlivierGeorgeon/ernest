@@ -169,17 +169,11 @@ public class EpisodicMemory
 			m_acts.add(a);
 			m_learnCount++;
 			
-			// Compute the relative position of this act
+//			// Compute the relative position of this act
 //			if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)"))
-			{
-				Vector3f p = m_sensorimotorSystem.situate(a);
-				a.setStartPosition(p);
-			}
-//			if (a.getLabel().equals("(vf>t)"))
 //			{
-//				//a.setPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 //				Vector3f p = m_sensorimotorSystem.situate(a);
-//				a.setPosition(p);
+//				a.setStartPosition(p);
 //			}
 		}
 		else
