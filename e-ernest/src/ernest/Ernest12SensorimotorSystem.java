@@ -134,28 +134,28 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return enactedAct;
 	}
 	
-	public void stepSpas(IAct act)
-	{
-		// Add this act into spatial memory
-		
-		m_spas.tick();
-		m_spas.followUp(act);
-		IPlace place = m_spas.addPlace(act.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
-		place.setValue(act.getPhenomenon());
-		place.setUpdateCount(m_spas.getClock());
-		place.setAct(act);
-	}
-	
-	public void updateSpas(IAct act)
-	{
-		// Update the spatial system to construct phenomena ==
-		
-		IObservation observation = new Observation();
-		observation.setPrimitiveAct(act);
-		observation.setTranslation(act.getTranslation());
-		observation.setRotation(act.getRotation());
-		m_spas.step(observation);
-	}
+//	public void stepSpas(IAct act)
+//	{
+//		// Add this act into spatial memory
+//		
+//		m_spas.tick();
+//		m_spas.followUp(act);
+//		IPlace place = m_spas.addPlace(act.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+//		place.setValue(act.getPhenomenon());
+//		place.setUpdateCount(m_spas.getClock());
+//		place.setAct(act);
+//	}
+//	
+//	public void updateSpas(IAct act)
+//	{
+//		// Update the spatial system to construct phenomena ==
+//		
+//		IObservation observation = new Observation();
+//		observation.setPrimitiveAct(act);
+//		observation.setTranslation(act.getTranslation());
+//		observation.setRotation(act.getRotation());
+//		m_spas.step(observation);
+//	}
 	
 	public void updateSpas(IAct primitiveAct, IAct topAct)
 	{
@@ -164,7 +164,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		m_spas.tick();
 		if (primitiveAct != null)
 		{
+			// Apply the spatial transformation to spatial memory
 			m_spas.followUp(primitiveAct);
+			
 			IPlace place = m_spas.addPlace(topAct.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
 			place.setValue(topAct.getPhenomenon());
 			place.setUpdateCount(m_spas.getClock());
@@ -173,8 +175,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			
 			IObservation observation = new Observation();
 			observation.setPrimitiveAct(primitiveAct);
-			observation.setTranslation(primitiveAct.getTranslation());
-			observation.setRotation(primitiveAct.getRotation());
+			//observation.setTranslation(primitiveAct.getTranslation());
+			//observation.setRotation(primitiveAct.getRotation());
 			m_spas.step(observation);
 		}
 
@@ -192,33 +194,33 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return simulate(act);		
 	}
 	
-	public Vector3f situate(IAct act) 
-	{
-		//IPlace flag = new Place(null, new Vector3f());
-		IPlace flag = m_spas.addPlace(null, new Vector3f());
-		m_spas.initSimulation();
-		sit(act);
-		//return  flag.getPosition();
-		return  flag.getSimulatedPosition();
-	}
-	
-	/**
-	 * The recursive function that tracks back the origin of an act.
-	 */
-	private void sit(IAct act)
-	{
-		ISchema s = act.getSchema();
-		if (s.isPrimitive())
-		{			
-			m_spas.translateSimulation(act.getTranslation());
-			m_spas.rotateSimulation(act.getRotation());
-		}
-		else 
-		{
-			sit(s.getIntentionAct());
-			sit(s.getContextAct());
-		}
-	}
+//	public Vector3f situate(IAct act) 
+//	{
+//		//IPlace flag = new Place(null, new Vector3f());
+//		IPlace flag = m_spas.addPlace(null, new Vector3f());
+//		m_spas.initSimulation();
+//		sit(act);
+//		//return  flag.getPosition();
+//		return  flag.getSimulatedPosition();
+//	}
+//	
+//	/**
+//	 * The recursive function that tracks back the origin of an act.
+//	 */
+//	private void sit(IAct act)
+//	{
+//		ISchema s = act.getSchema();
+//		if (s.isPrimitive())
+//		{			
+//			m_spas.translateSimulation(act.getTranslation());
+//			m_spas.rotateSimulation(act.getRotation());
+//		}
+//		else 
+//		{
+//			sit(s.getIntentionAct());
+//			sit(s.getContextAct());
+//		}
+//	}
 	
 	/**
 	 * Simulates an act in spatial memory to check its consistency with the current state of spatial memory.

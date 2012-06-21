@@ -2,6 +2,8 @@ package imos;
 
 import javax.vecmath.Vector3f;
 
+import utils.ErnestUtils;
+
 import ernest.Ernest;
 
 
@@ -269,7 +271,12 @@ public class Act implements IAct
 
 	public float getRotation() 
 	{
-		return m_rotation;
+		float rotation;
+		if (m_schema.isPrimitive())
+			rotation = m_rotation;
+		else
+			rotation = m_schema.getContextAct().getRotation() + m_schema.getIntentionAct().getRotation();
+		return rotation;
 	}
 
 	public void setStartPosition(Vector3f position) 
@@ -279,6 +286,15 @@ public class Act implements IAct
 
 	public Vector3f getStartPosition() 
 	{
-		return m_startPosition;
+		Vector3f startPosition = new Vector3f(m_startPosition);
+		if (m_schema.isPrimitive())
+			startPosition.set(m_startPosition);
+		else
+		{
+			startPosition.set(m_schema.getIntentionAct().getStartPosition());
+			ErnestUtils.rotate(startPosition, - m_schema.getContextAct().getRotation());
+			startPosition.add(m_schema.getContextAct().getTranslation());
+		}
+		return startPosition;
 	}
 }

@@ -116,22 +116,22 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return new ArrayList<IProposition>();
 	}
 
-	public void stepSpas(IAct act) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void updateSpas(IAct act) {
-		// TODO Auto-generated method stub
-		
-	}
+//	public void stepSpas(IAct act) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	public void updateSpas(IAct act) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 	public void updateSpas(IAct primitiveAct, IAct topAct) {
 		// TODO Auto-generated method stub
 		
 	}
-	public Vector3f situate(IAct act) 
-	{
-		return new Vector3f();
-	}
+//	public Vector3f situate(IAct act) 
+//	{
+//		return new Vector3f();
+//	}
 
 }

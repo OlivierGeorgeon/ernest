@@ -62,9 +62,9 @@ public interface ISensorymotorSystem
 	
 	public IAct situationAct();
 	public ArrayList<IProposition> getPropositionList();
-	public void stepSpas(IAct act);
-	public void updateSpas(IAct act);
+//	public void stepSpas(IAct act);
+//	public void updateSpas(IAct act);
 	public void updateSpas(IAct primitiveAct, IAct topAct);
-	public Vector3f situate(IAct act); 
+	//public Vector3f situate(IAct act); 
 
 }
