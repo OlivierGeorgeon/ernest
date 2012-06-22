@@ -2,6 +2,7 @@ package imos;
 
 import javax.vecmath.Vector3f;
 
+import spas.LocalSpaceMemory;
 import utils.ErnestUtils;
 
 import ernest.Ernest;
@@ -258,9 +259,17 @@ public class Act implements IAct
 
 	public Vector3f getTranslation() 
 	{
-		//return m_translation;
-		Vector3f translation = new Vector3f(m_endPosition);
-		translation.sub(m_startPosition);
+		Vector3f translation = new Vector3f();
+		if (m_schema.isPrimitive())
+		{
+			translation.set(m_endPosition);
+			translation.sub(m_startPosition);
+		}
+		else
+		{
+			translation.set(m_schema.getContextAct().getTranslation());
+			translation.add(m_schema.getIntentionAct().getTranslation());
+		}
 		return translation;
 	}
 
@@ -284,6 +293,12 @@ public class Act implements IAct
 		m_startPosition.set(position);
 	}
 
+	/**
+	 * Computes the start position of this act
+	 * The start position of its intention
+	 * rotated to the opposite direction of its context
+	 * plus the translation of its context
+	 */
 	public Vector3f getStartPosition() 
 	{
 		Vector3f startPosition = new Vector3f(m_startPosition);
@@ -296,5 +311,24 @@ public class Act implements IAct
 			startPosition.add(m_schema.getContextAct().getTranslation());
 		}
 		return startPosition;
+	}
+
+	public boolean concernOnePlace() 
+	{
+		boolean concernOnePlace = false;
+		
+		if (m_schema.isPrimitive())
+			concernOnePlace = true;
+		else
+		{
+			if (m_schema.getContextAct().getStartPosition().equals(LocalSpaceMemory.DIRECTION_HERE))
+				concernOnePlace = true;
+			Vector3f t = new Vector3f(m_schema.getIntentionAct().getEndPosition());
+			t.sub(m_schema.getContextAct().getTranslation());
+			t.sub(m_schema.getIntentionAct().getTranslation());
+			if (m_schema.getContextAct().getStartPosition().equals(t))
+				concernOnePlace = true;
+		}
+		return concernOnePlace;
 	}
 }

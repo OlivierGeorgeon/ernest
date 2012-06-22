@@ -104,4 +104,6 @@ public interface IAct  extends Comparable<IAct>
 	public void setRotation(float rotation);
 	public float getRotation();
 	
+	public boolean concernOnePlace();
+	
 }
