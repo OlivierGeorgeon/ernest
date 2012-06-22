@@ -338,20 +338,21 @@ public class LocalSpaceMemory
 	 */
 	public void phenomenon(IObservation observation, int clock)
 	{
-		// Clear the old traces in persistence memory
+		// Clear the places that are older than the persistence of spatial memory
 		clear();
 		
-		// Get the list of places that can evoke phenomena.
-		ArrayList<IPlace> evokePlaceList = new ArrayList<IPlace>();
+		// Get the list of interaction places (that can evoke phenomena).
+		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
 		for (IPlace p : m_places)
 			if (p.evokePhenomenon(m_spas.getClock()))
-				evokePlaceList.add(p);
+				interactionPlaces.add(p);
 
 		// Confirm or create phenomenon places in local space memory 
 		
-		for (IPlace interactionPlace : evokePlaceList)//places)
+		for (IPlace interactionPlace : interactionPlaces)
 		{
-			if (interactionPlace.getAct().getSchema().isPrimitive() || interactionPlace.getAct().getLabel().equals("(^f>t)") || interactionPlace.getAct().getLabel().equals("(vf>t)"))
+			//if (interactionPlace.getAct().getSchema().isPrimitive() || interactionPlace.getAct().getLabel().equals("(^f>t)") || interactionPlace.getAct().getLabel().equals("(vf>t)"))
+			if (interactionPlace.getAct().concernOnePlace())
 			{
 				boolean newPlace = true;
 				// Look for a corresponding existing persistent place in local space memory.

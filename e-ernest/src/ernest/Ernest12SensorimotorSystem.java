@@ -167,10 +167,21 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			// Apply the spatial transformation to spatial memory
 			m_spas.followUp(primitiveAct);
 			
+			// Place the act in spatial memory
+			
 			IPlace place = m_spas.addPlace(topAct.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
 			place.setValue(topAct.getPhenomenon());
 			place.setUpdateCount(m_spas.getClock());
 			place.setAct(topAct);
+			
+			// TODO place intermediary acts of higher level acts too?
+			if (!topAct.getSchema().isPrimitive())
+			{
+				IPlace place2 = m_spas.addPlace(primitiveAct.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+				place2.setValue(primitiveAct.getPhenomenon());
+				place2.setUpdateCount(m_spas.getClock());
+				place2.setAct(primitiveAct);
+			}
 			// Update the spatial system to construct phenomena ==
 			
 			IObservation observation = new Observation();
@@ -309,10 +320,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		if (m_tracer != null)
 			activations = m_tracer.addEventElement("phenomena_propositions", true);
 
-		// Bundle ahead
+		// Place ahead
 		IPlace frontPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_AHEAD);		
 		if (frontPlace == null)
 		{
+			// If no phenomenon then propose touching ahead
 			IProposition p = new Proposition(touchAhead.getSchema(), UNKNOWN_WEIGHT, 1001);
 			propositionList.add(p);
 			if (m_tracer != null)
@@ -320,6 +332,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		}
 		else
 		{
+			// If phenomenon ahead then all of its acts whose start position is ahead are proposed
 			for (IAct a : frontPlace.getBundle().getActList())
 			{
 				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_AHEAD))
@@ -333,10 +346,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			}
 		}
 		
-		// Bundle left
+		// Place left
 		IPlace leftPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_LEFT);		
 		if (leftPlace == null)
 		{
+			// If no phenomenon then propose touching left
 			IProposition p = new Proposition(touchLeft.getSchema(), UNKNOWN_WEIGHT, 1001);
 			propositionList.add(p);
 			if (m_tracer != null)
@@ -344,6 +358,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		}
 		else
 		{
+			// If phenomenon left then all acts whose start position is left are proposed
 			for (IAct a : leftPlace.getBundle().getActList())
 			{
 				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_LEFT))
@@ -354,18 +369,10 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
 				}
-				if (a.getLabel().equals("/f"))
-				{
-					int w = 1001;
-					IProposition p = new Proposition(turnLeft.getSchema(), w, PHENOMENA_WEIGHT);
-					//propositionList.add(p);
-//					if (m_tracer != null)
-//						m_tracer.addSubelement(activations, "propose", turnLeft.getLabel() + " weight: " + w);
-				}
 			}
 		}
 		
-		// Bundle right
+		// place right
 		IPlace rightPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_RIGHT);		
 		if (rightPlace == null)
 		{
@@ -385,14 +392,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 					propositionList.add(p);
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
-				}
-				if (a.getLabel().equals("\\f"))
-				{
-					int w = 1001;
-					IProposition p = new Proposition(turnRight.getSchema(), w, PHENOMENA_WEIGHT);
-					//propositionList.add(p);
-//					if (m_tracer != null)
-//						m_tracer.addSubelement(activations, "propose", turnRight.getLabel() + " weight: " + w);
 				}
 			}
 		}
