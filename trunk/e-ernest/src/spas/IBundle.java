@@ -76,6 +76,7 @@ public interface IBundle
 	public boolean hasAct(IAct act);
 	public ArrayList<IAct> getActList();
 	public boolean isConsistent(IAct act);
+	public boolean afford(IAct act);
 
 	void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity, int value);
 

@@ -371,7 +371,8 @@ public class Imos implements IImos
 		
 		if (intentionAct == null)
 		{
-			ArrayList<IProposition> propositionList = m_sensorimotorSystem.getPropositionList();
+			//ArrayList<IProposition> propositionList = m_sensorimotorSystem.getPropositionList();
+			ArrayList<IProposition> propositionList = m_sensorimotorSystem.getPropositionList(m_episodicMemory.getActs());
 			intentionAct = m_episodicMemory.selectAct(m_activationList, propositionList);
 			m_intentionAct = intentionAct;
 			m_newIntention = true;

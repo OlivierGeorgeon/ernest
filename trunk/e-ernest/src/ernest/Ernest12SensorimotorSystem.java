@@ -134,29 +134,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return enactedAct;
 	}
 	
-//	public void stepSpas(IAct act)
-//	{
-//		// Add this act into spatial memory
-//		
-//		m_spas.tick();
-//		m_spas.followUp(act);
-//		IPlace place = m_spas.addPlace(act.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
-//		place.setValue(act.getPhenomenon());
-//		place.setUpdateCount(m_spas.getClock());
-//		place.setAct(act);
-//	}
-//	
-//	public void updateSpas(IAct act)
-//	{
-//		// Update the spatial system to construct phenomena ==
-//		
-//		IObservation observation = new Observation();
-//		observation.setPrimitiveAct(act);
-//		observation.setTranslation(act.getTranslation());
-//		observation.setRotation(act.getRotation());
-//		m_spas.step(observation);
-//	}
-	
 	public void updateSpas(IAct primitiveAct, IAct topAct)
 	{
 		// Add this act into spatial memory
@@ -201,43 +178,16 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	public boolean checkConsistency(IAct act) 
 	{
 		m_spas.initSimulation();
-		
-		return simulate(act);		
+		return simulate(act, true);		
 	}
-	
-//	public Vector3f situate(IAct act) 
-//	{
-//		//IPlace flag = new Place(null, new Vector3f());
-//		IPlace flag = m_spas.addPlace(null, new Vector3f());
-//		m_spas.initSimulation();
-//		sit(act);
-//		//return  flag.getPosition();
-//		return  flag.getSimulatedPosition();
-//	}
-//	
-//	/**
-//	 * The recursive function that tracks back the origin of an act.
-//	 */
-//	private void sit(IAct act)
-//	{
-//		ISchema s = act.getSchema();
-//		if (s.isPrimitive())
-//		{			
-//			m_spas.translateSimulation(act.getTranslation());
-//			m_spas.rotateSimulation(act.getRotation());
-//		}
-//		else 
-//		{
-//			sit(s.getIntentionAct());
-//			sit(s.getContextAct());
-//		}
-//	}
 	
 	/**
 	 * Simulates an act in spatial memory to check its consistency with the current state of spatial memory.
 	 * TODO Create simulated phenomena to check for internal consistency of composite acts.
+	 * @param act The act to simulate
+	 * @param doubt consistency in case of doubt.
 	 */
-	private boolean simulate(IAct act)
+	private boolean simulate(IAct act, boolean doubt)
 	{
 		boolean consistent = false;
 		ISchema s = act.getSchema();
@@ -245,64 +195,68 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{			
 			IBundle bundle = m_spas.getBundleSimulation(act.getStartPosition());
 			if (bundle == null)	
-				consistent = true;
+				consistent = doubt;
 			else
-				consistent =  bundle.isConsistent(act);
+			{
+				if (doubt)
+					consistent =  bundle.isConsistent(act);
+				else 
+					consistent = bundle.afford(act);
+			}
 			m_spas.translateSimulation(act.getTranslation());
 			m_spas.rotateSimulation(act.getRotation());
 		}
 		else 
 		{
-			consistent = simulate(act.getSchema().getContextAct());
+			consistent = simulate(act.getSchema().getContextAct(), doubt);
 			if (consistent)
-				consistent = simulate(act.getSchema().getIntentionAct());
+				consistent = simulate(act.getSchema().getIntentionAct(), doubt);
 		}
 		return consistent;
 	}
 	
 	/**
-	 * Generates a composite act that represents a useful situation recognized in local space memory.
-	 * TODO Should learn to categorize useful situations autonomously.
+	 * Propose all acts that match the spatial context
 	 */
-//	public IAct situationAct() 
-//	{
-//		IAct situationAct = null;
-//		int left = m_spas.getValue(LocalSpaceMemory.DIRECTION_LEFT);
-//		int front = m_spas.getValue(LocalSpaceMemory.DIRECTION_AHEAD);
-//		int right = m_spas.getValue(LocalSpaceMemory.DIRECTION_RIGHT);
-//		
-//		IAct frontWall = m_imos.addInteraction("-", "t", 0);
-//		IAct leftWall = m_imos.addInteraction("/", "t", 0);
-//		IAct leftEmpty = m_imos.addInteraction("/", "f", 0);
-//		IAct leftTurn = m_imos.addInteraction("^", "f", 0);
-//		IAct rightTurn = m_imos.addInteraction("v", "f", 0);
-//
-//		// Left Corner
-//		if (front == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_EMPTY)
-//		{
-//			situationAct = m_imos.addCompositeInteraction(frontWall, leftWall);
-//			situationAct.getSchema().incWeight(6);
-//			//IAct leftCorner = m_imos.addCompositeInteraction(situationAct, rightTurn);
-//			//leftCorner.getSchema().incWeight(1);
-//			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
-//				m_tracer.addEventElement("situation", "left-corner");
-//		}
-//		
-//		// right Corner
-//		if (front == Ernest.PHENOMENON_WALL && right == Ernest.PHENOMENON_WALL && left == Ernest.PHENOMENON_EMPTY )
-//		{
-//			situationAct = m_imos.addCompositeInteraction(frontWall, leftEmpty);
-//			situationAct.getSchema().incWeight(6);
-//			//IAct rightCorner =m_imos.addCompositeInteraction(situationAct, leftTurn);
-//			//rightCorner.getSchema().incWeight(1);
-//			if (m_tracer != null && situationAct.getConfidence() == Imos.RELIABLE)
-//				m_tracer.addEventElement("situation", "right-corner");
-//		}
-//		if (situationAct != null && situationAct.getConfidence() == Imos.RELIABLE)
-//			return situationAct;
-//		else 
-//			return null;
-//	}
+	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts)
+	{
+		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
+		int  PHENOMENA_WEIGHT = 11;
+		int UNKNOWN_WEIGHT = 2001;
+		
+		Object activations = null;
+		if (m_tracer != null)
+			activations = m_tracer.addEventElement("phenomena_propositions", true);
+
+		for (IAct a : acts)
+		{
+			// propose acts that are afforded by the spatial memory context
+			m_spas.initSimulation();
+			if (simulate(a, false))
+			{
+				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
+				propositionList.add(p);
+				if (m_tracer != null)
+					m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+			}
+			
+			// Propose primitive acts that inform about unknown places
+			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
+			{
+				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
+				if (concernedPlace == null)
+				{
+					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, 1001);
+					propositionList.add(p);
+					if (m_tracer != null)
+						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+				}
+			}
+		}
+		
+		return propositionList;
+	}
 	
 	public ArrayList<IProposition> getPropositionList()
 	{
@@ -398,69 +352,4 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		return propositionList;
 	}
-
-//	public ArrayList<IProposition> getPropositionList()
-//	{
-//		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
-//		IAct leftTurn = m_imos.addInteraction("^", "f", 0);
-//		IAct rightTurn = m_imos.addInteraction("v", "f", 0);
-//		IAct step = m_imos.addInteraction(">", "t", 0);
-//
-//		Object activations = null;
-//		if (m_tracer != null)
-//			activations = m_tracer.addEventElement("phenomena_activations", true);
-//
-//		boolean frontWall = false;
-//		for (IPlace place : m_spas.getPhenomena())
-//		{
-//			if (place.isInCell(LocalSpaceMemory.DIRECTION_AHEAD) && place.getValue() == Ernest.PHENOMENON_EMPTY)
-//			{
-//				IProposition p = new Proposition(step.getSchema(), 1001, 1001);
-//				int i = propositionList.indexOf(p);
-//				if (i == -1)
-//					propositionList.add(p);
-//				else
-//					propositionList.get(i).update(1001, 1001);
-//				if (m_tracer != null)
-//					m_tracer.addSubelement(activations, "activation", "front_empty");
-//			}
-//			if (place.isInCell(LocalSpaceMemory.DIRECTION_AHEAD) && place.getValue() == Ernest.PHENOMENON_WALL)
-//			{
-//				if (m_tracer != null)
-//					m_tracer.addSubelement(activations, "activation", "front_wall");
-//				frontWall = true;
-//			}
-//		}
-////		if (frontWall)
-//		{
-//			for (IPlace place : m_spas.getPhenomena())
-//			{
-//				{
-//					if (place.isInCell(LocalSpaceMemory.DIRECTION_LEFT) && place.getValue() == Ernest.PHENOMENON_EMPTY)
-//					{
-//						IProposition p = new Proposition(leftTurn.getSchema(), 1001, 1001);
-//						int i = propositionList.indexOf(p);
-//						if (i == -1)
-//							propositionList.add(p);
-//						else
-//							propositionList.get(i).update(1001, 1001);
-//						if (m_tracer != null)
-//							m_tracer.addSubelement(activations, "activation", "right_corner");
-//					}
-//					if (place.isInCell(LocalSpaceMemory.DIRECTION_RIGHT) && place.getValue() == Ernest.PHENOMENON_EMPTY)
-//					{
-//						IProposition p = new Proposition(rightTurn.getSchema(), 1001, 1001);
-//						int i = propositionList.indexOf(p);
-//						if (i == -1)
-//							propositionList.add(p);
-//						else
-//							propositionList.get(i).update(1001, 1001);
-//						if (m_tracer != null)
-//							m_tracer.addSubelement(activations, "activation", "left_corner");
-//					}
-//				}
-//			}
-//		}
-//		return propositionList;
-//	}
 }

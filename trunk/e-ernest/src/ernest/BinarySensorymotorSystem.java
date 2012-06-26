@@ -116,6 +116,12 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return new ArrayList<IProposition>();
 	}
 
+	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts) 
+	{
+		// TODO Auto-generated method stub
+		return new ArrayList<IProposition>();
+	}
+
 //	public void stepSpas(IAct act) {
 //		// TODO Auto-generated method stub
 //		
