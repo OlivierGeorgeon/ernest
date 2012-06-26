@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import com.sun.tools.javac.util.List;
+
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
@@ -62,9 +64,7 @@ public interface ISensorymotorSystem
 	
 	public IAct situationAct();
 	public ArrayList<IProposition> getPropositionList();
-//	public void stepSpas(IAct act);
-//	public void updateSpas(IAct act);
+	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts);
 	public void updateSpas(IAct primitiveAct, IAct topAct);
-	//public Vector3f situate(IAct act); 
 
 }

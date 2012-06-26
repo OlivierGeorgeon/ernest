@@ -295,6 +295,21 @@ public class Bundle implements IBundle
 		return isConsistent;
 	}
 
+	/**
+	 * This bundle affords this act
+	 * if this act is in this bundle 
+	 */
+	public boolean afford(IAct act) 
+	{
+		boolean afford = false;
+		for (IAct a : m_acts)
+		{
+			if (a.equals(act))
+				afford = true;
+		}
+		return afford;
+	}
+
 	public ArrayList<IAct> getActList() 
 	{
 		return m_acts;
