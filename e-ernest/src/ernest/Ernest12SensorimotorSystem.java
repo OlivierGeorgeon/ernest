@@ -105,10 +105,10 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		if (act.getSchema().getLabel().equals("\\"))
 		{
-			//act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-			//act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-			act.setStartPosition(new Vector3f(1,-1,0));
-			act.setEndPosition(new Vector3f(1,-1,0));
+			act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			//act.setStartPosition(new Vector3f(1,-1,0));
+			//act.setEndPosition(new Vector3f(1,-1,0));
 			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
 			else
