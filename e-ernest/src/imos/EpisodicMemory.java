@@ -356,7 +356,7 @@ public class EpisodicMemory
 			}
 		}
 		
-		// Add the propositions form the spatial system 
+		// Add the propositions from the spatial system 
 		
 		for (IProposition proposition : propositionList)
 		{

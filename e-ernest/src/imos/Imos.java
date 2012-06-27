@@ -49,7 +49,7 @@ public class Imos implements IImos
 	/** Random generator used to break a tie when selecting a schema... */
 	//private static Random m_rand = new Random(); 
 	
-	private boolean m_newIntention;
+	private boolean m_newIntention = true;
 
 	/**
 	 * The context to learn new schemas with the first learning mechanism.
@@ -241,11 +241,15 @@ public class Imos implements IImos
 		IAct intentionAct = null;
 		IAct enactedAct = null;
 		
-		// We follow up the current enaction (Accept on startup when the primitive intention is null).
+		// We follow up the current enaction (Except on startup when the primitive intention is null).
 
 		if (m_primitiveIntention != null)
 		{
-			if (m_tracer != null) {
+			if (m_tracer != null) 
+			{
+				m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
+				m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
+				m_tracer.addEventElement("new_intention", m_newIntention ? "true" : "false");
 				m_tracer.addEventElement("primitive_intended_act", m_primitiveIntention.getLabel());
 				m_tracer.addEventElement("primitive_enacted_act", primitiveEnaction.getLabel());
 				m_tracer.addEventElement("primitive_enacted_schema", primitiveEnaction.getSchema().getLabel());
@@ -257,7 +261,7 @@ public class Imos implements IImos
 			enactedAct = enactedAct(m_primitiveIntention.getSchema(), primitiveEnaction);
 			System.out.println("Enacted " + enactedAct );
 			
-			// Compute the next sub-intention, null if we have reached the end of the previous intended act.
+			// Compute the next sub-intention, null if we have reached the end of the intended act.
 			
 			intentionAct = nextAct(m_primitiveIntention, primitiveEnaction);
 			
@@ -290,7 +294,18 @@ public class Imos implements IImos
 			// log the previous decision cycle
 
 			// TODO also compute surprise in the case of primitive intention acts.  
-			if (m_intentionAct != enactedAct && !m_intentionAct.getStatus())  m_internalState= "!";
+			if (m_intentionAct != enactedAct)// && !m_intentionAct.getStatus()) 
+				m_internalState= "!";
+			if (m_intentionAct.getSchema().isPrimitive() && m_intentionAct == enactedAct)
+			{
+				if (m_tracer != null) 
+					m_tracer.addEventElement("intention_correct", m_intentionAct.getLabel());
+			}
+			if (m_intentionAct.getSchema().isPrimitive() && m_intentionAct != enactedAct)
+			{
+				if (m_tracer != null) 
+					m_tracer.addEventElement("intention_incorrect", m_intentionAct.getLabel());
+			}
 			//m_tracer.addEventElement("top_enacted_act", enactedAct.getLabel());
 			//m_tracer.addEventElement("interrupted", m_internalState);
 			//m_tracer.addEventElement("new_intention", "true");
@@ -380,11 +395,11 @@ public class Imos implements IImos
 		else 
 			m_newIntention = false;
 		
-		if (m_tracer != null) {
-			m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
-			m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
-			m_tracer.addEventElement("new_intention", m_newIntention ? "true" : "false");
-		}
+//		if (m_tracer != null) {
+//			m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
+//			m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
+//			m_tracer.addEventElement("new_intention", m_newIntention ? "true" : "false");
+//		}
 		
 		// Spread the selected intention's activation to primitive acts.
 		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)		

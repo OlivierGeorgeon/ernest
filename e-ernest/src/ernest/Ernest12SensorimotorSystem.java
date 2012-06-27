@@ -105,18 +105,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		if (act.getSchema().getLabel().equals("\\"))
 		{
+			//act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			//act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			act.setStartPosition(new Vector3f(1,-1,0));
+			act.setEndPosition(new Vector3f(1,-1,0));
 			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
-			{
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-			}
 			else
-			{
 				act.setPhenomenon(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-			}
 		}
 
 		return act;
@@ -178,7 +174,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	public boolean checkConsistency(IAct act) 
 	{
 		m_spas.initSimulation();
-		return simulate(act, true);		
+		return simulate(act, true);
+		//return true;
 	}
 	
 	/**
@@ -230,15 +227,16 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 		for (IAct a : acts)
 		{
-			// propose acts that are afforded by the spatial memory context
+			// Propose acts that are afforded by the spatial memory context
 			m_spas.initSimulation();
-			if (simulate(a, false))
+			if (simulate(a, false) && a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
 				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
-				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
+				IProposition p = new Proposition(a.getSchema(), w, 1001 * (a.getStatus() ? 1 : -1));
 				propositionList.add(p);
 				if (m_tracer != null)
-					m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+					//m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+					m_tracer.addSubelement(activations, "propose", p.toString());
 			}
 			
 			// Propose primitive acts that inform about unknown places
@@ -247,10 +245,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
 				if (concernedPlace == null)
 				{
-					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, 1001);
+					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, 1001 * (a.getStatus() ? 1 : -1));
 					propositionList.add(p);
 					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+						//m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+						m_tracer.addSubelement(activations, "propose", p.toString());
 				}
 			}
 		}
