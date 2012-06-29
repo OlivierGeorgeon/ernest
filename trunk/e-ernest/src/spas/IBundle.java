@@ -83,5 +83,7 @@ public interface IBundle
 	public ArrayList<IAffordance> getAffordanceList();
 	
 	public IAct activateAffordance(Vector3f relativePosition);
+	
+	public IAct getOtherAct(IAct act);
 
 }

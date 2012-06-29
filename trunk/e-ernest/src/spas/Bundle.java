@@ -27,6 +27,9 @@ public class Bundle implements IBundle
 	/** The acts attached to this bundle. */
 	private ArrayList<IAct> m_acts = new ArrayList<IAct>();
 	
+	private IAct m_firstAct;
+	private IAct m_secondAct;
+	
 	/** The affordances attached to this bundle. */
 	private ArrayList<IAffordance> m_affordances = new ArrayList<IAffordance>();
 	
@@ -39,6 +42,22 @@ public class Bundle implements IBundle
 	{
 		m_value = act.getPhenomenon();
 		m_acts.add(act);
+	}
+	
+	Bundle(IAct firstAct, IAct secondAct)
+	{
+		m_firstAct = firstAct;
+		m_secondAct = secondAct;
+	}
+	
+	public IAct getOtherAct(IAct act)
+	{
+		if (act.equals(m_firstAct))
+			return m_secondAct;
+		else if (act.equals(m_secondAct))
+			return m_firstAct;
+		else
+			return null;
 	}
 	
 	Bundle(int visualValue, int tactileValue)
@@ -195,8 +214,8 @@ public class Bundle implements IBundle
 	}
 
 	/**
-	 * Bundles are equal if they have the same visual, tactile, kinematic, and gustatory values. 
-	 * TODO also test other stimulations.
+	 * Bundles are equal if they have the same first and second acts. 
+	 * (only used for dual act bundles)
 	 */
 	public boolean equals(Object o)
 	{
@@ -212,10 +231,13 @@ public class Bundle implements IBundle
 		{
 			IBundle other = (IBundle)o;
 			//ret = (other.getValue() == getValue());
-			ret = (other.getVisualValue() == m_value) && 	
-				  (other.getTactileValue() == m_tactileValue);
+			//ret = (other.getVisualValue() == m_value) && 	
+				  //(other.getTactileValue() == m_tactileValue);
 				  //(other.getKinematicValue() == m_kinematicValue) &&
 				  //(other.getGustatoryValue() == m_gustatoryValue);
+			IAct otherAct =  other.getOtherAct(m_firstAct);
+			if (otherAct != null && otherAct.equals(m_secondAct))
+				ret = true;
 		}
 		return ret;
 	}

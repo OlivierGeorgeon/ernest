@@ -355,10 +355,11 @@ public class LocalSpaceMemory
 			if (interactionPlace.getAct().concernOnePlace())
 			{
 				boolean newPlace = true;
-				// Look for a corresponding existing persistent place in local space memory.
+				// Look for a corresponding existing phenomenon in local space memory.
 				for (IPlace phenomenonPlace :  m_places)
 				{
 					// If the interaction overlaps a phenomenon already constituted 
+					
 					// Then the phenomenon is refreshed 
 					// TODO Add the interaction to the bundle list.
 					
