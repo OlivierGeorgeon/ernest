@@ -50,6 +50,13 @@ public interface ISensorymotorSystem
 	 * @return The enacted act
 	 */
 	public IAct enactedAct(IAct act, boolean status);
+
+	/**
+	 * Determine the enacted act 
+	 * @param schema The enacted primitive schema
+	 * @param status The status returned as a feedback from the enacted schema
+	 * @return The enacted act
+	 */
 	public IAct enactedAct(IAct act, String status); 
 	
 	public IAct enactedAct(IAct act, int[][] matrix);

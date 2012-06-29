@@ -118,18 +118,18 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return act;
 	}
 
-	public IAct enactedAct(IAct act, boolean status) 
-	{
-		// Add the interaction in IMOS =======================
-		
-		// The schema is null during the first cycle
-		if (act == null) return null;
-		
-		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), (status ? "t" : "f"), 0);
-
-		return enactedAct;
-	}
-	
+//	public IAct enactedAct(IAct act, boolean status) 
+//	{
+//		// Add the interaction in IMOS =======================
+//		
+//		// The schema is null during the first cycle
+//		if (act == null) return null;
+//		
+//		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), (status ? "t" : "f"), 0);
+//
+//		return enactedAct;
+//	}
+//	
 	public void updateSpas(IAct primitiveAct, IAct topAct)
 	{
 		// Add this act into spatial memory

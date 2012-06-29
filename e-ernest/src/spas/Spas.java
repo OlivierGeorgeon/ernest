@@ -207,7 +207,7 @@ public class Spas implements ISpas
 	
 	public IBundle aggregateBundle(IBundle bundle, IAct act) 
 	{			
-		// See if this act already belongs to another bundle
+		// See if this act already belongs to a different bundle
 		IBundle aggregate = null;
 		for (IBundle b : m_bundles)
 		{
