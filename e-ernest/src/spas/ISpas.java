@@ -73,7 +73,7 @@ public interface ISpas
 	
 	//public IPlace seePlace(float direction);
 	
-	public IBundle addBundle(int visualValue, int tactileValue);
+	//public IBundle addBundle(int visualValue, int tactileValue);
 	
 	public void tick();
 	
@@ -87,6 +87,7 @@ public interface ISpas
 	
 	public IBundle addBundle(int value);
 	public IBundle addBundle(IAct act);
+	public IBundle addBundle(IAct firstAct, IAct secondAct); 
 	public IBundle evokeBundle(IAct act);
 	public IBundle aggregateBundle(IBundle bundle, IAct act); 
 
