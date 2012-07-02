@@ -144,26 +144,45 @@ public class Spas implements ISpas
 		return place;
 	}
 
-	public IBundle addBundle(int visualValue, int tactileValue) 
+//	public IBundle addBundle(int visualValue, int tactileValue) 
+//	{
+//		IBundle bundle = new Bundle(visualValue, tactileValue);//, kinematicValue, gustatoryValue);
+//		
+//		int i = m_bundles.indexOf(bundle);
+//		if (i == -1)
+//		{
+//			m_bundles.add(bundle);
+//			if (m_tracer != null) {
+//				bundle.trace(m_tracer, "bundle");
+//			}
+//		}
+//		else 
+//			// The bundle already exists: return a pointer to it.
+//			bundle =  m_bundles.get(i);
+//		
+//		// This bundle is considered confirmed or visited
+//		if (tactileValue != Ernest.STIMULATION_TOUCH_EMPTY)// || kinematicValue != Ernest.STIMULATION_KINEMATIC_FORWARD || gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
+//			bundle.setLastTimeBundled(m_clock);
+//
+//		return bundle;
+//	}
+
+	public IBundle addBundle(IAct firstAct, IAct secondAct) 
 	{
-		IBundle bundle = new Bundle(visualValue, tactileValue);//, kinematicValue, gustatoryValue);
+		IBundle bundle = new Bundle(firstAct, secondAct);
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
 		{
 			m_bundles.add(bundle);
 			if (m_tracer != null) {
-				bundle.trace(m_tracer, "bundle");
+				bundle.trace(m_tracer, "copresence");
 			}
 		}
 		else 
 			// The bundle already exists: return a pointer to it.
 			bundle =  m_bundles.get(i);
 		
-		// This bundle is considered confirmed or visited
-		if (tactileValue != Ernest.STIMULATION_TOUCH_EMPTY)// || kinematicValue != Ernest.STIMULATION_KINEMATIC_FORWARD || gustatoryValue != Ernest.STIMULATION_GUSTATORY_NOTHING)
-			bundle.setLastTimeBundled(m_clock);
-
 		return bundle;
 	}
 

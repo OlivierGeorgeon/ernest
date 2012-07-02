@@ -443,7 +443,7 @@ public class LocalSpaceMemory
 		
 		if (focusPlace == null || focusPlace.getBundle() == null)
 		{
-			observation.setBundle(m_spas.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY));
+			//observation.setBundle(m_spas.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY));
 			observation.setPosition(new Vector3f(1,0,0));
 			observation.setSpan(0);
 			observation.setSpeed(new Vector3f());
