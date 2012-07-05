@@ -232,7 +232,7 @@ public class LocalSpaceMemory
 		for (IPlace p : m_places)
 		{
 			//if (p.isInCell(position) && p.evokePhenomenon(m_spas.getClock()))
-			if (p.isInCell(position) && p.isPhenomenon())
+			if (p.isInCell(position) && (p.isPhenomenon() || p.getType() == Spas.PLACE_EVOKE_PHENOMENON))// for copresence!!
 				place = p;
 		}
 		return place;
@@ -329,6 +329,79 @@ public class LocalSpaceMemory
 
 		
 		return evokeList;
+	}
+	
+	/**
+	 * Construct copresence places in spatial memory
+	 * @param observation The observation 
+	 * @param clock The time in the spatial memory
+	 */
+	public void copresence(IObservation observation, int clock)
+	{
+		// Clear the places that are older than the persistence of spatial memory
+		clear();
+		
+		// Get the list of interaction places (that can evoke phenomena).
+		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
+		for (IPlace p : m_places)
+			if (p.evokePhenomenon(m_spas.getClock()))
+				interactionPlaces.add(p);
+
+		// Create new copresence bundles 
+		
+		for (IPlace interactionPlace : interactionPlaces)
+		{
+			if (interactionPlace.getAct().concernOnePlace())
+			{
+				for (IPlace secondPlace : interactionPlaces)
+				{
+					if (secondPlace.getAct().concernOnePlace())
+					{
+						if (!interactionPlace.getAct().equals(secondPlace.getAct()) && interactionPlace.isInCell(secondPlace.getPosition()))
+						{
+							m_spas.addBundle(interactionPlace.getAct(), secondPlace.getAct());
+						}
+					}
+				}
+			}
+		}
+		
+		// Create copresence places that match enacted interactions
+		for (IPlace interactionPlace : interactionPlaces)
+		{
+			if (interactionPlace.getUpdateCount() == m_spas.getClock())
+			{
+				IBundle bundle = m_spas.evokeBundle(interactionPlace.getAct());
+
+				if (bundle != null)
+				{
+					boolean newPlace = true;
+				
+					// If the copresence place already exists then refresh it.
+					for (IPlace copresencePlace :  m_places)
+					{
+						if (copresencePlace.getType() == Spas.PLACE_COPRESENCE && copresencePlace.isInCell(interactionPlace.getPosition())
+								&& copresencePlace.getBundle().equals(bundle))
+						{
+							copresencePlace.setUpdateCount(m_spas.getClock());
+							newPlace = false;
+						}
+					}
+					if (newPlace)
+					{
+						// If the copresence place does not exist then create it.
+						
+						IPlace k = addPlace(bundle,interactionPlace.getPosition()); 
+						k.setFirstPosition(interactionPlace.getFirstPosition()); 
+						k.setSecondPosition(interactionPlace.getSecondPosition());
+						k.setOrientation(interactionPlace.getOrientation());
+						k.setUpdateCount(m_spas.getClock());
+						k.setType(Spas.PLACE_COPRESENCE);
+						k.setValue(interactionPlace.getValue());
+					}
+				}
+			}
+		}
 	}
 	
 	/**

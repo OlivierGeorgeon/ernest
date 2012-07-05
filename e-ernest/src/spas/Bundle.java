@@ -48,6 +48,8 @@ public class Bundle implements IBundle
 	{
 		m_firstAct = firstAct;
 		m_secondAct = secondAct;
+		m_acts.add(firstAct);
+		m_acts.add(secondAct);
 	}
 	
 	public IAct getOtherAct(IAct act)
@@ -235,9 +237,16 @@ public class Bundle implements IBundle
 				  //(other.getTactileValue() == m_tactileValue);
 				  //(other.getKinematicValue() == m_kinematicValue) &&
 				  //(other.getGustatoryValue() == m_gustatoryValue);
-			IAct otherAct =  other.getOtherAct(m_firstAct);
-			if (otherAct != null && otherAct.equals(m_secondAct))
+			if (m_firstAct != null && m_firstAct.equals(other.getFirstAct())
+					&& m_secondAct != null && m_secondAct.equals(other.getSecondAct()))
 				ret = true;
+			if (m_firstAct != null && m_firstAct.equals(other.getSecondAct())
+					&& m_secondAct != null && m_secondAct.equals(other.getFirstAct()))
+				ret = true;
+			
+//			IAct otherAct =  other.getOtherAct(m_firstAct);
+//			if (otherAct != null && otherAct.equals(m_secondAct))
+//				ret = true;
 		}
 		return ret;
 	}
@@ -329,11 +338,23 @@ public class Bundle implements IBundle
 			if (a.equals(act))
 				afford = true;
 		}
+		if (act.equals(m_firstAct) || act.equals(m_secondAct))
+			afford = true;
 		return afford;
 	}
 
 	public ArrayList<IAct> getActList() 
 	{
 		return m_acts;
+	}
+
+	public IAct getFirstAct() 
+	{
+		return m_firstAct;
+	}
+
+	public IAct getSecondAct() 
+	{
+		return m_secondAct;
 	}
 }

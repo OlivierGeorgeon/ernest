@@ -31,6 +31,7 @@ public class Spas implements ISpas
 	public static int PLACE_INTERMEDIARY = 16;
 	public static int PLACE_EVOKE_PHENOMENON = 17;
 	public static int PLACE_PHENOMENON = 18;
+	public static int PLACE_COPRESENCE = 19;
 	
 	public static int SHAPE_CIRCLE = 0;
 	public static int SHAPE_TRIANGLE = 1;
@@ -79,7 +80,8 @@ public class Spas implements ISpas
 
 		// Create and maintain phenomenon places from interaction places. 
 		
-		m_localSpaceMemory.phenomenon(observation, m_clock);//(places, observation, m_clock);
+		//m_localSpaceMemory.phenomenon(observation, m_clock);//(places, observation, m_clock);
+		m_localSpaceMemory.copresence(observation, m_clock);
 		
 		m_localSpaceMemory.trace();
 
@@ -176,7 +178,7 @@ public class Spas implements ISpas
 		{
 			m_bundles.add(bundle);
 			if (m_tracer != null) {
-				bundle.trace(m_tracer, "copresence");
+				bundle.trace(m_tracer, "bundle");
 			}
 		}
 		else 
