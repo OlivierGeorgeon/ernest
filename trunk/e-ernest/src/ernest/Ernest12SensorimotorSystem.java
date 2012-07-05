@@ -218,12 +218,12 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts)
 	{
 		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
-		int  PHENOMENA_WEIGHT = 11;
-		int UNKNOWN_WEIGHT = 2001;
+		int  PHENOMENA_WEIGHT = 10;
+		int UNKNOWN_WEIGHT = 10;
 		
 		Object activations = null;
 		if (m_tracer != null)
-			activations = m_tracer.addEventElement("phenomena_propositions", true);
+			activations = m_tracer.addEventElement("copresence_propositions", true);
 
 		for (IAct a : acts)
 		{
@@ -232,10 +232,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (simulate(a, false) && a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
 				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
-				IProposition p = new Proposition(a.getSchema(), w, 1001 * (a.getStatus() ? 1 : -1));
+				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
 				propositionList.add(p);
 				if (m_tracer != null)
-					//m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
 					m_tracer.addSubelement(activations, "propose", p.toString());
 			}
 			
@@ -245,17 +244,61 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
 				if (concernedPlace == null)
 				{
-					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, 1001 * (a.getStatus() ? 1 : -1));
+					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
 					propositionList.add(p);
 					if (m_tracer != null)
-						//m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + UNKNOWN_WEIGHT);
-						m_tracer.addSubelement(activations, "propose", p.toString());
+						m_tracer.addSubelement(activations, "poke", p.toString());
 				}
 			}
 		}
 		
 		return propositionList;
 	}
+	
+	/**
+	 * Propose all acts that match the spatial context
+	 */
+//	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts)
+//	{
+//		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
+//		int  PHENOMENA_WEIGHT = 11;
+//		int UNKNOWN_WEIGHT = 2001;
+//		
+//		Object activations = null;
+//		if (m_tracer != null)
+//			activations = m_tracer.addEventElement("phenomena_propositions", true);
+//
+//		for (IAct a : acts)
+//		{
+//			// Propose acts that are afforded by the spatial memory context
+//			m_spas.initSimulation();
+//			if (simulate(a, false) && a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
+//			{
+//				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+//				IProposition p = new Proposition(a.getSchema(), w, 1001 * (a.getStatus() ? 1 : -1));
+//				propositionList.add(p);
+//				if (m_tracer != null)
+//					//m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+//					m_tracer.addSubelement(activations, "propose", p.toString());
+//			}
+//			
+//			// Propose primitive acts that inform about unknown places
+//			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
+//			{
+//				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
+//				if (concernedPlace == null)
+//				{
+//					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, 1001 * (a.getStatus() ? 1 : -1));
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						//m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+//						m_tracer.addSubelement(activations, "propose", p.toString());
+//				}
+//			}
+//		}
+//		
+//		return propositionList;
+//	}
 	
 	public ArrayList<IProposition> getPropositionList()
 	{

@@ -323,7 +323,10 @@ public class Ernest implements IErnest
 
 	public int getCounter() 
 	{
-		return m_imos.getCounter();
+		if (m_imos == null)
+			return 0;
+		else
+			return m_imos.getCounter();
 	}
 
 	public IPlace getFocusPlace() 

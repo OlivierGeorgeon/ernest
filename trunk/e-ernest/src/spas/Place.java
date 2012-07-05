@@ -275,7 +275,8 @@ public class Place implements IPlace
 		
 		if (m_type == Spas.PLACE_EVOKE_PHENOMENON) evokePhenomenon = true; 	
 		if (m_type == Spas.PLACE_PHENOMENON)  evokePhenomenon = false;
-		if (m_clock != clock) evokePhenomenon = false;
+		if (m_type == Spas.PLACE_COPRESENCE)  evokePhenomenon = false;
+		//if (m_clock != clock) evokePhenomenon = false; // for copresence !!
 		
 		return evokePhenomenon;
 	}
@@ -294,6 +295,7 @@ public class Place implements IPlace
 		if (m_type == Spas.PLACE_EVOKE_PHENOMENON)  isPhenomenon = false;
 		
 		if (m_type == Spas.PLACE_PHENOMENON)  isPhenomenon = true;
+		if (m_type == Spas.PLACE_COPRESENCE)  isPhenomenon = true;
 		
 		return isPhenomenon;
 	}
