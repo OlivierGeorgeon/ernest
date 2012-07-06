@@ -147,7 +147,7 @@ public class Imos implements IImos
 		// (this value does not impact the agent's behavior)
 		a = m_episodicMemory.addAct(actLabel, s, true,  satisfaction * 10,  RELIABLE);
 		
-		System.out.println("Primitive schema " + s);
+		System.out.println("Primitive interaction " + a.toString() + " " + a.getSatisfaction());
 		return a;
 		
 	}
