@@ -174,8 +174,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	public boolean checkConsistency(IAct act) 
 	{
 		m_spas.initSimulation();
-		return simulate(act, true);
-		//return true;
+		//return simulate(act, true);
+		return true;
 	}
 	
 	/**
@@ -215,45 +215,45 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	/**
 	 * Propose all acts that match the spatial context
 	 */
-	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts)
-	{
-		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
-		int  PHENOMENA_WEIGHT = 10;
-		int UNKNOWN_WEIGHT = 10;
-		
-		Object activations = null;
-		if (m_tracer != null)
-			activations = m_tracer.addEventElement("copresence_propositions", true);
-
-		for (IAct a : acts)
-		{
-			// Propose acts that are afforded by the spatial memory context
-			m_spas.initSimulation();
-			if (simulate(a, false) && a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
-			{
-				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
-				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
-				propositionList.add(p);
-				if (m_tracer != null)
-					m_tracer.addSubelement(activations, "propose", p.toString());
-			}
-			
-			// Propose primitive acts that inform about unknown places
-			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
-			{
-				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
-				if (concernedPlace == null)
-				{
-					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
-					propositionList.add(p);
-					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "poke", p.toString());
-				}
-			}
-		}
-		
-		return propositionList;
-	}
+//	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts)
+//	{
+//		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
+//		int  PHENOMENA_WEIGHT = 10;
+//		int UNKNOWN_WEIGHT = 10;
+//		
+//		Object activations = null;
+//		if (m_tracer != null)
+//			activations = m_tracer.addEventElement("copresence_propositions", true);
+//
+//		for (IAct a : acts)
+//		{
+//			// Propose acts that are afforded by the spatial memory context
+//			m_spas.initSimulation();
+//			if (simulate(a, false) && a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
+//			{
+//				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+//				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+//				propositionList.add(p);
+//				if (m_tracer != null)
+//					m_tracer.addSubelement(activations, "propose", p.toString());
+//			}
+//			
+//			// Propose primitive acts that inform about unknown places
+//			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
+//			{
+//				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
+//				if (concernedPlace == null)
+//				{
+//					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "poke", p.toString());
+//				}
+//			}
+//		}
+//		
+//		return propositionList;
+//	}
 	
 	/**
 	 * Propose all acts that match the spatial context
@@ -300,98 +300,98 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 //		return propositionList;
 //	}
 	
-	public ArrayList<IProposition> getPropositionList()
-	{
-		int  PHENOMENA_WEIGHT = 11;
-		int UNKNOWN_WEIGHT = 2001;
-		
-		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
-		IAct touchAhead = m_imos.addInteraction("-", "f", 0);
-		IAct touchLeft = m_imos.addInteraction("/", "f", 0);
-		IAct touchRight = m_imos.addInteraction("\\", "t", 0);
-		IAct turnLeft = m_imos.addInteraction("^", "f", 0);
-		IAct turnRight = m_imos.addInteraction("v", "f", 0);
-
-		Object activations = null;
-		if (m_tracer != null)
-			activations = m_tracer.addEventElement("phenomena_propositions", true);
-
-		// Place ahead
-		IPlace frontPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_AHEAD);		
-		if (frontPlace == null)
-		{
-			// If no phenomenon then propose touching ahead
-			IProposition p = new Proposition(touchAhead.getSchema(), UNKNOWN_WEIGHT, 1001);
-			propositionList.add(p);
-			if (m_tracer != null)
-				m_tracer.addSubelement(activations, "propose", touchAhead.getLabel() + " weight: " + UNKNOWN_WEIGHT);
-		}
-		else
-		{
-			// If phenomenon ahead then all of its acts whose start position is ahead are proposed
-			for (IAct a : frontPlace.getBundle().getActList())
-			{
-				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_AHEAD))
-				{
-					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
-					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
-					propositionList.add(p);
-					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
-				}
-			}
-		}
-		
-		// Place left
-		IPlace leftPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_LEFT);		
-		if (leftPlace == null)
-		{
-			// If no phenomenon then propose touching left
-			IProposition p = new Proposition(touchLeft.getSchema(), UNKNOWN_WEIGHT, 1001);
-			propositionList.add(p);
-			if (m_tracer != null)
-				m_tracer.addSubelement(activations, "propose", touchLeft.getLabel() + " weight: " + UNKNOWN_WEIGHT);
-		}
-		else
-		{
-			// If phenomenon left then all acts whose start position is left are proposed
-			for (IAct a : leftPlace.getBundle().getActList())
-			{
-				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_LEFT))
-				{
-					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
-					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
-					propositionList.add(p);
-					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
-				}
-			}
-		}
-		
-		// place right
-		IPlace rightPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_RIGHT);		
-		if (rightPlace == null)
-		{
-			IProposition p = new Proposition(touchRight.getSchema(), UNKNOWN_WEIGHT, 1001);
-			propositionList.add(p);
-			if (m_tracer != null)
-				m_tracer.addSubelement(activations, "propose", touchRight.getLabel() + " weight: " + UNKNOWN_WEIGHT);
-		}
-		else
-		{
-			for (IAct a : rightPlace.getBundle().getActList())
-			{
-				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_RIGHT))
-				{
-					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
-					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
-					propositionList.add(p);
-					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
-				}
-			}
-		}
-		
-		return propositionList;
-	}
+//	public ArrayList<IProposition> getPropositionList()
+//	{
+//		int  PHENOMENA_WEIGHT = 11;
+//		int UNKNOWN_WEIGHT = 2001;
+//		
+//		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
+//		IAct touchAhead = m_imos.addInteraction("-", "f", 0);
+//		IAct touchLeft = m_imos.addInteraction("/", "f", 0);
+//		IAct touchRight = m_imos.addInteraction("\\", "t", 0);
+//		IAct turnLeft = m_imos.addInteraction("^", "f", 0);
+//		IAct turnRight = m_imos.addInteraction("v", "f", 0);
+//
+//		Object activations = null;
+//		if (m_tracer != null)
+//			activations = m_tracer.addEventElement("phenomena_propositions", true);
+//
+//		// Place ahead
+//		IPlace frontPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_AHEAD);		
+//		if (frontPlace == null)
+//		{
+//			// If no phenomenon then propose touching ahead
+//			IProposition p = new Proposition(touchAhead.getSchema(), UNKNOWN_WEIGHT, 1001);
+//			propositionList.add(p);
+//			if (m_tracer != null)
+//				m_tracer.addSubelement(activations, "propose", touchAhead.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+//		}
+//		else
+//		{
+//			// If phenomenon ahead then all of its acts whose start position is ahead are proposed
+//			for (IAct a : frontPlace.getBundle().getActList())
+//			{
+//				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_AHEAD))
+//				{
+//					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+//					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+//				}
+//			}
+//		}
+//		
+//		// Place left
+//		IPlace leftPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_LEFT);		
+//		if (leftPlace == null)
+//		{
+//			// If no phenomenon then propose touching left
+//			IProposition p = new Proposition(touchLeft.getSchema(), UNKNOWN_WEIGHT, 1001);
+//			propositionList.add(p);
+//			if (m_tracer != null)
+//				m_tracer.addSubelement(activations, "propose", touchLeft.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+//		}
+//		else
+//		{
+//			// If phenomenon left then all acts whose start position is left are proposed
+//			for (IAct a : leftPlace.getBundle().getActList())
+//			{
+//				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_LEFT))
+//				{
+//					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+//					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+//				}
+//			}
+//		}
+//		
+//		// place right
+//		IPlace rightPlace = m_spas.getPlace(LocalSpaceMemory.DIRECTION_RIGHT);		
+//		if (rightPlace == null)
+//		{
+//			IProposition p = new Proposition(touchRight.getSchema(), UNKNOWN_WEIGHT, 1001);
+//			propositionList.add(p);
+//			if (m_tracer != null)
+//				m_tracer.addSubelement(activations, "propose", touchRight.getLabel() + " weight: " + UNKNOWN_WEIGHT);
+//		}
+//		else
+//		{
+//			for (IAct a : rightPlace.getBundle().getActList())
+//			{
+//				if (a.getStartPosition().equals(LocalSpaceMemory.DIRECTION_RIGHT))
+//				{
+//					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+//					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT);
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "propose", a.getLabel() + " weight: " + w);
+//				}
+//			}
+//		}
+//		
+//		return propositionList;
+//	}
 }

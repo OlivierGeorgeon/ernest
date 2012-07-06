@@ -29,7 +29,7 @@ public class Ernest implements IErnest
 	public static final int INFINITE = 1000 * INT_FACTOR;
 
 	/** Ernest's retina resolution  */
-	public static int RESOLUTION_RETINA = 12;
+	public static int RESOLUTION_RETINA = 2; //12;
 	public static int CENTER_RETINA = 0; //55; 
 		
 	/** Ernest's colliculus resolution  */
