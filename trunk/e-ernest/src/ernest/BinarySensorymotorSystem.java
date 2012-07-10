@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
@@ -12,6 +13,7 @@ import spas.Place;
 import imos.IAct;
 import imos.IImos;
 import imos.IProposition;
+import imos.ISchema;
 
 
 /**
@@ -67,6 +69,16 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return enactedAct;
 	}
 
+	public IAct enactedAct(IAct act, IObservation observation) 
+	{
+		// The schema is null during the first cycle
+		if (act == null) return null;
+		
+		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), observation.getStimuli(), 0);
+		
+		return enactedAct;
+	}
+	
 	public IAct enactedAct(IAct act, int[][] matrix) { return null; }
 
 	public int impulsion(int intentionSchema) { return 0; }
@@ -121,5 +133,32 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 //	{
 //		return new Vector3f();
 //	}
+	
+	/**
+	 * Tells the interaction that is likely to result from the enaction of this schema.
+	 * If the schema has no succeeding or failing act defined, 
+	 * then pick a random interaction attached to this schema.
+	 * TODO Simulate the action to get a better anticipation.
+	 * @param s The schema. 
+	 * @return The anticipated resulting interaction.
+	 */
+	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts)
+	{
+		IAct anticipateInteraction = null;
+		boolean status = (e >= 0);
+		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
+		
+		// if the schema has no succeeding or failing act, then pick an act randomly
+		if (anticipateInteraction==null)
+		{
+			for (IAct a : acts)
+			{
+				//if (a.getSchema().equals(s) && (a.getStatus() == true))
+				if (a.getSchema().equals(s) )
+					anticipateInteraction = a;
+			}
+		}
+		return anticipateInteraction;
+	}
 
 }

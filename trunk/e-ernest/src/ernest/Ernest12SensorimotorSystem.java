@@ -25,6 +25,79 @@ import spas.Spas;
  */
 public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem 
 {
+	/** The observation */
+    private IObservation m_observation = new Observation();
+    
+    private int m_satisfaction = 0;
+    
+	public IAct enactedAct(IAct act, IObservation observation) 
+	{
+		// The schema is null during the first cycle
+		if (act == null) return null;
+		
+		// Computes the resulting interaction from the visual observation
+		m_satisfaction = 0;
+        String rightFeature  = sensePixel(m_observation.getVisualDistance()[0], observation.getVisualDistance()[0]);
+        String leftFeature  = sensePixel(m_observation.getVisualDistance()[1], observation.getVisualDistance()[1]);
+        if (leftFeature.equals(" ") && rightFeature.equals(" "))
+        	{leftFeature = ""; rightFeature = "";}
+    	
+        if (act.getSchema().getLabel().equals(">"))
+        	m_satisfaction += (observation.getStimuli().equals("t") ? 5 : -10);
+        else if (act.getSchema().getLabel().equals("^") || act.getSchema().getLabel().equals("v"))
+        	m_satisfaction -= 3;
+        else
+        	m_satisfaction -= 1;
+        
+        observation.setStimuli(leftFeature + rightFeature + observation.getStimuli());
+        observation.setSatisfaction(m_satisfaction);
+        m_observation = observation;
+        
+ 		IAct enactedAct = addInteraction(act.getSchema().getLabel(), observation.getStimuli(), m_satisfaction);
+		
+		return enactedAct;
+	}
+	
+    private String sensePixel(int previousPixel, int currentPixel) 
+    {
+            String feature = " ";
+            int satisfaction = 0;
+            
+            // arrived
+            if (previousPixel > currentPixel && currentPixel == 0)
+            {
+                    feature = "x";
+                    satisfaction = 10;
+            }
+            
+            // closer
+            else if (previousPixel < Ernest.INFINITE && currentPixel < previousPixel)
+            {
+                    feature = "+";
+                    satisfaction = 10;
+            }
+
+            // appear
+            else if (previousPixel == Ernest.INFINITE && currentPixel < Ernest.INFINITE)
+            {
+                    feature = "*";
+                    satisfaction = 15;
+            }
+            
+            // disappear
+            else if (previousPixel < Ernest.INFINITE && currentPixel == Ernest.INFINITE)
+            {
+                    feature = "o";
+                    satisfaction = -15;
+            }
+
+            System.out.println("Sensed " + "prev=" + previousPixel + "cur=" + currentPixel + " feature " + feature);
+            
+            m_satisfaction += satisfaction;
+
+            return feature;
+    }
+    
 	/**
 	 * The agent's self model is hard coded in the interactions.
 	 * TODO The phenomenon code, position, and spatial transformation should be learned rather than hard coded.
@@ -39,23 +112,62 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		if (schemaLabel.equals(">"))
 		{
-			if (stimuliLabel.equals("t") || stimuliLabel.equals("  "))
-			{
-				//act.setTranslation(new Vector3f(-1,0,0));
-				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
-			}
-			else
+			if (stimuliLabel.indexOf("f") >= 0)
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_WALL);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
+			else if (stimuliLabel.equals("++t"))
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_FISH);
+				act.setStartPosition(new Vector3f(4,0,0));
+				act.setEndPosition(new Vector3f(3,0,0));
+			}
+			else if (stimuliLabel.equals(" +t"))
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_FISH);
+				act.setStartPosition(new Vector3f(3,-3,0));
+				act.setEndPosition(new Vector3f(2,-3,0));
+			}
+			else if (stimuliLabel.equals("+ t"))
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_FISH);
+				act.setStartPosition(new Vector3f(3,3,0));
+				act.setEndPosition(new Vector3f(2,3,0));
+			}
+			else 
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+			}
 		}
 
-		if (schemaLabel.equals("^"))
+		if (schemaLabel.equals("<"))
+		{
+			if (stimuliLabel.indexOf("t") >= 0 || stimuliLabel.equals("  "))
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+			}
+			else
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_BEHIND);
+			}
+		}
+
+		if (act.getLabel().equals("^* f"))
+		{
+			act.setRotation((float) - Math.PI / 2);
+			act.setPhenomenon(Ernest.PHENOMENON_FISH);
+			act.setStartPosition(new Vector3f(3,3,0));
+			act.setEndPosition(new Vector3f(3,3,0));
+		}
+		else if (schemaLabel.equals("^"))
 		{
 			act.setRotation((float) - Math.PI / 2);
 			act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
@@ -63,7 +175,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 		}
 		
-		if (schemaLabel.equals("v"))
+		if (act.getLabel().equals("v *f"))
+		{
+			act.setRotation((float) Math.PI / 2);
+			act.setPhenomenon(Ernest.PHENOMENON_FISH);
+			act.setStartPosition(new Vector3f(3,-3,0));
+			act.setEndPosition(new Vector3f(3,-3,0));
+		}
+		else if (schemaLabel.equals("v"))
 		{
 			act.setRotation((float) Math.PI / 2);
 			act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
@@ -71,9 +190,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 		}
 		
-		if (act.getSchema().getLabel().equals("/") )
+		if (schemaLabel.equals("/") )
 		{
-			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
+			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
@@ -87,11 +206,17 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			}
 		}
 		
-		if (act.getSchema().getLabel().equals("-"))
+		if (schemaLabel.equals("-"))
 		{
-			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
+			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 			{
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+			}
+			else if (stimuliLabel.indexOf("a") >= 0 )
+			{
+				act.setPhenomenon(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
@@ -103,13 +228,13 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			}
 		}
 		
-		if (act.getSchema().getLabel().equals("\\"))
+		if (schemaLabel.equals("\\"))
 		{
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 			act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 			//act.setStartPosition(new Vector3f(1,-1,0));
 			//act.setEndPosition(new Vector3f(1,-1,0));
-			if (stimuliLabel.equals("f") || stimuliLabel.equals("  "))
+			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
 			else
 				act.setPhenomenon(Ernest.PHENOMENON_WALL);
@@ -212,6 +337,33 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return consistent;
 	}
 	
+	/**
+	 * Tells the interaction that is likely to result from the enaction of this schema.
+	 * If the schema has no succeeding or failing act defined, 
+	 * then pick a random interaction attached to this schema.
+	 * TODO Simulate the action to get a better anticipation.
+	 * @param s The schema. 
+	 * @return The anticipated resulting interaction.
+	 */
+	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts)
+	{
+		IAct anticipateInteraction = null;
+		boolean status = (e >= 0);
+		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
+		
+		// if the schema has no succeeding or failing act, then pick an act randomly
+		if (anticipateInteraction==null)
+		{
+			for (IAct a : acts)
+			{
+				//if (a.getSchema().equals(s) && (a.getStatus() == true))
+				if (a.getSchema().equals(s) )
+					anticipateInteraction = a;
+			}
+		}
+		return anticipateInteraction;
+	}
+
 	/**
 	 * Propose all acts that match the spatial context
 	 */

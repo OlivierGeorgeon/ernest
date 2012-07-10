@@ -6,6 +6,7 @@ import javax.vecmath.Vector3f;
 
 import com.sun.tools.javac.util.List;
 
+import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
@@ -13,6 +14,7 @@ import spas.Place;
 import imos.IAct;
 import imos.IImos;
 import imos.IProposition;
+import imos.ISchema;
 
 
 
@@ -73,5 +75,9 @@ public interface ISensorymotorSystem
 	public ArrayList<IProposition> getPropositionList();
 	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts);
 	public void updateSpas(IAct primitiveAct, IAct topAct);
+	
+	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts);
+	
+	public IAct enactedAct(IAct m_primitiveAct, IObservation observation);
 
 }

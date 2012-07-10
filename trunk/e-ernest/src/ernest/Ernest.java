@@ -94,6 +94,7 @@ public class Ernest implements IErnest
 	public static int STIMULATION_VISUAL_UNSEEN = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
 
 	
+	public static int PHENOMENON_FISH  = 0x9680FF;//255 * 65536 + 255 * 256 + 255;	
 	public static int PHENOMENON_EMPTY = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;	
 	public static int PHENOMENON_WALL  = 0x008000;//255 * 65536 + 255 * 256 + 255;
 
@@ -217,7 +218,7 @@ public class Ernest implements IErnest
             m_tracer.startNewEvent(m_imos.getCounter());
 			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
 		}                
-		// Determine the primitive enacted act from the enacted schema and the data sensed in the environment.
+		// Determine the primitive enacted act from the enacted schema and the observation.
 		
 		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
 		
@@ -238,9 +239,31 @@ public class Ernest implements IErnest
             m_tracer.startNewEvent(m_imos.getCounter());
 			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
 		}                
-		// Determine the primitive enacted act from the enacted schema and the data sensed in the environment.
+		// Determine the primitive enacted act from the enacted schema and the observation.
 		
 		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
+		
+		// Let Ernest decide for the next primitive schema to enact.
+		
+		//m_spas.tick();
+		m_primitiveAct = m_imos.step(enactedPrimitiveAct);
+		
+		// Return the schema to enact.
+		
+		return m_primitiveAct.getSchema().getLabel();
+	}
+
+	public String step(IObservation observation) 
+	{
+		if (m_tracer != null)
+		{
+            m_tracer.startNewEvent(m_imos.getCounter());
+			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+			observation.trace(m_tracer);
+		}                
+		// Determine the primitive enacted act from the enacted schema and the observation.
+		
+		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, observation);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
