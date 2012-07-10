@@ -84,11 +84,11 @@ public interface IObservation
 	public void setNewFocus(boolean newFocus);
 	public boolean getNewFocus();
 	
-	public void setTranslation(Vector3f translation);
-	public Vector3f getTranslation();
-	
-	public void setRotation(float rotation);
-	public float getRotation();
+//	public void setTranslation(Vector3f translation);
+//	public Vector3f getTranslation();
+//	
+//	public void setRotation(float rotation);
+//	public float getRotation();
 	
 	public void setSatisfaction(int satisfaction);
 	public int getSatisfaction();
@@ -101,6 +101,9 @@ public interface IObservation
 
 	public void setVisualStimuli(int index, int value);
 	public int[] getVisualStimuli();
+	
+	public void setVisualDistance(int index, int value);
+	public int[] getVisualDistance();
 	
 	public void setFocusPlace(IPlace focusPlace);
 	public IPlace getFocusPlace();

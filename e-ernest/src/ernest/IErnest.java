@@ -63,6 +63,13 @@ public interface IErnest
 	
 	/**
 	 * Run Ernest one step.
+	 * @param observation The matrix of stimuli received from the environment.
+	 * @return The next primitive schema to enact.
+	 */
+	public String step(IObservation observation);
+	
+	/**
+	 * Run Ernest one step.
 	 * @param stimuli The matrix of stimuli received from the environment.
 	 * @return The next primitive schema to enact.
 	 */

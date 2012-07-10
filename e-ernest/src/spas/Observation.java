@@ -40,7 +40,7 @@ public class Observation implements IObservation
 	private String m_instantaneousFeedback = "";
 	
 	/** The resulting stimuli of the enacted act. */
-	private String m_stimuli;
+	private String m_stimuli = "";
 	
 	private int m_type;
 	
@@ -55,6 +55,7 @@ public class Observation implements IObservation
 	private String m_visualFeedback;
 	private int[] m_tactileStimuli = new int[9];
 	private int[] m_visualStimuli = new int[Ernest.RESOLUTION_RETINA];
+	private int[] m_visualDistance = new int[Ernest.RESOLUTION_RETINA];
 	
 	private IPlace m_focusPlace;
 	
@@ -192,25 +193,25 @@ public class Observation implements IObservation
 		return m_newFocus;
 	}
 
-	public void setTranslation(Vector3f translation) 
-	{
-		m_translation.set(translation);
-	}
-
-	public Vector3f getTranslation() 
-	{
-		return m_translation;
-	}
-
-	public void setRotation(float rotation) 
-	{
-		m_rotation = rotation;
-	}
-
-	public float getRotation() 
-	{
-		return m_rotation;
-	}
+//	public void setTranslation(Vector3f translation) 
+//	{
+//		m_translation.set(translation);
+//	}
+//
+//	public Vector3f getTranslation() 
+//	{
+//		return m_translation;
+//	}
+//
+//	public void setRotation(float rotation) 
+//	{
+//		m_rotation = rotation;
+//	}
+//
+//	public float getRotation() 
+//	{
+//		return m_rotation;
+//	}
 
 	public void trace(ITracer tracer) 
 	{
@@ -232,14 +233,14 @@ public class Observation implements IObservation
 		if (getAffordanceAct() != null)
 			tracer.addSubelement(e, "affordance_act", getAffordanceAct().getLabel());
 		
-		Object focusElmt = tracer.addEventElement("focus");
-		tracer.addSubelement(focusElmt, "salience", ErnestUtils.hexColor(getBundle().getValue()));
-		getBundle().trace(tracer, "focus_bundle");
+//		Object focusElmt = tracer.addEventElement("focus");
+//		tracer.addSubelement(focusElmt, "salience", ErnestUtils.hexColor(getBundle().getValue()));
+//		getBundle().trace(tracer, "focus_bundle");
 
 		// Vision
 		Object retinaElmt = tracer.addEventElement("retina");
 		for (int i = Ernest.RESOLUTION_RETINA - 1; i >= 0 ; i--)
-			tracer.addSubelement(retinaElmt, "pixel_0_" + i, ErnestUtils.hexColor(m_visualStimuli[i]));
+			tracer.addSubelement(retinaElmt, "pixel_" + i, ErnestUtils.hexColor(m_visualStimuli[i]));
 
 		// Tactile
 		Object s = tracer.addEventElement("tactile");
@@ -290,9 +291,19 @@ public class Observation implements IObservation
 		m_visualStimuli[index] = value;
 	}
 
+	public void setVisualDistance(int index, int value) 
+	{
+		m_visualDistance[index] = value;
+	}
+
 	public int[] getVisualStimuli() 
 	{
 		return m_visualStimuli;
+	}
+
+	public int[] getVisualDistance() 
+	{
+		return m_visualDistance;
 	}
 
 	public void setFocusPlace(IPlace focusPlace) 
