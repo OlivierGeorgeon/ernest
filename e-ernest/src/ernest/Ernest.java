@@ -97,6 +97,7 @@ public class Ernest implements IErnest
 	public static int PHENOMENON_FISH  = 0x9680FF;//255 * 65536 + 255 * 256 + 255;	
 	public static int PHENOMENON_EMPTY = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;	
 	public static int PHENOMENON_WALL  = 0x008000;//255 * 65536 + 255 * 256 + 255;
+	public static int PHENOMENON_ALGA  = 0x73E600;
 
 	/** Color unanimated */
 	public static int UNANIMATED_COLOR = 0x808080;
@@ -352,10 +353,10 @@ public class Ernest implements IErnest
 			return m_imos.getCounter();
 	}
 
-	public IPlace getFocusPlace() 
-	{
-		return m_spas.getFocusPlace();
-	}
+//	public IPlace getFocusPlace() 
+//	{
+//		return m_spas.getFocusPlace();
+//	}
 
 	public int getUpdateCount() 
 	{

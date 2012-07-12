@@ -124,5 +124,5 @@ public interface IErnest
 	 */
 	public int getUpdateCount();
 	
-	public IPlace getFocusPlace();	
+	//public IPlace getFocusPlace();	
 }
