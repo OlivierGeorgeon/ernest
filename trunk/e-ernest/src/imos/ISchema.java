@@ -112,10 +112,5 @@ public interface ISchema
 	 * that tells if the schema's act will become reliable. 
 	 */
 	public void incWeight(int regularitySensibilityThreshold);
-
-	/**
-	 * @param weight The schema's weight.
-	 */
-	//public void setWeight(int weight);
 	
 }

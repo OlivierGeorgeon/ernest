@@ -191,7 +191,7 @@ public class Imos implements IImos
 	 * @param performedAct The act that was performed during the terminating decision cycle.
 	 * @param contextList The additional acts to add to the new context list
 	 */
-	private void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList, ArrayList<IPlace> phenomenaList)
+	private void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList)
 	{
 		// The current context list becomes the base context list
 		m_baseContextList = new ArrayList<IAct>(m_contextList);
@@ -361,8 +361,8 @@ public class Imos implements IImos
 			// Acts that match a phenomenon are added to the activation list			
 			//m_episodicMemory.evokeAct(m_activationList, m_phenomenaList);
 
-			ArrayList<IPlace> phenomenaList = m_sensorimotorSystem.getPhenomena();
-			shiftDecisionCycle(enactedAct, performedAct, streamContextList, phenomenaList);
+			//ArrayList<IPlace> phenomenaList = m_sensorimotorSystem.getPhenomena();
+			shiftDecisionCycle(enactedAct, performedAct, streamContextList);
 			
 		}
 		

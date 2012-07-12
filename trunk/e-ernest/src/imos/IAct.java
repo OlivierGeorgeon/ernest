@@ -2,9 +2,6 @@ package imos;
 
 import javax.vecmath.Vector3f;
 
-
-
-
 /**
  * An act is the association of a schema with the feedback the agent receives 
  * when trying to enact that schema.    
@@ -81,7 +78,7 @@ public interface IAct  extends Comparable<IAct>
 	public void setPhenomenon(int bundleCode);
 	
 	/**
-	 * @return the phenomenon's code.
+	 * @return the phenomenon's code (used to display this act).
 	 */
 	public int getPhenomenon();
 	
@@ -95,15 +92,37 @@ public interface IAct  extends Comparable<IAct>
 	 */
 	public Vector3f getEndPosition();
 	
+	/**
+	 * @param position The position of the phenomena that is concerned by the enaction of this act.
+	 */
 	public void setStartPosition(Vector3f position);
+	
+	/**
+	 * @return The position of the phenomena that is concerned by the enaction of this act.
+	 */
 	public Vector3f getStartPosition();
 	
-	//public void setTranslation(Vector3f translation);
-	public Vector3f getTranslation();
-	
+	/**
+	 * @param rotation The rotation to apply to spatial memory.
+	 */
 	public void setRotation(float rotation);
+	
+	/**
+	 * @return The rotation to apply to spatial memory.
+	 */
 	public float getRotation();
 	
+	/**
+	 * @return The translation to apply to spatial memory
+	 * (endPosition - startPosition)
+	 */
+	public Vector3f getTranslation();
+	
+	/**
+	 * If this act concerns only one place then it can be an element of a compresence at this place.
+	 * TODO improve the management of bundles.
+	 * @return true if this act concerns only one place. 
+	 */
 	public boolean concernOnePlace();
 	
 }

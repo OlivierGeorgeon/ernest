@@ -313,6 +313,13 @@ public class Act implements IAct
 		return startPosition;
 	}
 
+	/**
+	 * This act concerns only one place if
+	 * - it is a primitive act
+	 * - or its start position is superimposed with the agent
+	 * - or its start position corresponds to its end position after execution. 
+	 * @return true if this act concerns only one place. 
+	 */
 	public boolean concernOnePlace() 
 	{
 		boolean concernOnePlace = false;
@@ -323,12 +330,16 @@ public class Act implements IAct
 		{
 			if (m_schema.getContextAct().getStartPosition().equals(LocalSpaceMemory.DIRECTION_HERE))
 				concernOnePlace = true;
-			Vector3f t = new Vector3f(m_schema.getIntentionAct().getEndPosition());
-			t.sub(m_schema.getContextAct().getTranslation());
-			t.sub(m_schema.getIntentionAct().getTranslation());
-			if (m_schema.getContextAct().getStartPosition().equals(t))
+			Vector3f destinationPosition = new Vector3f(m_schema.getIntentionAct().getEndPosition());
+			destinationPosition.sub(m_schema.getContextAct().getTranslation());
+			destinationPosition.sub(m_schema.getIntentionAct().getTranslation());
+			if (m_schema.getContextAct().getStartPosition().equals(destinationPosition))
 				concernOnePlace = true;
 		}
+		
+		// Do not use longer schemes to construct compresences.
+		if (m_schema.getLength() > 2) concernOnePlace = false;
+		
 		return concernOnePlace;
 	}
 }

@@ -57,9 +57,9 @@ public interface ISpas
 	public ArrayList<IPlace> getPlaceList();
 	
 	public int getClock();
-	public void traceLocalSpace();
+	//public void traceLocalSpace();
 	
-	public IPlace getFocusPlace();
+	//public IPlace getFocusPlace();
 	
 	/**
 	 * @param place The place to add in local space memory.
@@ -69,7 +69,7 @@ public interface ISpas
 	
 	//public IPlace addOrReplacePlace(IBundle bundle, Vector3f position);
 	
-	public IBundle seeBundle(int value);
+	//public IBundle seeBundle(int value);
 	
 	//public IPlace seePlace(float direction);
 	
@@ -81,11 +81,11 @@ public interface ISpas
 	 * Generate a list of places that represents the phenomena in the local space.
 	 * @return the list of places. 
 	 */
-	public ArrayList<IPlace> getPhenomena();
+	//public ArrayList<IPlace> getPhenomena();
 	
 	public boolean checkAct(IAct act);
 	
-	public IBundle addBundle(int value);
+	//public IBundle addBundle(int value);
 	public IBundle addBundle(IAct act);
 	public IBundle addBundle(IAct firstAct, IAct secondAct); 
 	public IBundle evokeBundle(IAct act);

@@ -250,7 +250,8 @@ public class EpisodicMemory
 	/**
 	 * Select an intention act from a given activation list.
 	 * The selected act receives an activation value 
-	 * @param activationList The list of acts that activate episodic memory.
+	 * @param activationList The list of acts that in the sequential context that activate episodic memory.
+	 * @param propositionList The list of propositions made by the spatial system.
 	 * @return The selected act.
 	 */
 	public IAct selectAct(List<IAct> activationList, List<IProposition> propositionList)
