@@ -13,6 +13,7 @@ import javax.vecmath.Vector3f;
 import spas.IBundle;
 import spas.IObservation;
 import spas.IPlace;
+import spas.ISpatialMemory;
 import spas.LocalSpaceMemory;
 import spas.Observation;
 import spas.Place;
@@ -302,8 +303,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 	public boolean checkConsistency(IAct act) 
 	{
-		m_spas.initSimulation();
-		return simulate(act, true);
+		//m_spas.initSimulation();
+		//return simulate(act, true);
+		
+		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
+		return simulationMemory.simulate(act, true);
 		//return true;
 	}
 	
@@ -313,34 +317,34 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	 * @param act The act to simulate
 	 * @param doubt consistency in case of doubt.
 	 */
-	private boolean simulate(IAct act, boolean doubt)
-	{
-		boolean consistent = false;
-		ISchema s = act.getSchema();
-		if (s.isPrimitive())
-		{			
-			IBundle bundle = m_spas.getBundleSimulation(act.getStartPosition());
-			if (bundle == null)	
-				consistent = doubt;
-			else
-			{
-				if (doubt)
-					consistent =  bundle.isConsistent(act);
-				else 
-					consistent = bundle.afford(act);
-			}
-			m_spas.translateSimulation(act.getTranslation());
-			m_spas.rotateSimulation(act.getRotation());
-		}
-		else 
-		{
-			consistent = simulate(act.getSchema().getContextAct(), doubt);
-			if (consistent)
-				consistent = simulate(act.getSchema().getIntentionAct(), doubt);
-		}
-		return consistent;
-	}
-	
+//	private boolean simulate(IAct act, boolean doubt)
+//	{
+//		boolean consistent = false;
+//		ISchema s = act.getSchema();
+//		if (s.isPrimitive())
+//		{			
+//			IBundle bundle = m_spas.getBundleSimulation(act.getStartPosition());
+//			if (bundle == null)	
+//				consistent = doubt;
+//			else
+//			{
+//				if (doubt)
+//					consistent =  bundle.isConsistent(act);
+//				else 
+//					consistent = bundle.afford(act);
+//			}
+//			m_spas.translateSimulation(act.getTranslation());
+//			m_spas.rotateSimulation(act.getRotation());
+//		}
+//		else 
+//		{
+//			consistent = simulate(act.getSchema().getContextAct(), doubt);
+//			if (consistent)
+//				consistent = simulate(act.getSchema().getIntentionAct(), doubt);
+//		}
+//		return consistent;
+//	}
+//	
 	/**
 	 * Tells the interaction that is likely to result from the enaction of this schema.
 	 * If the schema has no succeeding or failing act defined, 
@@ -385,8 +389,10 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		for (IAct a : acts)
 		{
 			// Propose acts that are afforded by the spatial memory context
-			m_spas.initSimulation();
-			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4 && simulate(a, false))
+			//m_spas.initSimulation();
+			ISpatialMemory spat = m_spas.getSpatialMemory();
+			ISpatialMemory simulationMemory = spat.clone();
+			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4 && simulationMemory.simulate(a, false))
 			{
 				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
 				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));

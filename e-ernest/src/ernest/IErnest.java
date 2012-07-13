@@ -9,6 +9,7 @@ import javax.vecmath.Vector3f;
 import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
+import spas.ISpatialMemory;
 
 
 /**

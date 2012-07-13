@@ -1,6 +1,7 @@
 package spas;
 
 import imos.IAct;
+import imos.ISchema;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,7 +14,7 @@ import ernest.ITracer;
  * Ernest's spatial memory. 
  * @author Olivier
  */
-public class LocalSpaceMemory implements Cloneable
+public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 {
 	
 	/** The radius of a location. */
@@ -60,20 +61,30 @@ public class LocalSpaceMemory implements Cloneable
 	 * Clone spatial memory to perform simulations
 	 * TODO clone the places 
 	 * From tutorial here: http://ydisanto.developpez.com/tutoriels/java/cloneable/ 
+	 * @return The cloned spatial memory
 	 */
-	public Object clone() 
+	public ISpatialMemory clone() 
 	{
-		LocalSpaceMemory newSpatialMemory = null;
+		LocalSpaceMemory cloneSpatialMemory = null;
 		try {
-			newSpatialMemory = (LocalSpaceMemory) super.clone();
+			cloneSpatialMemory = (LocalSpaceMemory) super.clone();
 		} catch(CloneNotSupportedException cnse) {
 			cnse.printStackTrace(System.err);
 		}
 
-		newSpatialMemory.m_clock = m_clock;
+		// We must clone the place list because it is passed by reference by default
+
+		ArrayList<IPlace> clonePlaces = new ArrayList<IPlace>();
+		for (IPlace place : m_places)
+			clonePlaces.add(place.clone());
+		cloneSpatialMemory.setPlaceList(clonePlaces);
+
+		//cloneSpatialMemory.m_places = clonePlaces;
+		//cloneSpatialMemory.m_clock = m_clock;
 		
-		return newSpatialMemory;
+		return cloneSpatialMemory;
 	}
+
 	public void tick()
 	{
 		m_clock++;
@@ -133,15 +144,15 @@ public class LocalSpaceMemory implements Cloneable
 			l.rotate(angle);
 	}
 
-	/**
-	 * Simulate the rotation of all the places of the given angle.
-	 * @param angle The angle (provide the opposite angle from the agent's movement).
-	 */
-	public void rotateSimulation(float angle)
-	{
-		for (IPlace l : m_places)
-			l.rotateSimulation(angle);
-	}
+//	/**
+//	 * Simulate the rotation of all the places of the given angle.
+//	 * @param angle The angle (provide the opposite angle from the agent's movement).
+//	 */
+//	public void rotateSimulation(float angle)
+//	{
+//		for (IPlace l : m_places)
+//			l.rotateSimulation(angle);
+//	}
 
 	/**
 	 * Translate all the places of the given vector.
@@ -162,26 +173,56 @@ public class LocalSpaceMemory implements Cloneable
 		}		
 	}
 	
-	/**
-	 * Simulate the translation of all the places of the given vector.
-	 * Remove places that are outside the local space memory radius.
-	 * @param translation The translation vector (provide the opposite vector from the agent's movement).
-	 */
-	public void translateSimulation(Vector3f translation)
+	public boolean simulate(IAct act, boolean doubt)
 	{
-		for (IPlace p : m_places)
-			p.translateSimulation(translation);			
+		boolean consistent = false;
+		ISchema s = act.getSchema();
+		if (s.isPrimitive())
+		{			
+			//IBundle bundle = getPlace(act.getStartPosition()).getBundle();
+			IBundle bundle = getBundleSimulation(act.getStartPosition());
+			if (bundle == null)	
+				consistent = doubt;
+			else
+			{
+				if (doubt)
+					consistent =  bundle.isConsistent(act);
+				else 
+					consistent = bundle.afford(act);
+			}
+			followUp(act.getTranslation(), act.getRotation());
+			//m_spas.translateSimulation(act.getTranslation());
+			//m_spas.rotateSimulation(act.getRotation());
+		}
+		else 
+		{
+			consistent = simulate(act.getSchema().getContextAct(), doubt);
+			if (consistent)
+				consistent = simulate(act.getSchema().getIntentionAct(), doubt);
+		}
+		return consistent;
 	}
 	
-	/**
-	 * Rotate all the places of the given angle.
-	 * @param angle The angle (provide the opposite angle from the agent's movement).
-	 */
-	public void initSimulation()
-	{
-		for (IPlace p : m_places)
-			p.initSimulation();
-	}
+//	/**
+//	 * Simulate the translation of all the places of the given vector.
+//	 * Remove places that are outside the local space memory radius.
+//	 * @param translation The translation vector (provide the opposite vector from the agent's movement).
+//	 */
+//	public void translateSimulation(Vector3f translation)
+//	{
+//		for (IPlace p : m_places)
+//			p.translateSimulation(translation);			
+//	}
+//	
+//	/**
+//	 * Rotate all the places of the given angle.
+//	 * @param angle The angle (provide the opposite angle from the agent's movement).
+//	 */
+//	public void initSimulation()
+//	{
+//		for (IPlace p : m_places)
+//			p.initSimulation();
+//	}
 
 	/**
 	 * Get the phenomena value at a given position.
@@ -200,29 +241,30 @@ public class LocalSpaceMemory implements Cloneable
 		return value;
 	}
 
-	/**
-	 * Get the phenomena value at a given position in the simulation.
-	 * (The last bundle found in the list of places that match this position)
-	 * @param position The position of the location.
-	 * @return The bundle.
-	 */
-	public int getValueSimulation(Vector3f position)
-	{
-		int value = Ernest.UNANIMATED_COLOR;
-		for (IPlace p : m_places)
-		{
-			if (p.isInCellSimulation(position) && p.isPhenomenon())
-				value = p.getValue();
-		}	
-		return value;
-	}
+//	/**
+//	 * Get the phenomena value at a given position in the simulation.
+//	 * (The last bundle found in the list of places that match this position)
+//	 * @param position The position of the location.
+//	 * @return The bundle.
+//	 */
+//	public int getValueSimulation(Vector3f position)
+//	{
+//		int value = Ernest.UNANIMATED_COLOR;
+//		for (IPlace p : m_places)
+//		{
+//			if (p.isInCellSimulation(position) && p.isPhenomenon())
+//				value = p.getValue();
+//		}	
+//		return value;
+//	}
 
-	public IBundle getBundleSimulation(Vector3f position)
+	private IBundle getBundleSimulation(Vector3f position)
 	{
 		IBundle bundle = null;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCellSimulation(position) && p.isPhenomenon())
+			//if (p.isInCellSimulation(position) && p.isPhenomenon())
+			if (p.isInCell(position) && p.isPhenomenon())
 				bundle = p.getBundle();
 		}	
 		return bundle;
@@ -319,7 +361,13 @@ public class LocalSpaceMemory implements Cloneable
 		return m_places;
 	}
 	
-//	public void setFocusPlace(IPlace focusPlace)
+	public void setPlaceList(ArrayList<IPlace> places) 
+	{
+		m_places = places;
+	}
+	
+	
+	//	public void setFocusPlace(IPlace focusPlace)
 //	{
 //		m_focusPlace = focusPlace;
 //	}
