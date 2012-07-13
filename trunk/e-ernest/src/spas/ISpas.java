@@ -94,11 +94,12 @@ public interface ISpas
 	public int getValue(Vector3f position);
 	public IPlace getPlace(Vector3f position);
 	
-	public void initSimulation();
-	public void translateSimulation(Vector3f translation);
-	public void rotateSimulation(float angle);
-	public int getValueSimulation(Vector3f position);
-	public IBundle getBundleSimulation(Vector3f position);
+	public ISpatialMemory getSpatialMemory();
+//	public void initSimulation();
+//	public void translateSimulation(Vector3f translation);
+//	public void rotateSimulation(float angle);
+//	public int getValueSimulation(Vector3f position);
+//	public IBundle getBundleSimulation(Vector3f position);
 	
 	public void followUp(IAct act);
 

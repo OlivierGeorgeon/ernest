@@ -1,15 +1,19 @@
 package spas;
 
 import imos.IAct;
-
 import javax.vecmath.Vector3f;
 
 /**
- * A place is a location in the local space where a bundle is placed.
+ * A place is a location in spatial memory.
  * @author Olivier
  */
-public interface IPlace 
+public interface IPlace extends Cloneable
 {	
+	/**
+	 * @return A clone of this place
+	 */
+	public IPlace clone();
+	
 	/**
 	 * @return The location's bundle.
 	 */

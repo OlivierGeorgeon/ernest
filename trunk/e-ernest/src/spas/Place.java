@@ -13,33 +13,23 @@ import ernest.Ernest;
  * A place is a location in the local space that marks someting.
  * @author Olivier
  */
-public class Place implements IPlace 
+public class Place implements IPlace //, Cloneable
 {
 
-	IBundle m_bundle;
-	Vector3f m_position = new Vector3f();
-	Vector3f m_speed = new Vector3f();
-	float m_span;
-	int m_attractiveness;
-	
-	Vector3f m_firstPosition = new Vector3f();
-	Vector3f m_secondPosition = new Vector3f();
-	
-	int m_type = Spas.PLACE_SEE;
-	
-	int m_shape = Spas.SHAPE_CIRCLE;
-	float m_orientation = 0;
-	
-	int m_clock = 0;
-	
-	int m_stick;
-	
-	int m_value;
-	
-	IAct m_act;
-	//String m_label;
-
-	Vector3f m_simulatedPosition = new Vector3f();
+	private IBundle m_bundle;
+	private Vector3f m_position = new Vector3f();
+	private Vector3f m_speed = new Vector3f();
+	private Vector3f m_firstPosition = new Vector3f();
+	private Vector3f m_secondPosition = new Vector3f();
+	private Vector3f m_simulatedPosition = new Vector3f();
+	private float m_span;
+	private float m_orientation = 0;
+	private int m_type = Spas.PLACE_SEE;
+	private int m_shape = Spas.SHAPE_CIRCLE;
+	private int m_clock = 0;
+	private int m_stick;
+	private int m_value;
+	private IAct m_act;
 
 	/**
 	 * Create a new place 
@@ -53,6 +43,36 @@ public class Place implements IPlace
 		m_position.set(position);
 	}
 	
+	/**
+	 * Clone a place
+	 * Warning: the bundle and act that this place contain are not cloned 
+	 * @return The cloned place
+	 */
+	public IPlace clone() 
+	{
+		Place clonePlace = null;
+		try {
+			clonePlace = (Place) super.clone();
+		} catch(CloneNotSupportedException cnse) {
+			cnse.printStackTrace(System.err);
+		}
+
+		// We must clone the vectors because they are passed by reference by default
+		clonePlace.setPosition(m_position);
+		clonePlace.setSpeed(m_speed);
+		clonePlace.setFirstPosition(m_firstPosition);
+		clonePlace.setSecondPosition(m_secondPosition);
+
+		//clonePlace.m_clock = m_clock;
+		//clonePlace.m_bundle = m_bundle;
+		//clonePlace.m_orientation = m_orientation;
+		//clonePlace.m_type = m_type;
+		//clonePlace.m_shape = m_shape;
+		//clonePlace.m_value = m_value;
+		//clonePlace.m_act = m_act;
+		
+		return clonePlace;
+	}
 	/**
 	 * @param bundle This place's bundle.
 	 * @param distance This place's distance.
@@ -209,7 +229,9 @@ public class Place implements IPlace
 
 	public void setPosition(Vector3f position) 
 	{
-		m_position.set(position);
+		// Create a new instance of the vector because it is needed by the clone method.
+		m_position = new Vector3f(position);
+		//m_position.set(position);
 	}
 
 	public void setType(int type) 
@@ -224,7 +246,7 @@ public class Place implements IPlace
 
 	public void setSpeed(Vector3f speed) 
 	{
-		m_speed.set(speed);
+		m_speed = new Vector3f(speed);
 	}
 
 	public Vector3f getSpeed() 
@@ -234,12 +256,12 @@ public class Place implements IPlace
 
 	public void setFirstPosition(Vector3f position) 
 	{
-		m_firstPosition.set(position);
+		m_firstPosition = new Vector3f(position);
 	}
 
 	public void setSecondPosition(Vector3f position) 
 	{
-		m_secondPosition.set(position);		
+		m_secondPosition = new Vector3f(position);		
 	}
 
 	public Vector3f getFirstPosition() 
