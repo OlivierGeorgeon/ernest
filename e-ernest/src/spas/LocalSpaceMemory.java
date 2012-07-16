@@ -179,7 +179,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{			
-			//IBundle bundle = getPlace(act.getStartPosition()).getBundle();
 			IBundle bundle = getBundleSimulation(act.getStartPosition());
 			if (bundle == null)	
 				consistent = doubt;
@@ -191,8 +190,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					consistent = bundle.afford(act);
 			}
 			followUp(act.getTranslation(), act.getRotation());
-			//m_spas.translateSimulation(act.getTranslation());
-			//m_spas.rotateSimulation(act.getRotation());
 		}
 		else 
 		{

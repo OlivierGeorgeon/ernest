@@ -4,6 +4,7 @@ import imos.IAct;
 
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import spas.IObservation;
@@ -124,6 +125,10 @@ public interface IErnest
 	 * @return The counter of updates from the spatial system.
 	 */
 	public int getUpdateCount();
+	
+	public ISpatialMemory getSpatialSimulation();
+	
+	public void setFrame(JFrame frame);
 	
 	//public IPlace getFocusPlace();	
 }
