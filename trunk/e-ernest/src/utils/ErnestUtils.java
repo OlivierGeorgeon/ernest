@@ -56,5 +56,14 @@ public final class ErnestUtils
 		else
 			return Integer.toString(i, 16).toUpperCase();
 	}
-
+	
+	public static void sleep(int t)
+	{
+		try
+		{ 
+			Thread.currentThread().sleep(t);
+		}
+		catch(InterruptedException ie)
+		{}
+	}
 }

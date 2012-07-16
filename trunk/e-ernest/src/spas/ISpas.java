@@ -95,6 +95,7 @@ public interface ISpas
 	public IPlace getPlace(Vector3f position);
 	
 	public ISpatialMemory getSpatialMemory();
+	
 //	public void initSimulation();
 //	public void translateSimulation(Vector3f translation);
 //	public void rotateSimulation(float angle);

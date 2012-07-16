@@ -8,6 +8,8 @@ import imos.Proposition;
 
 import java.awt.Color;
 import java.util.ArrayList;
+
+import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import spas.IBundle;
@@ -18,6 +20,7 @@ import spas.LocalSpaceMemory;
 import spas.Observation;
 import spas.Place;
 import spas.Spas;
+import utils.ErnestUtils;
 
 /**
  * Implement Ernest 12.0's sensorimotor system.
@@ -31,6 +34,10 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
     
     private int m_satisfaction = 0;
     
+    private ISpatialMemory m_spatialSimulation = new LocalSpaceMemory();
+    
+	private JFrame m_frame;
+
 	public IAct enactedAct(IAct act, IObservation observation) 
 	{
 		// The schema is null during the first cycle
@@ -390,13 +397,18 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			// Propose acts that are afforded by the spatial memory context
 			//m_spas.initSimulation();
-			ISpatialMemory spat = m_spas.getSpatialMemory();
-			ISpatialMemory simulationMemory = spat.clone();
-			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4 && simulationMemory.simulate(a, false))
+			ISpatialMemory spatialSimulation = m_spas.getSpatialMemory().clone();
+			m_spatialSimulation = m_spas.getSpatialMemory().clone();
+			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4 && m_spatialSimulation.simulate(a, false))
 			{
 				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
 				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
 				propositionList.add(p);
+				if (m_frame != null) 
+				{
+					//m_frame.repaint(); 
+					ErnestUtils.sleep(1000);
+				}
 				if (m_tracer != null)
 					m_tracer.addSubelement(activations, "propose", p.toString());
 			}
@@ -420,4 +432,15 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		}	
 		return propositionList;
 	}	
+	
+	public ISpatialMemory getSpatialSimulation()
+	{
+		return m_spatialSimulation;
+	}
+	
+	public void setFrame(JFrame frame)
+	{
+		m_frame = frame;
+	}
+
 }

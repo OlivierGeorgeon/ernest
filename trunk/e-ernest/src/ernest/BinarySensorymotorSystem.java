@@ -3,12 +3,14 @@ package ernest;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
+import spas.ISpatialMemory;
 import spas.Place;
 import imos.IAct;
 import imos.IImos;
@@ -159,6 +161,16 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 			}
 		}
 		return anticipateInteraction;
+	}
+
+	public ISpatialMemory getSpatialSimulation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setFrame(JFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

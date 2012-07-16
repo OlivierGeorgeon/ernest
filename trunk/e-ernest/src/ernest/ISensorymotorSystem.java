@@ -2,6 +2,7 @@ package ernest;
 
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import com.sun.tools.javac.util.List;
@@ -10,6 +11,7 @@ import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
+import spas.ISpatialMemory;
 import spas.Place;
 import imos.IAct;
 import imos.IImos;
@@ -79,5 +81,9 @@ public interface ISensorymotorSystem
 	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts);
 	
 	public IAct enactedAct(IAct m_primitiveAct, IObservation observation);
+	
+	public ISpatialMemory getSpatialSimulation();
+	
+	public void setFrame(JFrame frame);
 
 }

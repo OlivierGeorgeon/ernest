@@ -127,11 +127,11 @@ public interface IPlace extends Cloneable
 	public int getStick();
 	public float getFrontDistance();
 	
-	public void initSimulation();
-	public void translateSimulation(Vector3f translation);
-	public void rotateSimulation(float angle);
-	public boolean isInCellSimulation(Vector3f position);
-	public Vector3f getSimulatedPosition(); 
+//	public void initSimulation();
+//	public void translateSimulation(Vector3f translation);
+//	public void rotateSimulation(float angle);
+//	public boolean isInCellSimulation(Vector3f position);
+//	public Vector3f getSimulatedPosition(); 
 	
 	//public void setLabel(String label);
 	//public String getLabel();

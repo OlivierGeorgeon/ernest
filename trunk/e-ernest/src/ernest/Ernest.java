@@ -2,12 +2,14 @@ package ernest;
 
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
 import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
+import spas.ISpatialMemory;
 //import spas.IStimulation;
 import spas.Spas;
 //import spas.Stimulation;
@@ -164,7 +166,7 @@ public class Ernest implements IErnest
 
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
-
+	
 	/**
 	 * Set Ernest's fundamental learning parameters.
 	 * @param regularityThreshold The Regularity Sensibility Threshold.
@@ -361,5 +363,15 @@ public class Ernest implements IErnest
 	public int getUpdateCount() 
 	{
 		return m_spas.getClock();
+	}
+
+	public ISpatialMemory getSpatialSimulation() 
+	{
+		return m_sensorymotorSystem.getSpatialSimulation();
+	}
+
+	public void setFrame(JFrame frame) 
+	{
+		m_sensorymotorSystem.setFrame(frame);
 	}
 }
