@@ -40,23 +40,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
 	
-	//IPlace m_focusPlace = null;
-
-	/** The persistence memory. */
-	//ISpas m_spas;
-	
 	private int m_clock = 0;
-	
-	/** The tracer. */
-	//ITracer m_tracer;
-	
-	
-//	LocalSpaceMemory(ISpas spas, ITracer tracer)
-//	{
-//		m_spas = spas;
-//		//m_tracer = tracer;
-//	}
-	
+		
 	/**
 	 * Clone spatial memory to perform simulations
 	 * TODO clone the places 
@@ -123,15 +108,22 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		return place;
 	}
 	
+	public IPlace addPlace(Vector3f position, int type)
+	{
+		IPlace place = new Place(position, type);	
+		m_places.add(place);
+		return place;
+	}
+	
 	/**
 	 * Update the local space memory according to the agent's moves.
 	 * @param translation The translation vector in egocentric referential (provide the opposite vector from the agent's movement).
 	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
 	 */
-	public void followUp(Vector3f translation, float rotation)
+	public void transform(IAct act)
 	{
-		rotate(rotation);
-		translate(translation);
+		rotate(act.getRotation());
+		translate(act.getTranslation());
 	}
 	
 	/**
@@ -143,16 +135,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (IPlace l : m_places)
 			l.rotate(angle);
 	}
-
-//	/**
-//	 * Simulate the rotation of all the places of the given angle.
-//	 * @param angle The angle (provide the opposite angle from the agent's movement).
-//	 */
-//	public void rotateSimulation(float angle)
-//	{
-//		for (IPlace l : m_places)
-//			l.rotateSimulation(angle);
-//	}
 
 	/**
 	 * Translate all the places of the given vector.
@@ -173,6 +155,58 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}		
 	}
 	
+	public boolean runSimulation(IAct act, boolean doubt)
+	{
+		boolean consistent = false;
+		
+		IPlace simulationPlace = addPlace(new Vector3f(), Spas.PLACE_SIMULATION);
+		
+		consistent = simulate(simulationPlace, act, doubt);
+		
+		return consistent;
+	}
+	
+	private boolean simulate(IPlace simulationPlace, IAct act, boolean doubt)
+	{
+		boolean consistent = false;
+		ISchema s = act.getSchema();
+		if (s.isPrimitive())
+		{
+			Vector3f startPosition = new Vector3f(act.getStartPosition());
+			ErnestUtils.rotate(startPosition, simulationPlace.getOrientation());
+			Vector3f position = new Vector3f(simulationPlace.getPosition());
+			position.add(startPosition);
+			IBundle bundle = getBundleSimulation(position);
+			if (bundle == null)	
+				consistent = doubt;
+			else
+			{
+				if (doubt)
+					consistent =  bundle.isConsistent(act);
+				else 
+					consistent = bundle.afford(act);
+			}
+			//IPlace sim = addPlace(bundle, position);
+			//sim.setType(Spas.PLACE_SIMULATION);
+			IPlace sim = addPlace(position, Spas.PLACE_SIMULATION);
+			sim.setAct(act);
+			if (bundle != null) sim.setValue(bundle.getValue());
+
+			position = new Vector3f(act.getTranslation());
+			position.scale(-1);
+			simulationPlace.translate(position);
+			simulationPlace.rotate( - act.getRotation());
+			//transform(act);
+		}
+		else 
+		{
+			consistent = simulate(simulationPlace, act.getSchema().getContextAct(), doubt);
+			if (consistent)
+				consistent = simulate(simulationPlace, act.getSchema().getIntentionAct(), doubt);
+		}
+		return consistent;
+	}
+	
 	public boolean simulate(IAct act, boolean doubt)
 	{
 		boolean consistent = false;
@@ -189,7 +223,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				else 
 					consistent = bundle.afford(act);
 			}
-			followUp(act.getTranslation(), act.getRotation());
+			transform(act);
 		}
 		else 
 		{
@@ -200,27 +234,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		return consistent;
 	}
 	
-//	/**
-//	 * Simulate the translation of all the places of the given vector.
-//	 * Remove places that are outside the local space memory radius.
-//	 * @param translation The translation vector (provide the opposite vector from the agent's movement).
-//	 */
-//	public void translateSimulation(Vector3f translation)
-//	{
-//		for (IPlace p : m_places)
-//			p.translateSimulation(translation);			
-//	}
-//	
-//	/**
-//	 * Rotate all the places of the given angle.
-//	 * @param angle The angle (provide the opposite angle from the agent's movement).
-//	 */
-//	public void initSimulation()
-//	{
-//		for (IPlace p : m_places)
-//			p.initSimulation();
-//	}
-
 	/**
 	 * Get the phenomena value at a given position.
 	 * (The last bundle found in the list of places that match this position)
@@ -238,29 +251,11 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		return value;
 	}
 
-//	/**
-//	 * Get the phenomena value at a given position in the simulation.
-//	 * (The last bundle found in the list of places that match this position)
-//	 * @param position The position of the location.
-//	 * @return The bundle.
-//	 */
-//	public int getValueSimulation(Vector3f position)
-//	{
-//		int value = Ernest.UNANIMATED_COLOR;
-//		for (IPlace p : m_places)
-//		{
-//			if (p.isInCellSimulation(position) && p.isPhenomenon())
-//				value = p.getValue();
-//		}	
-//		return value;
-//	}
-
 	private IBundle getBundleSimulation(Vector3f position)
 	{
 		IBundle bundle = null;
 		for (IPlace p : m_places)
 		{
-			//if (p.isInCellSimulation(position) && p.isPhenomenon())
 			if (p.isInCell(position) && p.isPhenomenon())
 				bundle = p.getBundle();
 		}	
@@ -362,18 +357,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	{
 		m_places = places;
 	}
-	
-	
-	//	public void setFocusPlace(IPlace focusPlace)
-//	{
-//		m_focusPlace = focusPlace;
-//	}
-
-//	public IPlace getFocusPlace()
-//	{
-//		return m_focusPlace;
-//	}
-	
+		
 	private ArrayList<IPlace> getEvokeList()
 	{
 		ArrayList<IPlace> evokeList = new ArrayList<IPlace>();

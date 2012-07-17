@@ -21,7 +21,6 @@ public class Place implements IPlace //, Cloneable
 	private Vector3f m_speed = new Vector3f();
 	private Vector3f m_firstPosition = new Vector3f();
 	private Vector3f m_secondPosition = new Vector3f();
-	//private Vector3f m_simulatedPosition = new Vector3f();
 	private float m_span;
 	private float m_orientation = 0;
 	private int m_type = Spas.PLACE_SEE;
@@ -41,6 +40,12 @@ public class Place implements IPlace //, Cloneable
 	{
 		m_bundle = bundle;
 		m_position.set(position);
+	}
+	
+	public Place(Vector3f position, int type)
+	{
+		m_position.set(position);
+		m_type = type;
 	}
 	
 	/**
@@ -128,9 +133,6 @@ public class Place implements IPlace //, Cloneable
 		m_position.add(translation);
 		m_firstPosition.add(translation);
 		m_secondPosition.add(translation);
-//		m_position.sub(translation);
-//		m_firstPosition.sub(translation);
-//		m_secondPosition.sub(translation);
 	}
 	
 	public boolean isInCell(Vector3f position)
@@ -420,44 +422,6 @@ public class Place implements IPlace //, Cloneable
 		return m_value;
 	}
 
-//	public void initSimulation() 
-//	{
-//		m_simulatedPosition.set(m_position);
-//	}
-//
-//	public void translateSimulation(Vector3f translation) 
-//	{
-//		m_simulatedPosition.add(translation);
-//	}
-//
-//	public void rotateSimulation(float angle) 
-//	{
-//		Matrix3f rot = new Matrix3f();
-//		rot.rotZ(angle);
-//		
-//		Vector3f oldPosition = m_simulatedPosition;
-//		rot.transform(oldPosition, m_simulatedPosition); // (rot * m_position) is placed into m_position
-//	}
-
-//	public boolean isInCellSimulation(Vector3f position) 
-//	{
-//		boolean ret;
-//		// Is in the same cell in egocentric Cartesian referential.
-//		ret = (Math.round(m_simulatedPosition.x) == Math.round(position.x)) && (Math.round(m_simulatedPosition.y) == Math.round(position.y)); 
-//		
-//		// Is in the same cell in egocentric polar referential.
-////		if (m_position.length() < .5f && position.length() < .5f)
-////			ret = true;
-////		else if (Math.round(ErnestUtils.polarAngle(m_position) / (float)Math.PI * 4) ==
-//// 			     Math.round(ErnestUtils.polarAngle(  position) / (float)Math.PI * 4) &&
-//// 			     (Math.round(m_position.length()) == Math.round(position.length())))
-////			ret = true;
-////		else 
-////			ret = false;
-//		
-//		return ret;		
-//	}
-
 	public void setAct(IAct act) 
 	{
 		m_act = act;
@@ -467,10 +431,5 @@ public class Place implements IPlace //, Cloneable
 	{
 		return m_act;
 	}
-
-//	public Vector3f getSimulatedPosition()
-//	{
-//		return m_simulatedPosition;
-//	}
 
 }

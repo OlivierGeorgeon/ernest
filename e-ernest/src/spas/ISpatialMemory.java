@@ -45,11 +45,10 @@ public interface ISpatialMemory
 	public IPlace addPlace(IBundle bundle, Vector3f position);
 
 	/**
-	 * Apply a geometrical transformation to this spatial memory
-	 * @param translation The translation vector (opposite of the agent's movement)
-	 * @param rotation The rotation value (opposite of the agent's rotation)
+	 * Apply a geometrical transformation caused by an act to this spatial memory
+	 * @param act The act that generates the transformation
 	 */
-	public void followUp(Vector3f translation, float rotation);
+	public void transform(IAct act);
 	
 	/**
 	 * Get the first place found at a given position
@@ -77,5 +76,7 @@ public interface ISpatialMemory
 	 * @param spas
 	 */
 	public void copresence(IObservation observation, ISpas spas);
+	
+	public boolean runSimulation(IAct act, boolean doubt);
 
 }

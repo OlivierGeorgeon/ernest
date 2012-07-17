@@ -399,15 +399,15 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			//m_spas.initSimulation();
 			ISpatialMemory spatialSimulation = m_spas.getSpatialMemory().clone();
 			m_spatialSimulation = m_spas.getSpatialMemory().clone();
-			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4 && m_spatialSimulation.simulate(a, false))
+			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4 && m_spatialSimulation.runSimulation(a, false))
 			{
 				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
 				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
 				propositionList.add(p);
 				if (m_frame != null) 
 				{
-					//m_frame.repaint(); 
-					ErnestUtils.sleep(1000);
+					m_frame.repaint(); 
+					ErnestUtils.sleep(500);
 				}
 				if (m_tracer != null)
 					m_tracer.addSubelement(activations, "propose", p.toString());

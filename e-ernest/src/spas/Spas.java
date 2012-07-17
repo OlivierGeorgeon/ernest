@@ -32,6 +32,7 @@ public class Spas implements ISpas
 	public static int PLACE_EVOKE_PHENOMENON = 17;
 	public static int PLACE_PHENOMENON = 18;
 	public static int PLACE_COPRESENCE = 19;
+	public static int PLACE_SIMULATION = 20;
 	
 	public static int SHAPE_CIRCLE = 0;
 	public static int SHAPE_TRIANGLE = 1;
@@ -123,16 +124,6 @@ public class Spas implements ISpas
 		return m_localSpaceMemory.getPlaceList();
 	}
 
-//	public void traceLocalSpace() 
-//	{
-//		m_localSpaceMemory.trace();
-//	}
-
-//	public IPlace getFocusPlace() 
-//	{
-//		return m_localSpaceMemory.getFocusPlace();
-//	}
-
 	public IPlace addPlace(Vector3f position, int type, int shape) 
 	{
 		IPlace place = m_localSpaceMemory.addPlace(null, position);
@@ -148,6 +139,7 @@ public class Spas implements ISpas
 	public IBundle addBundle(IAct firstAct, IAct secondAct) 
 	{
 		IBundle bundle = new Bundle(firstAct, secondAct);
+		bundle.setVisualValue(firstAct.getPhenomenon());
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
@@ -288,31 +280,6 @@ public class Spas implements ISpas
 		return m_localSpaceMemory;
 	}
 
-//	public void initSimulation() 
-//	{
-//		m_localSpaceMemory.initSimulation();
-//	}
-//
-//	public void translateSimulation(Vector3f translation) 
-//	{
-//		m_localSpaceMemory.translateSimulation(translation);
-//	}
-//
-//	public void rotateSimulation(float angle) 
-//	{
-//		m_localSpaceMemory.rotateSimulation(angle);
-//	}
-//
-//	public int getValueSimulation(Vector3f position) 
-//	{
-//		return m_localSpaceMemory.getValueSimulation(position);
-//	}	
-//	
-//	public IBundle getBundleSimulation(Vector3f position) 
-//	{
-//		return m_localSpaceMemory.getBundleSimulation(position);
-//	}	
-	
 	/**
 	 * Returns the first bundle found that contains this act.
 	 * @param act The act to check.
@@ -352,7 +319,7 @@ public class Spas implements ISpas
 
 	public void followUp(IAct act) 
 	{
-		m_localSpaceMemory.followUp(act.getTranslation(), act.getRotation());		
+		m_localSpaceMemory.transform(act);		
 	}
 
 	/**
