@@ -128,7 +128,7 @@ public interface IErnest
 	
 	public ISpatialMemory getSpatialSimulation();
 	
-	public void setFrame(JFrame frame);
+	//public void setFrame(JFrame frame);
 	
 	//public IPlace getFocusPlace();	
 }

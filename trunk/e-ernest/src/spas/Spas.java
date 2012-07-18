@@ -139,7 +139,7 @@ public class Spas implements ISpas
 	public IBundle addBundle(IAct firstAct, IAct secondAct) 
 	{
 		IBundle bundle = new Bundle(firstAct, secondAct);
-		bundle.setVisualValue(firstAct.getPhenomenon());
+		bundle.setVisualValue(firstAct.getColor());
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)

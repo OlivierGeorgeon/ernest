@@ -40,7 +40,7 @@ public class Bundle implements IBundle
 	
 	Bundle(IAct act)
 	{
-		m_value = act.getPhenomenon();
+		m_value = act.getColor();
 		m_acts.add(act);
 	}
 	
@@ -72,13 +72,14 @@ public class Bundle implements IBundle
 	
 	public int getValue()
 	{
-		int value = 0;
-		if (m_value == Ernest.STIMULATION_VISUAL_UNSEEN)
-			value = m_tactileValue;
-		else 
-			value = m_value;
+//		int value = 0;
+//		if (m_value == Ernest.STIMULATION_VISUAL_UNSEEN)
+//			value = m_tactileValue;
+//		else 
+//			value = m_value;		
+//		return value;
 		
-		return value;
+		return m_value;
 	}
 	
 	public boolean addAct(IAct act) 

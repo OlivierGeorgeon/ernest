@@ -304,7 +304,7 @@ public class EpisodicMemory
 						//e = s.getWeight() * (anticipation.getStatus() ? 1 : -1);
 					}
 					
-					// If consistent 
+					// If the intention is consistent with spatial memory 
 					if (m_sensorimotorSystem.checkConsistency(proposedAct))
 					{
 					

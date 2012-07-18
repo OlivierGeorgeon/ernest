@@ -370,8 +370,8 @@ public class Ernest implements IErnest
 		return m_sensorymotorSystem.getSpatialSimulation();
 	}
 
-	public void setFrame(JFrame frame) 
-	{
-		m_sensorymotorSystem.setFrame(frame);
-	}
+//	public void setFrame(JFrame frame) 
+//	{
+//		m_sensorymotorSystem.setFrame(frame);
+//	}
 }
