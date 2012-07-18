@@ -84,6 +84,6 @@ public interface ISensorymotorSystem
 	
 	public ISpatialMemory getSpatialSimulation();
 	
-	public void setFrame(JFrame frame);
+	//public void setFrame(JFrame frame);
 
 }

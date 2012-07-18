@@ -41,7 +41,8 @@ public class Act implements IAct
 	/** The length of the act's schema  */
 	private int m_length = 1;
 	
-	private int m_phenomenon = Ernest.PHENOMENON_EMPTY;
+	//private int m_phenomenon = Ernest.PHENOMENON_EMPTY;
+	private int m_color = Ernest.PHENOMENON_EMPTY;
 	private Vector3f m_startPosition = new Vector3f();
 	private Vector3f m_endPosition = new Vector3f();
 	private Vector3f m_translation = new Vector3f();
@@ -228,14 +229,14 @@ public class Act implements IAct
 		return new Integer(a.getActivation()).compareTo(m_activation);
 	}
 
-	public void setPhenomenon(int phenomenon) 
+	public void setColor(int color) 
 	{
-		m_phenomenon = phenomenon;
+		m_color = color;
 	}
 
-	public int getPhenomenon() 
+	public int getColor() 
 	{
-		return m_phenomenon;
+		return m_color;
 	}
 
 	public void setEndPosition(Vector3f position) 

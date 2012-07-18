@@ -186,17 +186,23 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				else 
 					consistent = bundle.afford(act);
 			}
-			//IPlace sim = addPlace(bundle, position);
-			//sim.setType(Spas.PLACE_SIMULATION);
-			IPlace sim = addPlace(position, Spas.PLACE_SIMULATION);
-			sim.setAct(act);
-			if (bundle != null) sim.setValue(bundle.getValue());
-
-			position = new Vector3f(act.getTranslation());
-			position.scale(-1);
-			simulationPlace.translate(position);
+			Vector3f position2 = new Vector3f(act.getTranslation());
+			position2.scale(-1);
+			simulationPlace.translate(position2);
 			simulationPlace.rotate( - act.getRotation());
 			//transform(act);
+
+			// Mark the simulation of this act in spatial memory;
+			if (consistent)
+			{
+				IPlace sim = addPlace(position, Spas.PLACE_SIMULATION);
+				sim.setAct(act);
+				sim.setOrientation(simulationPlace.getOrientation());
+				//if (bundle == null) 
+				//	sim.setValue(0x808080);
+				//else
+					sim.setValue(act.getColor());
+			}
 		}
 		else 
 		{
@@ -444,6 +450,16 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					}
 				}
 			}
+		}
+	}
+
+	public void clearSimulation() 
+	{
+		for (Iterator it = m_places.iterator(); it.hasNext();)
+		{
+			IPlace p = (IPlace)it.next();
+			if (p.getType() == Spas.PLACE_SIMULATION)
+				it.remove();
 		}
 	}
 	

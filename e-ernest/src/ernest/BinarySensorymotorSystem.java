@@ -168,9 +168,9 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return null;
 	}
 
-	public void setFrame(JFrame frame) {
-		// TODO Auto-generated method stub
-		
-	}
+//	public void setFrame(JFrame frame) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 
 }

@@ -78,5 +78,7 @@ public interface ISpatialMemory
 	public void copresence(IObservation observation, ISpas spas);
 	
 	public boolean runSimulation(IAct act, boolean doubt);
+	
+	public void clearSimulation();
 
 }

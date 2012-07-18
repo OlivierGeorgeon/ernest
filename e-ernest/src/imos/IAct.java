@@ -75,12 +75,15 @@ public interface IAct  extends Comparable<IAct>
 	 * Methods related to space.
 	 * @param bundleCode The phenomenon's code.
 	 */	
-	public void setPhenomenon(int bundleCode);
+	//public void setPhenomenon(int bundleCode);
+	public void setColor(int color);
+
 	
 	/**
 	 * @return the phenomenon's code (used to display this act).
 	 */
-	public int getPhenomenon();
+	//public int getPhenomenon();
+	public int getColor();
 	
 	/**
 	 * @param position The position of the phenomena that is concerned by the enaction of this act.

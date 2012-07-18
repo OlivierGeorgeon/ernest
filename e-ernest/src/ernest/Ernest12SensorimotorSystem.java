@@ -36,7 +36,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
     
     private ISpatialMemory m_spatialSimulation = new LocalSpaceMemory();
     
-	private JFrame m_frame;
+	//private JFrame m_frame;
 
 	public IAct enactedAct(IAct act, IObservation observation) 
 	{
@@ -65,6 +65,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
         m_observation = observation;
         
  		IAct enactedAct = addInteraction(act.getSchema().getLabel(), observation.getStimuli(), m_satisfaction);
+ 		
+		m_spatialSimulation.clearSimulation();
 		
 		return enactedAct;
 	}
@@ -125,31 +127,31 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			if (stimuliLabel.indexOf("f") >= 0)
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setColor(0xFF0000);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (stimuliLabel.equals("++t"))
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_FISH);
+				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Vector3f(4,0,0));
 				act.setEndPosition(new Vector3f(3,0,0));
 			}
 			else if (stimuliLabel.equals(" +t"))
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_FISH);
+				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Vector3f(3,-3,0));
 				act.setEndPosition(new Vector3f(2,-3,0));
 			}
 			else if (stimuliLabel.equals("+ t"))
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_FISH);
+				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Vector3f(3,3,0));
 				act.setEndPosition(new Vector3f(2,3,0));
 			}
 			else 
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			}
@@ -159,13 +161,13 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			if (stimuliLabel.indexOf("t") >= 0 || stimuliLabel.equals("  "))
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			}
 			else
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setColor(Ernest.PHENOMENON_WALL);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 			}
@@ -174,14 +176,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		if (act.getLabel().equals("^* f"))
 		{
 			act.setRotation((float) - Math.PI / 2);
-			act.setPhenomenon(Ernest.PHENOMENON_FISH);
+			act.setColor(Ernest.PHENOMENON_FISH);
 			act.setStartPosition(new Vector3f(3,3,0));
 			act.setEndPosition(new Vector3f(3,3,0));
 		}
 		else if (schemaLabel.equals("^"))
 		{
 			act.setRotation((float) - Math.PI / 2);
-			act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+			act.setColor(Ernest.PHENOMENON_EMPTY);
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
 			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 		}
@@ -189,14 +191,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		if (act.getLabel().equals("v *f"))
 		{
 			act.setRotation((float) Math.PI / 2);
-			act.setPhenomenon(Ernest.PHENOMENON_FISH);
+			act.setColor(Ernest.PHENOMENON_FISH);
 			act.setStartPosition(new Vector3f(3,-3,0));
 			act.setEndPosition(new Vector3f(3,-3,0));
 		}
 		else if (schemaLabel.equals("v"))
 		{
 			act.setRotation((float) Math.PI / 2);
-			act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+			act.setColor(Ernest.PHENOMENON_EMPTY);
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
 			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 		}
@@ -205,13 +207,13 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 			else
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setColor(Ernest.PHENOMENON_WALL);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
@@ -221,20 +223,20 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (stimuliLabel.indexOf("a") >= 0 )
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_ALGA);
+				act.setColor(Ernest.PHENOMENON_ALGA);
 				//act.setPhenomenon(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else
 			{
-				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setColor(Ernest.PHENOMENON_WALL);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
@@ -247,9 +249,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			//act.setStartPosition(new Vector3f(1,-1,0));
 			//act.setEndPosition(new Vector3f(1,-1,0));
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
-				act.setPhenomenon(Ernest.PHENOMENON_EMPTY);
+				act.setColor(Ernest.PHENOMENON_EMPTY);
 			else
-				act.setPhenomenon(Ernest.PHENOMENON_WALL);
+				act.setColor(Ernest.PHENOMENON_WALL);
 		}
 
 		return act;
@@ -280,7 +282,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			// Place the act in spatial memory
 			
 			IPlace place = m_spas.addPlace(topAct.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
-			place.setValue(topAct.getPhenomenon());
+			place.setValue(topAct.getColor());
 			place.setUpdateCount(m_spas.getClock());
 			place.setAct(topAct);
 			
@@ -288,7 +290,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (!topAct.getSchema().isPrimitive())
 			{
 				IPlace place2 = m_spas.addPlace(primitiveAct.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
-				place2.setValue(primitiveAct.getPhenomenon());
+				place2.setValue(primitiveAct.getColor());
 				place2.setUpdateCount(m_spas.getClock());
 				place2.setAct(primitiveAct);
 			}
@@ -393,25 +395,27 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		if (m_tracer != null)
 			activations = m_tracer.addEventElement("copresence_propositions", true);
 
+		//m_spatialSimulation.clearSimulation();
+
 		for (IAct a : acts)
 		{
 			// Propose acts that are afforded by the spatial memory context
 			//m_spas.initSimulation();
-			ISpatialMemory spatialSimulation = m_spas.getSpatialMemory().clone();
-			m_spatialSimulation = m_spas.getSpatialMemory().clone();
+			//ISpatialMemory spatialSimulation = m_spas.getSpatialMemory().clone();
+			m_spatialSimulation = m_spas.getSpatialMemory();
 			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4 && m_spatialSimulation.runSimulation(a, false))
 			{
 				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
 				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
 				propositionList.add(p);
-				if (m_frame != null) 
-				{
-					m_frame.repaint(); 
-					ErnestUtils.sleep(500);
-				}
 				if (m_tracer != null)
 					m_tracer.addSubelement(activations, "propose", p.toString());
 			}
+//			if (m_frame != null) 
+//			{
+//				m_frame.repaint(); 
+//				ErnestUtils.sleep(500);
+//			}
 			
 			// Propose primitive acts that inform about unknown places
 			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
@@ -438,9 +442,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return m_spatialSimulation;
 	}
 	
-	public void setFrame(JFrame frame)
-	{
-		m_frame = frame;
-	}
+//	public void setFrame(JFrame frame)
+//	{
+//		m_frame = frame;
+//	}
 
 }
