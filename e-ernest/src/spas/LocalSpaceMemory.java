@@ -34,6 +34,11 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
 	public final static float    SOMATO_RADIUS = 1f;
 	
+	public final static int SIMULATION_INCONSISTENT = -1;
+	//public final static int SIMULATION_UNKNWON = 0;
+	public final static int SIMULATION_CONSISTENT = 1;
+	public final static int SIMULATION_AFFORD = 2;
+	
 	/** The duration of persistence in local space memory. */
 	public static int PERSISTENCE_DURATION = 10;//50;
 	
@@ -155,20 +160,17 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}		
 	}
 	
-	public boolean runSimulation(IAct act, boolean doubt)
+	public int runSimulation(IAct act)
 	{
-		boolean consistent = false;
-		
 		IPlace simulationPlace = addPlace(new Vector3f(), Spas.PLACE_SIMULATION);
 		
-		consistent = simulate(simulationPlace, act, doubt);
-		
-		return consistent;
+		return simulate(simulationPlace, act);
 	}
 	
-	private boolean simulate(IPlace simulationPlace, IAct act, boolean doubt)
+	private int simulate(IPlace simulationPlace, IAct act)
 	{
-		boolean consistent = false;
+		//boolean consistent = false;
+		int simulationStatus = SIMULATION_INCONSISTENT;
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{
@@ -178,13 +180,22 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			position.add(startPosition);
 			IBundle bundle = getBundleSimulation(position);
 			if (bundle == null)	
-				consistent = doubt;
+			{
+				simulationStatus = SIMULATION_CONSISTENT;
+				
+				// Mark un unknown interaction
+				IPlace sim = addPlace(position, Spas.PLACE_UNKNOWN);
+				sim.setAct(act);
+				sim.setOrientation(simulationPlace.getOrientation());
+				sim.setValue(0xB0B0FF);
+			}
 			else
 			{
-				if (doubt)
-					consistent =  bundle.isConsistent(act);
-				else 
-					consistent = bundle.afford(act);
+				//consistent = bundle.afford(act);
+				if (bundle.isConsistent(act))
+					simulationStatus = SIMULATION_CONSISTENT;
+				if (bundle.afford(act))
+					simulationStatus = SIMULATION_AFFORD;
 			}
 			Vector3f position2 = new Vector3f(act.getTranslation());
 			position2.scale(-1);
@@ -193,7 +204,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			//transform(act);
 
 			// Mark the simulation of this act in spatial memory;
-			if (consistent)
+			if (simulationStatus == SIMULATION_AFFORD)
 			{
 				IPlace sim = addPlace(position, Spas.PLACE_SIMULATION);
 				sim.setAct(act);
@@ -206,39 +217,52 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}
 		else 
 		{
-			consistent = simulate(simulationPlace, act.getSchema().getContextAct(), doubt);
-			if (consistent)
-				consistent = simulate(simulationPlace, act.getSchema().getIntentionAct(), doubt);
+//			consistent = simulate(simulationPlace, act.getSchema().getContextAct(), doubt);
+//			if (consistent)
+//				consistent = simulate(simulationPlace, act.getSchema().getIntentionAct(), doubt);
+			simulationStatus = simulate(simulationPlace, act.getSchema().getContextAct());
+			if (simulationStatus > SIMULATION_INCONSISTENT)
+			{
+				int status2 = simulate(simulationPlace, act.getSchema().getIntentionAct());
+				if (status2 == SIMULATION_INCONSISTENT)
+					simulationStatus = SIMULATION_INCONSISTENT;
+				else
+				{
+					if (simulationStatus == SIMULATION_AFFORD && status2 == SIMULATION_CONSISTENT)
+						simulationStatus = SIMULATION_CONSISTENT;
+				}
+			}
 		}
-		return consistent;
+		//return consistent;
+		return simulationStatus;
 	}
 	
-	public boolean simulate(IAct act, boolean doubt)
-	{
-		boolean consistent = false;
-		ISchema s = act.getSchema();
-		if (s.isPrimitive())
-		{			
-			IBundle bundle = getBundleSimulation(act.getStartPosition());
-			if (bundle == null)	
-				consistent = doubt;
-			else
-			{
-				if (doubt)
-					consistent =  bundle.isConsistent(act);
-				else 
-					consistent = bundle.afford(act);
-			}
-			transform(act);
-		}
-		else 
-		{
-			consistent = simulate(act.getSchema().getContextAct(), doubt);
-			if (consistent)
-				consistent = simulate(act.getSchema().getIntentionAct(), doubt);
-		}
-		return consistent;
-	}
+//	public boolean simulate(IAct act, boolean doubt)
+//	{
+//		boolean consistent = false;
+//		ISchema s = act.getSchema();
+//		if (s.isPrimitive())
+//		{			
+//			IBundle bundle = getBundleSimulation(act.getStartPosition());
+//			if (bundle == null)	
+//				consistent = doubt;
+//			else
+//			{
+//				if (doubt)
+//					consistent =  bundle.isConsistent(act);
+//				else 
+//					consistent = bundle.afford(act);
+//			}
+//			transform(act);
+//		}
+//		else 
+//		{
+//			consistent = simulate(act.getSchema().getContextAct(), doubt);
+//			if (consistent)
+//				consistent = simulate(act.getSchema().getIntentionAct(), doubt);
+//		}
+//		return consistent;
+//	}
 	
 	/**
 	 * Get the phenomena value at a given position.

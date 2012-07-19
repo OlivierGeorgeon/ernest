@@ -23,7 +23,7 @@ public interface ISpatialMemory
 	 * @param act The act to simulate
 	 * @param doubt consistency in case of doubt.
 	 */
-	public boolean simulate(IAct act, boolean doubt);
+	//public boolean simulate(IAct act, boolean doubt);
 	
 	/**
 	 * Tick this spatial memory's clock (to compute decay)
@@ -77,7 +77,7 @@ public interface ISpatialMemory
 	 */
 	public void copresence(IObservation observation, ISpas spas);
 	
-	public boolean runSimulation(IAct act, boolean doubt);
+	public int runSimulation(IAct act);
 	
 	public void clearSimulation();
 
