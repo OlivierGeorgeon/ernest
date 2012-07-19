@@ -33,6 +33,7 @@ public class Spas implements ISpas
 	public static int PLACE_PHENOMENON = 18;
 	public static int PLACE_COPRESENCE = 19;
 	public static int PLACE_SIMULATION = 20;
+	public static int PLACE_UNKNOWN = 21;
 	
 	public static int SHAPE_CIRCLE = 0;
 	public static int SHAPE_TRIANGLE = 1;

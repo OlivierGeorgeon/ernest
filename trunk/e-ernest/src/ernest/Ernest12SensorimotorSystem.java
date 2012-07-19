@@ -312,11 +312,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 	public boolean checkConsistency(IAct act) 
 	{
-		//m_spas.initSimulation();
-		//return simulate(act, true);
-		
 		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
-		return simulationMemory.simulate(act, true);
+		//return simulationMemory.simulate(act, true);
+		return (simulationMemory.runSimulation(act) > LocalSpaceMemory.SIMULATION_INCONSISTENT);
 		//return true;
 	}
 	
@@ -403,13 +401,30 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			//m_spas.initSimulation();
 			//ISpatialMemory spatialSimulation = m_spas.getSpatialMemory().clone();
 			m_spatialSimulation = m_spas.getSpatialMemory();
-			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4 && m_spatialSimulation.runSimulation(a, false))
+			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
-				int w = PHENOMENA_WEIGHT * a.getSatisfaction();
-				IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
-				propositionList.add(p);
-				if (m_tracer != null)
-					m_tracer.addSubelement(activations, "propose", p.toString());
+				int consistence = m_spatialSimulation.runSimulation(a);
+				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
+				{
+					// Create proposition for acts that are afforded by the spatial situation
+					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
+					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					propositionList.add(p);
+					if (m_tracer != null)
+						m_tracer.addSubelement(activations, "propose", p.toString());
+				}
+//				if (consistence == LocalSpaceMemory.SIMULATION_UNKNWON)
+//				{
+//					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
+//					{
+//						// Create proposition for acts that inform the spatial situation
+//						IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
+//						propositionList.add(p);
+//						if (m_tracer != null)
+//							m_tracer.addSubelement(activations, "poke", p.toString());
+//						
+//					}
+//				}
 			}
 //			if (m_frame != null) 
 //			{
