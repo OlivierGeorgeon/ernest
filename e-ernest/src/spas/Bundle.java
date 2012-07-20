@@ -312,6 +312,8 @@ public class Bundle implements IBundle
 	}
 
 	/**
+	 * The act is consistent with this bundle if 
+	 * either the schema does not belong to this bundle or the act belongs to this bundle
 	 * The act is inconsistent with the bundle if 
 	 * The schema belongs to the bundle with a different status. 
 	 */
@@ -321,7 +323,8 @@ public class Bundle implements IBundle
 		for (IAct a : m_acts)
 		{
 			if (a.getSchema().equals(act.getSchema()))
-				if (!a.getLabel().equals(act.getLabel()))
+				//if (!a.getLabel().equals(act.getLabel()))
+				if (!a.equals(act))
 					isConsistent = false;
 		}
 		return isConsistent;

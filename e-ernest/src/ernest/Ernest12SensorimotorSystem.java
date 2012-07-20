@@ -131,6 +131,12 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
+			else if (stimuliLabel.indexOf("b") >= 0)
+			{
+				act.setColor(0xFF0000);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+			}
 			else if (stimuliLabel.equals("++t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
@@ -234,6 +240,12 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
+			else if (stimuliLabel.indexOf("b") >= 0 )
+			{
+				act.setColor(Ernest.PHENOMENON_BRICK);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
@@ -314,7 +326,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	{
 		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
 		//return simulationMemory.simulate(act, true);
-		return (simulationMemory.runSimulation(act) > LocalSpaceMemory.SIMULATION_INCONSISTENT);
+		return (simulationMemory.runSimulation(act, m_spas) > LocalSpaceMemory.SIMULATION_INCONSISTENT);
 		//return true;
 	}
 	
@@ -403,7 +415,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			m_spatialSimulation = m_spas.getSpatialMemory();
 			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
-				int consistence = m_spatialSimulation.runSimulation(a);
+				System.out.println("Simulate: " + a.toString());
+				int consistence = m_spatialSimulation.runSimulation(a, m_spas);
 				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
 				{
 					// Create proposition for acts that are afforded by the spatial situation

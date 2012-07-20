@@ -34,6 +34,7 @@ public class Spas implements ISpas
 	public static int PLACE_COPRESENCE = 19;
 	public static int PLACE_SIMULATION = 20;
 	public static int PLACE_UNKNOWN = 21;
+	public static int PLACE_AFFORD = 22;
 	
 	public static int SHAPE_CIRCLE = 0;
 	public static int SHAPE_TRIANGLE = 1;
@@ -244,10 +245,10 @@ public class Spas implements ISpas
 		return m_clock;
 	}
 
-	public IPlace addPlace(IBundle bundle, Vector3f position) 
-	{
-		return m_localSpaceMemory.addPlace(bundle, position);
-	}
+//	public IPlace addPlace(IBundle bundle, Vector3f position) 
+//	{
+//		return m_localSpaceMemory.addPlace(bundle, position);
+//	}
 
 	public void tick() 
 	{
@@ -286,18 +287,34 @@ public class Spas implements ISpas
 	 * @param act The act to check.
 	 * @return The bundle that match this act.
 	 */
-	public IBundle evokeBundle(IAct act)
+//	public IBundle evokeBundle(IAct act)
+//	{
+//		for (IBundle bundle : m_bundles)
+//		{
+//			if (bundle.hasAct(act))
+//				return bundle;
+//			// presuppose the value of phenomena
+//			//if (bundle.getValue() == act.getPhenomenon())
+//			//	return bundle;
+//				
+//		}
+//		return null;
+//	}
+
+	/**
+	 * Returns the list of compresences that contains this act.
+	 * @param act The act to check.
+	 * @return The list of compresences that match this act.
+	 */
+	public ArrayList<IBundle> evokeCompresences(IAct act)
 	{
+		ArrayList<IBundle> compresences = new ArrayList<IBundle>();
+
 		for (IBundle bundle : m_bundles)
-		{
 			if (bundle.hasAct(act))
-				return bundle;
-			// presuppose the value of phenomena
-			//if (bundle.getValue() == act.getPhenomenon())
-			//	return bundle;
-				
-		}
-		return null;
+				compresences.add(bundle);
+
+		return compresences;
 	}
 
 //	/**
