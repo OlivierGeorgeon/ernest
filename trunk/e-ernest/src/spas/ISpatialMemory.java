@@ -77,7 +77,7 @@ public interface ISpatialMemory
 	 */
 	public void copresence(IObservation observation, ISpas spas);
 	
-	public int runSimulation(IAct act);
+	public int runSimulation(IAct act, ISpas spas);
 	
 	public void clearSimulation();
 

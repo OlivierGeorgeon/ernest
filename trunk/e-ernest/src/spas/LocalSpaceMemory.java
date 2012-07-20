@@ -46,6 +46,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
 	
 	private int m_clock = 0;
+	
+	private ISpas m_spas;
 		
 	/**
 	 * Clone spatial memory to perform simulations
@@ -160,8 +162,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}		
 	}
 	
-	public int runSimulation(IAct act)
+	public int runSimulation(IAct act, ISpas spas)
 	{
+		m_spas = spas;
 		IPlace simulationPlace = addPlace(new Vector3f(), Spas.PLACE_SIMULATION);
 		
 		return simulate(simulationPlace, act);
@@ -170,50 +173,80 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	private int simulate(IPlace simulationPlace, IAct act)
 	{
 		//boolean consistent = false;
+		boolean unknown = true;
+		boolean consistent = true;
+		boolean afford = false;
 		int simulationStatus = SIMULATION_INCONSISTENT;
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{
+			// Compute the start position of this act relatively to the beginning of the simulation
 			Vector3f startPosition = new Vector3f(act.getStartPosition());
 			ErnestUtils.rotate(startPosition, simulationPlace.getOrientation());
 			Vector3f position = new Vector3f(simulationPlace.getPosition());
 			position.add(startPosition);
-			IBundle bundle = getBundleSimulation(position);
-			if (bundle == null)	
+			
+			// The orientation of this act relatively to the beginning of the simulation
+			float orientation = simulationPlace.getOrientation() - act.getRotation();
+			//orientation += act.getRotation();
+			
+			for (IPlace p : m_places)
 			{
+				if (p.isInCell(position) && p.getType() == Spas.PLACE_EVOKE_PHENOMENON)
+				{
+					unknown = false;
+					for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
+					{
+						if (!bundle.isConsistent(act)) consistent = false; 
+						if (bundle.afford(act)) afford = true;
+					}
+				}
+			}	
+
+			if (unknown)	
+			{
+				// No place found at this location
 				simulationStatus = SIMULATION_CONSISTENT;
-				
-				// Mark un unknown interaction
+				// Mark an unknown interaction
 				IPlace sim = addPlace(position, Spas.PLACE_UNKNOWN);
 				sim.setAct(act);
-				sim.setOrientation(simulationPlace.getOrientation());
-				sim.setValue(0xB0B0FF);
+				//sim.setOrientation(simulationPlace.getOrientation());
+				sim.setOrientation(orientation);
+				sim.setValue(0xB0B0FF);				
 			}
 			else
 			{
-				//consistent = bundle.afford(act);
-				if (bundle.isConsistent(act))
+				if (consistent)
+				{
+					// No place that contains an incompatible act was fond at this location
 					simulationStatus = SIMULATION_CONSISTENT;
-				if (bundle.afford(act))
-					simulationStatus = SIMULATION_AFFORD;
-			}
-			Vector3f position2 = new Vector3f(act.getTranslation());
-			position2.scale(-1);
-			simulationPlace.translate(position2);
-			simulationPlace.rotate( - act.getRotation());
-			//transform(act);
-
-			// Mark the simulation of this act in spatial memory;
-			if (simulationStatus == SIMULATION_AFFORD)
-			{
-				IPlace sim = addPlace(position, Spas.PLACE_SIMULATION);
-				sim.setAct(act);
-				sim.setOrientation(simulationPlace.getOrientation());
-				//if (bundle == null) 
-				//	sim.setValue(0x808080);
-				//else
+					// Mark a consistent interaction
+					IPlace sim = addPlace(position, Spas.PLACE_UNKNOWN);
+					sim.setAct(act);
+					//sim.setOrientation(simulationPlace.getOrientation());
+					sim.setOrientation(orientation);
 					sim.setValue(act.getColor());
+				}
+				if (afford)
+				{
+					// A place that contains this act is found at this location
+					simulationStatus = SIMULATION_AFFORD;
+					// Mark an afforded interaction
+					IPlace sim = addPlace(position, Spas.PLACE_AFFORD);
+					sim.setAct(act);
+					//sim.setOrientation(simulationPlace.getOrientation());
+					sim.setOrientation(orientation);
+					sim.setValue(act.getColor());
+				}
 			}
+			
+			// Move the virtual agent according to the simulated act
+			Vector3f translation = new Vector3f(act.getTranslation());
+			ErnestUtils.rotate(translation, simulationPlace.getOrientation());
+			translation.scale(-1);
+			simulationPlace.translate(translation);
+			simulationPlace.rotate( - act.getRotation());
+
 		}
 		else 
 		{
@@ -281,16 +314,16 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		return value;
 	}
 
-	private IBundle getBundleSimulation(Vector3f position)
-	{
-		IBundle bundle = null;
-		for (IPlace p : m_places)
-		{
-			if (p.isInCell(position) && p.isPhenomenon())
-				bundle = p.getBundle();
-		}	
-		return bundle;
-	}
+//	private IBundle getBundleSimulation(Vector3f position)
+//	{
+//		IBundle bundle = null;
+//		for (IPlace p : m_places)
+//		{
+//			if (p.isInCell(position) && p.isPhenomenon())
+//				bundle = p.getBundle();
+//		}	
+//		return bundle;
+//	}
 
 	/**
 	 * Get the last place found at a given position.
@@ -401,7 +434,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	}
 	
 	/**
-	 * Construct copresence places in spatial memory
+	 * Construct new copresence bundles
+	 * Add places that hold bundles that match spatial memory
 	 * @param observation The observation 
 	 * @param spas A reference to the spatial system to add bundles
 	 */
@@ -436,45 +470,45 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			}
 		}
 		
-		// Create copresence places that match enacted interactions
-		for (IPlace interactionPlace : interactionPlaces)
-		{
-			//if (interactionPlace.getUpdateCount() == m_spas.getClock())
-			if (interactionPlace.getUpdateCount() == m_clock)
-			{
-				IBundle bundle = spas.evokeBundle(interactionPlace.getAct());
-
-				if (bundle != null)
-				{
-					boolean newPlace = true;
-				
-					// If the copresence place already exists then refresh it.
-					for (IPlace copresencePlace :  m_places)
-					{
-						if (copresencePlace.getType() == Spas.PLACE_COPRESENCE && copresencePlace.isInCell(interactionPlace.getPosition())
-								&& copresencePlace.getBundle().equals(bundle))
-						{
-							//copresencePlace.setUpdateCount(m_spas.getClock());
-							copresencePlace.setUpdateCount(m_clock);
-							newPlace = false;
-						}
-					}
-					if (newPlace)
-					{
-						// If the copresence place does not exist then create it.
-						
-						IPlace k = addPlace(bundle,interactionPlace.getPosition()); 
-						k.setFirstPosition(interactionPlace.getFirstPosition()); 
-						k.setSecondPosition(interactionPlace.getSecondPosition());
-						k.setOrientation(interactionPlace.getOrientation());
-						//k.setUpdateCount(m_spas.getClock());
-						k.setUpdateCount(m_clock);
-						k.setType(Spas.PLACE_COPRESENCE);
-						k.setValue(interactionPlace.getValue());
-					}
-				}
-			}
-		}
+//		// Create copresence places that match enacted interactions
+//		for (IPlace interactionPlace : interactionPlaces)
+//		{
+//			//if (interactionPlace.getUpdateCount() == m_spas.getClock())
+//			if (interactionPlace.getUpdateCount() == m_clock)
+//			{
+//				IBundle bundle = spas.evokeBundle(interactionPlace.getAct());
+//
+//				if (bundle != null)
+//				{
+//					boolean newPlace = true;
+//				
+//					// If the copresence place already exists then refresh it.
+//					for (IPlace copresencePlace :  m_places)
+//					{
+//						if (copresencePlace.getType() == Spas.PLACE_COPRESENCE && copresencePlace.isInCell(interactionPlace.getPosition())
+//								&& copresencePlace.getBundle().equals(bundle))
+//						{
+//							//copresencePlace.setUpdateCount(m_spas.getClock());
+//							copresencePlace.setUpdateCount(m_clock);
+//							newPlace = false;
+//						}
+//					}
+//					if (newPlace)
+//					{
+//						// If the copresence place does not exist then create it.
+//						
+//						IPlace k = addPlace(bundle,interactionPlace.getPosition()); 
+//						k.setFirstPosition(interactionPlace.getFirstPosition()); 
+//						k.setSecondPosition(interactionPlace.getSecondPosition());
+//						k.setOrientation(interactionPlace.getOrientation());
+//						//k.setUpdateCount(m_spas.getClock());
+//						k.setUpdateCount(m_clock);
+//						k.setType(Spas.PLACE_COPRESENCE);
+//						k.setValue(interactionPlace.getValue());
+//					}
+//				}
+//			}
+//		}
 	}
 
 	public void clearSimulation() 
@@ -482,7 +516,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Spas.PLACE_SIMULATION)
+			if (p.getType() == Spas.PLACE_SIMULATION || p.getType() == Spas.PLACE_UNKNOWN || p.getType() == Spas.PLACE_AFFORD)
 				it.remove();
 		}
 	}
