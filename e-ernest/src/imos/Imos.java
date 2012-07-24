@@ -229,6 +229,8 @@ public class Imos implements IImos
 	{
 		m_imosCycle++;		
 		m_internalState= "";
+		
+		m_episodicMemory.reach(new Vector3f(0,1,0), (float) Math.PI/2);
 
 //		// Trace the new event
 //		

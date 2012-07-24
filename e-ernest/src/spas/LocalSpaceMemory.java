@@ -35,7 +35,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static float    SOMATO_RADIUS = 1f;
 	
 	public final static int SIMULATION_INCONSISTENT = -1;
-	//public final static int SIMULATION_UNKNWON = 0;
+	public final static int SIMULATION_UNKNWON = 0;
 	public final static int SIMULATION_CONSISTENT = 1;
 	public final static int SIMULATION_AFFORD = 2;
 	
@@ -106,14 +106,14 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	 * @param position The position of this place.
 	 * @return The new or already existing location.
 	 */
-	public IPlace addPlace(IBundle bundle, Vector3f position)
-	{
-		IPlace place = new Place(bundle, position);	
-		if (bundle != null)
-			place.setValue(bundle.getValue());
-		m_places.add(place);
-		return place;
-	}
+//	public IPlace addPlace(IBundle bundle, Vector3f position)
+//	{
+//		IPlace place = new Place(bundle, position);	
+//		if (bundle != null)
+//			place.setValue(bundle.getValue());
+//		m_places.add(place);
+//		return place;
+//	}
 	
 	public IPlace addPlace(Vector3f position, int type)
 	{
@@ -165,7 +165,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public int runSimulation(IAct act, ISpas spas)
 	{
 		m_spas = spas;
-		IPlace simulationPlace = addPlace(new Vector3f(), Spas.PLACE_SIMULATION);
+		IPlace simulationPlace = addPlace(new Vector3f(), Place.SIMULATION);
 		
 		return simulate(simulationPlace, act);
 	}
@@ -192,7 +192,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			
 			for (IPlace p : m_places)
 			{
-				if (p.isInCell(position) && p.getType() == Spas.PLACE_EVOKE_PHENOMENON)
+				if (p.isInCell(position) && p.getType() == Place.EVOKE_PHENOMENON)
 				{
 					unknown = false;
 					for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
@@ -206,9 +206,10 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			if (unknown)	
 			{
 				// No place found at this location
-				simulationStatus = SIMULATION_CONSISTENT;
+				//simulationStatus = SIMULATION_CONSISTENT;
+				simulationStatus = SIMULATION_UNKNWON;
 				// Mark an unknown interaction
-				IPlace sim = addPlace(position, Spas.PLACE_UNKNOWN);
+				IPlace sim = addPlace(position, Place.UNKNOWN);
 				sim.setAct(act);
 				//sim.setOrientation(simulationPlace.getOrientation());
 				sim.setOrientation(orientation);
@@ -221,7 +222,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					// No place that contains an incompatible act was fond at this location
 					simulationStatus = SIMULATION_CONSISTENT;
 					// Mark a consistent interaction
-					IPlace sim = addPlace(position, Spas.PLACE_UNKNOWN);
+					IPlace sim = addPlace(position, Place.UNKNOWN);
 					sim.setAct(act);
 					//sim.setOrientation(simulationPlace.getOrientation());
 					sim.setOrientation(orientation);
@@ -232,7 +233,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					// A place that contains this act is found at this location
 					simulationStatus = SIMULATION_AFFORD;
 					// Mark an afforded interaction
-					IPlace sim = addPlace(position, Spas.PLACE_AFFORD);
+					IPlace sim = addPlace(position, Place.AFFORD);
 					sim.setAct(act);
 					//sim.setOrientation(simulationPlace.getOrientation());
 					sim.setOrientation(orientation);
@@ -255,6 +256,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 //				consistent = simulate(simulationPlace, act.getSchema().getIntentionAct(), doubt);
 			simulationStatus = simulate(simulationPlace, act.getSchema().getContextAct());
 			if (simulationStatus > SIMULATION_INCONSISTENT)
+			//if (simulationStatus > SIMULATION_UNKNWON)
 			{
 				int status2 = simulate(simulationPlace, act.getSchema().getIntentionAct());
 				if (status2 == SIMULATION_INCONSISTENT)
@@ -300,6 +302,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	/**
 	 * Get the phenomena value at a given position.
 	 * (The last bundle found in the list of places that match this position)
+	 * (Used to display in the trace)
 	 * @param position The position of the location.
 	 * @return The bundle.
 	 */
@@ -308,39 +311,28 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		int value = Ernest.UNANIMATED_COLOR;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.isPhenomenon())
+			if (p.isInCell(position) && p.getType() == Place.EVOKE_PHENOMENON)
 				value = p.getValue();
 		}	
 		return value;
 	}
-
-//	private IBundle getBundleSimulation(Vector3f position)
-//	{
-//		IBundle bundle = null;
-//		for (IPlace p : m_places)
-//		{
-//			if (p.isInCell(position) && p.isPhenomenon())
-//				bundle = p.getBundle();
-//		}	
-//		return bundle;
-//	}
 
 	/**
 	 * Get the last place found at a given position.
 	 * @param position The position of the location.
 	 * @return The place.
 	 */
-	public IPlace getPlace(Vector3f position)
-	{
-		IPlace place = null;
-		for (IPlace p : m_places)
-		{
-			//if (p.isInCell(position) && p.evokePhenomenon(m_spas.getClock()))
-			if (p.isInCell(position) && (p.isPhenomenon() || p.getType() == Spas.PLACE_EVOKE_PHENOMENON))// for copresence!!
-				place = p;
-		}
-		return place;
-	}
+//	public IPlace getPlace(Vector3f position)
+//	{
+//		IPlace place = null;
+//		for (IPlace p : m_places)
+//		{
+//			//if (p.isInCell(position) && p.evokePhenomenon(m_spas.getClock()))
+//			if (p.isInCell(position) && (p.isPhenomenon() || p.getType() == Spas.PLACE_EVOKE_PHENOMENON))// for copresence!!
+//				place = p;
+//		}
+//		return place;
+//	}
 
 	/**
 	 * Clear a position in the local space memory.
@@ -392,7 +384,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Spas.PLACE_SEE || p.getType() == Spas.PLACE_TOUCH || p.getType() == Spas.PLACE_EVOKE_PHENOMENON)
+			if (p.getType() == Place.EVOKE_PHENOMENON)
 			{
 				//if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION +1) // -1
 				if (p.getUpdateCount() < m_clock - PERSISTENCE_DURATION +1) // -1
@@ -421,25 +413,22 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		m_places = places;
 	}
 		
-	private ArrayList<IPlace> getEvokeList()
-	{
-		ArrayList<IPlace> evokeList = new ArrayList<IPlace>();
-		for (IPlace p : m_places)
-			//if (p.evokePhenomenon(m_spas.getClock()))
-			if (p.evokePhenomenon(m_clock))
-				evokeList.add(p);
-
-		
-		return evokeList;
-	}
+//	private ArrayList<IPlace> getEvokeList()
+//	{
+//		ArrayList<IPlace> evokeList = new ArrayList<IPlace>();
+//		for (IPlace p : m_places)
+//			//if (p.evokePhenomenon(m_spas.getClock()))
+//			if (p.evokePhenomenon(m_clock))
+//				evokeList.add(p);
+//		return evokeList;
+//	}
 	
 	/**
 	 * Construct new copresence bundles
-	 * Add places that hold bundles that match spatial memory
 	 * @param observation The observation 
 	 * @param spas A reference to the spatial system to add bundles
 	 */
-	public void copresence(IObservation observation, ISpas spas)
+	public void copresence(ISpas spas)
 	{
 		// Clear the places that are older than the persistence of spatial memory
 		clear();
@@ -447,8 +436,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		// Get the list of interaction places (that can evoke phenomena).
 		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
 		for (IPlace p : m_places)
-			//if (p.evokePhenomenon(m_spas.getClock()))
-			if (p.evokePhenomenon(m_clock))
+			//if (p.evokePhenomenon(m_clock))
+			if (p.getType() == Place.EVOKE_PHENOMENON)
 				interactionPlaces.add(p);
 
 		// Create new copresence bundles 
@@ -516,159 +505,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Spas.PLACE_SIMULATION || p.getType() == Spas.PLACE_UNKNOWN || p.getType() == Spas.PLACE_AFFORD)
+			if (p.getType() == Place.SIMULATION || p.getType() == Place.UNKNOWN || p.getType() == Place.AFFORD)
 				it.remove();
 		}
-	}
-	
-//	/**
-//	 * Maintain the list of active phenomena in spatial memory
-//	 * @param observation The observation 
-//	 * @param clock The time in the spatial memory
-//	 */
-//	public void phenomenon(IObservation observation, int clock)
-//	{
-//		// Clear the places that are older than the persistence of spatial memory
-//		clear();
-//		
-//		// Get the list of interaction places (that can evoke phenomena).
-//		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
-//		for (IPlace p : m_places)
-//			if (p.evokePhenomenon(m_spas.getClock()))
-//				interactionPlaces.add(p);
-//
-//		// Confirm or create phenomenon places in local space memory 
-//		
-//		for (IPlace interactionPlace : interactionPlaces)
-//		{
-//			//if (interactionPlace.getAct().getSchema().isPrimitive() || interactionPlace.getAct().getLabel().equals("(^f>t)") || interactionPlace.getAct().getLabel().equals("(vf>t)"))
-//			if (interactionPlace.getAct().concernOnePlace())
-//			{
-//				boolean newPlace = true;
-//				// Look for a corresponding existing phenomenon in local space memory.
-//				for (IPlace phenomenonPlace :  m_places)
-//				{
-//					// If the interaction overlaps a phenomenon already constituted 
-//					
-//					// Then the phenomenon is refreshed 
-//					// TODO Add the interaction to the bundle list.
-//					
-//					if (phenomenonPlace.isPhenomenon() && interactionPlace.from(phenomenonPlace))
-//							//&& phenomenonPlace.getValue() == interactionPlace.getValue() // Generates some confusion with walls in Ernest11
-//							//&& bundlePlace.getBundle().equals(interactionPlace.getBundle()) // This version works wih Ernest11
-//							
-//					{
-//						phenomenonPlace.setPosition(interactionPlace.getPosition());
-//						phenomenonPlace.setFirstPosition(interactionPlace.getFirstPosition());
-//						phenomenonPlace.setSecondPosition(interactionPlace.getSecondPosition());
-//						phenomenonPlace.setSpeed(interactionPlace.getSpeed());
-//						phenomenonPlace.setSpan(interactionPlace.getSpan());
-//						phenomenonPlace.setOrientation(interactionPlace.getOrientation());
-//						phenomenonPlace.setUpdateCount(m_spas.getClock());
-//						//phenomenonPlace.getBundle().addAct(interactionPlace.getAct());
-//						IBundle aggregate = m_spas.aggregateBundle(phenomenonPlace.getBundle(), interactionPlace.getAct());
-//						//phenomenonPlace.setBundle(aggregate);
-//						newPlace = false;
-//					}
-//				}
-//				if (newPlace)
-//				{
-//					// Create a new bundle 
-//					// we can't assume it's the same as an existing bundle unless this very interaction already belongs to a bundle
-//					IBundle bundle = m_spas.addBundle(interactionPlace.getAct());
-//					
-//					// Add a new phenomenon place
-//					IPlace k = addPlace(interactionPlace.getBundle(),interactionPlace.getPosition()); 
-//					k.setSpeed(interactionPlace.getSpeed());
-//					k.setSpan(interactionPlace.getSpan());
-//					k.setFirstPosition(interactionPlace.getFirstPosition()); 
-//					k.setSecondPosition(interactionPlace.getSecondPosition());
-//					k.setOrientation(interactionPlace.getOrientation());
-//					k.setUpdateCount(m_spas.getClock());
-//					k.setType(Spas.PLACE_PHENOMENON);
-//					k.setValue(interactionPlace.getValue());
-//					k.setBundle(bundle);
-//				}
-//			}
-//		}
-//		
-//		// The most attractive place in local space memory gets the focus (abs value) 
-//		
-//		int maxAttractiveness = 0;
-//		IPlace focusPlace = null;
-//		boolean newFocus = false;
-//		for (IPlace place : m_places)
-//		{
-//            if (place.isPhenomenon())
-//			{
-//				int attractiveness =  place.getAttractiveness(clock);
-//				if (Math.abs(attractiveness) >= Math.abs(maxAttractiveness))
-//				{
-//					maxAttractiveness = attractiveness;
-//					focusPlace = place;
-//				}				
-//			}
-//		}
-//		
-//		// Test if the focus has changed
-//		
-//		if (focusPlace != null && focusPlace != m_focusPlace)
-//		{
-//			// Reset the previous stick
-//			if (m_focusPlace != null) m_focusPlace.setStick(0);
-//			// Set the new stick
-//			focusPlace.setStick(20);
-//			m_focusPlace = focusPlace;
-//			//m_localSpaceMemory.setFocusPlace(focusPlace);
-//			newFocus = true;
-//			
-//			//try { Thread.sleep(500);
-//			//} catch (InterruptedException e) {e.printStackTrace();}
-//		}
-//		// The new observation.
-//		
-//		observation.setFocusPlace(m_focusPlace);
-//		observation.setAttractiveness(maxAttractiveness);
-//		observation.setNewFocus(newFocus);
-//		
-//		if (focusPlace == null || focusPlace.getBundle() == null)
-//		{
-//			//observation.setBundle(m_spas.addBundle(Ernest.STIMULATION_VISUAL_UNSEEN, Ernest.STIMULATION_TOUCH_EMPTY));
-//			observation.setPosition(new Vector3f(1,0,0));
-//			observation.setSpan(0);
-//			observation.setSpeed(new Vector3f());
-//			observation.setUpdateCount(-1);
-//		}
-//		else
-//		{
-//			observation.setBundle(focusPlace.getBundle());
-//			observation.setPosition(focusPlace.getPosition());
-//			observation.setSpan(focusPlace.getSpan());
-//			observation.setSpeed(focusPlace.getSpeed());
-//			observation.setType(focusPlace.getType());
-//			observation.setUpdateCount(focusPlace.getUpdateCount());
-//			
-//			IAct act = focusPlace.getBundle().activateAffordance(focusPlace.getPosition());
-//			observation.setAffordanceAct(act);
-//		}		
-//	}
-	
-//	/**
-//	 * @return the list of phenomena in local space memory
-//	 */
-//	public ArrayList<IPlace> getPhenomena() 
-//	{
-//		ArrayList<IPlace> phenomena = new ArrayList<IPlace>();
-//		
-//		for (IPlace place : m_places)
-//		{
-//			//if (place.getPosition().length() < 1.9 && place.getPosition().length() > .1 && place.isPhenomenon())
-//			if (place.isPhenomenon())
-//				phenomena.add(place);
-//		}
-//		
-//		//trace();
-//		return phenomena;
-//	}	
-
+	}	
 }

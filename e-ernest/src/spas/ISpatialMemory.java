@@ -21,8 +21,9 @@ public interface ISpatialMemory
 	 * Simulates an act in spatial memory to check its consistency with the current state of spatial memory.
 	 * TODO Create simulated phenomena to check for internal consistency of composite acts.
 	 * @param act The act to simulate
-	 * @param doubt consistency in case of doubt.
+	 * @param spas A reference to spas in order to access the bundles.
 	 */
+	public int runSimulation(IAct act, ISpas spas);	
 	//public boolean simulate(IAct act, boolean doubt);
 	
 	/**
@@ -38,24 +39,17 @@ public interface ISpatialMemory
 	
 	/**
 	 * Add a place in this spatial memory
-	 * @param bundle A possible bundle attached to this place
 	 * @param position This place's position
+	 * @param type This place's type
 	 * @return The created place
 	 */
-	public IPlace addPlace(IBundle bundle, Vector3f position);
+	public IPlace addPlace(Vector3f position, int type);
 
 	/**
 	 * Apply a geometrical transformation caused by an act to this spatial memory
 	 * @param act The act that generates the transformation
 	 */
 	public void transform(IAct act);
-	
-	/**
-	 * Get the first place found at a given position
-	 * @param position The position
-	 * @return The place
-	 */
-	public IPlace getPlace(Vector3f position);
 	
 	/**
 	 * Remove places that are older than the decay laps
@@ -66,19 +60,36 @@ public interface ISpatialMemory
 	 * @return The list of places in this spatial memory
 	 */
 	public ArrayList<IPlace> getPlaceList();
+	
+	/**
+	 * Set the list of places 
+	 * (used to clone spatial memory)
+	 * @param places The list of places
+	 */
 	public void setPlaceList(ArrayList<IPlace> places);
 
+	/**
+	 * @return The value of a place for display and trace.
+	 */
 	public int getValue(Vector3f position);
 
 	/**
 	 * Compute a compresence of places in this spatial memory
-	 * @param observation
-	 * @param spas
+	 * @param observation The observation 
+	 * @param spas A reference to spas to create bundles
 	 */
-	public void copresence(IObservation observation, ISpas spas);
+	public void copresence(ISpas spas);
 	
-	public int runSimulation(IAct act, ISpas spas);
-	
+	/**
+	 * Delete the simulation places in this spatial memory
+	 */
 	public void clearSimulation();
 
+	/**
+	 * Get the first place found at a given position
+	 * @param position The position
+	 * @return The place
+	 */
+	//public IPlace getPlace(Vector3f position);
+	
 }
