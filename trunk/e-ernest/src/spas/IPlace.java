@@ -78,7 +78,7 @@ public interface IPlace extends Cloneable
 	 * @param clock The current time in Ernest's life.
 	 * @return The salience's attractiveness.
 	 */
-	int getAttractiveness(int clock);
+	//int getAttractiveness(int clock);
 
 	/**
 	 * @return The span of the bundle at this place.
@@ -99,8 +99,8 @@ public interface IPlace extends Cloneable
 	
 	public int getType();
 	
-	public void setShape(int shape);
-	public int getShape();
+	//public void setShape(int shape);
+	//public int getShape();
 	public void setOrientation(float orientation);
 	public float getOrientation();
 	
@@ -116,10 +116,10 @@ public interface IPlace extends Cloneable
 	public void setUpdateCount(int count);
 	public int getUpdateCount();
 	
-	public boolean evokePhenomenon(int clock);
-	public boolean isPhenomenon();
+	//public boolean evokePhenomenon(int clock);
+	//public boolean isPhenomenon();
 	public boolean from(Vector3f position); 
-	public boolean from(IPlace previousPlace); 
+	//public boolean from(IPlace previousPlace); 
 	
 	//public boolean anticipateTo(Vector3f position);
 	

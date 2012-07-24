@@ -293,7 +293,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			
 			// Place the act in spatial memory
 			
-			IPlace place = m_spas.addPlace(topAct.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+			IPlace place = m_spas.addPlace(topAct.getEndPosition(), Place.EVOKE_PHENOMENON);
 			place.setValue(topAct.getColor());
 			place.setUpdateCount(m_spas.getClock());
 			place.setAct(topAct);
@@ -301,7 +301,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			// TODO place intermediary acts of higher level acts too?
 			if (!topAct.getSchema().isPrimitive())
 			{
-				IPlace place2 = m_spas.addPlace(primitiveAct.getEndPosition(), Spas.PLACE_EVOKE_PHENOMENON, Spas.SHAPE_PIE);
+				IPlace place2 = m_spas.addPlace(primitiveAct.getEndPosition(), Place.EVOKE_PHENOMENON);
 				place2.setValue(primitiveAct.getColor());
 				place2.setUpdateCount(m_spas.getClock());
 				place2.setAct(primitiveAct);
@@ -415,7 +415,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			m_spatialSimulation = m_spas.getSpatialMemory();
 			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
-				System.out.println("Simulate: " + a.toString());
+				//System.out.println("Simulate: " + a.toString());
 				int consistence = m_spatialSimulation.runSimulation(a, m_spas);
 				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
 				{
@@ -426,18 +426,18 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "propose", p.toString());
 				}
-//				if (consistence == LocalSpaceMemory.SIMULATION_UNKNWON)
-//				{
-//					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
-//					{
-//						// Create proposition for acts that inform the spatial situation
-//						IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
-//						propositionList.add(p);
-//						if (m_tracer != null)
-//							m_tracer.addSubelement(activations, "poke", p.toString());
-//						
-//					}
-//				}
+				if (consistence == LocalSpaceMemory.SIMULATION_UNKNWON)
+				{
+					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
+					{
+						// Create proposition for acts that inform the spatial situation
+						IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
+						propositionList.add(p);
+						if (m_tracer != null)
+							m_tracer.addSubelement(activations, "poke", p.toString());
+						
+					}
+				}
 			}
 //			if (m_frame != null) 
 //			{
@@ -446,17 +446,17 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 //			}
 			
 			// Propose primitive acts that inform about unknown places
-			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
-			{
-				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
-				if (concernedPlace == null)
-				{
-					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
-					propositionList.add(p);
-					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "poke", p.toString());
-				}
-			}
+//			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
+//			{
+//				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
+//				if (concernedPlace == null)
+//				{
+//					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "poke", p.toString());
+//				}
+//			}
 			
 			// Propose acts that lead to a place and orientation that affords acts.
 			// 

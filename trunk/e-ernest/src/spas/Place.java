@@ -10,11 +10,17 @@ import utils.ErnestUtils;
 import ernest.Ernest;
 
 /**
- * A place is a location in the local space that marks someting.
+ * A place is a location in the local space that marks something.
  * @author Olivier
  */
 public class Place implements IPlace //, Cloneable
 {
+	/** Types of places */
+	public static int EVOKE_PHENOMENON = 0;
+	public static int SIMULATION = 1;
+	public static int UNKNOWN = 2;
+	public static int AFFORD = 3;
+	public static int FOCUS = 4;
 
 	private IBundle m_bundle;
 	private Vector3f m_position = new Vector3f();
@@ -23,8 +29,8 @@ public class Place implements IPlace //, Cloneable
 	private Vector3f m_secondPosition = new Vector3f();
 	private float m_span;
 	private float m_orientation = 0;
-	private int m_type = Spas.PLACE_SEE;
-	private int m_shape = Spas.SHAPE_CIRCLE;
+	private int m_type;// = Spas.PLACE_SEE;
+	//private int m_shape = Spas.SHAPE_CIRCLE;
 	private int m_clock = 0;
 	private int m_stick;
 	private int m_value;
@@ -198,28 +204,28 @@ public class Place implements IPlace //, Cloneable
 		m_span = span;
 	}
 	
-	public int getAttractiveness(int clock) 
-	{
-		if (m_bundle != null)
-		{
-			// Attractiveness of objects in the extrapersonal space.
-			if (getDistance() > LocalSpaceMemory.EXTRAPERSONAL_DISTANCE)
-				//return (m_bundle.getExtrapersonalAttractiveness(clock) + (int)(5 * m_span / ((float)Math.PI / 12)));
-				return m_bundle.getExtrapersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
-			
-			// Attractiveness of wall in front in peripersonal space.
-			else if (isFrontal() && m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_WALL)
-				return m_bundle.getPeripersonalAttractiveness(clock) + m_stick;
-	
-			// Attractiveness of other things than wall in  peripersonal space. 
-			//else if (m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH 
-			//		|| m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
-			else if (m_bundle.getTactileValue() != Ernest.STIMULATION_TOUCH_WALL)
-				return m_bundle.getPeripersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
-		}
-
-		return 0;
-	}
+//	public int getAttractiveness(int clock) 
+//	{
+//		if (m_bundle != null)
+//		{
+//			// Attractiveness of objects in the extrapersonal space.
+//			if (getDistance() > LocalSpaceMemory.EXTRAPERSONAL_DISTANCE)
+//				//return (m_bundle.getExtrapersonalAttractiveness(clock) + (int)(5 * m_span / ((float)Math.PI / 12)));
+//				return m_bundle.getExtrapersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
+//			
+//			// Attractiveness of wall in front in peripersonal space.
+//			else if (isFrontal() && m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_WALL)
+//				return m_bundle.getPeripersonalAttractiveness(clock) + m_stick;
+//	
+//			// Attractiveness of other things than wall in  peripersonal space. 
+//			//else if (m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_FISH 
+//			//		|| m_bundle.getTactileValue() == Ernest.STIMULATION_TOUCH_AGENT)// != Ernest.STIMULATION_TOUCH_EMPTY.getValue())
+//			else if (m_bundle.getTactileValue() != Ernest.STIMULATION_TOUCH_WALL)
+//				return m_bundle.getPeripersonalAttractiveness(clock) + (int)(20 - getDistance()) + m_stick;
+//		}
+//
+//		return 0;
+//	}
 	
 	public boolean isFrontal()
 	{
@@ -286,43 +292,42 @@ public class Place implements IPlace //, Cloneable
 		return m_clock;
 	}
 
-	public boolean evokePhenomenon(int clock) 
-	{
-		boolean evokePhenomenon = true;
-		
-		if (m_bundle == null)  evokePhenomenon = false;
-		if (m_type == Spas.PLACE_BUMP) evokePhenomenon = false; 	
-		if (m_type == Spas.PLACE_EAT) evokePhenomenon = false; 	
-		if (m_type == Spas.PLACE_CUDDLE) evokePhenomenon = false; 	
-		//if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
-		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
-		
-		if (m_type == Spas.PLACE_EVOKE_PHENOMENON) evokePhenomenon = true; 	
-		if (m_type == Spas.PLACE_PHENOMENON)  evokePhenomenon = false;
-		if (m_type == Spas.PLACE_COPRESENCE)  evokePhenomenon = false;
-		//if (m_clock != clock) evokePhenomenon = false; // for copresence !!
-		
-		return evokePhenomenon;
-	}
+//	public boolean evokePhenomenon(int clock) 
+//	{
+//		boolean evokePhenomenon = true;
+//		
+//		if (m_bundle == null)  evokePhenomenon = false;
+//		
+//		if (m_type == Spas.PLACE_BUMP) evokePhenomenon = false; 	
+//		if (m_type == Spas.PLACE_EAT) evokePhenomenon = false; 	
+//		if (m_type == Spas.PLACE_CUDDLE) evokePhenomenon = false; 			
+//		if (m_type == Spas.PLACE_EVOKE_PHENOMENON) evokePhenomenon = true; 	
+//		if (m_type == Spas.PLACE_PHENOMENON)  evokePhenomenon = false;
+//		
+//		if (m_type == Spas.PLACE_COPRESENCE)  evokePhenomenon = false;
+//		//if (m_clock != clock) evokePhenomenon = false; // for copresence !!
+//		
+//		return evokePhenomenon;
+//	}
 	
-	public boolean isPhenomenon()
-	{
-		boolean isPhenomenon = true;
-		
-		if (m_bundle == null)  isPhenomenon = false;
-		if (m_type == Spas.PLACE_BUMP) isPhenomenon = false; 	
-		if (m_type == Spas.PLACE_EAT) isPhenomenon = false; 	
-		if (m_type == Spas.PLACE_CUDDLE) isPhenomenon = false; 	
-		if (m_type == Spas.PLACE_BACKGROUND) isPhenomenon = false; 	
-		//if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
-		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
-		if (m_type == Spas.PLACE_EVOKE_PHENOMENON)  isPhenomenon = false;
-		
-		if (m_type == Spas.PLACE_PHENOMENON)  isPhenomenon = true;
-		if (m_type == Spas.PLACE_COPRESENCE)  isPhenomenon = true;
-		
-		return isPhenomenon;
-	}
+//	public boolean isPhenomenon()
+//	{
+//		boolean isPhenomenon = true;
+//		
+//		if (m_bundle == null)  isPhenomenon = false;
+//		if (m_type == Spas.PLACE_BUMP) isPhenomenon = false; 	
+//		if (m_type == Spas.PLACE_EAT) isPhenomenon = false; 	
+//		if (m_type == Spas.PLACE_CUDDLE) isPhenomenon = false; 	
+//		if (m_type == Spas.PLACE_BACKGROUND) isPhenomenon = false; 	
+//		//if (m_type == Spas.PLACE_BACKGROUND) attractFocus = false; 	
+//		//if (m_type == Spas.PLACE_PERSISTENT) attractFocus = false; 	
+//		if (m_type == Spas.PLACE_EVOKE_PHENOMENON)  isPhenomenon = false;
+//		
+//		if (m_type == Spas.PLACE_PHENOMENON)  isPhenomenon = true;
+//		if (m_type == Spas.PLACE_COPRESENCE)  isPhenomenon = true;
+//		
+//		return isPhenomenon;
+//	}
 
 	public boolean from(Vector3f position) 
 	{
@@ -340,41 +345,41 @@ public class Place implements IPlace //, Cloneable
 		return from;
 	}
 
-	public boolean from(IPlace previousPlace) 
-	{
-		boolean from = false;
-		
-		if (m_type == Spas.PLACE_SEE)
-		{
-			if (previousPlace.getType() == Spas.PLACE_SEE)
-			{
-				Vector3f compare = new Vector3f(m_position);
-				compare.sub(previousPlace.getPosition());
-				if (compare.length() < .2f) 
-					from = true;				
-			}
-		}
-		if (m_type == Spas.PLACE_EVOKE_PHENOMENON)
-		{
-			if (previousPlace.getType() == Spas.PLACE_PHENOMENON)
-			{
-				Vector3f compare = new Vector3f(m_position);
-				compare.sub(previousPlace.getPosition());
-				if (compare.length() < .2f) 
-					from = true;				
-			}
-		}
-		else if (m_type == Spas.PLACE_TOUCH)
-		{
-			if (previousPlace.getType() == Spas.PLACE_TOUCH)
-			{
-				if (Math.abs(getDirection() - previousPlace.getDirection()) < Math.PI/4)
-					from = true;
-			}
-		}
-		
-		return from;
-	}
+//	public boolean from(IPlace previousPlace) 
+//	{
+//		boolean from = false;
+//		
+//		if (m_type == Spas.PLACE_SEE)
+//		{
+//			if (previousPlace.getType() == Spas.PLACE_SEE)
+//			{
+//				Vector3f compare = new Vector3f(m_position);
+//				compare.sub(previousPlace.getPosition());
+//				if (compare.length() < .2f) 
+//					from = true;				
+//			}
+//		}
+//		if (m_type == Spas.PLACE_EVOKE_PHENOMENON)
+//		{
+//			if (previousPlace.getType() == Spas.PLACE_PHENOMENON)
+//			{
+//				Vector3f compare = new Vector3f(m_position);
+//				compare.sub(previousPlace.getPosition());
+//				if (compare.length() < .2f) 
+//					from = true;				
+//			}
+//		}
+//		else if (m_type == Spas.PLACE_TOUCH)
+//		{
+//			if (previousPlace.getType() == Spas.PLACE_TOUCH)
+//			{
+//				if (Math.abs(getDirection() - previousPlace.getDirection()) < Math.PI/4)
+//					from = true;
+//			}
+//		}
+//		
+//		return from;
+//	}
 
 	public void setStick(int stick) 
 	{
@@ -386,15 +391,15 @@ public class Place implements IPlace //, Cloneable
 		return m_stick;
 	}
 
-	public void setShape(int shape) 
-	{
-		m_shape = shape;
-	}
-
-	public int getShape() 
-	{
-		return m_shape;
-	}
+//	public void setShape(int shape) 
+//	{
+//		m_shape = shape;
+//	}
+//
+//	public int getShape() 
+//	{
+//		return m_shape;
+//	}
 
 	public void setOrientation(float orientation) 
 	{

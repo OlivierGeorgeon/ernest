@@ -64,7 +64,7 @@ public interface ISpas
 	/**
 	 * @param place The place to add in local space memory.
 	 */
-	public IPlace addPlace(Vector3f position, int type, int shape);
+	public IPlace addPlace(Vector3f position, int type);
 	//public IPlace addPlace(IBundle bundle, Vector3f position);
 	
 	//public IPlace addOrReplacePlace(IBundle bundle, Vector3f position);
@@ -86,23 +86,17 @@ public interface ISpas
 	public boolean checkAct(IAct act);
 	
 	//public IBundle addBundle(int value);
-	public IBundle addBundle(IAct act);
+	//public IBundle addBundle(IAct act);
 	public IBundle addBundle(IAct firstAct, IAct secondAct); 
 	//public IBundle evokeBundle(IAct act);
 	public ArrayList<IBundle> evokeCompresences(IAct act);
 
-	public IBundle aggregateBundle(IBundle bundle, IAct act); 
+	//public IBundle aggregateBundle(IBundle bundle, IAct act); 
 
 	public int getValue(Vector3f position);
-	public IPlace getPlace(Vector3f position);
+	//public IPlace getPlace(Vector3f position);
 	
 	public ISpatialMemory getSpatialMemory();
-	
-//	public void initSimulation();
-//	public void translateSimulation(Vector3f translation);
-//	public void rotateSimulation(float angle);
-//	public int getValueSimulation(Vector3f position);
-//	public IBundle getBundleSimulation(Vector3f position);
 	
 	public void followUp(IAct act);
 

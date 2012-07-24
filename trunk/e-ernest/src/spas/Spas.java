@@ -19,27 +19,28 @@ public class Spas implements ISpas
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
 	
-	public static int PLACE_BACKGROUND = -1;
-	public static int PLACE_SEE = 0;
-	public static int PLACE_TOUCH = 1;
-	public static int PLACE_FOCUS = 10;
-	public static int PLACE_BUMP = 11;
-	public static int PLACE_EAT  = 12;
-	public static int PLACE_CUDDLE = 13;
-	public static int PLACE_PRIMITIVE = 14;
-	public static int PLACE_COMPOSITE = 15;
-	public static int PLACE_INTERMEDIARY = 16;
-	public static int PLACE_EVOKE_PHENOMENON = 17;
-	public static int PLACE_PHENOMENON = 18;
-	public static int PLACE_COPRESENCE = 19;
-	public static int PLACE_SIMULATION = 20;
-	public static int PLACE_UNKNOWN = 21;
-	public static int PLACE_AFFORD = 22;
+//	public static int PLACE_BACKGROUND = -1;
+//	public static int PLACE_SEE = 0;
+//	public static int PLACE_TOUCH = 1;
+//	public static int PLACE_FOCUS = 10;
+//	public static int PLACE_BUMP = 11;
+//	public static int PLACE_EAT  = 12;
+//	public static int PLACE_CUDDLE = 13;
+//	public static int PLACE_PRIMITIVE = 14;
+//	public static int PLACE_COMPOSITE = 15;
+//	public static int PLACE_INTERMEDIARY = 16;
+//	public static int PLACE_PHENOMENON = 18;
+//	public static int PLACE_COPRESENCE = 19;
 	
-	public static int SHAPE_CIRCLE = 0;
-	public static int SHAPE_TRIANGLE = 1;
-	public static int SHAPE_PIE = 2;
-	public static int SHAPE_SQUARE = 3;
+//	public static int PLACE_EVOKE_PHENOMENON = 17;
+//	public static int PLACE_SIMULATION = 20;
+//	public static int PLACE_UNKNOWN = 21;
+//	public static int PLACE_AFFORD = 22;
+	
+	//public static int SHAPE_CIRCLE = 0;
+	//public static int SHAPE_TRIANGLE = 1;
+	//public static int SHAPE_PIE = 2;
+	//public static int SHAPE_SQUARE = 3;
 
 	/** A list of all the bundles ever identified. */
 	public List<IBundle> m_bundles = new ArrayList<IBundle>(20);
@@ -84,7 +85,7 @@ public class Spas implements ISpas
 		// Create and maintain phenomenon places from interaction places. 
 		
 		//m_localSpaceMemory.phenomenon(observation, m_clock);//(places, observation, m_clock);
-		m_localSpaceMemory.copresence(observation, this);
+		m_localSpaceMemory.copresence(this);
 		
 		if (m_tracer != null) m_localSpaceMemory.trace(m_tracer);
 
@@ -126,13 +127,13 @@ public class Spas implements ISpas
 		return m_localSpaceMemory.getPlaceList();
 	}
 
-	public IPlace addPlace(Vector3f position, int type, int shape) 
+	public IPlace addPlace(Vector3f position, int type) 
 	{
-		IPlace place = m_localSpaceMemory.addPlace(null, position);
+		IPlace place = m_localSpaceMemory.addPlace(position, type);
 		place.setFirstPosition(position);
 		place.setSecondPosition(position);
 		place.setType(type);
-		place.setShape(shape);
+		//place.setShape(shape);
 		place.setUpdateCount(m_clock);
 		
 		return place;
@@ -141,7 +142,7 @@ public class Spas implements ISpas
 	public IBundle addBundle(IAct firstAct, IAct secondAct) 
 	{
 		IBundle bundle = new Bundle(firstAct, secondAct);
-		bundle.setVisualValue(firstAct.getColor());
+		bundle.setValue(firstAct.getColor());
 		
 		int i = m_bundles.indexOf(bundle);
 		if (i == -1)
@@ -176,69 +177,69 @@ public class Spas implements ISpas
 //		return bundle;
 //	}
 
-	public IBundle addBundle(IAct act)
-	{
-		IBundle bundle = null;
-		
-		for (IBundle b : m_bundles)
-		{
-			if (b.hasAct(act))
-				bundle = b;
-		}
-		
-		if (bundle == null)
-		{
-			bundle = new Bundle(act);
-			m_bundles.add(bundle);
-			if (m_tracer != null)
-				bundle.trace(m_tracer, "bundle");
-		}
-		return bundle;
-	}
+//	public IBundle addBundle(IAct act)
+//	{
+//		IBundle bundle = null;
+//		
+//		for (IBundle b : m_bundles)
+//		{
+//			if (b.hasAct(act))
+//				bundle = b;
+//		}
+//		
+//		if (bundle == null)
+//		{
+//			bundle = new Bundle(act);
+//			m_bundles.add(bundle);
+//			if (m_tracer != null)
+//				bundle.trace(m_tracer, "bundle");
+//		}
+//		return bundle;
+//	}
 	
-	public IBundle aggregateBundle(IBundle bundle, IAct act) 
-	{			
-		// See if this act already belongs to a different bundle
-		IBundle aggregate = null;
-		for (IBundle b : m_bundles)
-		{
-			if (b != bundle && b.hasAct(act))
-				aggregate = b;
-		}
-		
-		if (aggregate == null)
-		{
-			boolean added = bundle.addAct(act);
-			if (m_tracer != null && added)
-				bundle.trace(m_tracer, "bundle");
-		}
-		else
-		{
-			// Merge this other bundle into the bundle that was already found in the list
-			boolean added = false;
-			for (IAct a : bundle.getActList())
-			{
-				//boolean add = aggregate.addAct(a);
-				added = aggregate.addAct(a) || added;
-			}
-			if (m_tracer != null && added)
-				bundle.trace(m_tracer, "remove_bundle");
-			int i = 0; int in = -1;
-			for (IBundle bu : m_bundles)
-			{ 
-				if (bu == bundle)
-					in = i;
-				i++;	
-			}
-			if (in >= 0)
-				m_bundles.remove(in);
-			// The aggregate bundle replaces the previous bundle of this phenomenon.
-			bundle = aggregate;
-			if (m_tracer != null && added)
-				bundle.trace(m_tracer, "bundle");
-		}		
-		return bundle;
-	}
+//	public IBundle aggregateBundle(IBundle bundle, IAct act) 
+//	{			
+//		// See if this act already belongs to a different bundle
+//		IBundle aggregate = null;
+//		for (IBundle b : m_bundles)
+//		{
+//			if (b != bundle && b.hasAct(act))
+//				aggregate = b;
+//		}
+//		
+//		if (aggregate == null)
+//		{
+//			boolean added = bundle.addAct(act);
+//			if (m_tracer != null && added)
+//				bundle.trace(m_tracer, "bundle");
+//		}
+//		else
+//		{
+//			// Merge this other bundle into the bundle that was already found in the list
+//			boolean added = false;
+//			for (IAct a : bundle.getActList())
+//			{
+//				//boolean add = aggregate.addAct(a);
+//				added = aggregate.addAct(a) || added;
+//			}
+//			if (m_tracer != null && added)
+//				bundle.trace(m_tracer, "remove_bundle");
+//			int i = 0; int in = -1;
+//			for (IBundle bu : m_bundles)
+//			{ 
+//				if (bu == bundle)
+//					in = i;
+//				i++;	
+//			}
+//			if (in >= 0)
+//				m_bundles.remove(in);
+//			// The aggregate bundle replaces the previous bundle of this phenomenon.
+//			bundle = aggregate;
+//			if (m_tracer != null && added)
+//				bundle.trace(m_tracer, "bundle");
+//		}		
+//		return bundle;
+//	}
 
 	public int getClock() 
 	{
@@ -272,10 +273,10 @@ public class Spas implements ISpas
 		return m_localSpaceMemory.getValue(position);
 	}
 
-	public IPlace getPlace(Vector3f position) 
-	{
-		return m_localSpaceMemory.getPlace(position);
-	}
+//	public IPlace getPlace(Vector3f position) 
+//	{
+//		return m_localSpaceMemory.getPlace(position);
+//	}
 	
 	public ISpatialMemory getSpatialMemory()
 	{
@@ -302,7 +303,7 @@ public class Spas implements ISpas
 //	}
 
 	/**
-	 * Returns the list of compresences that contains this act.
+	 * Returns the list of compresences that afford this act.
 	 * @param act The act to check.
 	 * @return The list of compresences that match this act.
 	 */
@@ -311,7 +312,7 @@ public class Spas implements ISpas
 		ArrayList<IBundle> compresences = new ArrayList<IBundle>();
 
 		for (IBundle bundle : m_bundles)
-			if (bundle.hasAct(act))
+			if (bundle.afford(act))
 				compresences.add(bundle);
 
 		return compresences;
