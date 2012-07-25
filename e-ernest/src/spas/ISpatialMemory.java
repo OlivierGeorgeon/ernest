@@ -3,6 +3,8 @@ package spas;
 import imos.IAct;
 
 import java.util.ArrayList;
+
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import ernest.ITracer;
 
@@ -43,7 +45,7 @@ public interface ISpatialMemory
 	 * @param type This place's type
 	 * @return The created place
 	 */
-	public IPlace addPlace(Vector3f position, int type);
+	public IPlace addPlace(Point3f position, int type);
 
 	/**
 	 * Apply a geometrical transformation caused by an act to this spatial memory

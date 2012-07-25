@@ -5,6 +5,7 @@ import imos.IAct;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import ernest.ITracer;
@@ -64,7 +65,7 @@ public interface ISpas
 	/**
 	 * @param place The place to add in local space memory.
 	 */
-	public IPlace addPlace(Vector3f position, int type);
+	public IPlace addPlace(Point3f position, int type);
 	//public IPlace addPlace(IBundle bundle, Vector3f position);
 	
 	//public IPlace addOrReplacePlace(IBundle bundle, Vector3f position);

@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import spas.IBundle;
@@ -293,7 +294,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			
 			// Place the act in spatial memory
 			
-			IPlace place = m_spas.addPlace(topAct.getEndPosition(), Place.EVOKE_PHENOMENON);
+			IPlace place = m_spas.addPlace(new Point3f(topAct.getEndPosition()), Place.EVOKE_PHENOMENON);
 			place.setValue(topAct.getColor());
 			place.setUpdateCount(m_spas.getClock());
 			place.setAct(topAct);
@@ -301,7 +302,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			// TODO place intermediary acts of higher level acts too?
 			if (!topAct.getSchema().isPrimitive())
 			{
-				IPlace place2 = m_spas.addPlace(primitiveAct.getEndPosition(), Place.EVOKE_PHENOMENON);
+				IPlace place2 = m_spas.addPlace(new Point3f(primitiveAct.getEndPosition()), Place.EVOKE_PHENOMENON);
 				place2.setValue(primitiveAct.getColor());
 				place2.setUpdateCount(m_spas.getClock());
 				place2.setAct(primitiveAct);

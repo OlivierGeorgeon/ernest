@@ -1,5 +1,6 @@
 package utils;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -26,9 +27,14 @@ public final class ErnestUtils
 	 */
 	public static void rotate(Vector3f vector, float angle) 
 	{
-		Matrix3f rot = new Matrix3f();
-		rot.rotZ(angle);		
-		rot.transform(vector);
+		//Matrix3f rot = new Matrix3f();
+		//rot.rotZ(angle);		
+		//rot.transform(vector);
+		
+		Transform3D tf = new Transform3D();
+		tf.rotZ(angle);
+		tf.transform(vector);
+		
 	}	
 
 	

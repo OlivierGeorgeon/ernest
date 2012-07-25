@@ -439,17 +439,17 @@ public class EpisodicMemory
 		
 		for (IAct a : m_acts)
 		{
-			if (a.getStartPosition().epsilonEquals(position, .1f) && a.getRotation() > orientation - .1f && a.getRotation() < orientation + .1f)
+			if (a.getStartPosition().epsilonEquals(position, .1f) && Math.abs(a.getRotation() - orientation) < .1f )
 			{
 				if ( act == null || a.getSatisfaction() > act.getSatisfaction()) 
 					act = a;
 			}
 		}
 		
-		if (m_tracer != null)
+		if (m_tracer != null && act != null)
 		{
 			Object reach = m_tracer.addEventElement("reach", true);			
-			m_tracer.addSubelement(reach, "position", "(" + position.x + "," + position.y + "," + position.z + ")" );
+			m_tracer.addSubelement(reach, "position", "(" + position.x + ", " + position.y + ", " + position.z + ")" );
 			m_tracer.addSubelement(reach, "orientation", orientation +"" );
 			m_tracer.addSubelement(reach, "act", act.toString() );
 		}

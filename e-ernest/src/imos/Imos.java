@@ -231,6 +231,8 @@ public class Imos implements IImos
 		m_internalState= "";
 		
 		m_episodicMemory.reach(new Vector3f(0,1,0), (float) Math.PI/2);
+		m_episodicMemory.reach(new Vector3f(0,-1,0), (float) - Math.PI/2);
+		m_episodicMemory.reach(new Vector3f(2,0,0), 0f);
 
 //		// Trace the new event
 //		
