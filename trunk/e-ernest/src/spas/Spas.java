@@ -4,6 +4,8 @@ import imos.IAct;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import ernest.Ernest;
 import ernest.ITracer;
@@ -127,11 +129,11 @@ public class Spas implements ISpas
 		return m_localSpaceMemory.getPlaceList();
 	}
 
-	public IPlace addPlace(Vector3f position, int type) 
+	public IPlace addPlace(Point3f position, int type) 
 	{
 		IPlace place = m_localSpaceMemory.addPlace(position, type);
-		place.setFirstPosition(position);
-		place.setSecondPosition(position);
+//		place.setFirstPosition(position);
+//		place.setSecondPosition(position);
 		place.setType(type);
 		//place.setShape(shape);
 		place.setUpdateCount(m_clock);

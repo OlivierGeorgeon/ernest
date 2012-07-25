@@ -1,5 +1,6 @@
 package imos;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Vector3f;
 
 import spas.LocalSpaceMemory;
@@ -47,6 +48,8 @@ public class Act implements IAct
 	private Vector3f m_endPosition = new Vector3f();
 	private Vector3f m_translation = new Vector3f();
 	private float m_rotation = 0;
+	
+	private Transform3D m_transform ;
 	
 	/**
 	 * Constructor for a succeeding act. 
@@ -302,14 +305,15 @@ public class Act implements IAct
 	 */
 	public Vector3f getStartPosition() 
 	{
-		Vector3f startPosition = new Vector3f(m_startPosition);
+		Vector3f startPosition = new Vector3f();
 		if (m_schema.isPrimitive())
 			startPosition.set(m_startPosition);
 		else
 		{
 			startPosition.set(m_schema.getIntentionAct().getStartPosition());
 			ErnestUtils.rotate(startPosition, - m_schema.getContextAct().getRotation());
-			startPosition.add(m_schema.getContextAct().getTranslation());
+			//startPosition.add(m_schema.getContextAct().getTranslation());
+			startPosition.sub(m_schema.getContextAct().getTranslation());
 		}
 		return startPosition;
 	}

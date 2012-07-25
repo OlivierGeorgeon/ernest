@@ -1,6 +1,8 @@
 package spas;
 
 import imos.IAct;
+
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 /**
@@ -28,26 +30,26 @@ public interface IPlace extends Cloneable
 	/**
 	 * @return The location's position.
 	 */
-	public Vector3f getPosition();
+	public Point3f getPosition();
 	
 	/**
 	 * Rotate this location with regard to the agent's center.
 	 * @param angle The rotation angle.
 	 */
-	public void rotate(float angle);
+	//public void rotate(float angle);
 
 	/**
 	 * Translate this location along the agent's axis.
 	 * @param distance The translation distance.
 	 */
-	public void translate(Vector3f translation);
+	//public void translate(Vector3f translation);
 
 	/**
 	 * Test if this place is at this position.
 	 * @param position The position to test
 	 * @return true if this place is in the same cell as thi position.
 	 */
-	public boolean isInCell(Vector3f position);
+	public boolean isInCell(Point3f position);
 	
 	/**
 	 * @return The place's direction.
@@ -62,7 +64,7 @@ public interface IPlace extends Cloneable
 	/**
 	 * @param position The place's position.
 	 */
-	public void setPosition(Vector3f position);
+	public void setPosition(Point3f position);
 	
 	/**
 	 * @param value The place's value, corresponds to a color to display.
@@ -93,7 +95,7 @@ public interface IPlace extends Cloneable
 	/**
 	 * @return True if this place is frontal. 
 	 */
-	public boolean isFrontal();
+	//public boolean isFrontal();
 	
 	public void setType(int type);
 	
@@ -108,11 +110,11 @@ public interface IPlace extends Cloneable
 	
 	public Vector3f getSpeed();
 	
-	public void setFirstPosition(Vector3f position);
-	public void setSecondPosition(Vector3f position);
-	public Vector3f getFirstPosition();
-	public Vector3f getSecondPosition();
-	
+//	public void setFirstPosition(Vector3f position);
+//	public void setSecondPosition(Vector3f position);
+//	public Vector3f getFirstPosition();
+//	public Vector3f getSecondPosition();
+//	
 	public void setUpdateCount(int count);
 	public int getUpdateCount();
 	
@@ -125,7 +127,7 @@ public interface IPlace extends Cloneable
 	
 	public void setStick(int stick);
 	public int getStick();
-	public float getFrontDistance();
+	//public float getFrontDistance();
 	
 //	public void initSimulation();
 //	public void translateSimulation(Vector3f translation);
@@ -137,5 +139,8 @@ public interface IPlace extends Cloneable
 	//public String getLabel();
 	public void setAct(IAct act); 
 	public IAct getAct(); 
+	
+	public void transform(Vector3f translation, float angle);
+
 
 }

@@ -2,7 +2,10 @@ package spas;
 
 import imos.IAct;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3f;
+import javax.vecmath.Point3d;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import utils.ErnestUtils;
@@ -23,10 +26,10 @@ public class Place implements IPlace //, Cloneable
 	public static int FOCUS = 4;
 
 	private IBundle m_bundle;
-	private Vector3f m_position = new Vector3f();
+	private Point3f m_position = new Point3f();
 	private Vector3f m_speed = new Vector3f();
-	private Vector3f m_firstPosition = new Vector3f();
-	private Vector3f m_secondPosition = new Vector3f();
+	//private Vector3f m_firstPosition = new Vector3f();
+	//private Vector3f m_secondPosition = new Vector3f();
 	private float m_span;
 	private float m_orientation = 0;
 	private int m_type;// = Spas.PLACE_SEE;
@@ -48,7 +51,7 @@ public class Place implements IPlace //, Cloneable
 		m_position.set(position);
 	}
 	
-	public Place(Vector3f position, int type)
+	public Place(Point3f position, int type)
 	{
 		m_position.set(position);
 		m_type = type;
@@ -71,8 +74,8 @@ public class Place implements IPlace //, Cloneable
 		// We must clone the vectors because they are passed by reference by default
 		clonePlace.setPosition(m_position);
 		clonePlace.setSpeed(m_speed);
-		clonePlace.setFirstPosition(m_firstPosition);
-		clonePlace.setSecondPosition(m_secondPosition);
+		//clonePlace.setFirstPosition(m_firstPosition);
+		//clonePlace.setSecondPosition(m_secondPosition);
 
 		//clonePlace.m_clock = m_clock;
 		//clonePlace.m_bundle = m_bundle;
@@ -93,7 +96,7 @@ public class Place implements IPlace //, Cloneable
 	public Place(IBundle bundle, float distance, float direction, float span)
 	{
 		m_bundle = bundle;
-		m_position = new Vector3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
+		m_position = new Point3f((float)(distance * Math.cos((double)direction)), (float)(distance * Math.sin((double)direction)), 0f);
 		m_span = span;
 	}
 	
@@ -107,41 +110,65 @@ public class Place implements IPlace //, Cloneable
 		return m_bundle;
 	}
 
-	public Vector3f getPosition() 
+	public Point3f getPosition() 
 	{
 		return m_position;
 	}
 	
-	public void rotate(float angle)
+//	public void rotate(float angle)
+//	{
+//		Matrix3f rot = new Matrix3f();
+//		rot.rotZ(angle);
+//		
+//		Vector3f oldPosition = m_position;
+//		rot.transform(oldPosition, m_position); // (rot * m_position) is placed into m_position
+//		
+////		oldPosition = m_firstPosition;
+////		rot.transform(oldPosition, m_firstPosition); 
+////		
+////		oldPosition = m_secondPosition;
+////		rot.transform(oldPosition, m_secondPosition); 
+//		
+//		// Rotate the orientation (used for display when the place has a shape)
+//		m_orientation += angle;
+//		if (m_orientation > Math.PI)
+//			m_orientation -= 2*Math.PI;		
+//		if (m_orientation < Math.PI)
+//			m_orientation += 2*Math.PI;		
+//	}
+//
+//	public void translate(Vector3f translation) 
+//	{
+//		m_position.add(translation);
+////		m_firstPosition.add(translation);
+////		m_secondPosition.add(translation);
+//	}
+//	
+	public void transform(Vector3f translation, float angle)
 	{
-		Matrix3f rot = new Matrix3f();
-		rot.rotZ(angle);
+		Transform3D tf = new Transform3D();
+		Point3f point = new Point3f(m_position);
+		tf.rotZ(angle);
+		tf.transform(m_position);
 		
-		Vector3f oldPosition = m_position;
-		rot.transform(oldPosition, m_position); // (rot * m_position) is placed into m_position
-		
-		oldPosition = m_firstPosition;
-		rot.transform(oldPosition, m_firstPosition); 
-		
-		oldPosition = m_secondPosition;
-		rot.transform(oldPosition, m_secondPosition); 
-		
-		// Rotate the orientation (used for display when the place has a shape)
-		m_orientation += angle;
-		if (m_orientation > Math.PI)
-			m_orientation -= 2*Math.PI;		
-		if (m_orientation < Math.PI)
-			m_orientation += 2*Math.PI;		
-	}
+		tf.setTranslation(translation);
+		tf.transform(point);
+		m_position.set(point);
 
-	public void translate(Vector3f translation) 
-	{
-		m_position.add(translation);
-		m_firstPosition.add(translation);
-		m_secondPosition.add(translation);
+		// Transforms the normal vector that indicates the orientation of the place.
+		Vector3f normal = new Vector3f((float) Math.cos(m_orientation), (float) Math.sin(m_orientation), 0);
+		tf.transform(normal);
+		m_orientation = ErnestUtils.polarAngle(normal);
+		
+//		m_orientation += angle;
+//		if (m_orientation > Math.PI)
+//			m_orientation -= 2*Math.PI;		
+//		if (m_orientation < Math.PI)
+//			m_orientation += 2*Math.PI;		
+
 	}
 	
-	public boolean isInCell(Vector3f position)
+	public boolean isInCell(Point3f position)
 	{
 		boolean ret;
 		// Is in the same cell.
@@ -187,12 +214,13 @@ public class Place implements IPlace //, Cloneable
 
 	public float getDirection() 
 	{
-		return ErnestUtils.polarAngle(m_position);
+		return ErnestUtils.polarAngle(new Vector3f(m_position));
 	}
 
 	public float getDistance() 
 	{
-		return m_position.length();
+		//return m_position.length();
+		return m_position.distance(new Point3f());
 	}
 	public float getSpan() 
 	{
@@ -227,18 +255,18 @@ public class Place implements IPlace //, Cloneable
 //		return 0;
 //	}
 	
-	public boolean isFrontal()
-	{
-		return (ErnestUtils.polarAngle(m_firstPosition) < 0 && ErnestUtils.polarAngle(m_secondPosition) > 0);
-		
-		// Covers at least a pixel to the right and a pixel to the left of Ernest's axis.
-		//return (getDirection() - m_span / 2 < - Math.PI/12 + 0.1 && getDirection() + m_span / 2 > Math.PI/12 - 0.1 );
-	}
+//	public boolean isFrontal()
+//	{
+//		return (ErnestUtils.polarAngle(m_firstPosition) < 0 && ErnestUtils.polarAngle(m_secondPosition) > 0);
+//		
+//		// Covers at least a pixel to the right and a pixel to the left of Ernest's axis.
+//		//return (getDirection() - m_span / 2 < - Math.PI/12 + 0.1 && getDirection() + m_span / 2 > Math.PI/12 - 0.1 );
+//	}
 
-	public void setPosition(Vector3f position) 
+	public void setPosition(Point3f position) 
 	{
 		// Create a new instance of the vector because it is needed by the clone method.
-		m_position = new Vector3f(position);
+		m_position = new Point3f(position);
 		//m_position.set(position);
 	}
 
@@ -262,25 +290,25 @@ public class Place implements IPlace //, Cloneable
 		return m_speed;
 	}
 
-	public void setFirstPosition(Vector3f position) 
-	{
-		m_firstPosition = new Vector3f(position);
-	}
-
-	public void setSecondPosition(Vector3f position) 
-	{
-		m_secondPosition = new Vector3f(position);		
-	}
-
-	public Vector3f getFirstPosition() 
-	{
-		return m_firstPosition;
-	}
-
-	public Vector3f getSecondPosition() 
-	{
-		return m_secondPosition;
-	}
+//	public void setFirstPosition(Vector3f position) 
+//	{
+//		m_firstPosition = new Vector3f(position);
+//	}
+//
+//	public void setSecondPosition(Vector3f position) 
+//	{
+//		m_secondPosition = new Vector3f(position);		
+//	}
+//
+//	public Vector3f getFirstPosition() 
+//	{
+//		return m_firstPosition;
+//	}
+//
+//	public Vector3f getSecondPosition() 
+//	{
+//		return m_secondPosition;
+//	}
 
 	public void setUpdateCount(int clock) 
 	{
@@ -411,11 +439,11 @@ public class Place implements IPlace //, Cloneable
 		return m_orientation;
 	}
 	
-	public float getFrontDistance()
-	{
-		return m_firstPosition.x - m_firstPosition.y * (m_firstPosition.x - m_secondPosition.x)/(m_firstPosition.y - m_secondPosition.y);
-		
-	}
+//	public float getFrontDistance()
+//	{
+//		return m_firstPosition.x - m_firstPosition.y * (m_firstPosition.x - m_secondPosition.x)/(m_firstPosition.y - m_secondPosition.y);
+//		
+//	}
 
 	public void setValue(int value) 
 	{

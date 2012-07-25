@@ -5,6 +5,8 @@ import imos.ISchema;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
 import ernest.Ernest;
@@ -115,7 +117,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 //		return place;
 //	}
 	
-	public IPlace addPlace(Vector3f position, int type)
+	public IPlace addPlace(Point3f position, int type)
 	{
 		IPlace place = new Place(position, type);	
 		m_places.add(place);
@@ -129,43 +131,46 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	 */
 	public void transform(IAct act)
 	{
-		rotate(act.getRotation());
-		translate(act.getTranslation());
+		//rotate(act.getRotation());
+		//translate(act.getTranslation());
+		
+		for (IPlace p : m_places)
+			p.transform(act.getTranslation(), act.getRotation());
 	}
 	
-	/**
-	 * Rotate all the places of the given angle.
-	 * @param angle The angle (provide the opposite angle from the agent's movement).
-	 */
-	private void rotate(float angle)
-	{
-		for (IPlace l : m_places)
-			l.rotate(angle);
-	}
-
-	/**
-	 * Translate all the places of the given vector.
-	 * Remove places that are outside the local space memory radius.
-	 * @param translation The translation vector (provide the opposite vector from the agent's movement).
-	 */
-	private void translate(Vector3f translation)
-	{
-		for (IPlace p : m_places)
-			p.translate(translation);
-			
-		for (Iterator it = m_places.iterator(); it.hasNext();)
-		{
-			IPlace l = (IPlace)it.next();
-			if (l.getPosition().length() > LOCAL_SPACE_MEMORY_RADIUS)
-			//if (l.getPosition().x < - LOCAL_SPACE_MEMORY_RADIUS)
-				it.remove();
-		}		
-	}
+//	/**
+//	 * Rotate all the places of the given angle.
+//	 * @param angle The angle (provide the opposite angle from the agent's movement).
+//	 */
+//	private void rotate(float angle)
+//	{
+//		for (IPlace l : m_places)
+//			l.rotate(angle);
+//	}
+//
+//	/**
+//	 * Translate all the places of the given vector.
+//	 * Remove places that are outside the local space memory radius.
+//	 * @param translation The translation vector (provide the opposite vector from the agent's movement).
+//	 */
+//	private void translate(Vector3f translation)
+//	{
+//		for (IPlace p : m_places)
+//			p.translate(translation);
+//			
+//		for (Iterator it = m_places.iterator(); it.hasNext();)
+//		{
+//			IPlace l = (IPlace)it.next();
+//			if (l.getPosition().length() > LOCAL_SPACE_MEMORY_RADIUS)
+//			//if (l.getPosition().x < - LOCAL_SPACE_MEMORY_RADIUS)
+//				it.remove();
+//		}		
+//	}
 	
 	public int runSimulation(IAct act, ISpas spas)
 	{
 		m_spas = spas;
-		IPlace simulationPlace = addPlace(new Vector3f(), Place.SIMULATION);
+		IPlace simulationPlace = addPlace(new Point3f(), Place.SIMULATION);
 		
 		return simulate(simulationPlace, act);
 	}
@@ -183,7 +188,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			// Compute the start position of this act relatively to the beginning of the simulation
 			Vector3f startPosition = new Vector3f(act.getStartPosition());
 			ErnestUtils.rotate(startPosition, simulationPlace.getOrientation());
-			Vector3f position = new Vector3f(simulationPlace.getPosition());
+			Point3f position = new Point3f(simulationPlace.getPosition());
 			position.add(startPosition);
 			
 			// The orientation of this act relatively to the beginning of the simulation
@@ -245,8 +250,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			Vector3f translation = new Vector3f(act.getTranslation());
 			ErnestUtils.rotate(translation, simulationPlace.getOrientation());
 			translation.scale(-1);
-			simulationPlace.translate(translation);
-			simulationPlace.rotate( - act.getRotation());
+			//simulationPlace.translate(translation);
+			//simulationPlace.rotate( - act.getRotation());
+			simulationPlace.transform(translation, - act.getRotation());
 
 		}
 		else 
@@ -311,7 +317,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		int value = Ernest.UNANIMATED_COLOR;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.getType() == Place.EVOKE_PHENOMENON)
+			if (p.isInCell(new Point3f(position)) && p.getType() == Place.EVOKE_PHENOMENON)
 				value = p.getValue();
 		}	
 		return value;
@@ -338,7 +344,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	 * Clear a position in the local space memory.
 	 * @param position The position to clear.
 	 */
-	public void clearPlace(Vector3f position)
+	public void clearPlace(Point3f position)
 	{
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
