@@ -49,7 +49,7 @@ public class Act implements IAct
 	private Vector3f m_translation = new Vector3f();
 	private float m_rotation = 0;
 	
-	private Transform3D m_transform ;
+	private Transform3D m_transform = new Transform3D();
 	
 	/**
 	 * Constructor for a succeeding act. 
@@ -90,6 +90,7 @@ public class Act implements IAct
 			String label = "[" + s.getLabel() +"]";
 			// The failing act is RELIABLE because its schema had to be reliable to be enacted and 
 			// making it possible to experience its failure.
+			
 			return new Act(label, s, false, satisfaction, Imos.RELIABLE);
 		}
 	}
@@ -109,12 +110,12 @@ public class Act implements IAct
 	}
 	
 	/**
-	 * The abstract constructor for a nome
-	 * @param label The nome's label
-	 * @param s The nome's schema if any
-	 * @param status The nome's status if any: True for success, false for failure
+	 * The abstract constructor for an act
+	 * @param label The act's label
+	 * @param s The act's schema if any
+	 * @param status The act's status if any: True for success, false for failure
 	 * @param type the module
-	 * @param confidence The degree of confidence Ernest has in this nome
+	 * @param confidence The degree of confidence Ernest has in this act
 	 */
 	protected Act(String label, ISchema s, boolean status, int satisfaction, int confidence)
 	{
@@ -125,8 +126,16 @@ public class Act implements IAct
 		m_confidence = confidence;
 		if (s == null)
 			m_length = 1;
-		else 
+		else
+		{
 			m_length = s.getLength();
+			// TODO manage transformation of failing acts
+			if (!s.isPrimitive())
+			{
+				m_transform = new Transform3D(s.getIntentionAct().getTransform());
+				m_transform.mul(s.getContextAct().getTransform());
+			}
+		}
 	}
 	
 	public void setSatisfaction(int s)         
@@ -346,5 +355,15 @@ public class Act implements IAct
 		if (m_schema.getLength() > 2) concernOnePlace = false;
 		
 		return concernOnePlace;
+	}
+
+	public void setTransform(Transform3D transform) 
+	{
+		m_transform = transform;
+	}
+
+	public Transform3D getTransform() 
+	{
+		return m_transform;
 	}
 }
