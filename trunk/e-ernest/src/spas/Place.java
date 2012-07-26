@@ -25,13 +25,16 @@ public class Place implements IPlace //, Cloneable
 	public static int AFFORD = 3;
 	public static int FOCUS = 4;
 
-	private IBundle m_bundle;
+	/** The position in spatial memory */
 	private Point3f m_position = new Point3f();
+	private Vector3f m_orientation = new Vector3f(1,0,0);
+	
+	private IBundle m_bundle;	
 	private Vector3f m_speed = new Vector3f();
 	//private Vector3f m_firstPosition = new Vector3f();
 	//private Vector3f m_secondPosition = new Vector3f();
 	private float m_span;
-	private float m_orientation = 0;
+	//private float m_orientationAngle = 0;
 	private int m_type;// = Spas.PLACE_SEE;
 	//private int m_shape = Spas.SHAPE_CIRCLE;
 	private int m_clock = 0;
@@ -144,21 +147,31 @@ public class Place implements IPlace //, Cloneable
 ////		m_secondPosition.add(translation);
 //	}
 //	
+
+	public void transform(Transform3D transform)
+	{
+		transform.transform(m_position);
+		transform.transform(m_orientation);
+	}		
+	
 	public void transform(Vector3f translation, float angle)
 	{
 		Transform3D tf = new Transform3D();
-		Point3f point = new Point3f(m_position);
 		tf.rotZ(angle);
-		tf.transform(m_position);
-		
 		tf.setTranslation(translation);
-		tf.transform(point);
-		m_position.set(point);
+
+		tf.transform(m_position);
+		tf.transform(m_orientation);
+		
+		//m_orientationAngle = ErnestUtils.polarAngle(m_orientation);
+
+		//tf.transform(point);
+		//m_position.set(point);
 
 		// Transforms the normal vector that indicates the orientation of the place.
-		Vector3f normal = new Vector3f((float) Math.cos(m_orientation), (float) Math.sin(m_orientation), 0);
-		tf.transform(normal);
-		m_orientation = ErnestUtils.polarAngle(normal);
+//		Vector3f normal = new Vector3f((float) Math.cos(m_orientationAngle), (float) Math.sin(m_orientationAngle), 0);
+//		tf.transform(normal);
+//		m_orientationAngle = ErnestUtils.polarAngle(normal);
 		
 //		m_orientation += angle;
 //		if (m_orientation > Math.PI)
@@ -431,12 +444,16 @@ public class Place implements IPlace //, Cloneable
 
 	public void setOrientation(float orientation) 
 	{
-		m_orientation = orientation;
+		//m_orientationAngle = orientation;
+		m_orientation.set((float) Math.cos(orientation), (float) Math.sin(orientation), 0);
 	}
+	
 
-	public float getOrientation() 
+
+	public float getOrientationAngle() 
 	{
-		return m_orientation;
+		//return m_orientationAngle;
+		return ErnestUtils.polarAngle(m_orientation);
 	}
 	
 //	public float getFrontDistance()
@@ -463,6 +480,16 @@ public class Place implements IPlace //, Cloneable
 	public IAct getAct() 
 	{
 		return m_act;
+	}
+
+	public void setOrientation(Vector3f orientation) 
+	{
+		m_orientation.set(orientation);
+	}
+
+	public Vector3f getOrientation() 
+	{
+		return m_orientation;
 	}
 
 }

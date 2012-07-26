@@ -9,6 +9,7 @@ import imos.Proposition;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import javax.media.j3d.Transform3D;
 import javax.swing.JFrame;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -131,36 +132,61 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				act.setColor(0xFF0000);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				Transform3D tf = new Transform3D();
+				tf.rotZ(0);
+				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
+				act.setTransform(tf);
+
 			}
 			else if (stimuliLabel.indexOf("b") >= 0)
 			{
 				act.setColor(0xFF0000);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				Transform3D tf = new Transform3D();
+				tf.rotZ(0);
+				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
+				act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals("++t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Vector3f(4,0,0));
 				act.setEndPosition(new Vector3f(3,0,0));
+				Transform3D tf = new Transform3D();
+				tf.rotZ(0);
+				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
+				act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals(" +t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Vector3f(3,-3,0));
 				act.setEndPosition(new Vector3f(2,-3,0));
+				Transform3D tf = new Transform3D();
+				tf.rotZ(0);
+				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
+				act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals("+ t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Vector3f(3,3,0));
 				act.setEndPosition(new Vector3f(2,3,0));
+				Transform3D tf = new Transform3D();
+				tf.rotZ(0);
+				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
+				act.setTransform(tf);
 			}
 			else 
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+				Transform3D tf = new Transform3D();
+				tf.rotZ(0);
+				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
+				act.setTransform(tf);
 			}
 		}
 
@@ -171,12 +197,20 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+				Transform3D tf = new Transform3D();
+				tf.rotZ(0);
+				tf.setTranslation(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setTransform(tf);
 			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				act.setEndPosition(LocalSpaceMemory.DIRECTION_BEHIND);
+				Transform3D tf = new Transform3D();
+				tf.rotZ(0);
+				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
+				act.setTransform(tf);
 			}
 		}
 
@@ -186,6 +220,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			act.setColor(Ernest.PHENOMENON_FISH);
 			act.setStartPosition(new Vector3f(3,3,0));
 			act.setEndPosition(new Vector3f(3,3,0));
+			Transform3D tf = new Transform3D();
+			tf.rotZ(- Math.PI / 2);
+			act.setTransform(tf);
 		}
 		else if (schemaLabel.equals("^"))
 		{
@@ -193,6 +230,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			act.setColor(Ernest.PHENOMENON_EMPTY);
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
 			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+			Transform3D tf = new Transform3D();
+			tf.rotZ(- Math.PI / 2);
+			act.setTransform(tf);
 		}
 		
 		if (act.getLabel().equals("v *f"))
@@ -201,6 +241,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			act.setColor(Ernest.PHENOMENON_FISH);
 			act.setStartPosition(new Vector3f(3,-3,0));
 			act.setEndPosition(new Vector3f(3,-3,0));
+			Transform3D tf = new Transform3D();
+			tf.rotZ(Math.PI / 2);
+			act.setTransform(tf);
 		}
 		else if (schemaLabel.equals("v"))
 		{
@@ -208,6 +251,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			act.setColor(Ernest.PHENOMENON_EMPTY);
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
 			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+			Transform3D tf = new Transform3D();
+			tf.rotZ(Math.PI / 2);
+			act.setTransform(tf);
 		}
 		
 		if (schemaLabel.equals("/") )

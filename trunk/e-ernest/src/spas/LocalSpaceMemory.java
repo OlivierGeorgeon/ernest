@@ -6,6 +6,7 @@ import imos.ISchema;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
@@ -135,7 +136,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		//translate(act.getTranslation());
 		
 		for (IPlace p : m_places)
-			p.transform(act.getTranslation(), act.getRotation());
+			//p.transform(act.getTranslation(), act.getRotation());
+		    p.transform(act.getTransform());
+
 	}
 	
 //	/**
@@ -187,12 +190,12 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		{
 			// Compute the start position of this act relatively to the beginning of the simulation
 			Vector3f startPosition = new Vector3f(act.getStartPosition());
-			ErnestUtils.rotate(startPosition, simulationPlace.getOrientation());
+			ErnestUtils.rotate(startPosition, simulationPlace.getOrientationAngle());
 			Point3f position = new Point3f(simulationPlace.getPosition());
 			position.add(startPosition);
 			
 			// The orientation of this act relatively to the beginning of the simulation
-			float orientation = simulationPlace.getOrientation() - act.getRotation();
+			float orientation = simulationPlace.getOrientationAngle() - act.getRotation();
 			//orientation += act.getRotation();
 			
 			for (IPlace p : m_places)
@@ -248,11 +251,16 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			
 			// Move the virtual agent according to the simulated act
 			Vector3f translation = new Vector3f(act.getTranslation());
-			ErnestUtils.rotate(translation, simulationPlace.getOrientation());
+			ErnestUtils.rotate(translation, simulationPlace.getOrientationAngle());
 			translation.scale(-1);
 			//simulationPlace.translate(translation);
 			//simulationPlace.rotate( - act.getRotation());
 			simulationPlace.transform(translation, - act.getRotation());
+			
+			// TODO figure out how to invert the transformation !!
+			Transform3D tf = new Transform3D(act.getTransform());
+			tf.invert();
+			//simulationPlace.transform(tf);
 
 		}
 		else 
