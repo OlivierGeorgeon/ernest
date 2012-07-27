@@ -4,6 +4,7 @@ import imos.IAct;
 
 import java.util.ArrayList;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import ernest.ITracer;
@@ -87,6 +88,18 @@ public interface ISpatialMemory
 	 */
 	public void clearSimulation();
 
+	/**
+	 * @param The transformation of spatial memory relatively to the agent.
+	 */
+	public void setTransform(Transform3D transform);
+	
+	/**
+	 * @return The transformation of spatial memory relatively to the agent.
+	 */
+	public Transform3D getTransform();
+
+	public void transform(Transform3D transform);
+	
 	/**
 	 * Get the first place found at a given position
 	 * @param position The position

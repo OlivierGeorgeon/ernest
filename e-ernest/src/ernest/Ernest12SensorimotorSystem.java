@@ -130,8 +130,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.indexOf("f") >= 0)
 			{
 				act.setColor(0xFF0000);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
@@ -141,8 +141,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			else if (stimuliLabel.indexOf("b") >= 0)
 			{
 				act.setColor(0xFF0000);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
@@ -151,8 +151,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			else if (stimuliLabel.equals("++t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
-				act.setStartPosition(new Vector3f(4,0,0));
-				act.setEndPosition(new Vector3f(3,0,0));
+				act.setStartPosition(new Point3f(4,0,0));
+				//act.setEndPosition(new Vector3f(3,0,0));
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
@@ -161,8 +161,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			else if (stimuliLabel.equals(" +t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
-				act.setStartPosition(new Vector3f(3,-3,0));
-				act.setEndPosition(new Vector3f(2,-3,0));
+				act.setStartPosition(new Point3f(3,-3,0));
+				//act.setEndPosition(new Vector3f(2,-3,0));
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
@@ -171,8 +171,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			else if (stimuliLabel.equals("+ t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
-				act.setStartPosition(new Vector3f(3,3,0));
-				act.setEndPosition(new Vector3f(2,3,0));
+				act.setStartPosition(new Point3f(3,3,0));
+				//act.setEndPosition(new Vector3f(2,3,0));
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
@@ -181,8 +181,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			else 
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
@@ -195,8 +195,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.indexOf("t") >= 0 || stimuliLabel.equals("  "))
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_BEHIND));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(LocalSpaceMemory.DIRECTION_AHEAD);
@@ -205,8 +205,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_BEHIND);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_BEHIND));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
@@ -216,20 +216,20 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 		if (act.getLabel().equals("^* f"))
 		{
-			act.setRotation((float) - Math.PI / 2);
+			//act.setRotation((float) - Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_FISH);
-			act.setStartPosition(new Vector3f(3,3,0));
-			act.setEndPosition(new Vector3f(3,3,0));
+			act.setStartPosition(new Point3f(3,3,0));
+			//act.setEndPosition(new Vector3f(3,3,0));
 			Transform3D tf = new Transform3D();
 			tf.rotZ(- Math.PI / 2);
 			act.setTransform(tf);
 		}
 		else if (schemaLabel.equals("^"))
 		{
-			act.setRotation((float) - Math.PI / 2);
+			//act.setRotation((float) - Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_EMPTY);
-			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
-			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+			act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_HERE));
+			//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			Transform3D tf = new Transform3D();
 			tf.rotZ(- Math.PI / 2);
 			act.setTransform(tf);
@@ -237,20 +237,20 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		if (act.getLabel().equals("v *f"))
 		{
-			act.setRotation((float) Math.PI / 2);
+			//act.setRotation((float) Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_FISH);
-			act.setStartPosition(new Vector3f(3,-3,0));
-			act.setEndPosition(new Vector3f(3,-3,0));
+			act.setStartPosition(new Point3f(3,-3,0));
+			//act.setEndPosition(new Vector3f(3,-3,0));
 			Transform3D tf = new Transform3D();
 			tf.rotZ(Math.PI / 2);
 			act.setTransform(tf);
 		}
 		else if (schemaLabel.equals("v"))
 		{
-			act.setRotation((float) Math.PI / 2);
+			//act.setRotation((float) Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_EMPTY);
-			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
-			act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
+			act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_HERE));
+			//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			Transform3D tf = new Transform3D();
 			tf.rotZ(Math.PI / 2);
 			act.setTransform(tf);
@@ -261,14 +261,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_LEFT));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_LEFT));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 		}
 		
@@ -277,34 +277,34 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (stimuliLabel.indexOf("a") >= 0 )
 			{
 				act.setColor(Ernest.PHENOMENON_ALGA);
 				//act.setPhenomenon(Ernest.PHENOMENON_FISH);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (stimuliLabel.indexOf("b") >= 0 )
 			{
 				act.setColor(Ernest.PHENOMENON_BRICK);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 		}
 		
 		if (schemaLabel.equals("\\"))
 		{
-			act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-			act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
+			act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_RIGHT));
+			//act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 			//act.setStartPosition(new Vector3f(1,-1,0));
 			//act.setEndPosition(new Vector3f(1,-1,0));
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))

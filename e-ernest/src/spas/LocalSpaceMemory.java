@@ -51,6 +51,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	private int m_clock = 0;
 	
 	private ISpas m_spas;
+	
+	private Transform3D m_transform = new Transform3D();
 		
 	/**
 	 * Clone spatial memory to perform simulations
@@ -141,6 +143,17 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 
 	}
 	
+	public void transform(Transform3D transform)
+	{
+		//rotate(act.getRotation());
+		//translate(act.getTranslation());
+		
+		for (IPlace p : m_places)
+			//p.transform(act.getTranslation(), act.getRotation());
+		    p.transform(transform);
+
+	}
+	
 //	/**
 //	 * Rotate all the places of the given angle.
 //	 * @param angle The angle (provide the opposite angle from the agent's movement).
@@ -173,12 +186,19 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public int runSimulation(IAct act, ISpas spas)
 	{
 		m_spas = spas;
-		IPlace simulationPlace = addPlace(new Point3f(), Place.SIMULATION);
+		//IPlace simulationPlace = addPlace(new Point3f(), Place.SIMULATION);
 		
-		return simulate(simulationPlace, act);
+		m_transform.setIdentity();
+		
+		int status = simulate(act);
+		m_transform.invert();
+		transform(m_transform);
+		
+		//return simulate(simulationPlace, act);
+		return status;
 	}
 	
-	private int simulate(IPlace simulationPlace, IAct act)
+	private int simulate(IAct act)
 	{
 		//boolean consistent = false;
 		boolean unknown = true;
@@ -188,15 +208,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{
-			// Compute the start position of this act relatively to the beginning of the simulation
-			Vector3f startPosition = new Vector3f(act.getStartPosition());
-			ErnestUtils.rotate(startPosition, simulationPlace.getOrientationAngle());
-			Point3f position = new Point3f(simulationPlace.getPosition());
-			position.add(startPosition);
-			
-			// The orientation of this act relatively to the beginning of the simulation
-			float orientation = simulationPlace.getOrientationAngle() - act.getRotation();
-			//orientation += act.getRotation();
+			// The start position concerned by this act
+			Point3f position = new Point3f(act.getStartPosition()); 
 			
 			for (IPlace p : m_places)
 			{
@@ -214,13 +227,10 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			if (unknown)	
 			{
 				// No place found at this location
-				//simulationStatus = SIMULATION_CONSISTENT;
 				simulationStatus = SIMULATION_UNKNWON;
 				// Mark an unknown interaction
 				IPlace sim = addPlace(position, Place.UNKNOWN);
 				sim.setAct(act);
-				//sim.setOrientation(simulationPlace.getOrientation());
-				sim.setOrientation(orientation);
 				sim.setValue(0xB0B0FF);				
 			}
 			else
@@ -232,8 +242,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					// Mark a consistent interaction
 					IPlace sim = addPlace(position, Place.UNKNOWN);
 					sim.setAct(act);
-					//sim.setOrientation(simulationPlace.getOrientation());
-					sim.setOrientation(orientation);
 					sim.setValue(act.getColor());
 				}
 				if (afford)
@@ -243,36 +251,23 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					// Mark an afforded interaction
 					IPlace sim = addPlace(position, Place.AFFORD);
 					sim.setAct(act);
-					//sim.setOrientation(simulationPlace.getOrientation());
-					sim.setOrientation(orientation);
 					sim.setValue(act.getColor());
 				}
 			}
 			
-			// Move the virtual agent according to the simulated act
-			Vector3f translation = new Vector3f(act.getTranslation());
-			ErnestUtils.rotate(translation, simulationPlace.getOrientationAngle());
-			translation.scale(-1);
-			//simulationPlace.translate(translation);
-			//simulationPlace.rotate( - act.getRotation());
-			simulationPlace.transform(translation, - act.getRotation());
-			
-			// TODO figure out how to invert the transformation !!
+			// Apply this act's transformation to spatial memory
+			transform(act);
+			// accumulate the transformation of this act to reverse the transformation after the simulation
 			Transform3D tf = new Transform3D(act.getTransform());
-			tf.invert();
-			//simulationPlace.transform(tf);
+			m_transform.mul(tf, m_transform);
 
 		}
 		else 
 		{
-//			consistent = simulate(simulationPlace, act.getSchema().getContextAct(), doubt);
-//			if (consistent)
-//				consistent = simulate(simulationPlace, act.getSchema().getIntentionAct(), doubt);
-			simulationStatus = simulate(simulationPlace, act.getSchema().getContextAct());
+			simulationStatus = simulate(act.getSchema().getContextAct());
 			if (simulationStatus > SIMULATION_INCONSISTENT)
-			//if (simulationStatus > SIMULATION_UNKNWON)
 			{
-				int status2 = simulate(simulationPlace, act.getSchema().getIntentionAct());
+				int status2 = simulate(act.getSchema().getIntentionAct());
 				if (status2 == SIMULATION_INCONSISTENT)
 					simulationStatus = SIMULATION_INCONSISTENT;
 				else
@@ -282,9 +277,116 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				}
 			}
 		}
-		//return consistent;
 		return simulationStatus;
 	}
+
+//	private int simulate(IPlace simulationPlace, IAct act)
+//	{
+//		//boolean consistent = false;
+//		boolean unknown = true;
+//		boolean consistent = true;
+//		boolean afford = false;
+//		int simulationStatus = SIMULATION_INCONSISTENT;
+//		ISchema s = act.getSchema();
+//		if (s.isPrimitive())
+//		{
+//			// Compute the start position of this act relatively to the beginning of the simulation
+//			Vector3f startPosition = new Vector3f(act.getStartPosition());
+//			ErnestUtils.rotate(startPosition, simulationPlace.getOrientationAngle());
+//			Point3f position = new Point3f(simulationPlace.getPosition());
+//			position.add(startPosition);
+//			
+//			// The orientation of this act relatively to the beginning of the simulation
+//			float orientation = simulationPlace.getOrientationAngle() - act.getRotation();
+//			//orientation += act.getRotation();
+//			
+//			for (IPlace p : m_places)
+//			{
+//				if (p.isInCell(position) && p.getType() == Place.EVOKE_PHENOMENON)
+//				{
+//					unknown = false;
+//					for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
+//					{
+//						if (!bundle.isConsistent(act)) consistent = false; 
+//						if (bundle.afford(act)) afford = true;
+//					}
+//				}
+//			}	
+//
+//			if (unknown)	
+//			{
+//				// No place found at this location
+//				//simulationStatus = SIMULATION_CONSISTENT;
+//				simulationStatus = SIMULATION_UNKNWON;
+//				// Mark an unknown interaction
+//				IPlace sim = addPlace(position, Place.UNKNOWN);
+//				sim.setAct(act);
+//				//sim.setOrientation(simulationPlace.getOrientation());
+//				sim.setOrientation(orientation);
+//				sim.setValue(0xB0B0FF);				
+//			}
+//			else
+//			{
+//				if (consistent)
+//				{
+//					// No place that contains an incompatible act was fond at this location
+//					simulationStatus = SIMULATION_CONSISTENT;
+//					// Mark a consistent interaction
+//					IPlace sim = addPlace(position, Place.UNKNOWN);
+//					sim.setAct(act);
+//					//sim.setOrientation(simulationPlace.getOrientation());
+//					sim.setOrientation(orientation);
+//					sim.setValue(act.getColor());
+//				}
+//				if (afford)
+//				{
+//					// A place that contains this act is found at this location
+//					simulationStatus = SIMULATION_AFFORD;
+//					// Mark an afforded interaction
+//					IPlace sim = addPlace(position, Place.AFFORD);
+//					sim.setAct(act);
+//					//sim.setOrientation(simulationPlace.getOrientation());
+//					sim.setOrientation(orientation);
+//					sim.setValue(act.getColor());
+//				}
+//			}
+//			
+//			// Move the virtual agent according to the simulated act
+//			Vector3f translation = new Vector3f(act.getTranslation());
+//			ErnestUtils.rotate(translation, simulationPlace.getOrientationAngle());
+//			translation.scale(-1);
+//			//simulationPlace.translate(translation);
+//			//simulationPlace.rotate( - act.getRotation());
+//			simulationPlace.transform(translation, - act.getRotation());
+//			
+//			// TODO figure out how to invert the transformation !!
+//			Transform3D tf = new Transform3D(act.getTransform());
+//			tf.invert();
+//			//simulationPlace.transform(tf);
+//
+//		}
+//		else 
+//		{
+////			consistent = simulate(simulationPlace, act.getSchema().getContextAct(), doubt);
+////			if (consistent)
+////				consistent = simulate(simulationPlace, act.getSchema().getIntentionAct(), doubt);
+//			simulationStatus = simulate(simulationPlace, act.getSchema().getContextAct());
+//			if (simulationStatus > SIMULATION_INCONSISTENT)
+//			//if (simulationStatus > SIMULATION_UNKNWON)
+//			{
+//				int status2 = simulate(simulationPlace, act.getSchema().getIntentionAct());
+//				if (status2 == SIMULATION_INCONSISTENT)
+//					simulationStatus = SIMULATION_INCONSISTENT;
+//				else
+//				{
+//					if (simulationStatus == SIMULATION_AFFORD && status2 == SIMULATION_CONSISTENT)
+//						simulationStatus = SIMULATION_CONSISTENT;
+//				}
+//			}
+//		}
+//		//return consistent;
+//		return simulationStatus;
+//	}
 	
 //	public boolean simulate(IAct act, boolean doubt)
 //	{
@@ -522,5 +624,15 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			if (p.getType() == Place.SIMULATION || p.getType() == Place.UNKNOWN || p.getType() == Place.AFFORD)
 				it.remove();
 		}
-	}	
+	}
+	
+	public void setTransform(Transform3D transform) 
+	{
+		m_transform = transform;
+	}
+
+	public Transform3D getTransform() 
+	{
+		return m_transform;
+	}
 }

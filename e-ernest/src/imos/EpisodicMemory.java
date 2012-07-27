@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import javax.media.j3d.Transform3D;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Element;
@@ -433,24 +435,27 @@ public class EpisodicMemory
 	/**
 	 * @return an act that permits to reach a position and an orientation relative to the agent.
 	 */
-	public IAct reach(Vector3f position, float orientation)
+	public IAct reach(Point3f position, Vector3f orientation)
 	{
 		IAct act = null;
 		
 		for (IAct a : m_acts)
 		{
-			if (a.getStartPosition().epsilonEquals(position, .1f) && Math.abs(a.getRotation() - orientation) < .1f )
-			{
+			Vector3f or = new Vector3f(1,0,0);
+			Transform3D tf = new Transform3D(a.getTransform());
+			tf.invert();
+			tf.transform(or);
+			
+			if (a.getStartPosition().epsilonEquals(position, .1f) && or.epsilonEquals(orientation, .1f) )
 				if ( act == null || a.getSatisfaction() > act.getSatisfaction()) 
 					act = a;
-			}
 		}
 		
 		if (m_tracer != null && act != null)
 		{
 			Object reach = m_tracer.addEventElement("reach", true);			
 			m_tracer.addSubelement(reach, "position", "(" + position.x + ", " + position.y + ", " + position.z + ")" );
-			m_tracer.addSubelement(reach, "orientation", orientation +"" );
+			m_tracer.addSubelement(reach, "orientation", "(" + orientation.x + ", " + orientation.y + ", " + orientation.z + ")" );
 			m_tracer.addSubelement(reach, "act", act.toString() );
 		}
 			
