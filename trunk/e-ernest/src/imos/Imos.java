@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import spas.IPlace;
@@ -230,9 +231,9 @@ public class Imos implements IImos
 		m_imosCycle++;		
 		m_internalState= "";
 		
-		m_episodicMemory.reach(new Vector3f(0,1,0), (float) Math.PI/2);
-		m_episodicMemory.reach(new Vector3f(0,-1,0), (float) - Math.PI/2);
-		m_episodicMemory.reach(new Vector3f(2,0,0), 0f);
+		m_episodicMemory.reach(new Point3f(0,1,0), new Vector3f(0,1,0));
+		m_episodicMemory.reach(new Point3f(0,-1,0), new Vector3f(0,-1,0));
+		m_episodicMemory.reach(new Point3f(0,0,0), new Vector3f(-1,0,0));
 
 //		// Trace the new event
 //		

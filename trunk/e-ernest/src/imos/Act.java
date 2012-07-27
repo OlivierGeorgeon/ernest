@@ -1,7 +1,10 @@
 package imos;
 
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+
+import quicktime.qd3d.math.Point3D;
 
 import spas.LocalSpaceMemory;
 import utils.ErnestUtils;
@@ -44,10 +47,10 @@ public class Act implements IAct
 	
 	//private int m_phenomenon = Ernest.PHENOMENON_EMPTY;
 	private int m_color = Ernest.PHENOMENON_EMPTY;
-	private Vector3f m_startPosition = new Vector3f();
-	private Vector3f m_endPosition = new Vector3f();
-	private Vector3f m_translation = new Vector3f();
-	private float m_rotation = 0;
+	private Point3f m_startPosition = new Point3f();
+	//private Vector3f m_endPosition = new Vector3f();
+	//private Vector3f m_translation = new Vector3f();
+	//private float m_rotation = 0;
 	
 	private Transform3D m_transform = new Transform3D();
 	
@@ -251,18 +254,23 @@ public class Act implements IAct
 		return m_color;
 	}
 
-	public void setEndPosition(Vector3f position) 
-	{
-		if (m_schema.isPrimitive())
-			m_endPosition.set(position);
-	}
+//	public void setEndPosition(Vector3f position) 
+//	{
+//		if (m_schema.isPrimitive())
+//			m_endPosition.set(position);
+//	}
 
-	public Vector3f getEndPosition() 
+	public Point3f getEndPosition() 
 	{
-		if (m_schema.isPrimitive())
-			return m_endPosition;
-		else
-			return (m_schema.getIntentionAct().getEndPosition());
+		Point3f position = new Point3f(getStartPosition()); 
+		getTransform().transform(position);
+		
+		return position;
+
+//		if (m_schema.isPrimitive())
+//			return m_endPosition;
+//		else
+//			return (m_schema.getIntentionAct().getEndPosition());
 	}
 
 //	public void setTranslation(Vector3f translation) 
@@ -270,38 +278,38 @@ public class Act implements IAct
 //		m_translation = translation;
 //	}
 
-	public Vector3f getTranslation() 
-	{
-		Vector3f translation = new Vector3f();
-		if (m_schema.isPrimitive())
-		{
-			translation.set(m_endPosition);
-			translation.sub(m_startPosition);
-		}
-		else
-		{
-			translation.set(m_schema.getContextAct().getTranslation());
-			translation.add(m_schema.getIntentionAct().getTranslation());
-		}
-		return translation;
-	}
+//	public Vector3f getTranslation() 
+//	{
+//		Vector3f translation = new Vector3f();
+//		if (m_schema.isPrimitive())
+//		{
+//			translation.set(m_endPosition);
+//			translation.sub(m_startPosition);
+//		}
+//		else
+//		{
+//			translation.set(m_schema.getContextAct().getTranslation());
+//			translation.add(m_schema.getIntentionAct().getTranslation());
+//		}
+//		return translation;
+//	}
 
-	public void setRotation(float rotation) 
-	{
-		m_rotation = rotation;
-	}
+//	public void setRotation(float rotation) 
+//	{
+//		m_rotation = rotation;
+//	}
 
-	public float getRotation() 
-	{
-		float rotation;
-		if (m_schema.isPrimitive())
-			rotation = m_rotation;
-		else
-			rotation = m_schema.getContextAct().getRotation() + m_schema.getIntentionAct().getRotation();
-		return rotation;
-	}
+//	public float getRotation() 
+//	{
+//		float rotation;
+//		if (m_schema.isPrimitive())
+//			rotation = m_rotation;
+//		else
+//			rotation = m_schema.getContextAct().getRotation() + m_schema.getIntentionAct().getRotation();
+//		return rotation;
+//	}
 
-	public void setStartPosition(Vector3f position) 
+	public void setStartPosition(Point3f position) 
 	{
 		m_startPosition.set(position);
 	}
@@ -312,17 +320,20 @@ public class Act implements IAct
 	 * rotated to the opposite direction of its context
 	 * plus the translation of its context
 	 */
-	public Vector3f getStartPosition() 
+	public Point3f getStartPosition() 
 	{
-		Vector3f startPosition = new Vector3f();
+		Point3f startPosition = new Point3f();
 		if (m_schema.isPrimitive())
 			startPosition.set(m_startPosition);
 		else
 		{
 			startPosition.set(m_schema.getIntentionAct().getStartPosition());
-			ErnestUtils.rotate(startPosition, - m_schema.getContextAct().getRotation());
-			//startPosition.add(m_schema.getContextAct().getTranslation());
-			startPosition.sub(m_schema.getContextAct().getTranslation());
+			Transform3D tf = new Transform3D(m_schema.getContextAct().getTransform());
+			tf.invert();
+			tf.transform(startPosition);
+			
+			//ErnestUtils.rotate(startPosition, - m_schema.getContextAct().getRotation());
+			//startPosition.sub(m_schema.getContextAct().getTranslation());
 		}
 		return startPosition;
 	}
@@ -342,13 +353,24 @@ public class Act implements IAct
 			concernOnePlace = true;
 		else
 		{
-			if (m_schema.getContextAct().getStartPosition().equals(LocalSpaceMemory.DIRECTION_HERE))
+			Point3f startPosition = new Point3f(m_schema.getContextAct().getStartPosition());
+			if (startPosition.equals(new Point3f()))
 				concernOnePlace = true;
-			Vector3f destinationPosition = new Vector3f(m_schema.getIntentionAct().getEndPosition());
-			destinationPosition.sub(m_schema.getContextAct().getTranslation());
-			destinationPosition.sub(m_schema.getIntentionAct().getTranslation());
-			if (m_schema.getContextAct().getStartPosition().equals(destinationPosition))
+			
+			Point3f endPosition = new Point3f(startPosition);
+			Transform3D tf = new Transform3D(m_transform);
+			tf.invert();
+			tf.transform(endPosition);
+			
+			if (endPosition.equals(startPosition))
 				concernOnePlace = true;
+				
+			
+//			Vector3f destinationPosition = new Vector3f(m_schema.getIntentionAct().getEndPosition());
+//			destinationPosition.sub(m_schema.getContextAct().getTranslation());
+//			destinationPosition.sub(m_schema.getIntentionAct().getTranslation());
+//			if (m_schema.getContextAct().getStartPosition().equals(destinationPosition))
+//				concernOnePlace = true;
 		}
 		
 		// Do not use longer schemes to construct compresences.
