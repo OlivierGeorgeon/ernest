@@ -45,12 +45,8 @@ public class Act implements IAct
 	/** The length of the act's schema  */
 	private int m_length = 1;
 	
-	//private int m_phenomenon = Ernest.PHENOMENON_EMPTY;
 	private int m_color = Ernest.PHENOMENON_EMPTY;
 	private Point3f m_startPosition = new Point3f();
-	//private Vector3f m_endPosition = new Vector3f();
-	//private Vector3f m_translation = new Vector3f();
-	//private float m_rotation = 0;
 	
 	private Transform3D m_transform = new Transform3D();
 	
@@ -254,60 +250,16 @@ public class Act implements IAct
 		return m_color;
 	}
 
-//	public void setEndPosition(Vector3f position) 
-//	{
-//		if (m_schema.isPrimitive())
-//			m_endPosition.set(position);
-//	}
-
+	/**
+	 * The end position is the start position to which the schema's transformation is applied. 
+	 */
 	public Point3f getEndPosition() 
 	{
 		Point3f position = new Point3f(getStartPosition()); 
 		getTransform().transform(position);
 		
 		return position;
-
-//		if (m_schema.isPrimitive())
-//			return m_endPosition;
-//		else
-//			return (m_schema.getIntentionAct().getEndPosition());
 	}
-
-//	public void setTranslation(Vector3f translation) 
-//	{
-//		m_translation = translation;
-//	}
-
-//	public Vector3f getTranslation() 
-//	{
-//		Vector3f translation = new Vector3f();
-//		if (m_schema.isPrimitive())
-//		{
-//			translation.set(m_endPosition);
-//			translation.sub(m_startPosition);
-//		}
-//		else
-//		{
-//			translation.set(m_schema.getContextAct().getTranslation());
-//			translation.add(m_schema.getIntentionAct().getTranslation());
-//		}
-//		return translation;
-//	}
-
-//	public void setRotation(float rotation) 
-//	{
-//		m_rotation = rotation;
-//	}
-
-//	public float getRotation() 
-//	{
-//		float rotation;
-//		if (m_schema.isPrimitive())
-//			rotation = m_rotation;
-//		else
-//			rotation = m_schema.getContextAct().getRotation() + m_schema.getIntentionAct().getRotation();
-//		return rotation;
-//	}
 
 	public void setStartPosition(Point3f position) 
 	{
@@ -316,9 +268,9 @@ public class Act implements IAct
 
 	/**
 	 * Computes the start position of this act
-	 * The start position of its intention
-	 * rotated to the opposite direction of its context
-	 * plus the translation of its context
+	 * If primitive schema, return the predefined start position.
+	 * If composite schema, return the start position of its intention
+	 * to which the invert transformation of its context is applied.
 	 */
 	public Point3f getStartPosition() 
 	{
@@ -331,9 +283,6 @@ public class Act implements IAct
 			Transform3D tf = new Transform3D(m_schema.getContextAct().getTransform());
 			tf.invert();
 			tf.transform(startPosition);
-			
-			//ErnestUtils.rotate(startPosition, - m_schema.getContextAct().getRotation());
-			//startPosition.sub(m_schema.getContextAct().getTranslation());
 		}
 		return startPosition;
 	}
@@ -362,7 +311,7 @@ public class Act implements IAct
 			tf.invert();
 			tf.transform(endPosition);
 			
-			if (endPosition.equals(startPosition))
+			if (endPosition.epsilonEquals(startPosition, .1f))
 				concernOnePlace = true;
 				
 			

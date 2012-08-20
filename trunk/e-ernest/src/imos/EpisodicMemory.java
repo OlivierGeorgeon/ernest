@@ -170,13 +170,6 @@ public class EpisodicMemory
 			m_schemas.add(s);
 			m_acts.add(a);
 			m_learnCount++;
-			
-//			// Compute the relative position of this act
-//			if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)"))
-//			{
-//				Vector3f p = m_sensorimotorSystem.situate(a);
-//				a.setStartPosition(p);
-//			}
 		}
 		else
 			// The schema already exists: return a pointer to it.
