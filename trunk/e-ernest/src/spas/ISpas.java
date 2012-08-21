@@ -94,7 +94,7 @@ public interface ISpas
 
 	//public IBundle aggregateBundle(IBundle bundle, IAct act); 
 
-	public int getValue(Vector3f position);
+	public int getValue(Point3f position);
 	//public IPlace getPlace(Vector3f position);
 	
 	public ISpatialMemory getSpatialMemory();

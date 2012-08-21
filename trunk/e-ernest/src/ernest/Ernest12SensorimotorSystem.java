@@ -36,7 +36,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
     
     private int m_satisfaction = 0;
     
-    private ISpatialMemory m_spatialSimulation = new LocalSpaceMemory();
+    //private ISpatialMemory m_spatialSimulation = new LocalSpaceMemory();
     
 	//private JFrame m_frame;
 
@@ -68,7 +68,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
         
  		IAct enactedAct = addInteraction(act.getSchema().getLabel(), observation.getStimuli(), m_satisfaction);
  		
-		m_spatialSimulation.clearSimulation();
+ 		clearSimulation();
+		//m_spatialSimulation.clearSimulation();
 		
 		return enactedAct;
 	}
@@ -130,22 +131,22 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.indexOf("f") >= 0)
 			{
 				act.setColor(0xFF0000);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
-				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
+				tf.setTranslation(new Vector3f());
 				act.setTransform(tf);
 
 			}
 			else if (stimuliLabel.indexOf("b") >= 0)
 			{
 				act.setColor(0xFF0000);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
-				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
+				tf.setTranslation(new Vector3f());
 				act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals("++t"))
@@ -155,7 +156,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				//act.setEndPosition(new Vector3f(3,0,0));
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
-				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
+				tf.setTranslation(new Vector3f(-1,0,0));
 				act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals(" +t"))
@@ -165,7 +166,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				//act.setEndPosition(new Vector3f(2,-3,0));
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
-				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
+				tf.setTranslation(new Vector3f(-1,0,0));
 				act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals("+ t"))
@@ -175,17 +176,17 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				//act.setEndPosition(new Vector3f(2,3,0));
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
-				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
+				tf.setTranslation(new Vector3f(-1,0,0));
 				act.setTransform(tf);
 			}
 			else 
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
-				tf.setTranslation(LocalSpaceMemory.DIRECTION_BEHIND);
+				tf.setTranslation(new Vector3f(-1,0,0));
 				act.setTransform(tf);
 			}
 		}
@@ -195,21 +196,21 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.indexOf("t") >= 0 || stimuliLabel.equals("  "))
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_BEHIND));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
-				tf.setTranslation(LocalSpaceMemory.DIRECTION_AHEAD);
+				tf.setTranslation(new Vector3f(1,0,0));
 				act.setTransform(tf);
 			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_BEHIND));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
-				tf.setTranslation(LocalSpaceMemory.DIRECTION_HERE);
+				tf.setTranslation(new Vector3f(0,0,0));
 				act.setTransform(tf);
 			}
 		}
@@ -228,7 +229,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			//act.setRotation((float) - Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_EMPTY);
-			act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_HERE));
+			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
 			//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			Transform3D tf = new Transform3D();
 			tf.rotZ(- Math.PI / 2);
@@ -249,7 +250,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		{
 			//act.setRotation((float) Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_EMPTY);
-			act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_HERE));
+			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
 			//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			Transform3D tf = new Transform3D();
 			tf.rotZ(Math.PI / 2);
@@ -261,13 +262,13 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_LEFT));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_LEFT));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 		}
@@ -277,33 +278,33 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (stimuliLabel.indexOf("a") >= 0 )
 			{
 				act.setColor(Ernest.PHENOMENON_ALGA);
 				//act.setPhenomenon(Ernest.PHENOMENON_FISH);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (stimuliLabel.indexOf("b") >= 0 )
 			{
 				act.setColor(Ernest.PHENOMENON_BRICK);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_AHEAD));
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 		}
 		
 		if (schemaLabel.equals("\\"))
 		{
-			act.setStartPosition(new Point3f(LocalSpaceMemory.DIRECTION_RIGHT));
+			act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 			//act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 			//act.setStartPosition(new Vector3f(1,-1,0));
 			//act.setEndPosition(new Vector3f(1,-1,0));
@@ -378,40 +379,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	}
 	
 	/**
-	 * Simulates an act in spatial memory to check its consistency with the current state of spatial memory.
-	 * TODO Create simulated phenomena to check for internal consistency of composite acts.
-	 * @param act The act to simulate
-	 * @param doubt consistency in case of doubt.
-	 */
-//	private boolean simulate(IAct act, boolean doubt)
-//	{
-//		boolean consistent = false;
-//		ISchema s = act.getSchema();
-//		if (s.isPrimitive())
-//		{			
-//			IBundle bundle = m_spas.getBundleSimulation(act.getStartPosition());
-//			if (bundle == null)	
-//				consistent = doubt;
-//			else
-//			{
-//				if (doubt)
-//					consistent =  bundle.isConsistent(act);
-//				else 
-//					consistent = bundle.afford(act);
-//			}
-//			m_spas.translateSimulation(act.getTranslation());
-//			m_spas.rotateSimulation(act.getRotation());
-//		}
-//		else 
-//		{
-//			consistent = simulate(act.getSchema().getContextAct(), doubt);
-//			if (consistent)
-//				consistent = simulate(act.getSchema().getIntentionAct(), doubt);
-//		}
-//		return consistent;
-//	}
-//	
-	/**
 	 * Tells the interaction that is likely to result from the enaction of this schema.
 	 * If the schema has no succeeding or failing act defined, 
 	 * then pick a random interaction attached to this schema.
@@ -454,68 +421,68 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 		//m_spatialSimulation.clearSimulation();
 
+		// Simulate all acts in spatial memory. 
+		
 		for (IAct a : acts)
 		{
-			// Propose acts that are afforded by the spatial memory context
 			//m_spas.initSimulation();
 			//ISpatialMemory spatialSimulation = m_spas.getSpatialMemory().clone();
-			m_spatialSimulation = m_spas.getSpatialMemory();
+
+			//m_spatialSimulation = m_spas.getSpatialMemory();
 			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
 				//System.out.println("Simulate: " + a.toString());
-				int consistence = m_spatialSimulation.runSimulation(a, m_spas);
+				//int consistence = m_spatialSimulation.runSimulation(a, m_spas);
+				
+				int consistence = runSimulation(a);
+				
+				// Create a proposition for acts that are afforded by the spatial situation
 				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
 				{
-					// Create proposition for acts that are afforded by the spatial situation
 					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
 					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
 					propositionList.add(p);
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "propose", p.toString());
 				}
+
+				// Create a proposition for acts that inform the spatial situation
 				if (consistence == LocalSpaceMemory.SIMULATION_UNKNWON)
 				{
 					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
 					{
-						// Create proposition for acts that inform the spatial situation
 						IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
 						propositionList.add(p);
 						if (m_tracer != null)
 							m_tracer.addSubelement(activations, "poke", p.toString());
-						
 					}
 				}
+				
+				// Create a proposition for acts that reach a situation where another act is afforded.
+				// TODO make it work !
+				if (consistence == LocalSpaceMemory.SIMULATION_REACH)
+				{
+					int w = PHENOMENA_WEIGHT * (a.getSatisfaction() + 50);
+					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					propositionList.add(p);
+					if (m_tracer != null)
+						m_tracer.addSubelement(activations, "reach", p.toString());
+				}
 			}
+						
 //			if (m_frame != null) 
 //			{
 //				m_frame.repaint(); 
 //				ErnestUtils.sleep(500);
 //			}
-			
-			// Propose primitive acts that inform about unknown places
-//			if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
-//			{
-//				IPlace concernedPlace = m_spas.getPlace(a.getStartPosition());	
-//				if (concernedPlace == null)
-//				{
-//					IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
-//					propositionList.add(p);
-//					if (m_tracer != null)
-//						m_tracer.addSubelement(activations, "poke", p.toString());
-//				}
-//			}
-			
-			// Propose acts that lead to a place and orientation that affords acts.
-			// 
-			
 		}	
 		return propositionList;
 	}	
 	
-	public ISpatialMemory getSpatialSimulation()
-	{
-		return m_spatialSimulation;
-	}
+//	public ISpatialMemory getSpatialSimulation()
+//	{
+//		return m_spatialSimulation;
+//	}
 	
 //	public void setFrame(JFrame frame)
 //	{

@@ -74,7 +74,7 @@ public interface ISpatialMemory
 	/**
 	 * @return The value of a place for display and trace.
 	 */
-	public int getValue(Vector3f position);
+	public int getValue(Point3f position);
 
 	/**
 	 * Compute a compresence of places in this spatial memory
