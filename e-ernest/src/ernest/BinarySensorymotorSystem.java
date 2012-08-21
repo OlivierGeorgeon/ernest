@@ -11,6 +11,7 @@ import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
 import spas.ISpatialMemory;
+import spas.LocalSpaceMemory;
 import spas.Place;
 import imos.IAct;
 import imos.IImos;
@@ -29,10 +30,12 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	protected IImos m_imos;
 	protected ITracer m_tracer;
 	protected spas.ISpas m_spas;
+    private ISpatialMemory m_spatialMemory;
 
 	public void init(ISpas spas, IImos imos, ITracer tracer)
 	{
 		m_spas = spas;
+		m_spatialMemory = m_spas.getSpatialMemory();
 		m_imos = imos;
 		m_tracer = tracer;
 		// TODO clean this up.
@@ -163,10 +166,24 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return anticipateInteraction;
 	}
 
-	public ISpatialMemory getSpatialSimulation() {
-		// TODO Auto-generated method stub
-		return null;
+	public ISpatialMemory getSpatialSimulation()
+	{
+		return m_spatialMemory;
 	}
+	
+	protected void clearSimulation()
+	{
+		m_spatialMemory.clearSimulation();
+	}
+	
+	protected int runSimulation(IAct a)
+	{
+		return m_spatialMemory.runSimulation(a, m_spas);
+	}
+//	public ISpatialMemory getSpatialSimulation() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 //	public void setFrame(JFrame frame) {
 //		// TODO Auto-generated method stub

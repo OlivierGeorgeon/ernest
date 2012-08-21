@@ -231,9 +231,9 @@ public class Imos implements IImos
 		m_imosCycle++;		
 		m_internalState= "";
 		
-		m_episodicMemory.reach(new Point3f(0,1,0), new Vector3f(0,1,0));
-		m_episodicMemory.reach(new Point3f(0,-1,0), new Vector3f(0,-1,0));
-		m_episodicMemory.reach(new Point3f(0,0,0), new Vector3f(-1,0,0));
+		//m_episodicMemory.reach(new Point3f(0,1,0), new Vector3f(0,1,0));
+		//m_episodicMemory.reach(new Point3f(0,-1,0), new Vector3f(0,-1,0));
+		//m_episodicMemory.reach(new Point3f(0,0,0), new Vector3f(-1,0,0));
 
 //		// Trace the new event
 //		

@@ -97,7 +97,7 @@ public class Spas implements ISpas
 	
 	public int getValue(int i, int j)
 	{
-		Vector3f position = new Vector3f(1 - j, 1 - i, 0);
+		Point3f position = new Point3f(1 - j, 1 - i, 0);
 		if (m_localSpaceMemory != null)
 			return m_localSpaceMemory.getValue(position);
 		else
@@ -270,7 +270,7 @@ public class Spas implements ISpas
 		return false;
 	}
 
-	public int getValue(Vector3f position) 
+	public int getValue(Point3f position) 
 	{
 		return m_localSpaceMemory.getValue(position);
 	}
