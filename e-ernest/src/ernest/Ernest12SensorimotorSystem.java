@@ -374,7 +374,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	{
 		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
 		//return simulationMemory.simulate(act, true);
-		return (simulationMemory.runSimulation(act, m_spas) > LocalSpaceMemory.SIMULATION_INCONSISTENT);
+		int status = simulationMemory.runSimulation(act, m_spas);
+		return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
 		//return true;
 	}
 	
@@ -443,11 +444,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
 					propositionList.add(p);
 					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "propose", p.toString());
+						m_tracer.addSubelement(activations, "afforded", p.toString());
 				}
 
 				// Create a proposition for acts that inform the spatial situation
-				if (consistence == LocalSpaceMemory.SIMULATION_UNKNWON)
+				if (consistence == LocalSpaceMemory.SIMULATION_UNKNOWN)
 				{
 					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
 					{

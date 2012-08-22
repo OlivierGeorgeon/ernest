@@ -38,7 +38,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static float    SOMATO_RADIUS = 1f;
 	
 	public final static int SIMULATION_INCONSISTENT = -1;
-	public final static int SIMULATION_UNKNWON = 0;
+	public final static int SIMULATION_UNKNOWN = 0;
 	public final static int SIMULATION_CONSISTENT = 1;
 	public final static int SIMULATION_AFFORD = 2;
 	public final static int SIMULATION_REACH = 3;
@@ -140,8 +140,11 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		int status = simulate(act);
 		
 		// Test if the resulting situation leads to an empty square 
-		//if (getValue(DIRECTION_AHEAD) == 0xFFFFFF)
-		//	status = SIMULATION_REACH;
+		Transform3D tr = new Transform3D(); tr.setIdentity();
+		int clock = m_spas.getClock();
+
+		if (status != SIMULATION_INCONSISTENT && (getValue(DIRECTION_AHEAD) == 0xFFFFFF || getValue(DIRECTION_AHEAD) == 0x73E600 || getValue(DIRECTION_RIGHT) == 0x73E600) && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
+			status = SIMULATION_REACH;
 		
 		//Revert the transformation in spatial memory 
 		m_transform.invert();
@@ -179,7 +182,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			if (unknown)	
 			{
 				// No place found at this location
-				simulationStatus = SIMULATION_UNKNWON;
+				simulationStatus = SIMULATION_UNKNOWN;
 				// Mark an unknown interaction
 				IPlace sim = addPlace(position, Place.UNKNOWN);
 				sim.setAct(act);
@@ -224,8 +227,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					simulationStatus = SIMULATION_INCONSISTENT;
 				else
 				{
-					if (simulationStatus == SIMULATION_AFFORD && status2 == SIMULATION_CONSISTENT)
-						simulationStatus = SIMULATION_CONSISTENT;
+					if (simulationStatus == SIMULATION_AFFORD && (status2 == SIMULATION_CONSISTENT || status2 == SIMULATION_UNKNOWN))
+						simulationStatus = status2;
 				}
 			}
 		}
@@ -233,8 +236,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	}
 
 	/**
-	 * Get the phenomena value at a given position.
-	 * (The last bundle found in the list of places that match this position)
+	 * Get the value at a given position.
+	 * (The last place found in the list of places that match this position)
 	 * (Used to display in the trace)
 	 * @param position The position of the location.
 	 * @return The bundle.
