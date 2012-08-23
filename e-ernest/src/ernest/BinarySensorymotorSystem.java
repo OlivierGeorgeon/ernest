@@ -14,6 +14,7 @@ import spas.ISpatialMemory;
 import spas.LocalSpaceMemory;
 import spas.Place;
 import imos.IAct;
+import imos.IActProposition;
 import imos.IImos;
 import imos.IProposition;
 import imos.ISchema;
@@ -115,10 +116,10 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return new ArrayList<IProposition>();
 	}
 
-	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts) 
+	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts) 
 	{
 		// TODO Auto-generated method stub
-		return new ArrayList<IProposition>();
+		return new ArrayList<IActProposition>();
 	}
 
 //	public void stepSpas(IAct act) {
@@ -134,10 +135,6 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		// TODO Auto-generated method stub
 		
 	}
-//	public Vector3f situate(IAct act) 
-//	{
-//		return new Vector3f();
-//	}
 	
 	/**
 	 * Tells the interaction that is likely to result from the enaction of this schema.
