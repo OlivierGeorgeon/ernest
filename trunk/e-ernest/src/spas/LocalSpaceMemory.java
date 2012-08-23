@@ -42,6 +42,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static int SIMULATION_CONSISTENT = 1;
 	public final static int SIMULATION_AFFORD = 2;
 	public final static int SIMULATION_REACH = 3;
+	public final static int SIMULATION_REACH2 = 4;
 	
 	/** The duration of persistence in local space memory. */
 	public static int PERSISTENCE_DURATION = 10;//50;
@@ -143,8 +144,10 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		Transform3D tr = new Transform3D(); tr.setIdentity();
 		int clock = m_spas.getClock();
 
-		if (status != SIMULATION_INCONSISTENT && (getValue(DIRECTION_AHEAD) == 0xFFFFFF || getValue(DIRECTION_AHEAD) == 0x73E600 || getValue(DIRECTION_RIGHT) == 0x73E600) && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
+		if (status != SIMULATION_INCONSISTENT && getValue(DIRECTION_AHEAD) == 0xFFFFFF && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
 			status = SIMULATION_REACH;
+		if (status != SIMULATION_INCONSISTENT && (getValue(DIRECTION_AHEAD) == 0x73E600 || getValue(DIRECTION_RIGHT) == 0x73E600) && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
+			status = SIMULATION_REACH2;
 		
 		//Revert the transformation in spatial memory 
 		m_transform.invert();
@@ -248,6 +251,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (IPlace p : m_places)
 		{
 			if (p.isInCell(position) && p.getType() == Place.EVOKE_PHENOMENON)
+				if (value != 0x73E600 && value != 0x00E6A0)
 				value = p.getValue();
 		}	
 		return value;

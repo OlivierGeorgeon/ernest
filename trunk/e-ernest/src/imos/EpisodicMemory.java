@@ -378,49 +378,43 @@ public class EpisodicMemory
 		}
 		
 		// TODO Update the expected satisfaction of each proposed schema based on the local map anticipation
+		
+		IAct a = selectAct(proposals);
 
-		for (IProposition p : proposals)
-		{
-			//System.out.println(p);
-			//IObservation anticipation = m_ernest.getStaticSystem().anticipate(p.getAct());
-			// Adjust the proposition's weight based on the anticipation in the local map 
-		}
-		
-		
-		// sort by weighted proposition...
-		Collections.sort(proposals);
-		
-		// count how many are tied with the  highest weighted proposition
-		int count = 0;
-		int wp = proposals.get(0).getWeight();
-		for (IProposition p : proposals)
-		{
-			if (p.getWeight() != wp)
-				break;
-			count++;
-		}
-
-		// pick one at random from the top of the proposal list
-		// count is equal to the number of proposals that are tied...
-
-		IProposition p = null;
-		if (DETERMINISTIC)
-			p = proposals.get(0); // Always take the first
-		else
-			p = proposals.get(m_rand.nextInt(count)); // Break the tie at random
-		
-		ISchema s = p.getSchema();
-		
-		//IAct a = p.getAct();
-		IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
+//		// sort by weighted proposition...
+//		Collections.sort(proposals);
+//		
+//		// count how many are tied with the  highest weighted proposition
+//		int count = 0;
+//		int wp = proposals.get(0).getWeight();
+//		for (IProposition p : proposals)
+//		{
+//			if (p.getWeight() != wp)
+//				break;
+//			count++;
+//		}
+//
+//		// pick one at random from the top of the proposal list
+//		// count is equal to the number of proposals that are tied...
+//
+//		IProposition p = null;
+//		if (DETERMINISTIC)
+//			p = proposals.get(0); // Always take the first
+//		else
+//			p = proposals.get(m_rand.nextInt(count)); // Break the tie at random
+//		
+//		ISchema s = p.getSchema();
+//		
+//		//IAct a = p.getAct();
+//		IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
 		
 		// Activate the selected act in Episodic memory.
 		// (The act's activation is set equal to its proposition's weight)
-		a.setActivation(p.getWeight());
+//		a.setActivation(p.getWeight());
 		
 		// TODO at some point we may implement a smarter mechanism to spread the activation to sub-acts.
 
-		System.out.println("Select:" + a);
+//		System.out.println("Select:" + a);
 
 		return a ;
 	}
@@ -453,6 +447,60 @@ public class EpisodicMemory
 		}
 			
 		return act;
+	}
+	
+	private IAct selectAct(List<IProposition> propositions)
+	{
+		
+		//Construct a list of schemaPropositions from the list of actPropositions.
+		
+		List<IProposition> schemaPropositions = new ArrayList<IProposition>();	
+		for (IProposition actProposition : propositions)
+		{
+			int w = actProposition.getWeight();
+			int e = actProposition.getExpectation();
+			IProposition schemaProposition = new Proposition(actProposition.getSchema(), w, e);
+			int i = schemaPropositions.indexOf(schemaProposition);
+			if (i == -1)
+				schemaPropositions.add(schemaProposition);
+			else
+				schemaPropositions.get(i).update(w, e);
+		}
+		
+		// sort by weighted proposition...
+		Collections.sort(schemaPropositions);
+		
+		// count how many are tied with the  highest weighted proposition
+		int count = 0;
+		int wp = schemaPropositions.get(0).getWeight();
+		for (IProposition p : schemaPropositions)
+		{
+			if (p.getWeight() != wp)
+				break;
+			count++;
+		}
+
+		// pick one at random from the top of the proposal list
+		// count is equal to the number of proposals that are tied...
+
+		IProposition p = null;
+		if (DETERMINISTIC)
+			p = schemaPropositions.get(0); // Always take the first
+		else
+			p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
+		
+		ISchema s = p.getSchema();
+		
+		IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
+		
+		a.setActivation(p.getWeight());
+		
+		System.out.println("Select:" + a);
+
+		if (m_tracer != null)
+			m_tracer.addEventElement("select", a.toString());
+
+		return a;
 	}
 	
 	/**

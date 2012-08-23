@@ -15,7 +15,7 @@ public class Proposition implements IProposition
 	private ISchema m_schema = null;
 	private int m_weight = 0; 
 	private int m_expectation = 0;
-	//private IAct m_act = null;
+	private IAct m_act = null;
 	
 	/**
 	 * Constructor. 
@@ -32,6 +32,15 @@ public class Proposition implements IProposition
 	}
 
 	/**
+	 * Get the proposal's schema.
+	 * @return The proposal's schema.
+	 */
+	public ISchema getSchema()
+	{
+		return m_schema;
+	}
+
+	/**
 	 * Update an existing proposal.
 	 * @param w The weight to add to the existing weight.
 	 * @param e The expectation to add to the existing expectation.
@@ -39,8 +48,7 @@ public class Proposition implements IProposition
 	public void update(int w, int e)
 	{
 		m_weight += w;
-		m_expectation += e;
-		
+		m_expectation += e;		
 	}
 
 	/**
@@ -52,21 +60,6 @@ public class Proposition implements IProposition
 		return m_weight;
 	}
 
-
-	/**
-	 * Get the proposal's schema.
-	 * @return The proposal's schema.
-	 */
-	public ISchema getSchema()
-	{
-		return m_schema;
-	}
-
-//	public IAct getAct()
-//	{
-//		//return (m_expectation >= 0 ? m_schema.getSucceedingAct() : m_schema.getFailingAct());
-//		return m_act;
-//	}
 	public int getExpectation()
 	{
 		return m_expectation;
@@ -112,5 +105,4 @@ public class Proposition implements IProposition
 		String s = m_schema + " proposition_weight=" + m_weight + " proposition_expectation=" + m_expectation;
 		return s;
 	}
-	
 }

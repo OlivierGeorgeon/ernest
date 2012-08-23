@@ -128,67 +128,67 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		if (schemaLabel.equals(">"))
 		{
+			Transform3D tf = new Transform3D();
 			if (stimuliLabel.indexOf("f") >= 0)
 			{
 				act.setColor(0xFF0000);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				Transform3D tf = new Transform3D();
-				tf.rotZ(0);
-				tf.setTranslation(new Vector3f());
-				act.setTransform(tf);
-
+				//tf.rotZ(0);
+				//tf.setTranslation(new Vector3f());
+				//act.setTransform(tf);
 			}
 			else if (stimuliLabel.indexOf("b") >= 0)
 			{
 				act.setColor(0xFF0000);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				Transform3D tf = new Transform3D();
-				tf.rotZ(0);
-				tf.setTranslation(new Vector3f());
-				act.setTransform(tf);
+				//Transform3D tf = new Transform3D();
+				//tf.rotZ(0);
+				//tf.setTranslation(new Vector3f());
+				//act.setTransform(tf);
+			}
+			else if (stimuliLabel.indexOf("a") >= 0)
+			{
+				act.setColor(0x73E600);
+				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
+				tf.setTranslation(new Vector3f(-1,0,0));
 			}
 			else if (stimuliLabel.equals("++t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Point3f(4,0,0));
-				//act.setEndPosition(new Vector3f(3,0,0));
-				Transform3D tf = new Transform3D();
-				tf.rotZ(0);
+				//Transform3D tf = new Transform3D();
+				//tf.rotZ(0);
 				tf.setTranslation(new Vector3f(-1,0,0));
-				act.setTransform(tf);
+				//act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals(" +t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Point3f(3,-3,0));
-				//act.setEndPosition(new Vector3f(2,-3,0));
-				Transform3D tf = new Transform3D();
-				tf.rotZ(0);
+				//Transform3D tf = new Transform3D();
+				//tf.rotZ(0);
 				tf.setTranslation(new Vector3f(-1,0,0));
-				act.setTransform(tf);
+				//act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals("+ t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Point3f(3,3,0));
-				//act.setEndPosition(new Vector3f(2,3,0));
-				Transform3D tf = new Transform3D();
-				tf.rotZ(0);
+				//Transform3D tf = new Transform3D();
+				//tf.rotZ(0);
 				tf.setTranslation(new Vector3f(-1,0,0));
-				act.setTransform(tf);
+				//act.setTransform(tf);
 			}
 			else 
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
-				Transform3D tf = new Transform3D();
-				tf.rotZ(0);
+				//Transform3D tf = new Transform3D();
+				//tf.rotZ(0);
 				tf.setTranslation(new Vector3f(-1,0,0));
-				act.setTransform(tf);
+				//act.setTransform(tf);
 			}
+			act.setTransform(tf);
 		}
 
 		if (schemaLabel.equals("<"))
@@ -197,7 +197,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(new Vector3f(1,0,0));
@@ -207,7 +206,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_BEHIND);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_BEHIND);
 				Transform3D tf = new Transform3D();
 				tf.rotZ(0);
 				tf.setTranslation(new Vector3f(0,0,0));
@@ -217,20 +215,16 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 		if (act.getLabel().equals("^* f"))
 		{
-			//act.setRotation((float) - Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_FISH);
 			act.setStartPosition(new Point3f(3,3,0));
-			//act.setEndPosition(new Vector3f(3,3,0));
 			Transform3D tf = new Transform3D();
 			tf.rotZ(- Math.PI / 2);
 			act.setTransform(tf);
 		}
 		else if (schemaLabel.equals("^"))
 		{
-			//act.setRotation((float) - Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_EMPTY);
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
-			//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			Transform3D tf = new Transform3D();
 			tf.rotZ(- Math.PI / 2);
 			act.setTransform(tf);
@@ -238,20 +232,16 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		if (act.getLabel().equals("v *f"))
 		{
-			//act.setRotation((float) Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_FISH);
 			act.setStartPosition(new Point3f(3,-3,0));
-			//act.setEndPosition(new Vector3f(3,-3,0));
 			Transform3D tf = new Transform3D();
 			tf.rotZ(Math.PI / 2);
 			act.setTransform(tf);
 		}
 		else if (schemaLabel.equals("v"))
 		{
-			//act.setRotation((float) Math.PI / 2);
 			act.setColor(Ernest.PHENOMENON_EMPTY);
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_HERE);
-			//act.setEndPosition(LocalSpaceMemory.DIRECTION_HERE);
 			Transform3D tf = new Transform3D();
 			tf.rotZ(Math.PI / 2);
 			act.setTransform(tf);
@@ -263,13 +253,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			}
 		}
 		
@@ -279,35 +267,27 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (stimuliLabel.indexOf("a") >= 0 )
 			{
 				act.setColor(Ernest.PHENOMENON_ALGA);
-				//act.setPhenomenon(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else if (stimuliLabel.indexOf("b") >= 0 )
 			{
 				act.setColor(Ernest.PHENOMENON_BRICK);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 			else
 			{
 				act.setColor(Ernest.PHENOMENON_WALL);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//act.setEndPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			}
 		}
 		
 		if (schemaLabel.equals("\\"))
 		{
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-			//act.setEndPosition(LocalSpaceMemory.DIRECTION_RIGHT);
-			//act.setStartPosition(new Vector3f(1,-1,0));
-			//act.setEndPosition(new Vector3f(1,-1,0));
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 				act.setColor(Ernest.PHENOMENON_EMPTY);
 			else
@@ -317,18 +297,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return act;
 	}
 
-//	public IAct enactedAct(IAct act, boolean status) 
-//	{
-//		// Add the interaction in IMOS =======================
-//		
-//		// The schema is null during the first cycle
-//		if (act == null) return null;
-//		
-//		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), (status ? "t" : "f"), 0);
-//
-//		return enactedAct;
-//	}
-//	
 	public void updateSpas(IAct primitiveAct, IAct topAct)
 	{
 		// Add this act into spatial memory
@@ -358,24 +326,17 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			
 			IObservation observation = new Observation();
 			observation.setPrimitiveAct(primitiveAct);
-			//observation.setTranslation(primitiveAct.getTranslation());
-			//observation.setRotation(primitiveAct.getRotation());
 			m_spas.step(observation);
 		}
 
 	}
 	
-//	public ArrayList<IPlace> getPhenomena()
-//	{
-//		return m_spas.getPhenomena();
-//	}
-
 	public boolean checkConsistency(IAct act) 
 	{
 		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
-		//return simulationMemory.simulate(act, true);
 		int status = simulationMemory.runSimulation(act, m_spas);
 		return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
+
 		//return true;
 	}
 	
@@ -469,6 +430,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "reach", p.toString());
 				}
+				if (consistence == LocalSpaceMemory.SIMULATION_REACH2)
+				{
+					int w = PHENOMENA_WEIGHT * (a.getSatisfaction() + 100);
+					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					propositionList.add(p);
+					if (m_tracer != null)
+						m_tracer.addSubelement(activations, "reach", p.toString());
+				}
 			}
 						
 //			if (m_frame != null) 
@@ -479,11 +448,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		}	
 		return propositionList;
 	}	
-	
-//	public ISpatialMemory getSpatialSimulation()
-//	{
-//		return m_spatialSimulation;
-//	}
 	
 //	public void setFrame(JFrame frame)
 //	{
