@@ -1,6 +1,8 @@
 package ernest;
 
+import imos.ActProposition;
 import imos.IAct;
+import imos.IActProposition;
 import imos.IProposition;
 import imos.ISchema;
 import imos.Imos;
@@ -352,7 +354,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	{
 		IAct anticipateInteraction = null;
 		boolean status = (e >= 0);
-		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
+		//anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
 		
 		// if the schema has no succeeding or failing act, then pick an act randomly
 		if (anticipateInteraction==null)
@@ -371,11 +373,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	 * Propose all acts that are afforded by the spatial context
 	 * and primitive acts that inform about unknown places.
 	 */
-	public ArrayList<IProposition> getPropositionList(ArrayList<IAct> acts)
+	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts)
 	{
-		ArrayList<IProposition> propositionList = new ArrayList<IProposition>();
+		ArrayList<IActProposition> propositionList = new ArrayList<IActProposition>();
 		int  PHENOMENA_WEIGHT = 10;
-		int UNKNOWN_WEIGHT = 10;
+		int UNKNOWN_WEIGHT = 20;
 		
 		Object activations = null;
 		if (m_tracer != null)
@@ -401,8 +403,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				// Create a proposition for acts that are afforded by the spatial situation
 				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
 				{
-					int w = PHENOMENA_WEIGHT * a.getSatisfaction();
-					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					int w = PHENOMENA_WEIGHT ;//* a.getSatisfaction();
+					//IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					IActProposition p = new ActProposition(a, w, 0);
 					propositionList.add(p);
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "afforded", p.toString());
@@ -413,7 +416,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				{
 					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
 					{
-						IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
+						//IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
+						IActProposition p = new ActProposition(a, 1, UNKNOWN_WEIGHT);
 						propositionList.add(p);
 						if (m_tracer != null)
 							m_tracer.addSubelement(activations, "poke", p.toString());
@@ -424,16 +428,18 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 				// TODO make it work !
 				if (consistence == LocalSpaceMemory.SIMULATION_REACH)
 				{
-					int w = PHENOMENA_WEIGHT * (a.getSatisfaction() + 50);
-					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					int w = PHENOMENA_WEIGHT ;//* (a.getSatisfaction() + 50);
+					//IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					IActProposition p = new ActProposition(a, w, 50);
 					propositionList.add(p);
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "reach", p.toString());
 				}
 				if (consistence == LocalSpaceMemory.SIMULATION_REACH2)
 				{
-					int w = PHENOMENA_WEIGHT * (a.getSatisfaction() + 100);
-					IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					int w = PHENOMENA_WEIGHT ;//* (a.getSatisfaction() + 100);
+					//IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					IActProposition p = new ActProposition(a, w, 100);
 					propositionList.add(p);
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "reach", p.toString());

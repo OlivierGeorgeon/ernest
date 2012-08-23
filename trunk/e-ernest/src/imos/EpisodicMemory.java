@@ -249,9 +249,9 @@ public class EpisodicMemory
 	 * @param propositionList The list of propositions made by the spatial system.
 	 * @return The selected act.
 	 */
-	public IAct selectAct(List<IAct> activationList, List<IProposition> propositionList)
+	public IAct selectAct(List<IAct> activationList, List<IActProposition> propositionList)
 	{
-		List<IProposition> proposals = new ArrayList<IProposition>();	
+		List<IActProposition> proposals = new ArrayList<IActProposition>();	
 		
 		// Browse all the existing schemas 
 		Object activations = null;
@@ -283,21 +283,10 @@ public class EpisodicMemory
 				{
 					IAct proposedAct = s.getIntentionAct();
 					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
-					int w = s.getWeight() * proposedAct.getSatisfaction();
+					int w = s.getWeight() ;//* proposedAct.getSatisfaction();
                     // The expectation is the proposing schema's weight signed with the proposed act's status  
-                    int e = s.getWeight() * (s.getIntentionAct().getStatus() ? 1 : -1);
-					
-					// If primitive act then simulate it in the local map
-					if (proposedAct.getSchema().isPrimitive())
-					{
-						//IObservation anticipation = m_simulationSystem.anticipate(s.getIntentionAct());
-						//IObservation anticipation = m_ernest.getStaticSystem().anticipate(s.getIntentionAct());
-						// If disagreement 
-						//if (anticipation.getStatus() != s.getIntentionAct().getStatus())
-						//if (!anticipation.getStatus())
-						//w = 0;//(w +  s.getWeight() * s.getIntentionAct().getSchema().resultingAct(anticipation.getStatus()).getSatisfaction())/2;
-						//e = s.getWeight() * (anticipation.getStatus() ? 1 : -1);
-					}
+                    //int e = s.getWeight() * (s.getIntentionAct().getStatus() ? 1 : -1);
+                    int e = 0;
 					
 					// If the intention is consistent with spatial memory 
 					if (m_sensorimotorSystem.checkConsistency(proposedAct))
@@ -307,7 +296,8 @@ public class EpisodicMemory
 						if ((proposedAct.getConfidence() == Imos.RELIABLE ) &&						 
 							(proposedAct.getSchema().getLength() <= m_maxSchemaLength ))
 						{
-							IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
+							//IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
+							IActProposition p = new ActProposition(proposedAct, w, e);
 		
 							int i = proposals.indexOf(p);
 							if (i == -1)
@@ -320,12 +310,16 @@ public class EpisodicMemory
 						// the activation is propagated to the intention's schema's context
 						else
 						{
+							// Expect the value of the intention's schema's intention
+							e = proposedAct.getSchema().getIntentionAct().getSatisfaction();
+							
 							if (!proposedAct.getSchema().isPrimitive())
 							{
 								// only if the intention's intention is positive (this is some form of positive anticipation)
 								if (proposedAct.getSchema().getIntentionAct().getSatisfaction() > 0)
 								{
-									IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
+									//IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
+									IActProposition p = new ActProposition(proposedAct.getSchema().getContextAct(), w, e);
 									int i = proposals.indexOf(p);
 									if (i == -1)
 										proposals.add(p);
@@ -344,17 +338,33 @@ public class EpisodicMemory
 			}
 
 			// Primitive sensorymotor schemas also receive a default proposition for themselves
-			if (s.isPrimitive())
+//			if (s.isPrimitive())
+//			{
+//				//IProposition p = new Proposition(s, 0, 0);
+//				if (s.getSucceedingAct() != null)
+//				{
+//					IActProposition p = new ActProposition(s.getSucceedingAct(), 0, 0);
+//					if (!proposals.contains(p))
+//						proposals.add(p);
+//				}
+//			}       
+		}
+		
+		// Primitive acts also receive a default proposition for themselves
+		for(IAct a : m_acts)
+		{
+			if (a.getSchema().isPrimitive())
 			{
-				IProposition p = new Proposition(s, 0, 0);
+				//IProposition p = new Proposition(s, 0, 0);
+				IActProposition p = new ActProposition(a, 0, 0);
 				if (!proposals.contains(p))
 					proposals.add(p);
-			}
+			}       
 		}
 		
 		// Add the propositions from the spatial system 
 		
-		for (IProposition proposition : propositionList)
+		for (IActProposition proposition : propositionList)
 		{
 			int i = proposals.indexOf(proposition);
 			if (i == -1)
@@ -370,7 +380,7 @@ public class EpisodicMemory
 		if (m_tracer != null)
 			proposalElmt = m_tracer.addEventElement("proposals", true);
 		
-		for (IProposition p : proposals)
+		for (IActProposition p : proposals)
 		{
 			if (m_tracer != null)
 				m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
@@ -449,17 +459,17 @@ public class EpisodicMemory
 		return act;
 	}
 	
-	private IAct selectAct(List<IProposition> propositions)
+	private IAct selectAct(List<IActProposition> propositions)
 	{
 		
 		//Construct a list of schemaPropositions from the list of actPropositions.
 		
 		List<IProposition> schemaPropositions = new ArrayList<IProposition>();	
-		for (IProposition actProposition : propositions)
+		for (IActProposition actProposition : propositions)
 		{
-			int w = actProposition.getWeight();
+			int w = actProposition.getWeight() * (actProposition.getAct().getSatisfaction() + actProposition.getExpectation());
 			int e = actProposition.getExpectation();
-			IProposition schemaProposition = new Proposition(actProposition.getSchema(), w, e);
+			IProposition schemaProposition = new Proposition(actProposition.getAct().getSchema(), w, e);
 			int i = schemaPropositions.indexOf(schemaProposition);
 			if (i == -1)
 				schemaPropositions.add(schemaProposition);
@@ -467,10 +477,19 @@ public class EpisodicMemory
 				schemaPropositions.get(i).update(w, e);
 		}
 		
+//		// Primitive sensorymotor schemas also receive a default proposition for themselves
+//		for (ISchema s : m_schemas)
+//			if (s.isPrimitive())
+//			{
+//				IProposition p = new Proposition(s, 0, 0);
+//				if (!schemaPropositions.contains(p))
+//					schemaPropositions.add(p);
+//			}       
+
 		// sort by weighted proposition...
 		Collections.sort(schemaPropositions);
 		
-		// count how many are tied with the  highest weighted proposition
+		// count how many are tied with the highest weighted proposition
 		int count = 0;
 		int wp = schemaPropositions.get(0).getWeight();
 		for (IProposition p : schemaPropositions)
