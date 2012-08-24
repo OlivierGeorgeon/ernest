@@ -378,12 +378,12 @@ public class EpisodicMemory
 		//System.out.println("Propose: ");
 		Object proposalElmt = null;
 		if (m_tracer != null)
-			proposalElmt = m_tracer.addEventElement("proposals", true);
+			proposalElmt = m_tracer.addEventElement("act_propositions", true);
 		
 		for (IActProposition p : proposals)
 		{
 			if (m_tracer != null)
-				m_tracer.addSubelement(proposalElmt, "proposal", p.toString());
+				m_tracer.addSubelement(proposalElmt, "propose", p.toString());
 			//System.out.println(p);
 		}
 		
@@ -468,13 +468,13 @@ public class EpisodicMemory
 		for (IActProposition actProposition : propositions)
 		{
 			int w = actProposition.getWeight() * (actProposition.getAct().getSatisfaction() + actProposition.getExpectation());
-			int e = actProposition.getExpectation();
-			IProposition schemaProposition = new Proposition(actProposition.getAct().getSchema(), w, e);
+			int e = actProposition.getWeight();
+			IProposition schemaProposition = new Proposition(actProposition.getAct().getSchema(), w, e, actProposition.getAct());
 			int i = schemaPropositions.indexOf(schemaProposition);
 			if (i == -1)
 				schemaPropositions.add(schemaProposition);
 			else
-				schemaPropositions.get(i).update(w, e);
+				schemaPropositions.get(i).update(w, e, actProposition.getAct());
 		}
 		
 //		// Primitive sensorymotor schemas also receive a default proposition for themselves
@@ -488,6 +488,17 @@ public class EpisodicMemory
 
 		// sort by weighted proposition...
 		Collections.sort(schemaPropositions);
+		
+		Object proposalElmt = null;
+		if (m_tracer != null)
+			proposalElmt = m_tracer.addEventElement("schema_proposition", true);
+		
+		for (IProposition p : schemaPropositions)
+		{
+			if (m_tracer != null)
+				m_tracer.addSubelement(proposalElmt, "propose", p.toString());
+			//System.out.println(p);
+		}
 		
 		// count how many are tied with the highest weighted proposition
 		int count = 0;
@@ -507,10 +518,9 @@ public class EpisodicMemory
 			p = schemaPropositions.get(0); // Always take the first
 		else
 			p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
-		
-		ISchema s = p.getSchema();
-		
-		IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
+				
+		//IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
+		IAct a = p.getAct();
 		
 		a.setActivation(p.getWeight());
 		

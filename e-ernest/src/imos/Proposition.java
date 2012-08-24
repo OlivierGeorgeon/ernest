@@ -23,12 +23,12 @@ public class Proposition implements IProposition
 	 * @param w The proposal's weight
 	 * @param e The proposal's expectaion. If positive: success, if negative failure.
 	 */
-	public Proposition(ISchema s, int w, int e)
+	public Proposition(ISchema s, int w, int e, IAct a)
 	{
 		m_schema = s;
 		m_weight = w;
 		m_expectation = e;
-		//m_act = a;
+		m_act = a;
 	}
 
 	/**
@@ -45,10 +45,16 @@ public class Proposition implements IProposition
 	 * @param w The weight to add to the existing weight.
 	 * @param e The expectation to add to the existing expectation.
 	 */
-	public void update(int w, int e)
+	public void update(int w, int e, IAct act)
 	{
 		m_weight += w;
-		m_expectation += e;		
+		
+		// if this act has a higher expectation than the previous one then this act replaces the previous one.
+		if (m_expectation < e)
+		{
+			m_act = act;
+			m_expectation = e;
+		}
 	}
 
 	/**
@@ -60,6 +66,14 @@ public class Proposition implements IProposition
 		return m_weight;
 	}
 
+	/**
+	 * @return The act that this proposition expects to enact.
+	 */
+	public IAct getAct()
+	{
+		return m_act;
+	}
+	
 	public int getExpectation()
 	{
 		return m_expectation;
@@ -102,7 +116,7 @@ public class Proposition implements IProposition
 	public String toString()
 	{
 			
-		String s = m_schema + " proposition_weight=" + m_weight + " proposition_expectation=" + m_expectation;
+		String s = m_schema + " proposition_weight=" + m_weight + " expecte_act:" + m_act;
 		return s;
 	}
 }

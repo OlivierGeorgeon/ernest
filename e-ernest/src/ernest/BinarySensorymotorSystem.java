@@ -144,24 +144,24 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	 * @param s The schema. 
 	 * @return The anticipated resulting interaction.
 	 */
-	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts)
-	{
-		IAct anticipateInteraction = null;
-		boolean status = (e >= 0);
-		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
-		
-		// if the schema has no succeeding or failing act, then pick an act randomly
-		if (anticipateInteraction==null)
-		{
-			for (IAct a : acts)
-			{
-				//if (a.getSchema().equals(s) && (a.getStatus() == true))
-				if (a.getSchema().equals(s) )
-					anticipateInteraction = a;
-			}
-		}
-		return anticipateInteraction;
-	}
+//	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts)
+//	{
+//		IAct anticipateInteraction = null;
+//		boolean status = (e >= 0);
+//		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
+//		
+//		// if the schema has no succeeding or failing act, then pick an act randomly
+//		if (anticipateInteraction==null)
+//		{
+//			for (IAct a : acts)
+//			{
+//				//if (a.getSchema().equals(s) && (a.getStatus() == true))
+//				if (a.getSchema().equals(s) )
+//					anticipateInteraction = a;
+//			}
+//		}
+//		return anticipateInteraction;
+//	}
 
 	public ISpatialMemory getSpatialSimulation()
 	{

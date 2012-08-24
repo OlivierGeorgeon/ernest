@@ -23,6 +23,11 @@ public interface IProposition extends Comparable<IProposition>
 	public int getWeight();
 	
 	/**
+	 * @return The act that this proposition expects to enact.
+	 */
+	public IAct getAct();
+	
+	/**
 	 * @return The proposition's expectation.
 	 */
 	public int getExpectation();
@@ -30,8 +35,9 @@ public interface IProposition extends Comparable<IProposition>
 	/**
 	 * @param w The weight to add to the proposition.
 	 * @param e The expectatin to add to the proposition.
+	 * @param act The resulting expected act.
 	 */
-	public void update(int w, int e);
+	public void update(int w, int e, IAct act);
 		
 	/**
 	 * Two propositions are equal if they propose the same schema. 

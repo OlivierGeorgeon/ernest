@@ -79,7 +79,7 @@ public interface ISensorymotorSystem
 	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts);
 	public void updateSpas(IAct primitiveAct, IAct topAct);
 	
-	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts);
+	//public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts);
 	
 	public IAct enactedAct(IAct m_primitiveAct, IObservation observation);
 	

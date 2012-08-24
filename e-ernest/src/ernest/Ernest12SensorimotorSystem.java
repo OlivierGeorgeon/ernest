@@ -133,24 +133,20 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			Transform3D tf = new Transform3D();
 			if (stimuliLabel.indexOf("f") >= 0)
 			{
-				act.setColor(0xFF0000);
+				act.setColor(Ernest.PHENOMENON_WALL);
+				//act.setColor(0xFF0000);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//tf.rotZ(0);
-				//tf.setTranslation(new Vector3f());
-				//act.setTransform(tf);
 			}
 			else if (stimuliLabel.indexOf("b") >= 0)
 			{
-				act.setColor(0xFF0000);
+				//act.setColor(0xFF0000);
+				act.setColor(Ernest.PHENOMENON_BRICK);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//Transform3D tf = new Transform3D();
-				//tf.rotZ(0);
-				//tf.setTranslation(new Vector3f());
-				//act.setTransform(tf);
 			}
 			else if (stimuliLabel.indexOf("a") >= 0)
 			{
-				act.setColor(0x73E600);
+				act.setColor(Ernest.PHENOMENON_ALGA);
+				//act.setColor(0x73E600);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 				tf.setTranslation(new Vector3f(-1,0,0));
 			}
@@ -158,37 +154,25 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Point3f(4,0,0));
-				//Transform3D tf = new Transform3D();
-				//tf.rotZ(0);
 				tf.setTranslation(new Vector3f(-1,0,0));
-				//act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals(" +t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Point3f(3,-3,0));
-				//Transform3D tf = new Transform3D();
-				//tf.rotZ(0);
 				tf.setTranslation(new Vector3f(-1,0,0));
-				//act.setTransform(tf);
 			}
 			else if (stimuliLabel.equals("+ t"))
 			{
 				act.setColor(Ernest.PHENOMENON_FISH);
 				act.setStartPosition(new Point3f(3,3,0));
-				//Transform3D tf = new Transform3D();
-				//tf.rotZ(0);
 				tf.setTranslation(new Vector3f(-1,0,0));
-				//act.setTransform(tf);
 			}
 			else 
 			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
 				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-				//Transform3D tf = new Transform3D();
-				//tf.rotZ(0);
 				tf.setTranslation(new Vector3f(-1,0,0));
-				//act.setTransform(tf);
 			}
 			act.setTransform(tf);
 		}
@@ -337,6 +321,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	{
 		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
 		int status = simulationMemory.runSimulation(act, m_spas);
+		
 		return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
 
 		//return true;
@@ -350,24 +335,24 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	 * @param s The schema. 
 	 * @return The anticipated resulting interaction.
 	 */
-	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts)
-	{
-		IAct anticipateInteraction = null;
-		boolean status = (e >= 0);
-		//anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
-		
-		// if the schema has no succeeding or failing act, then pick an act randomly
-		if (anticipateInteraction==null)
-		{
-			for (IAct a : acts)
-			{
-				//if (a.getSchema().equals(s) && (a.getStatus() == true))
-				if (a.getSchema().equals(s) )
-					anticipateInteraction = a;
-			}
-		}
-		return anticipateInteraction;
-	}
+//	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts)
+//	{
+//		IAct anticipateInteraction = null;
+//		boolean status = (e >= 0);
+//		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
+//		
+//		// if the schema has no succeeding or failing act, then pick an act randomly
+//		if (anticipateInteraction==null)
+//		{
+//			for (IAct a : acts)
+//			{
+//				//if (a.getSchema().equals(s) && (a.getStatus() == true))
+//				if (a.getSchema().equals(s) )
+//					anticipateInteraction = a;
+//			}
+//		}
+//		return anticipateInteraction;
+//	}
 
 	/**
 	 * Propose all acts that are afforded by the spatial context
@@ -376,8 +361,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts)
 	{
 		ArrayList<IActProposition> propositionList = new ArrayList<IActProposition>();
-		int  PHENOMENA_WEIGHT = 10;
-		int UNKNOWN_WEIGHT = 20;
+		final int SPATIAL_AFFORDANCE_WEIGHT = 10;
+		final int UNKNOWN_SATISFACTION = 20;
 		
 		Object activations = null;
 		if (m_tracer != null)
@@ -389,57 +374,50 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		for (IAct a : acts)
 		{
-			//m_spas.initSimulation();
-			//ISpatialMemory spatialSimulation = m_spas.getSpatialMemory().clone();
-
 			//m_spatialSimulation = m_spas.getSpatialMemory();
 			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
-				//System.out.println("Simulate: " + a.toString());
-				//int consistence = m_spatialSimulation.runSimulation(a, m_spas);
-				
 				int consistence = runSimulation(a);
 				
-				// Create a proposition for acts that are afforded by the spatial situation
+				// If this act is afforded by the spatial situation the propose it.
 				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
 				{
-					int w = PHENOMENA_WEIGHT ;//* a.getSatisfaction();
-					//IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
+					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
 					IActProposition p = new ActProposition(a, w, 0);
 					propositionList.add(p);
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "afforded", p.toString());
 				}
 
-				// Create a proposition for acts that inform the spatial situation
+				// If this act informs the spatial situation then propose it.
 				if (consistence == LocalSpaceMemory.SIMULATION_UNKNOWN)
 				{
 					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
 					{
-						//IProposition p = new Proposition(a.getSchema(), UNKNOWN_WEIGHT, UNKNOWN_WEIGHT * (a.getStatus() ? 1 : -1));
-						IActProposition p = new ActProposition(a, 1, UNKNOWN_WEIGHT);
+						IActProposition p = new ActProposition(a, 1, UNKNOWN_SATISFACTION);
 						propositionList.add(p);
 						if (m_tracer != null)
-							m_tracer.addSubelement(activations, "poke", p.toString());
+							m_tracer.addSubelement(activations, "unknown", p.toString());
 					}
 				}
 				
-				// Create a proposition for acts that reach a situation where another act is afforded.
+				// Propose this act if it may generate an new copresence.
+				
+				
+				// If this act reaches a situation where another act is afforded then propose it.
 				// TODO make it work !
 				if (consistence == LocalSpaceMemory.SIMULATION_REACH)
 				{
-					int w = PHENOMENA_WEIGHT ;//* (a.getSatisfaction() + 50);
-					//IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
-					IActProposition p = new ActProposition(a, w, 50);
+					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 50);
+					IActProposition p = new ActProposition(a, SPATIAL_AFFORDANCE_WEIGHT, 50);
 					propositionList.add(p);
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "reach", p.toString());
 				}
 				if (consistence == LocalSpaceMemory.SIMULATION_REACH2)
 				{
-					int w = PHENOMENA_WEIGHT ;//* (a.getSatisfaction() + 100);
-					//IProposition p = new Proposition(a.getSchema(), w, PHENOMENA_WEIGHT * (a.getStatus() ? 1 : -1));
-					IActProposition p = new ActProposition(a, w, 100);
+					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 100);
+					IActProposition p = new ActProposition(a, SPATIAL_AFFORDANCE_WEIGHT, 100);
 					propositionList.add(p);
 					if (m_tracer != null)
 						m_tracer.addSubelement(activations, "reach", p.toString());

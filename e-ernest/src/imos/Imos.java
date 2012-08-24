@@ -10,6 +10,7 @@ import javax.vecmath.Vector3f;
 
 import spas.IPlace;
 import spas.LocalSpaceMemory;
+import utils.ErnestUtils;
 import ernest.Ernest;
 import ernest.ISensorymotorSystem;
 import ernest.ITracer;
@@ -257,6 +258,7 @@ public class Imos implements IImos
 				m_tracer.addEventElement("new_intention", m_newIntention ? "true" : "false");
 				m_tracer.addEventElement("primitive_intended_act", m_primitiveIntention.getLabel());
 				m_tracer.addEventElement("primitive_enacted_act", primitiveEnaction.getLabel());
+				m_tracer.addEventElement("primitive_enacted_color", ErnestUtils.hexColor(primitiveEnaction.getColor()));
 				m_tracer.addEventElement("primitive_enacted_schema", primitiveEnaction.getSchema().getLabel());
 				m_tracer.addEventElement("satisfaction", primitiveEnaction.getSatisfaction()/10 + "");
 			}
