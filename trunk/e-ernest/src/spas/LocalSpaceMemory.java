@@ -140,8 +140,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		// Run the simulation
 		int status = simulate(act);
 		
-		// Test if the resulting situation leads to an empty square 
-		Transform3D tr = new Transform3D(); tr.setIdentity();
+		// Test if the resulting situation leads to an affordance
+		Transform3D tr = new Transform3D(); 
 		int clock = m_spas.getClock();
 
 		if (status != SIMULATION_INCONSISTENT && getValue(DIRECTION_AHEAD) == 0xFFFFFF && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
@@ -174,22 +174,34 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				if (p.isInCell(position) && p.getType() == Place.EVOKE_PHENOMENON)
 				{
 					unknown = false;
-					for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
-					{
-						if (!bundle.isConsistent(act)) consistent = false; 
-						if (bundle.afford(act)) afford = true;
-					}
+					if (p.getAct().equals(act))
+						// This place affords itself
+						afford = true;
+					else
+						// This place affords its comprences
+						for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
+						{
+							if (!bundle.isConsistent(act)) consistent = false; 
+							if (bundle.afford(act)) afford = true;
+						}
 				}
 			}	
 
 			if (unknown)	
 			{
 				// No place found at this location
-				simulationStatus = SIMULATION_UNKNOWN;
-				// Mark an unknown interaction
-				IPlace sim = addPlace(position, Place.UNKNOWN);
-				sim.setAct(act);
-				sim.setValue(0xB0B0FF);				
+				
+				if (act.getColor() == 0xFFFFFF)
+				{
+					simulationStatus = SIMULATION_UNKNOWN;
+					// Mark an unknown interaction
+					IPlace sim = addPlace(position, Place.UNKNOWN);
+					sim.setAct(act);
+					sim.setValue(0xB0B0FF);
+				}
+				
+				// acts that involve phenomena are inconsistent with unknown places.
+				// TODO improve that.
 			}
 			else
 			{
@@ -337,7 +349,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	}
 		
 	/**
-	 * Construct new copresence bundles
+	 * Construct new copresence bundles.
+	 * (Do not create copresences among the same schemas)
 	 * @param observation The observation 
 	 * @param spas A reference to the spatial system to add bundles
 	 */
@@ -363,54 +376,15 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				{
 					if (secondPlace.getAct().concernOnePlace())
 					{
-						if (!interactionPlace.getAct().equals(secondPlace.getAct()) && interactionPlace.isInCell(secondPlace.getPosition()))
+						if (!interactionPlace.getAct().getSchema().equals(secondPlace.getAct().getSchema()) && interactionPlace.isInCell(secondPlace.getPosition())
+								&& interactionPlace.getAct().getColor() == secondPlace.getAct().getColor())
 						{
 							spas.addBundle(interactionPlace.getAct(), secondPlace.getAct());
 						}
 					}
 				}
 			}
-		}
-		
-//		// Create copresence places that match enacted interactions
-//		for (IPlace interactionPlace : interactionPlaces)
-//		{
-//			//if (interactionPlace.getUpdateCount() == m_spas.getClock())
-//			if (interactionPlace.getUpdateCount() == m_clock)
-//			{
-//				IBundle bundle = spas.evokeBundle(interactionPlace.getAct());
-//
-//				if (bundle != null)
-//				{
-//					boolean newPlace = true;
-//				
-//					// If the copresence place already exists then refresh it.
-//					for (IPlace copresencePlace :  m_places)
-//					{
-//						if (copresencePlace.getType() == Spas.PLACE_COPRESENCE && copresencePlace.isInCell(interactionPlace.getPosition())
-//								&& copresencePlace.getBundle().equals(bundle))
-//						{
-//							//copresencePlace.setUpdateCount(m_spas.getClock());
-//							copresencePlace.setUpdateCount(m_clock);
-//							newPlace = false;
-//						}
-//					}
-//					if (newPlace)
-//					{
-//						// If the copresence place does not exist then create it.
-//						
-//						IPlace k = addPlace(bundle,interactionPlace.getPosition()); 
-//						k.setFirstPosition(interactionPlace.getFirstPosition()); 
-//						k.setSecondPosition(interactionPlace.getSecondPosition());
-//						k.setOrientation(interactionPlace.getOrientation());
-//						//k.setUpdateCount(m_spas.getClock());
-//						k.setUpdateCount(m_clock);
-//						k.setType(Spas.PLACE_COPRESENCE);
-//						k.setValue(interactionPlace.getValue());
-//					}
-//				}
-//			}
-//		}
+		}	
 	}
 
 	public void clearSimulation() 

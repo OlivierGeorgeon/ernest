@@ -19,7 +19,6 @@ import ernest.ITracer;
 public class Bundle implements IBundle 
 {
 	int m_value;
-	//int m_tactileValue = 0;
 	int m_lastTimeBundled = - Ernest.PERSISTENCE;
 
 	/** The acts attached to this bundle. */
@@ -27,20 +26,6 @@ public class Bundle implements IBundle
 	
 	private IAct m_firstAct;
 	private IAct m_secondAct;
-	
-	/** The affordances attached to this bundle. */
-	//private ArrayList<IAffordance> m_affordances = new ArrayList<IAffordance>();
-	
-//	Bundle(int value)
-//	{
-//		m_value = value;
-//	}
-	
-//	Bundle(IAct act)
-//	{
-//		m_value = act.getColor();
-//		m_acts.add(act);
-//	}
 	
 	Bundle(IAct firstAct, IAct secondAct)
 	{
@@ -60,23 +45,8 @@ public class Bundle implements IBundle
 			return null;
 	}
 	
-//	Bundle(int visualValue, int tactileValue)
-//	{
-//		m_value = visualValue;
-//		m_tactileValue = tactileValue;
-//		// When created, the bundle is not yet confirmed visited.
-//		m_lastTimeBundled = - Ernest.PERSISTENCE;
-//	}
-	
 	public int getValue()
 	{
-//		int value = 0;
-//		if (m_value == Ernest.STIMULATION_VISUAL_UNSEEN)
-//			value = m_tactileValue;
-//		else 
-//			value = m_value;		
-//		return value;
-		
 		return m_value;
 	}
 	
@@ -107,25 +77,11 @@ public class Bundle implements IBundle
 //		return hasAct;
 //	}
 	
-//	public int getVisualValue() 
-//	{
-//		return m_value;
-//	}
-//	
 	public void setValue(int value) 
 	{
 		m_value = value;
 	}
 	
-//	public void setTactileValue(int tactileValue) 
-//	{
-//		m_value = tactileValue;
-//	}
-	
-//	public int getTactileValue() 
-//	{
-//		return m_tactileValue;
-//	}
 	public void setLastTimeBundled(int clock)
 	{
 		m_lastTimeBundled = clock;
@@ -227,54 +183,9 @@ public class Bundle implements IBundle
 		for (IAct a : m_acts)
 			tracer.addSubelement(element, "act", a.getLabel());		
 		
-//		tracer.addSubelement(element, "visual", ErnestUtils.hexColor(m_value));		
-//		tracer.addSubelement(element, "tactile", ErnestUtils.hexColor(m_tactileValue));
-//		String id = this.toString();
 		tracer.addSubelement(element, "id", toString());
 		tracer.addSubelement(element, "short_id", toString().substring(toString().length() - 6));
-//		tracer.addSubelement(element, "last_time_bundled", m_lastTimeBundled + "");
 	}
-
-//	public void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity, int value) 
-//	{
-//		
-//		
-//		IPlace relativePlace = new Place(place.getBundle(), relativePosition);
-//		if (place.getBundle() != null)
-//			relativePlace.setValue(place.getBundle().getValue());
-//		relativePlace.setOrientation(place.getOrientation() - relativeOrientation);
-//		relativePlace.setType(place.getType());
-//		relativePlace.setShape(place.getShape());
-//		
-//		IAffordance affordance = new Affordance(act, relativePlace, proclivity, value);
-//		int i = m_affordances.indexOf(affordance);
-//		if (i == -1)
-//			// The affordance does not exist
-//			m_affordances.add(affordance);
-//		else 
-//			// The affordance already exists: return a pointer to it.
-//			affordance =  m_affordances.get(i);
-//	}
-//
-//	public ArrayList<IAffordance> getAffordanceList() 
-//	{
-//		return m_affordances;
-//	}
-
-//	public IAct activateAffordance(Vector3f relativePosition) 
-//	{
-//		IAct act = null;
-//		
-//		for (IAffordance affordance : m_affordances)
-//		{
-//			Vector3f compare = new Vector3f(relativePosition);
-//			compare.add(affordance.getPlace().getPosition());
-//			if (compare.length() < .1f && affordance.getProclivity() > 0)
-//				act = affordance.getAct();
-//		}
-//
-//		return act;
-//	}
 
 	/**
 	 * The act is consistent with this bundle if 

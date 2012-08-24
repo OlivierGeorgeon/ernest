@@ -97,7 +97,7 @@ public class ActProposition implements IActProposition
 	 */
 	public String toString()
 	{
-		String s = m_act + " proposition_weight=" + m_weight;
+		String s = m_act + " proposition_weight=" + m_weight + " subsequent_satisfaction=" + m_expectation;
 		return s;
 	}
 }
