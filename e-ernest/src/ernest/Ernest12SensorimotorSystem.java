@@ -235,40 +235,26 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		
 		if (schemaLabel.equals("/") )
 		{
+			act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
-			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
-			}
+			else if (stimuliLabel.indexOf("a") >= 0 )
+				act.setColor(Ernest.PHENOMENON_ALGA);
 			else
-			{
 				act.setColor(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_LEFT);
-			}
 		}
 		
 		if (schemaLabel.equals("-"))
 		{
+			act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
-			{
 				act.setColor(Ernest.PHENOMENON_EMPTY);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-			}
 			else if (stimuliLabel.indexOf("a") >= 0 )
-			{
 				act.setColor(Ernest.PHENOMENON_ALGA);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-			}
 			else if (stimuliLabel.indexOf("b") >= 0 )
-			{
 				act.setColor(Ernest.PHENOMENON_BRICK);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-			}
 			else
-			{
 				act.setColor(Ernest.PHENOMENON_WALL);
-				act.setStartPosition(LocalSpaceMemory.DIRECTION_AHEAD);
-			}
 		}
 		
 		if (schemaLabel.equals("\\"))
@@ -276,6 +262,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			act.setStartPosition(LocalSpaceMemory.DIRECTION_RIGHT);
 			if (stimuliLabel.indexOf("f") >= 0 || stimuliLabel.equals("  "))
 				act.setColor(Ernest.PHENOMENON_EMPTY);
+			else if (stimuliLabel.indexOf("a") >= 0 )
+				act.setColor(Ernest.PHENOMENON_ALGA);
 			else
 				act.setColor(Ernest.PHENOMENON_WALL);
 		}
@@ -320,7 +308,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	public boolean checkConsistency(IAct act) 
 	{
 		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
-		int status = simulationMemory.runSimulation(act, m_spas);
+		int status = simulationMemory.runSimulation(act, m_spas).getStatus();
 		
 		return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
 
@@ -377,51 +365,57 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			//m_spatialSimulation = m_spas.getSpatialMemory();
 			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
-				int consistence = runSimulation(a);
+				IActProposition p = runSimulation(a);
+				propositionList.add(p);
 				
-				// If this act is afforded by the spatial situation the propose it.
-				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
-				{
-					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
-					IActProposition p = new ActProposition(a, w, 0);
-					propositionList.add(p);
-					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "afforded", p.toString());
-				}
+				if (m_tracer != null)
+					m_tracer.addSubelement(activations, "proposition", p.toString());
 
-				// If this act informs the spatial situation then propose it.
-				if (consistence == LocalSpaceMemory.SIMULATION_UNKNOWN)
-				{
-					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
-					{
-						IActProposition p = new ActProposition(a, 1, UNKNOWN_SATISFACTION);
-						propositionList.add(p);
-						if (m_tracer != null)
-							m_tracer.addSubelement(activations, "unknown", p.toString());
-					}
-				}
-				
-				// Propose this act if it may generate an new copresence.
-				
-				
-				// If this act reaches a situation where another act is afforded then propose it.
-				// TODO make it work !
-				if (consistence == LocalSpaceMemory.SIMULATION_REACH)
-				{
-					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 50);
-					IActProposition p = new ActProposition(a, SPATIAL_AFFORDANCE_WEIGHT, 50);
-					propositionList.add(p);
-					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "reach", p.toString());
-				}
-				if (consistence == LocalSpaceMemory.SIMULATION_REACH2)
-				{
-					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 100);
-					IActProposition p = new ActProposition(a, SPATIAL_AFFORDANCE_WEIGHT, 100);
-					propositionList.add(p);
-					if (m_tracer != null)
-						m_tracer.addSubelement(activations, "reach", p.toString());
-				}
+				//				int consistence = runSimulation(a);
+//				
+//				// If this act is afforded by the spatial situation the propose it.
+//				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
+//				{
+//					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
+//					IActProposition p = new ActProposition(a, w, 0);
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "afforded", p.toString());
+//				}
+//
+//				// If this act informs the spatial situation then propose it.
+//				if (consistence == LocalSpaceMemory.SIMULATION_UNKNOWN)
+//				{
+//					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
+//					{
+//						IActProposition p = new ActProposition(a, 1, UNKNOWN_SATISFACTION);
+//						propositionList.add(p);
+//						if (m_tracer != null)
+//							m_tracer.addSubelement(activations, "unknown", p.toString());
+//					}
+//				}
+//				
+//				// Propose this act if it may generate an new copresence.
+//				
+//				
+//				// If this act reaches a situation where another act is afforded then propose it.
+//				// TODO make it work !
+//				if (consistence == LocalSpaceMemory.SIMULATION_REACH)
+//				{
+//					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 50);
+//					IActProposition p = new ActProposition(a, SPATIAL_AFFORDANCE_WEIGHT, 50);
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "reach", p.toString());
+//				}
+//				if (consistence == LocalSpaceMemory.SIMULATION_REACH2)
+//				{
+//					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 100);
+//					IActProposition p = new ActProposition(a, SPATIAL_AFFORDANCE_WEIGHT, 100);
+//					propositionList.add(p);
+//					if (m_tracer != null)
+//						m_tracer.addSubelement(activations, "reach", p.toString());
+//				}
 			}
 						
 //			if (m_frame != null) 

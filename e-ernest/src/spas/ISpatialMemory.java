@@ -1,6 +1,7 @@
 package spas;
 
 import imos.IAct;
+import imos.IActProposition;
 
 import java.util.ArrayList;
 
@@ -25,9 +26,9 @@ public interface ISpatialMemory
 	 * TODO Create simulated phenomena to check for internal consistency of composite acts.
 	 * @param act The act to simulate
 	 * @param spas A reference to spas in order to access the bundles.
+	 * @return The proposition resulting from the simulation of this act.
 	 */
-	public int runSimulation(IAct act, ISpas spas);	
-	//public boolean simulate(IAct act, boolean doubt);
+	public IActProposition runSimulation(IAct act, ISpas spas);	
 	
 	/**
 	 * Tick this spatial memory's clock (to compute decay)

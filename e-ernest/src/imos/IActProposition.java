@@ -40,4 +40,7 @@ public interface IActProposition extends Comparable<IActProposition>
 	 * @return the order of comparison
 	 */
 	public String toString();
+	
+	public void setStatus(int status);
+	public int getStatus();
 }

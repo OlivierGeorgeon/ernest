@@ -1,6 +1,8 @@
 package spas;
 
+import imos.ActProposition;
 import imos.IAct;
+import imos.IActProposition;
 import imos.ISchema;
 
 import java.util.ArrayList;
@@ -131,7 +133,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		    p.transform(transform);
 	}
 	
-	public int runSimulation(IAct act, ISpas spas)
+	public IActProposition runSimulation(IAct act, ISpas spas)
 	{
 		// Intialize the simulation
 		m_spas = spas;
@@ -141,19 +143,115 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		int status = simulate(act);
 		
 		// Test if the resulting situation leads to an affordance
-		Transform3D tr = new Transform3D(); 
-		int clock = m_spas.getClock();
+		
+		Vector3f trans = new Vector3f(); 
+		act.getTransform().get(trans); // Get the translation part of this act's transformation
+		//if (status != SIMULATION_INCONSISTENT && !trans.epsilonEquals(new Vector3f(), .1f))
+		
+		IAct subsequentAct = null;
+		if (status != SIMULATION_INCONSISTENT && !act.getTransform().epsilonEquals(new Transform3D(), .1f))
+		{
+			//boolean afford = false;
+			for (IPlace p : m_places)
+			{
+				if (p.getType() == Place.EVOKE_PHENOMENON)
+				{
+					if (p.getAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
+					{
+						// This place affords itself
+						if (subsequentAct==null || subsequentAct.getSatisfaction() < p.getAct().getSatisfaction())
+							subsequentAct = p.getAct();
+//						if (p.getAct().getColor() == 0xFFFFFF)
+//							status = SIMULATION_REACH;
+//						if (p.getAct().getColor() == 0x73E600)
+//							status = SIMULATION_REACH2;
+					}					
+					//else
+					// This place also affords its compresences
+					for (IBundle b : m_spas.evokeCompresences(p.getAct()))
+					{
+						if (b.getFirstAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
+							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getFirstAct().getSatisfaction())
+								subsequentAct = b.getFirstAct();
+						if (b.getSecondAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
+							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getSecondAct().getSatisfaction())
+								subsequentAct = b.getSecondAct();
 
-		if (status != SIMULATION_INCONSISTENT && getValue(DIRECTION_AHEAD) == 0xFFFFFF && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
+								
+//							if (b.getFirstAct().getStartPosition().epsilonEquals(p.getPosition(), .1f) ||
+//								b.getSecondAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
+//								{
+//								if (b.getFirstAct().getColor() == 0xFFFFFF || b.getSecondAct().getColor() == 0xFFFFFF)
+//									status = SIMULATION_REACH;
+//								if (b.getFirstAct().getColor() == 0x73E600 || b.getSecondAct().getColor() == 0x73E600)
+//									status = SIMULATION_REACH2;
+//								}
+					}
+				}
+			}
+		}
+		
+		int subsequentSatisfaction = 0;
+		if (subsequentAct != null && subsequentAct.getSatisfaction() > 0)
+		{
+			subsequentSatisfaction = subsequentAct.getSatisfaction();
 			status = SIMULATION_REACH;
-		if (status != SIMULATION_INCONSISTENT && (getValue(DIRECTION_AHEAD) == 0x73E600 || getValue(DIRECTION_RIGHT) == 0x73E600) && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
-			status = SIMULATION_REACH2;
+		}
+		
+		// Hard coded reach flower
+		
+//		int clock = m_spas.getClock();
+//
+//		if (status != SIMULATION_INCONSISTENT && getValue(DIRECTION_AHEAD) == 0xFFFFFF && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
+//			status = SIMULATION_REACH;
+//		if (status != SIMULATION_INCONSISTENT && (getValue(DIRECTION_AHEAD) == 0x73E600 || getValue(DIRECTION_RIGHT) == 0x73E600) && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
+//			status = SIMULATION_REACH2;
 		
 		//Revert the transformation in spatial memory 
 		m_transform.invert();
 		transform(m_transform);
 		
-		return status;
+		
+		// Generate the proposition
+		
+		IActProposition p = new ActProposition(act, 0, 0);
+		final int SPATIAL_AFFORDANCE_WEIGHT = 10;
+		final int UNKNOWN_SATISFACTION = 20;
+		// If this act is afforded by the spatial situation the propose it.
+		if (status == LocalSpaceMemory.SIMULATION_AFFORD)
+		{
+			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
+			p = new ActProposition(act, w, 0);
+		}
+
+		// If this act informs the spatial situation then propose it.
+		if (status == LocalSpaceMemory.SIMULATION_UNKNOWN)
+		{
+			if (act.getSchema().getLabel().equals("-") || act.getSchema().getLabel().equals("/") || act.getSchema().getLabel().equals("\\"))
+			{
+				p = new ActProposition(act, 1, UNKNOWN_SATISFACTION);
+			}
+		}
+		
+		// Propose this act if it may generate an new copresence.
+		
+		
+		// If this act reaches a situation where another act is afforded then propose it.
+		// TODO make it work !
+		if (status == LocalSpaceMemory.SIMULATION_REACH)
+		{
+			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 50);
+			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
+		}
+//		if (status == LocalSpaceMemory.SIMULATION_REACH2)
+//		{
+//			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 100);
+//			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
+//		}
+
+		p.setStatus(status);
+		
+		return p;
 	}
 	
 	private int simulate(IAct act)
@@ -178,7 +276,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 						// This place affords itself
 						afford = true;
 					else
-						// This place affords its comprences
+						// This place affords its compresences
 						for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
 						{
 							if (!bundle.isConsistent(act)) consistent = false; 
