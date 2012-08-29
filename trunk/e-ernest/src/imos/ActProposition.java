@@ -13,6 +13,8 @@ public class ActProposition implements IActProposition
 	private int m_weight = 0; 
 	private int m_expectation = 0;
 	
+	private int m_status;
+	
 	/**
 	 * Constructor. 
 	 * @param a The proposed schema.
@@ -99,5 +101,15 @@ public class ActProposition implements IActProposition
 	{
 		String s = m_act + " proposition_weight=" + m_weight + " subsequent_satisfaction=" + m_expectation;
 		return s;
+	}
+
+	public void setStatus(int status) 
+	{
+		m_status = status;
+	}
+
+	public int getStatus() 
+	{
+		return m_status;
 	}
 }

@@ -173,7 +173,7 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		m_spatialMemory.clearSimulation();
 	}
 	
-	protected int runSimulation(IAct a)
+	protected IActProposition runSimulation(IAct a)
 	{
 		return m_spatialMemory.runSimulation(a, m_spas);
 	}
