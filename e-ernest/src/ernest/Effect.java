@@ -1,15 +1,18 @@
 package ernest;
 
 import javax.media.j3d.Transform3D;
-import javax.vecmath.Point3d;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+
+import utils.ErnestUtils;
 
 public class Effect implements IEffect 
 {
 	private int m_simulationStatus = 0;
 	private String m_effect = "";
-	private Point3d m_location = new Point3d();
+	private Point3f m_location = new Point3f();
 	private Transform3D m_transformation = new Transform3D();
+	private int m_color = 0;
 	
 	/**
 	 * @param effect
@@ -24,14 +27,14 @@ public class Effect implements IEffect
 		m_effect = effect;
 	}
 
-	public void setLocation(Point3d location) 
+	public void setLocation(Point3f location) 
 	{
-		m_location = location;
+		m_location.set(location);
 	}
 
 	public void setTransformation(Transform3D transformation) 
 	{
-		m_transformation = transformation;
+		m_transformation.set(transformation);
 	}
 
 	public void setTransformation(float angle, float x) 
@@ -40,13 +43,18 @@ public class Effect implements IEffect
 		m_transformation.rotZ(angle);
 		m_transformation.setTranslation(new Vector3f(x,0,0));
 	}
+	
+	public void setColor(int color)
+	{
+		m_color = color;
+	}
 
 	public String getEffect() 
 	{
 		return m_effect;
 	}
 
-	public Point3d getLocation() 
+	public Point3f getLocation() 
 	{
 		return m_location;
 	}
@@ -66,8 +74,14 @@ public class Effect implements IEffect
 		return m_simulationStatus;
 	}
 
+	public int getColor()
+	{
+		return m_color;
+	}
+	
 	public void trace(ITracer tracer) 
 	{
+		tracer.addEventElement("touch_color", ErnestUtils.hexColor(m_color));
 		Object e = tracer.addEventElement("current_observation");
 		tracer.addSubelement(e, "stimuli", m_effect + "");
 	}

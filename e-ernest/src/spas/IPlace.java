@@ -12,6 +12,8 @@ import javax.vecmath.Vector3f;
  */
 public interface IPlace extends Cloneable
 {	
+	public void transform(Transform3D transform);
+
 	/**
 	 * @return A clone of this place
 	 */
@@ -38,18 +40,6 @@ public interface IPlace extends Cloneable
 	
 	public Vector3f getOrientation();
 	
-	/**
-	 * Rotate this location with regard to the agent's center.
-	 * @param angle The rotation angle.
-	 */
-	//public void rotate(float angle);
-
-	/**
-	 * Translate this location along the agent's axis.
-	 * @param distance The translation distance.
-	 */
-	//public void translate(Vector3f translation);
-
 	/**
 	 * @return The location's bundle.
 	 */
@@ -82,12 +72,6 @@ public interface IPlace extends Cloneable
 	public int getValue();
 
 	/**
-	 * @param clock The current time in Ernest's life.
-	 * @return The salience's attractiveness.
-	 */
-	//int getAttractiveness(int clock);
-
-	/**
 	 * @return The span of the bundle at this place.
 	 */
 	public float getSpan();
@@ -97,17 +81,10 @@ public interface IPlace extends Cloneable
 	 */
 	public void setSpan(float span);
 	
-	/**
-	 * @return True if this place is frontal. 
-	 */
-	//public boolean isFrontal();
-	
 	public void setType(int type);
 	
 	public int getType();
 	
-	//public void setShape(int shape);
-	//public int getShape();
 	public void setOrientation(float orientation);
 	public float getOrientationAngle();
 	
@@ -134,18 +111,6 @@ public interface IPlace extends Cloneable
 	public int getStick();
 	//public float getFrontDistance();
 	
-//	public void initSimulation();
-//	public void translateSimulation(Vector3f translation);
-//	public void rotateSimulation(float angle);
-//	public boolean isInCellSimulation(Vector3f position);
-//	public Vector3f getSimulatedPosition(); 
-	
-	//public void setLabel(String label);
-	//public String getLabel();
 	public void setAct(IAct act); 
 	public IAct getAct(); 
-	
-	public void transform(Vector3f translation, float angle);
-	public void transform(Transform3D transform);
-	
 }

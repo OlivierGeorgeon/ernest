@@ -88,7 +88,7 @@ public interface IAct  extends Comparable<IAct>
 	/**
 	 * @return The position of the phenomena that is concerned by the enaction of this act.
 	 */
-	public Point3f getEndPosition();
+	//public Point3f getEndPosition();
 	
 	/**
 	 * @param position The position of the phenomena that is concerned by the enaction of this act.
