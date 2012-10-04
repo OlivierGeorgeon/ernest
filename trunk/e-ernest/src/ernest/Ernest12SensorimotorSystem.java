@@ -34,7 +34,8 @@ import utils.ErnestUtils;
 public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem 
 {
 	/** The observation */
-    private IObservation m_observation ;
+    //private IObservation m_observation ;
+	private IEffect m_effect ;
     
     private int m_satisfaction = 0;
     
@@ -42,39 +43,51 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
     
 	//private JFrame m_frame;
 
-	public IAct enactedAct(IAct act, IObservation observation) 
+	public IAct enactedAct(IAct act, IEffect effect) 
 	{
+		m_effect = effect;
+		
 		// The schema is null during the first cycle
 		if (act == null) return null;
 		
-		// Computes the resulting interaction from the visual observation
-		if (m_observation != null)
-		{
-			m_satisfaction = 0;
-	        String rightFeature  = sensePixel(m_observation.getVisualDistance()[0], observation.getVisualDistance()[0]);
-	        String leftFeature  = sensePixel(m_observation.getVisualDistance()[1], observation.getVisualDistance()[1]);
-	        if (leftFeature.equals(" ") && rightFeature.equals(" "))
-	        	{leftFeature = ""; rightFeature = "";}
-	    	
-	        if (act.getSchema().getLabel().equals(">"))
-	        	m_satisfaction += (observation.getStimuli().equals("t") ? 5 : -10);
-	        else if (act.getSchema().getLabel().equals("^") || act.getSchema().getLabel().equals("v"))
-	        	m_satisfaction -= 3;
-	        else
-	        	m_satisfaction -= 1;
-	        
-	        observation.setStimuli(leftFeature + rightFeature + observation.getStimuli());
-	        observation.setSatisfaction(m_satisfaction);
-		}
-        m_observation = observation;
-        
- 		IAct enactedAct = addInteraction(act.getSchema().getLabel(), observation.getStimuli(), m_satisfaction);
- 		
- 		clearSimulation();
-		//m_spatialSimulation.clearSimulation();
+		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), effect.getEffect(), 0);
 		
 		return enactedAct;
 	}
+
+	//	public IAct enactedAct(IAct act, IObservation observation) 
+//	{
+//		// The schema is null during the first cycle
+//		if (act == null) return null;
+//		
+//		// Computes the resulting interaction from the visual observation
+//		if (m_observation != null)
+//		{
+//			m_satisfaction = 0;
+//	        String rightFeature  = sensePixel(m_observation.getVisualDistance()[0], observation.getVisualDistance()[0]);
+//	        String leftFeature  = sensePixel(m_observation.getVisualDistance()[1], observation.getVisualDistance()[1]);
+//	        if (leftFeature.equals(" ") && rightFeature.equals(" "))
+//	        	{leftFeature = ""; rightFeature = "";}
+//	    	
+//	        if (act.getSchema().getLabel().equals(">"))
+//	        	m_satisfaction += (observation.getStimuli().equals("t") ? 5 : -10);
+//	        else if (act.getSchema().getLabel().equals("^") || act.getSchema().getLabel().equals("v"))
+//	        	m_satisfaction -= 3;
+//	        else
+//	        	m_satisfaction -= 1;
+//	        
+//	        observation.setStimuli(leftFeature + rightFeature + observation.getStimuli());
+//	        observation.setSatisfaction(m_satisfaction);
+//		}
+//        m_observation = observation;
+//        
+// 		IAct enactedAct = addInteraction(act.getSchema().getLabel(), observation.getStimuli(), m_satisfaction);
+// 		
+// 		clearSimulation();
+//		//m_spatialSimulation.clearSimulation();
+//		
+//		return enactedAct;
+//	}
 	
     private String sensePixel(int previousPixel, int currentPixel) 
     {
@@ -279,7 +292,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		if (primitiveAct != null)
 		{
 			// Apply the spatial transformation to spatial memory
-			m_spas.followUp(primitiveAct);
+			m_spas.followUp(m_effect.getTransformation());
 			
 			// Place the act in spatial memory
 			
@@ -343,79 +356,29 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 //	}
 
 	/**
+	 * Generate a list of propositions for acts
+	 * based on the simulation of all reliable acts in spatial memory. 
 	 * Propose all acts that are afforded by the spatial context
 	 * and primitive acts that inform about unknown places.
 	 */
 	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts)
 	{
 		ArrayList<IActProposition> propositionList = new ArrayList<IActProposition>();
-		final int SPATIAL_AFFORDANCE_WEIGHT = 10;
-		final int UNKNOWN_SATISFACTION = 20;
 		
 		Object activations = null;
 		if (m_tracer != null)
 			activations = m_tracer.addEventElement("copresence_propositions", true);
 
-		//m_spatialSimulation.clearSimulation();
-
 		// Simulate all acts in spatial memory. 
 		
 		for (IAct a : acts)
 		{
-			//m_spatialSimulation = m_spas.getSpatialMemory();
 			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
 				IActProposition p = runSimulation(a);
-				propositionList.add(p);
-				
+				propositionList.add(p);				
 				if (m_tracer != null)
 					m_tracer.addSubelement(activations, "proposition", p.toString());
-
-				//				int consistence = runSimulation(a);
-//				
-//				// If this act is afforded by the spatial situation the propose it.
-//				if (consistence == LocalSpaceMemory.SIMULATION_AFFORD)
-//				{
-//					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
-//					IActProposition p = new ActProposition(a, w, 0);
-//					propositionList.add(p);
-//					if (m_tracer != null)
-//						m_tracer.addSubelement(activations, "afforded", p.toString());
-//				}
-//
-//				// If this act informs the spatial situation then propose it.
-//				if (consistence == LocalSpaceMemory.SIMULATION_UNKNOWN)
-//				{
-//					if (a.getSchema().getLabel().equals("-") || a.getSchema().getLabel().equals("/") || a.getSchema().getLabel().equals("\\"))
-//					{
-//						IActProposition p = new ActProposition(a, 1, UNKNOWN_SATISFACTION);
-//						propositionList.add(p);
-//						if (m_tracer != null)
-//							m_tracer.addSubelement(activations, "unknown", p.toString());
-//					}
-//				}
-//				
-//				// Propose this act if it may generate an new copresence.
-//				
-//				
-//				// If this act reaches a situation where another act is afforded then propose it.
-//				// TODO make it work !
-//				if (consistence == LocalSpaceMemory.SIMULATION_REACH)
-//				{
-//					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 50);
-//					IActProposition p = new ActProposition(a, SPATIAL_AFFORDANCE_WEIGHT, 50);
-//					propositionList.add(p);
-//					if (m_tracer != null)
-//						m_tracer.addSubelement(activations, "reach", p.toString());
-//				}
-//				if (consistence == LocalSpaceMemory.SIMULATION_REACH2)
-//				{
-//					int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 100);
-//					IActProposition p = new ActProposition(a, SPATIAL_AFFORDANCE_WEIGHT, 100);
-//					propositionList.add(p);
-//					if (m_tracer != null)
-//						m_tracer.addSubelement(activations, "reach", p.toString());
-//				}
 			}
 						
 //			if (m_frame != null) 
@@ -431,5 +394,4 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 //	{
 //		m_frame = frame;
 //	}
-
 }

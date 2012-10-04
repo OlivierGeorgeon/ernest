@@ -12,7 +12,9 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
+import ernest.Effect;
 import ernest.Ernest;
+import ernest.IEffect;
 import ernest.ITracer;
 
 /**
@@ -45,6 +47,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static int SIMULATION_AFFORD = 2;
 	public final static int SIMULATION_REACH = 3;
 	public final static int SIMULATION_REACH2 = 4;
+	public final static int SIMULATION_NEWCOMPRESENCE = 5;
 	
 	/** The duration of persistence in local space memory. */
 	public static int PERSISTENCE_DURATION = 10;//50;
@@ -120,12 +123,12 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	 * @param translation The translation vector in egocentric referential (provide the opposite vector from the agent's movement).
 	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
 	 */
-	public void transform(IAct act)
-	{
-		for (IPlace p : m_places)
-		    p.transform(act.getTransform());
-
-	}
+//	public void transform(IAct act)
+//	{
+//		for (IPlace p : m_places)
+//		    p.transform(act.getTransform());
+//
+//	}
 	
 	public void transform(Transform3D transform)
 	{
@@ -140,7 +143,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		m_transform.setIdentity();
 		
 		// Run the simulation
-		int status = simulate(act);
+		int status = simulate(act).getSimulationStatus();
 		
 		// Test if the resulting situation leads to an affordance
 		
@@ -161,10 +164,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 						// This place affords itself
 						if (subsequentAct==null || subsequentAct.getSatisfaction() < p.getAct().getSatisfaction())
 							subsequentAct = p.getAct();
-//						if (p.getAct().getColor() == 0xFFFFFF)
-//							status = SIMULATION_REACH;
-//						if (p.getAct().getColor() == 0x73E600)
-//							status = SIMULATION_REACH2;
 					}					
 					//else
 					// This place also affords its compresences
@@ -176,16 +175,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 						if (b.getSecondAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
 							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getSecondAct().getSatisfaction())
 								subsequentAct = b.getSecondAct();
-
-								
-//							if (b.getFirstAct().getStartPosition().epsilonEquals(p.getPosition(), .1f) ||
-//								b.getSecondAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
-//								{
-//								if (b.getFirstAct().getColor() == 0xFFFFFF || b.getSecondAct().getColor() == 0xFFFFFF)
-//									status = SIMULATION_REACH;
-//								if (b.getFirstAct().getColor() == 0x73E600 || b.getSecondAct().getColor() == 0x73E600)
-//									status = SIMULATION_REACH2;
-//								}
 					}
 				}
 			}
@@ -196,28 +185,43 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		{
 			subsequentSatisfaction = subsequentAct.getSatisfaction();
 			status = SIMULATION_REACH;
-		}
-		
-		// Hard coded reach flower
-		
-//		int clock = m_spas.getClock();
-//
-//		if (status != SIMULATION_INCONSISTENT && getValue(DIRECTION_AHEAD) == 0xFFFFFF && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
-//			status = SIMULATION_REACH;
-//		if (status != SIMULATION_INCONSISTENT && (getValue(DIRECTION_AHEAD) == 0x73E600 || getValue(DIRECTION_RIGHT) == 0x73E600) && !act.getTransform().epsilonEquals(tr, .1f) && clock > 100)
-//			status = SIMULATION_REACH2;
-		
+		}		
+
 		//Revert the transformation in spatial memory 
 		m_transform.invert();
-		transform(m_transform);
+		transform(m_transform);	
 		
-		
+		// If this act creates a new copresences then propose it
+		boolean newCopresence = false;
+		if (status != SIMULATION_INCONSISTENT)
+		{
+			for (IPlace pl : m_places)
+			{
+				if (pl.getType() == Place.EVOKE_PHENOMENON)
+				{
+					if (act.getStartPosition().epsilonEquals(pl.getPosition(), .1f) && !act.equals(pl.getAct()) && act.getColor() == 0x73E600)
+					{
+						newCopresence = true;
+						// Test if the copresence already exists
+						for (IBundle b : m_spas.evokeCompresences(act))
+						{
+							if (b.afford(pl.getAct()))
+								newCopresence = false;
+						}
+					}
+				}
+			}
+		}
+		if (newCopresence)
+			status = SIMULATION_NEWCOMPRESENCE;
+
 		// Generate the proposition
 		
 		IActProposition p = new ActProposition(act, 0, 0);
 		final int SPATIAL_AFFORDANCE_WEIGHT = 10;
-		final int UNKNOWN_SATISFACTION = 20;
-		// If this act is afforded by the spatial situation the propose it.
+		final int UNKNOWN_SATISFACTION = 1000;
+		
+		// If this act is afforded by the spatial situation then propose it.
 		if (status == LocalSpaceMemory.SIMULATION_AFFORD)
 		{
 			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
@@ -233,29 +237,29 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			}
 		}
 		
-		// Propose this act if it may generate an new copresence.
-		
-		
 		// If this act reaches a situation where another act is afforded then propose it.
-		// TODO make it work !
 		if (status == LocalSpaceMemory.SIMULATION_REACH)
 		{
-			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 50);
+			int w = SPATIAL_AFFORDANCE_WEIGHT ;
 			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
 		}
-//		if (status == LocalSpaceMemory.SIMULATION_REACH2)
-//		{
-//			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* (a.getSatisfaction() + 100);
-//			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
-//		}
-
+		
+		// If this act reaches a situation where another act is afforded then propose it.
+		if (status == LocalSpaceMemory.SIMULATION_NEWCOMPRESENCE)
+		{
+			int w = SPATIAL_AFFORDANCE_WEIGHT ;
+			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, UNKNOWN_SATISFACTION * 10);
+		}
+		
 		p.setStatus(status);
 		
 		return p;
 	}
 	
-	private int simulate(IAct act)
+	private IEffect simulate(IAct act)
 	{
+		IEffect effect = new Effect();
+		
 		//boolean consistent = false;
 		boolean unknown = true;
 		boolean consistent = true;
@@ -324,7 +328,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			}
 			
 			// Apply this act's transformation to spatial memory
-			transform(act);
+			transform(act.getTransform());
 			// accumulate the transformation of this act to reverse the transformation after the simulation
 			Transform3D tf = new Transform3D(act.getTransform());
 			m_transform.mul(tf, m_transform);
@@ -332,10 +336,10 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}
 		else 
 		{
-			simulationStatus = simulate(act.getSchema().getContextAct());
+			simulationStatus = simulate(act.getSchema().getContextAct()).getSimulationStatus();
 			if (simulationStatus > SIMULATION_INCONSISTENT)
 			{
-				int status2 = simulate(act.getSchema().getIntentionAct());
+				int status2 = simulate(act.getSchema().getIntentionAct()).getSimulationStatus();
 				if (status2 == SIMULATION_INCONSISTENT)
 					simulationStatus = SIMULATION_INCONSISTENT;
 				else
@@ -345,7 +349,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				}
 			}
 		}
-		return simulationStatus;
+		//return simulationStatus;
+		effect.setSimulationStatus(simulationStatus);
+		return effect;
 	}
 
 	/**

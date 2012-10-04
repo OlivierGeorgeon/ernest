@@ -5,6 +5,7 @@ import imos.IAct;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import ernest.Ernest;
@@ -338,9 +339,9 @@ public class Spas implements ISpas
 //		return null;
 //	}
 
-	public void followUp(IAct act) 
+	public void followUp(Transform3D transformation) 
 	{
-		m_localSpaceMemory.transform(act);		
+		m_localSpaceMemory.transform(transformation);		
 	}
 
 	/**

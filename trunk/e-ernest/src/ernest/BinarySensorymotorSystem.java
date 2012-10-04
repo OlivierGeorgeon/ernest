@@ -75,12 +75,12 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return enactedAct;
 	}
 
-	public IAct enactedAct(IAct act, IObservation observation) 
+	public IAct enactedAct(IAct act, IEffect effect) 
 	{
 		// The schema is null during the first cycle
 		if (act == null) return null;
 		
-		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), observation.getStimuli(), 0);
+		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), effect.getEffect(), 0);
 		
 		return enactedAct;
 	}
@@ -122,47 +122,11 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return new ArrayList<IActProposition>();
 	}
 
-//	public void stepSpas(IAct act) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	public void updateSpas(IAct act) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 	public void updateSpas(IAct primitiveAct, IAct topAct) {
 		// TODO Auto-generated method stub
 		
 	}
 	
-	/**
-	 * Tells the interaction that is likely to result from the enaction of this schema.
-	 * If the schema has no succeeding or failing act defined, 
-	 * then pick a random interaction attached to this schema.
-	 * TODO Simulate the action to get a better anticipation.
-	 * @param s The schema. 
-	 * @return The anticipated resulting interaction.
-	 */
-//	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts)
-//	{
-//		IAct anticipateInteraction = null;
-//		boolean status = (e >= 0);
-//		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
-//		
-//		// if the schema has no succeeding or failing act, then pick an act randomly
-//		if (anticipateInteraction==null)
-//		{
-//			for (IAct a : acts)
-//			{
-//				//if (a.getSchema().equals(s) && (a.getStatus() == true))
-//				if (a.getSchema().equals(s) )
-//					anticipateInteraction = a;
-//			}
-//		}
-//		return anticipateInteraction;
-//	}
-
 	public ISpatialMemory getSpatialSimulation()
 	{
 		return m_spatialMemory;
@@ -177,14 +141,4 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 	{
 		return m_spatialMemory.runSimulation(a, m_spas);
 	}
-//	public ISpatialMemory getSpatialSimulation() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-//	public void setFrame(JFrame frame) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-
 }

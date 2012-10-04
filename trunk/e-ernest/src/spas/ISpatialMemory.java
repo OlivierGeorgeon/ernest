@@ -53,7 +53,7 @@ public interface ISpatialMemory
 	 * Apply a geometrical transformation caused by an act to this spatial memory
 	 * @param act The act that generates the transformation
 	 */
-	public void transform(IAct act);
+	//public void transform(IAct act);
 	
 	/**
 	 * Remove places that are older than the decay laps
