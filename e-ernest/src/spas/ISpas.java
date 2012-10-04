@@ -5,6 +5,7 @@ import imos.IAct;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -99,6 +100,6 @@ public interface ISpas
 	
 	public ISpatialMemory getSpatialMemory();
 	
-	public void followUp(IAct act);
+	public void followUp(Transform3D transformation);
 
 }

@@ -68,7 +68,8 @@ public interface IErnest
 	 * @param observation The matrix of stimuli received from the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public String step(IObservation observation);
+	//public String step(IObservation observation);
+	public String step(IEffect effect);
 	
 	/**
 	 * Run Ernest one step.

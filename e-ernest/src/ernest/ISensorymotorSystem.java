@@ -81,7 +81,7 @@ public interface ISensorymotorSystem
 	
 	//public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts);
 	
-	public IAct enactedAct(IAct m_primitiveAct, IObservation observation);
+	public IAct enactedAct(IAct m_primitiveAct, IEffect effect);
 	
 	public ISpatialMemory getSpatialSimulation();
 	

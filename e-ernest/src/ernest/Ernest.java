@@ -257,17 +257,18 @@ public class Ernest implements IErnest
 		return m_primitiveAct.getSchema().getLabel();
 	}
 
-	public String step(IObservation observation) 
+	//public String step(IObservation observation) 
+	public String step(IEffect effect) 
 	{
 		if (m_tracer != null)
 		{
             m_tracer.startNewEvent(m_imos.getCounter());
 			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-			observation.trace(m_tracer);
+			effect.trace(m_tracer);
 		}                
 		// Determine the primitive enacted act from the enacted schema and the observation.
 		
-		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, observation);
+		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, effect);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		

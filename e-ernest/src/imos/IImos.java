@@ -3,6 +3,7 @@ package imos;
 import java.util.ArrayList;
 import spas.IPlace;
 import spas.ISpas;
+import ernest.IEffect;
 import ernest.ISensorymotorSystem;
 import ernest.ITracer;
 
