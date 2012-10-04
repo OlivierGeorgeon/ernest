@@ -50,7 +50,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		// The schema is null during the first cycle
 		if (act == null) return null;
 		
-		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), effect.getEffect(), 0);
+		IAct enactedAct = addInteraction(act.getSchema().getLabel(), effect.getEffect(), 0);
 		
 		return enactedAct;
 	}
@@ -291,12 +291,10 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		m_spas.tick();
 		if (primitiveAct != null)
 		{
-			// Apply the spatial transformation to spatial memory
-			m_spas.followUp(m_effect.getTransformation());
-			
 			// Place the act in spatial memory
 			
-			IPlace place = m_spas.addPlace(new Point3f(topAct.getEndPosition()), Place.EVOKE_PHENOMENON);
+			//IPlace place = m_spas.addPlace(new Point3f(topAct.getEndPosition()), Place.EVOKE_PHENOMENON);
+			IPlace place = m_spas.addPlace(new Point3f(m_effect.getLocation()), Place.EVOKE_PHENOMENON);
 			place.setValue(topAct.getColor());
 			place.setUpdateCount(m_spas.getClock());
 			place.setAct(topAct);
@@ -304,16 +302,20 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			// TODO place intermediary acts of higher level acts too?
 			if (!topAct.getSchema().isPrimitive())
 			{
-				IPlace place2 = m_spas.addPlace(new Point3f(primitiveAct.getEndPosition()), Place.EVOKE_PHENOMENON);
+				//IPlace place2 = m_spas.addPlace(new Point3f(primitiveAct.getEndPosition()), Place.EVOKE_PHENOMENON);
+				IPlace place2 = m_spas.addPlace(new Point3f(m_effect.getLocation()), Place.EVOKE_PHENOMENON);
 				place2.setValue(primitiveAct.getColor());
 				place2.setUpdateCount(m_spas.getClock());
 				place2.setAct(primitiveAct);
 			}
+			// Apply the spatial transformation to spatial memory
+			m_spas.track(m_effect.getTransformation());
+			
 			// Update the spatial system to construct phenomena ==
 			
-			IObservation observation = new Observation();
-			observation.setPrimitiveAct(primitiveAct);
-			m_spas.step(observation);
+			//IObservation observation = new Observation();
+			//observation.setPrimitiveAct(primitiveAct);
+			//m_spas.step(observation);
 		}
 
 	}

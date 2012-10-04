@@ -1,7 +1,7 @@
 package ernest;
 
 import javax.media.j3d.Transform3D;
-import javax.vecmath.Point3d;
+import javax.vecmath.Point3f;
 
 /**
  * An effect sensed by Ernest after making a move in the environment.
@@ -21,7 +21,7 @@ public interface IEffect
 	/**
 	 * @param location The location concerned by the enacted scheme.
 	 */
-	public void setLocation(Point3d location);
+	public void setLocation(Point3f location);
 	
 	/**
 	 * @param transformation The agent's movement during the scheme enaction.
@@ -35,6 +35,8 @@ public interface IEffect
 	 */
 	public void setTransformation(float angle, float x); 
 
+	public void setColor(int color);
+	
 	public int getSimulationStatus();
 
 	/**
@@ -45,12 +47,14 @@ public interface IEffect
 	/**
 	 * @return The location concerned by the enacted scheme.
 	 */
-	public Point3d getLocation();
+	public Point3f getLocation();
 	
 	/**
 	 * @return The agent's movement during the scheme enaction.
 	 */
 	public Transform3D getTransformation();
 	
+	public int getColor();
+
 	public void trace(ITracer tracer);
 }

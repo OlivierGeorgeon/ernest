@@ -11,8 +11,6 @@ import javax.vecmath.Vector3f;
 
 import ernest.ITracer;
 
-
-
 /**
  * The spatial system.
  * Maintains the local space map and the persistence memory.
@@ -31,7 +29,8 @@ public interface ISpas
 	 * @param interactionPlace The place where the ongoing interaction started.
 	 * @param observation The current observation.
 	 */
-	public void step(IObservation observation);//, ArrayList<IPlace> places);
+	//public void step(IObservation observation);
+	public void track(Transform3D transformation);
 
 	/**
 	 * Provide a rgb code to display the local space map in the environment.
@@ -58,25 +57,21 @@ public interface ISpas
 	 */
 	public ArrayList<IPlace> getPlaceList();
 	
+	/**
+	 * @return The clock of spatial memory
+	 */
 	public int getClock();
-	//public void traceLocalSpace();
-	
-	//public IPlace getFocusPlace();
 	
 	/**
-	 * @param place The place to add in local space memory.
+	 * @param position This place's position.
+	 * @param type This place's type.
+	 * @return The crated place
 	 */
 	public IPlace addPlace(Point3f position, int type);
-	//public IPlace addPlace(IBundle bundle, Vector3f position);
-	
-	//public IPlace addOrReplacePlace(IBundle bundle, Vector3f position);
-	
-	//public IBundle seeBundle(int value);
-	
-	//public IPlace seePlace(float direction);
-	
-	//public IBundle addBundle(int visualValue, int tactileValue);
-	
+
+	/**
+	 * Tick the clock of spatial memory
+	 */
 	public void tick();
 	
 	/**
@@ -85,21 +80,14 @@ public interface ISpas
 	 */
 	//public ArrayList<IPlace> getPhenomena();
 	
-	public boolean checkAct(IAct act);
+	//public boolean checkAct(IAct act);
 	
-	//public IBundle addBundle(int value);
-	//public IBundle addBundle(IAct act);
 	public IBundle addBundle(IAct firstAct, IAct secondAct); 
-	//public IBundle evokeBundle(IAct act);
 	public ArrayList<IBundle> evokeCompresences(IAct act);
 
 	//public IBundle aggregateBundle(IBundle bundle, IAct act); 
 
 	public int getValue(Point3f position);
-	//public IPlace getPlace(Vector3f position);
 	
 	public ISpatialMemory getSpatialMemory();
-	
-	public void followUp(Transform3D transformation);
-
 }

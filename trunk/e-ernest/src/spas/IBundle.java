@@ -75,10 +75,4 @@ public interface IBundle
 	//int getPeripersonalAttractiveness(int clock);
 
 	//public boolean addAct(IAct act); 
-
-	
-	//void addAffordance(IAct act, IPlace place, Vector3f relativePosition, float relativeOrientation, int proclivity, int value);
-	//public ArrayList<IAffordance> getAffordanceList();
-	//public IAct activateAffordance(Vector3f relativePosition);
-	
 }

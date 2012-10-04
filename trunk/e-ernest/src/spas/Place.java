@@ -36,7 +36,6 @@ public class Place implements IPlace //, Cloneable
 	private float m_span;
 	//private float m_orientationAngle = 0;
 	private int m_type;// = Spas.PLACE_SEE;
-	//private int m_shape = Spas.SHAPE_CIRCLE;
 	private int m_clock = 0;
 	private int m_stick;
 	private int m_value;
@@ -118,68 +117,11 @@ public class Place implements IPlace //, Cloneable
 		return m_position;
 	}
 	
-//	public void rotate(float angle)
-//	{
-//		Matrix3f rot = new Matrix3f();
-//		rot.rotZ(angle);
-//		
-//		Vector3f oldPosition = m_position;
-//		rot.transform(oldPosition, m_position); // (rot * m_position) is placed into m_position
-//		
-////		oldPosition = m_firstPosition;
-////		rot.transform(oldPosition, m_firstPosition); 
-////		
-////		oldPosition = m_secondPosition;
-////		rot.transform(oldPosition, m_secondPosition); 
-//		
-//		// Rotate the orientation (used for display when the place has a shape)
-//		m_orientation += angle;
-//		if (m_orientation > Math.PI)
-//			m_orientation -= 2*Math.PI;		
-//		if (m_orientation < Math.PI)
-//			m_orientation += 2*Math.PI;		
-//	}
-//
-//	public void translate(Vector3f translation) 
-//	{
-//		m_position.add(translation);
-////		m_firstPosition.add(translation);
-////		m_secondPosition.add(translation);
-//	}
-//	
-
 	public void transform(Transform3D transform)
 	{
 		transform.transform(m_position);
 		transform.transform(m_orientation);
 	}		
-	
-	public void transform(Vector3f translation, float angle)
-	{
-		Transform3D tf = new Transform3D();
-		tf.rotZ(angle);
-		tf.setTranslation(translation);
-
-		tf.transform(m_position);
-		tf.transform(m_orientation);
-		
-		//m_orientationAngle = ErnestUtils.polarAngle(m_orientation);
-
-		//tf.transform(point);
-		//m_position.set(point);
-
-		// Transforms the normal vector that indicates the orientation of the place.
-//		Vector3f normal = new Vector3f((float) Math.cos(m_orientationAngle), (float) Math.sin(m_orientationAngle), 0);
-//		tf.transform(normal);
-//		m_orientationAngle = ErnestUtils.polarAngle(normal);
-		
-//		m_orientation += angle;
-//		if (m_orientation > Math.PI)
-//			m_orientation -= 2*Math.PI;		
-//		if (m_orientation < Math.PI)
-//			m_orientation += 2*Math.PI;		
-
-	}
 	
 	public boolean isInCell(Point3f position)
 	{
@@ -431,16 +373,6 @@ public class Place implements IPlace //, Cloneable
 	{
 		return m_stick;
 	}
-
-//	public void setShape(int shape) 
-//	{
-//		m_shape = shape;
-//	}
-//
-//	public int getShape() 
-//	{
-//		return m_shape;
-//	}
 
 	public void setOrientation(float orientation) 
 	{

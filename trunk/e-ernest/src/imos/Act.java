@@ -253,13 +253,13 @@ public class Act implements IAct
 	/**
 	 * The end position is the start position to which the schema's transformation is applied. 
 	 */
-	public Point3f getEndPosition() 
-	{
-		Point3f position = new Point3f(getStartPosition()); 
-		getTransform().transform(position);
-		
-		return position;
-	}
+//	public Point3f getEndPosition() 
+//	{
+//		Point3f position = new Point3f(getStartPosition()); 
+//		getTransform().transform(position);
+//		
+//		return position;
+//	}
 
 	public void setStartPosition(Point3f position) 
 	{
