@@ -77,11 +77,9 @@ public interface ISensorymotorSystem
 	public IAct situationAct();
 	public ArrayList<IProposition> getPropositionList();
 	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts);
-	public void updateSpas(IAct primitiveAct, IAct topAct);
+	public void updateSpas(IEnaction enaction);
 	
 	//public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts);
-	
-	public IAct enactedAct(IAct m_primitiveAct, IEffect effect);
 	
 	public ISpatialMemory getSpatialSimulation();
 	

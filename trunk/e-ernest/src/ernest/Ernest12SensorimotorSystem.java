@@ -34,8 +34,6 @@ import utils.ErnestUtils;
 public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem 
 {
 	/** The observation */
-    //private IObservation m_observation ;
-	private IEffect m_effect ;
     
     private int m_satisfaction = 0;
     
@@ -43,17 +41,17 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
     
 	//private JFrame m_frame;
 
-	public IAct enactedAct(IAct act, IEffect effect) 
-	{
-		m_effect = effect;
-		
-		// The schema is null during the first cycle
-		if (act == null) return null;
-		
-		IAct enactedAct = addInteraction(act.getSchema().getLabel(), effect.getEffect(), 0);
-		
-		return enactedAct;
-	}
+//	public IAct enactedAct(IAct act, IEffect effect) 
+//	{
+//		m_effect = effect;
+//		
+//		// The schema is null during the first cycle
+//		if (act == null) return null;
+//		
+//		IAct enactedAct = addInteraction(act.getSchema().getLabel(), effect.getEffect(), 0);
+//		
+//		return enactedAct;
+//	}
 
 	//	public IAct enactedAct(IAct act, IObservation observation) 
 //	{
@@ -284,9 +282,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return act;
 	}
 
-	public void updateSpas(IAct primitiveAct, IAct topAct)
+	public void updateSpas(IEnaction enaction)
 	{
 		// Add this act into spatial memory
+		IAct primitiveAct = enaction.getEnactedPrimitiveAct();
+		IAct topAct = enaction.getTopAct();
 		
 		m_spas.tick();
 		if (primitiveAct != null)
@@ -294,8 +294,9 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			// Place the act in spatial memory
 			
 			//IPlace place = m_spas.addPlace(new Point3f(topAct.getEndPosition()), Place.EVOKE_PHENOMENON);
-			IPlace place = m_spas.addPlace(new Point3f(m_effect.getLocation()), Place.EVOKE_PHENOMENON);
-			place.setValue(topAct.getColor());
+			IPlace place = m_spas.addPlace(new Point3f(enaction.getEffect().getLocation()), Place.EVOKE_PHENOMENON);
+			//place.setValue(topAct.getColor());
+			place.setValue(enaction.getEffect().getColor());
 			place.setUpdateCount(m_spas.getClock());
 			place.setAct(topAct);
 			
@@ -303,19 +304,14 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 			if (!topAct.getSchema().isPrimitive())
 			{
 				//IPlace place2 = m_spas.addPlace(new Point3f(primitiveAct.getEndPosition()), Place.EVOKE_PHENOMENON);
-				IPlace place2 = m_spas.addPlace(new Point3f(m_effect.getLocation()), Place.EVOKE_PHENOMENON);
-				place2.setValue(primitiveAct.getColor());
+				IPlace place2 = m_spas.addPlace(new Point3f(enaction.getEffect().getLocation()), Place.EVOKE_PHENOMENON);
+				//place2.setValue(primitiveAct.getColor());
+				place2.setValue(enaction.getEffect().getColor());
 				place2.setUpdateCount(m_spas.getClock());
 				place2.setAct(primitiveAct);
 			}
 			// Apply the spatial transformation to spatial memory
-			m_spas.track(m_effect.getTransformation());
-			
-			// Update the spatial system to construct phenomena ==
-			
-			//IObservation observation = new Observation();
-			//observation.setPrimitiveAct(primitiveAct);
-			//m_spas.step(observation);
+			m_spas.track(enaction.getEffect().getTransformation());			
 		}
 
 	}

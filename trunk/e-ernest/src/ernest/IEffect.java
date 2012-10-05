@@ -11,17 +11,25 @@ import javax.vecmath.Point3f;
 public interface IEffect 
 {
 	
-	public void setSimulationStatus(int simulationStatus);
-	
 	/**
 	 * @param effect The elementary effect of the enacted primitive scheme.
 	 */
-	public void setEffect(String effect);
+	public void setLabel(String label);
+	
+	/**
+	 * @return The elementary effect of the enacted primitive scheme.
+	 */
+	public String getLabel();
 	
 	/**
 	 * @param location The location concerned by the enacted scheme.
 	 */
 	public void setLocation(Point3f location);
+	
+	/**
+	 * @return The location concerned by the enacted scheme.
+	 */
+	public Point3f getLocation();
 	
 	/**
 	 * @param transformation The agent's movement during the scheme enaction.
@@ -35,26 +43,23 @@ public interface IEffect
 	 */
 	public void setTransformation(float angle, float x); 
 
-	public void setColor(int color);
-	
-	public int getSimulationStatus();
-
-	/**
-	 * @return The elementary effect of the enacted primitive scheme.
-	 */
-	public String getEffect();
-	
-	/**
-	 * @return The location concerned by the enacted scheme.
-	 */
-	public Point3f getLocation();
-	
 	/**
 	 * @return The agent's movement during the scheme enaction.
 	 */
 	public Transform3D getTransformation();
 	
+	/**
+	 * @param color The color used to represent this effect in the trace
+	 */
+	public void setColor(int color);
+	
+	/**
+	 * @return The color used to represent this effect in the trace
+	 */
 	public int getColor();
 
+	/**
+	 * @param tracer The tracer
+	 */
 	public void trace(ITracer tracer);
 }
