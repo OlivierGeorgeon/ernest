@@ -68,10 +68,9 @@ public class Spas implements ISpas
 	public void track(Transform3D transformation) 
 	{
 		m_localSpaceMemory.copresence(this);
-		
-		if (m_tracer != null) m_localSpaceMemory.trace(m_tracer);
-
 		m_localSpaceMemory.transform(transformation);		
+
+		if (m_tracer != null) m_localSpaceMemory.trace(m_tracer);
 	}
 
 //	public void step(IObservation observation)//, ArrayList<IPlace> places) 

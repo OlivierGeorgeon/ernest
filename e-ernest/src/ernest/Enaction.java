@@ -14,6 +14,7 @@ public class Enaction implements IEnaction
 	private IAct m_intendedPrimitiveAct = null;
 	private IAct m_enactedPrimitiveAct = null;
 	private IAct m_topAct = null;
+	private IAct m_affordanceAct = null;
 	private int m_simulationStatus = 0;
 	private int m_step = 0;
 	
@@ -45,6 +46,16 @@ public class Enaction implements IEnaction
 	public IAct getTopAct() 
 	{
 		return m_topAct;
+	}
+	
+	public void setAffordanceAct(IAct act) 
+	{
+		m_affordanceAct = act;
+	}
+
+	public IAct getAffordanceAct() 
+	{
+		return m_affordanceAct;
 	}
 	
 	public void setStep(int step)
