@@ -12,6 +12,7 @@ import spas.IPlace;
 import spas.LocalSpaceMemory;
 import utils.ErnestUtils;
 import ernest.Ernest;
+import ernest.IEnaction;
 import ernest.ISensorymotorSystem;
 import ernest.ITracer;
 
@@ -51,7 +52,7 @@ public class Imos implements IImos
 	/** Random generator used to break a tie when selecting a schema... */
 	//private static Random m_rand = new Random(); 
 	
-	private boolean m_newIntention = true;
+	//private boolean m_newIntention = true;
 
 	/**
 	 * The context to learn new schemas with the first learning mechanism.
@@ -227,8 +228,13 @@ public class Imos implements IImos
 	 * @param primitiveEnaction The last actually enacted primitive interaction.
 	 * @return The primitive interaction to try to enact next. 
 	 */
-	public IAct step(IAct primitiveEnaction) 
+	//public IAct step(IAct primitiveEnaction) 
+	public void step(IEnaction enaction) 
 	{
+		//IAct primitiveIntention = enaction.getIntendedPrimitiveAct();
+		IAct primitiveEnaction = enaction.getEnactedPrimitiveAct();
+		//IAct topIntention = enaction.getTopAct();
+		
 		m_imosCycle++;		
 		m_internalState= "";
 		
@@ -236,33 +242,15 @@ public class Imos implements IImos
 		//m_episodicMemory.reach(new Point3f(0,-1,0), new Vector3f(0,-1,0));
 		//m_episodicMemory.reach(new Point3f(0,0,0), new Vector3f(-1,0,0));
 
-//		// Trace the new event
-//		
-//		if (m_tracer != null)
-//		{
-//            m_tracer.startNewEvent(getCounter());
-//			m_tracer.addEventElement("clock", getCounter() + "");
-//		}                
-//		
 		IAct intentionAct = null;
 		IAct enactedAct = null;
 		
-		// We follow up the current enaction (Except on startup when the primitive intention is null).
+		// We track the current enaction (Except on startup when the primitive intention is null).
+
+		enaction.trace(m_tracer);
 
 		if (m_primitiveIntention != null)
 		{
-			if (m_tracer != null) 
-			{
-				m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
-				m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
-				m_tracer.addEventElement("new_intention", m_newIntention ? "true" : "false");
-				m_tracer.addEventElement("primitive_intended_act", m_primitiveIntention.getLabel());
-				m_tracer.addEventElement("primitive_enacted_act", primitiveEnaction.getLabel());
-				m_tracer.addEventElement("primitive_enacted_color", ErnestUtils.hexColor(primitiveEnaction.getColor()));
-				m_tracer.addEventElement("primitive_enacted_schema", primitiveEnaction.getSchema().getLabel());
-				m_tracer.addEventElement("satisfaction", primitiveEnaction.getSatisfaction()/10 + "");
-			}
-
 			// Compute the actually enacted act
 			
 			enactedAct = enactedAct(m_primitiveIntention.getSchema(), primitiveEnaction);
@@ -272,25 +260,13 @@ public class Imos implements IImos
 			
 			intentionAct = nextAct(m_primitiveIntention, primitiveEnaction);
 			
-			// Check the consistency with Spas
-//			if (intentionAct != null && !m_sensorimotorSystem.checkConsistency(intentionAct))
-//			{
-//				if (m_tracer != null)
-//					m_tracer.addEventElement("interrupted", intentionAct.getLabel());
-//				intentionAct = null;
-//			}
 		}	
 		
 		// Update spatial memory
 		
-		//if (enactedAct != null)
-		//	m_sensorimotorSystem.stepSpas(enactedAct);
-
-		//if (m_primitiveIntention != null)
-			m_sensorimotorSystem.updateSpas(primitiveEnaction, enactedAct);
-
-		//if (enactedAct != null)
-		//	m_sensorimotorSystem.stepSpas(enactedAct);
+		enaction.setTopAct(enactedAct);
+		//m_sensorimotorSystem.updateSpas(primitiveEnaction, enactedAct);
+		m_sensorimotorSystem.updateSpas(enaction);
 
 		// If we have a context and the current enaction is over then we record and we shift the context. ========
 
@@ -397,16 +373,13 @@ public class Imos implements IImos
 			ArrayList<IActProposition> propositionList = m_sensorimotorSystem.getPropositionList(m_episodicMemory.getActs());
 			intentionAct = m_episodicMemory.selectAct(m_activationList, propositionList);
 			m_intentionAct = intentionAct;
-			m_newIntention = true;
+			enaction.setTopAct(intentionAct);
+			enaction.setStep(0);
+			//m_newIntention = true;
 		}
 		else 
-			m_newIntention = false;
-		
-//		if (m_tracer != null) {
-//			m_tracer.addEventElement("top_intention", m_intentionAct.getLabel());
-//			m_tracer.addEventElement("top_level", m_intentionAct.getLength() + "");
-//			m_tracer.addEventElement("new_intention", m_newIntention ? "true" : "false");
-//		}
+			enaction.setStep(enaction.getStep() + 1);
+			//m_newIntention = false;
 		
 		// Spread the selected intention's activation to primitive acts.
 		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)		
@@ -425,7 +398,8 @@ public class Imos implements IImos
 			m_tracer.addEventElement("next_primitive_intention", m_primitiveIntention.getLabel());
 		
 		//return nextPrimitiveAct;
-		return m_primitiveIntention;
+		enaction.setIntendedPrimitiveAct(m_primitiveIntention);
+		//return m_primitiveIntention;
 				
 	}
 	
@@ -579,16 +553,16 @@ public class Imos implements IImos
 		return m_imosCycle;
 	}
 
-	public boolean newIntention() 
-	{
-		return m_newIntention;
-	}
+//	public boolean newIntention() 
+//	{
+//		return m_newIntention;
+//	}
 
-	public boolean compositeIntention() 
-	{
-		return (m_intentionAct.getLength() > 1);
-	}
-	
+//	public boolean compositeIntention() 
+//	{
+//		return (m_intentionAct.getLength() > 1);
+//	}
+//	
     public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct)
     {
     	

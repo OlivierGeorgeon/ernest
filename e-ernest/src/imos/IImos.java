@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import spas.IPlace;
 import spas.ISpas;
 import ernest.IEffect;
+import ernest.IEnaction;
 import ernest.ISensorymotorSystem;
 import ernest.ITracer;
 
@@ -21,7 +22,8 @@ public interface IImos
 	 * @param primitiveEnaction The last actually enacted primitive interaction.
 	 * @return The primitive interaction to try to enact next. 
 	 */
-	public IAct step(IAct primitiveEnaction); 
+	//public IAct step(IAct primitiveEnaction); 
+	public void step(IEnaction enaction); 
 
 	/**
 	 * Constructs a new interaction in episodic memory.
@@ -55,8 +57,8 @@ public interface IImos
 	/**
 	 * @return True if this cycle starts a new composite interaction.
 	 */
-	public boolean newIntention();
-	public boolean compositeIntention();
+	//public boolean newIntention();
+	//public boolean compositeIntention();
 	
 	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem);
 

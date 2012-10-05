@@ -75,15 +75,15 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return enactedAct;
 	}
 
-	public IAct enactedAct(IAct act, IEffect effect) 
-	{
-		// The schema is null during the first cycle
-		if (act == null) return null;
-		
-		IAct enactedAct = m_imos.addInteraction(act.getSchema().getLabel(), effect.getEffect(), 0);
-		
-		return enactedAct;
-	}
+//	public IAct enactedAct(IEnaction enaction) 
+//	{
+//		// The schema is null during the first cycle
+//		if (enaction.getIntendedPrimitiveAct() == null) return null;
+//		
+//		IAct enactedAct = m_imos.addInteraction(enaction.getIntendedPrimitiveAct().getSchema().getLabel(), enaction.getEffect().getEffect(), 0);
+//		
+//		return enactedAct;
+//	}
 	
 	public IAct enactedAct(IAct act, int[][] matrix) { return null; }
 
@@ -122,9 +122,8 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return new ArrayList<IActProposition>();
 	}
 
-	public void updateSpas(IAct primitiveAct, IAct topAct) {
-		// TODO Auto-generated method stub
-		
+	public void updateSpas(IEnaction enaction) 
+	{
 	}
 	
 	public ISpatialMemory getSpatialSimulation()

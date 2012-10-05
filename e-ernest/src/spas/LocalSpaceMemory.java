@@ -13,8 +13,10 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
 import ernest.Effect;
+import ernest.Enaction;
 import ernest.Ernest;
 import ernest.IEffect;
+import ernest.IEnaction;
 import ernest.ITracer;
 
 /**
@@ -256,9 +258,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		return p;
 	}
 	
-	private IEffect simulate(IAct act)
+	private IEnaction simulate(IAct act)
 	{
-		IEffect effect = new Effect();
+		IEnaction enaction = new Enaction();
 		
 		//boolean consistent = false;
 		boolean unknown = true;
@@ -350,8 +352,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			}
 		}
 		//return simulationStatus;
-		effect.setSimulationStatus(simulationStatus);
-		return effect;
+		enaction.setSimulationStatus(simulationStatus);
+		return enaction;
 	}
 
 	/**
