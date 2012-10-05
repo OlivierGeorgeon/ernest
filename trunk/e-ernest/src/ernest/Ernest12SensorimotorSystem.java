@@ -286,7 +286,7 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 	{
 		// Add this act into spatial memory
 		IAct primitiveAct = enaction.getEnactedPrimitiveAct();
-		IAct topAct = enaction.getTopAct();
+		IAct topAct = enaction.getAffordanceAct();
 		
 		m_spas.tick();
 		if (primitiveAct != null)

@@ -264,7 +264,7 @@ public class Imos implements IImos
 		
 		// Update spatial memory
 		
-		enaction.setTopAct(enactedAct);
+		enaction.setAffordanceAct(enactedAct);
 		//m_sensorimotorSystem.updateSpas(primitiveEnaction, enactedAct);
 		m_sensorimotorSystem.updateSpas(enaction);
 
@@ -381,6 +381,7 @@ public class Imos implements IImos
 			enaction.setStep(enaction.getStep() + 1);
 			//m_newIntention = false;
 		
+
 		// Spread the selected intention's activation to primitive acts.
 		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)		
 		//IAct activePrimitiveAct = spreadActivation(intentionAct);
