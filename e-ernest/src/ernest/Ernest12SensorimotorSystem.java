@@ -1,28 +1,28 @@
 package ernest;
 
-import imos.ActProposition;
+//import imos.ActProposition;
 import imos.IAct;
 import imos.IActProposition;
-import imos.IProposition;
-import imos.ISchema;
+//import imos.IProposition;
+//import imos.ISchema;
 import imos.Imos;
-import imos.Proposition;
+//import imos.Proposition;
 
-import java.awt.Color;
+//import java.awt.Color;
 import java.util.ArrayList;
 
 import javax.media.j3d.Transform3D;
-import javax.swing.JFrame;
+//import javax.swing.JFrame;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import spas.IBundle;
-import spas.IPlace;
+//import spas.IBundle;
+//import spas.IPlace;
 import spas.ISpatialMemory;
 import spas.LocalSpaceMemory;
-import spas.Place;
-import spas.Spas;
-import utils.ErnestUtils;
+//import spas.Place;
+//import spas.Spas;
+//import utils.ErnestUtils;
 
 /**
  * Implement Ernest 12.0's sensorimotor system.
@@ -35,56 +35,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
     
     private int m_satisfaction = 0;
     
-    //private ISpatialMemory m_spatialSimulation = new LocalSpaceMemory();
-    
 	//private JFrame m_frame;
 
-//	public IAct enactedAct(IAct act, IEffect effect) 
-//	{
-//		m_effect = effect;
-//		
-//		// The schema is null during the first cycle
-//		if (act == null) return null;
-//		
-//		IAct enactedAct = addInteraction(act.getSchema().getLabel(), effect.getEffect(), 0);
-//		
-//		return enactedAct;
-//	}
-
-	//	public IAct enactedAct(IAct act, IObservation observation) 
-//	{
-//		// The schema is null during the first cycle
-//		if (act == null) return null;
-//		
-//		// Computes the resulting interaction from the visual observation
-//		if (m_observation != null)
-//		{
-//			m_satisfaction = 0;
-//	        String rightFeature  = sensePixel(m_observation.getVisualDistance()[0], observation.getVisualDistance()[0]);
-//	        String leftFeature  = sensePixel(m_observation.getVisualDistance()[1], observation.getVisualDistance()[1]);
-//	        if (leftFeature.equals(" ") && rightFeature.equals(" "))
-//	        	{leftFeature = ""; rightFeature = "";}
-//	    	
-//	        if (act.getSchema().getLabel().equals(">"))
-//	        	m_satisfaction += (observation.getStimuli().equals("t") ? 5 : -10);
-//	        else if (act.getSchema().getLabel().equals("^") || act.getSchema().getLabel().equals("v"))
-//	        	m_satisfaction -= 3;
-//	        else
-//	        	m_satisfaction -= 1;
-//	        
-//	        observation.setStimuli(leftFeature + rightFeature + observation.getStimuli());
-//	        observation.setSatisfaction(m_satisfaction);
-//		}
-//        m_observation = observation;
-//        
-// 		IAct enactedAct = addInteraction(act.getSchema().getLabel(), observation.getStimuli(), m_satisfaction);
-// 		
-// 		clearSimulation();
-//		//m_spatialSimulation.clearSimulation();
-//		
-//		return enactedAct;
-//	}
-	
     private String sensePixel(int previousPixel, int currentPixel) 
     {
             String feature = " ";
@@ -282,35 +234,36 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 
 	public void updateSpas(IEnaction enaction)
 	{
-		// Add this act into spatial memory
-		IAct primitiveAct = enaction.getEnactedPrimitiveAct();
-		IAct topAct = enaction.getAffordanceAct();
-		
+//		// Add this act into spatial memory
+//		IAct primitiveAct = enaction.getEnactedPrimitiveAct();
+//		IAct topAct = enaction.getAffordanceAct();
+//		
+//		m_spas.tick();
+//		if (primitiveAct != null)
+//		{
+//			// Place the act in spatial memory
+//			
+//			//IPlace place = m_spas.addPlace(new Point3f(topAct.getEndPosition()), Place.EVOKE_PHENOMENON);
+//			IPlace place = m_spas.addPlace(new Point3f(enaction.getEffect().getLocation()), Place.ENACTION_PLACE);
+//			//place.setValue(topAct.getColor());
+//			place.setValue(enaction.getEffect().getColor());
+//			place.setUpdateCount(m_spas.getClock());
+//			place.setAct(topAct);
+//			
+//			// TODO place intermediary acts of higher level acts too?
+//			if (!topAct.getSchema().isPrimitive())
+//			{
+//				//IPlace place2 = m_spas.addPlace(new Point3f(primitiveAct.getEndPosition()), Place.EVOKE_PHENOMENON);
+//				IPlace place2 = m_spas.addPlace(new Point3f(enaction.getEffect().getLocation()), Place.ENACTION_PLACE);
+//				//place2.setValue(primitiveAct.getColor());
+//				place2.setValue(enaction.getEffect().getColor());
+//				place2.setUpdateCount(m_spas.getClock());
+//				place2.setAct(primitiveAct);
+//			}
+//			// Apply the spatial transformation to spatial memory
 		m_spas.tick();
-		if (primitiveAct != null)
-		{
-			// Place the act in spatial memory
-			
-			//IPlace place = m_spas.addPlace(new Point3f(topAct.getEndPosition()), Place.EVOKE_PHENOMENON);
-			IPlace place = m_spas.addPlace(new Point3f(enaction.getEffect().getLocation()), Place.ENACTION_PLACE);
-			//place.setValue(topAct.getColor());
-			place.setValue(enaction.getEffect().getColor());
-			place.setUpdateCount(m_spas.getClock());
-			place.setAct(topAct);
-			
-			// TODO place intermediary acts of higher level acts too?
-			if (!topAct.getSchema().isPrimitive())
-			{
-				//IPlace place2 = m_spas.addPlace(new Point3f(primitiveAct.getEndPosition()), Place.EVOKE_PHENOMENON);
-				IPlace place2 = m_spas.addPlace(new Point3f(enaction.getEffect().getLocation()), Place.ENACTION_PLACE);
-				//place2.setValue(primitiveAct.getColor());
-				place2.setValue(enaction.getEffect().getColor());
-				place2.setUpdateCount(m_spas.getClock());
-				place2.setAct(primitiveAct);
-			}
-			// Apply the spatial transformation to spatial memory
-			m_spas.track(enaction.getEffect().getTransformation());			
-		}
+		m_spas.track(enaction);			
+//		}
 
 	}
 	
@@ -324,33 +277,6 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		//return true;
 	}
 	
-	/**
-	 * Tells the interaction that is likely to result from the enaction of this schema.
-	 * If the schema has no succeeding or failing act defined, 
-	 * then pick a random interaction attached to this schema.
-	 * TODO Simulate the action to get a better anticipation.
-	 * @param s The schema. 
-	 * @return The anticipated resulting interaction.
-	 */
-//	public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts)
-//	{
-//		IAct anticipateInteraction = null;
-//		boolean status = (e >= 0);
-//		anticipateInteraction = (status ? s.getSucceedingAct() : s.getFailingAct());
-//		
-//		// if the schema has no succeeding or failing act, then pick an act randomly
-//		if (anticipateInteraction==null)
-//		{
-//			for (IAct a : acts)
-//			{
-//				//if (a.getSchema().equals(s) && (a.getStatus() == true))
-//				if (a.getSchema().equals(s) )
-//					anticipateInteraction = a;
-//			}
-//		}
-//		return anticipateInteraction;
-//	}
-
 	/**
 	 * Generate a list of propositions for acts
 	 * based on the simulation of all reliable acts in spatial memory. 

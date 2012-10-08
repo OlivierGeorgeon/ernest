@@ -74,16 +74,6 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return enactedAct;
 	}
 
-//	public IAct enactedAct(IEnaction enaction) 
-//	{
-//		// The schema is null during the first cycle
-//		if (enaction.getIntendedPrimitiveAct() == null) return null;
-//		
-//		IAct enactedAct = m_imos.addInteraction(enaction.getIntendedPrimitiveAct().getSchema().getLabel(), enaction.getEffect().getEffect(), 0);
-//		
-//		return enactedAct;
-//	}
-	
 	public IAct enactedAct(IAct act, int[][] matrix) { return null; }
 
 	public int impulsion(int intentionSchema) { return 0; }
@@ -130,13 +120,14 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return m_spatialMemory;
 	}
 	
-	protected void clearSimulation()
-	{
-		m_spatialMemory.clearSimulation();
-	}
-	
+//	protected void clearSimulation()
+//	{
+//		m_spatialMemory.clearSimulation();
+//	}
+//	
 	protected IActProposition runSimulation(IAct a)
 	{
-		return m_spatialMemory.runSimulation(a, m_spas);
+		return m_spas.runSimulation(a);
+		//return m_spatialMemory.runSimulation(a, m_spas);
 	}
 }

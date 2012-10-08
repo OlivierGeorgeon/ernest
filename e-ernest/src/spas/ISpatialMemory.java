@@ -50,10 +50,9 @@ public interface ISpatialMemory
 	public IPlace addPlace(Point3f position, int type);
 
 	/**
-	 * Apply a geometrical transformation caused by an act to this spatial memory
-	 * @param act The act that generates the transformation
+	 * @param transform The transformation
 	 */
-	//public void transform(IAct act);
+	public void transform(Transform3D transform);
 	
 	/**
 	 * Remove places that are older than the decay laps
@@ -82,12 +81,12 @@ public interface ISpatialMemory
 	 * @param observation The observation 
 	 * @param spas A reference to spas to create bundles
 	 */
-	public void copresence(ISpas spas);
+	//public void copresence(ISpas spas);
 	
 	/**
 	 * Delete the simulation places in this spatial memory
 	 */
-	public void clearSimulation();
+//	public void clearSimulation();
 
 	/**
 	 * @param The transformation of spatial memory relatively to the agent.
@@ -98,14 +97,4 @@ public interface ISpatialMemory
 	 * @return The transformation of spatial memory relatively to the agent.
 	 */
 	public Transform3D getTransform();
-
-	public void transform(Transform3D transform);
-	
-	/**
-	 * Get the first place found at a given position
-	 * @param position The position
-	 * @return The place
-	 */
-	//public IPlace getPlace(Vector3f position);
-	
 }

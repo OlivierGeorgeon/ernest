@@ -226,10 +226,9 @@ public class Imos implements IImos
 	/**
 	 * The main method of the Intrinsic Motivation System.
 	 * Follow-up the sequence at hand, and chooses the next primitive interaction to try to enact. 
-	 * @param primitiveEnaction The last actually enacted primitive interaction.
+	 * @param enaction The current enaction.
 	 * @return The primitive interaction to try to enact next. 
 	 */
-	//public IAct step(IAct primitiveEnaction) 
 	public void step(IEnaction enaction) 
 	{
 		//IAct primitiveIntention = enaction.getIntendedPrimitiveAct();
@@ -261,13 +260,13 @@ public class Imos implements IImos
 			
 			intentionAct = nextAct(m_primitiveIntention, primitiveEnaction);
 			
+		
+			// Update spatial memory
+			
+			enaction.setAffordanceAct(enactedAct);
+			//m_sensorimotorSystem.updateSpas(primitiveEnaction, enactedAct);
+			m_sensorimotorSystem.updateSpas(enaction);
 		}	
-		
-		// Update spatial memory
-		
-		enaction.setAffordanceAct(enactedAct);
-		//m_sensorimotorSystem.updateSpas(primitiveEnaction, enactedAct);
-		m_sensorimotorSystem.updateSpas(enaction);
 
 		// If we have a context and the current enaction is over then we record and we shift the context. ========
 
