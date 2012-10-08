@@ -207,6 +207,37 @@ public class Bundle implements IBundle
 	}
 
 	/**
+	 * @param act The act.
+	 * @return The expected effect when enacting this act concerning this bundle.
+	 */
+	public String effectlabel(IAct act) 
+	{
+		String effectLabel = "";
+		for (IAct a : m_acts)
+		{
+			if (a.getSchema().equals(act.getSchema()))
+				effectLabel = a.getEffectLabel();
+				//effectLabel = a.getLabel().substring(1, a.getLabel().length());
+		}
+		return effectLabel;
+	}
+	
+	public IAct resultingAct(IAct act)
+	{
+		IAct resultingAct = null;
+		for (IAct a : m_acts)
+		{
+			if (a.getSchema().equals(act.getSchema()))
+			{
+				if (!act.equals(resultingAct))
+					resultingAct = a;
+			}
+		}
+		return resultingAct;
+	}
+
+
+	/**
 	 * This bundle affords this act
 	 * if this act is in this bundle 
 	 */

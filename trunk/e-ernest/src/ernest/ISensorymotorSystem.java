@@ -7,7 +7,6 @@ import javax.vecmath.Vector3f;
 
 import com.sun.tools.javac.util.List;
 
-import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;

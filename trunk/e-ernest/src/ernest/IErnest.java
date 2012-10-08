@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
-import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpatialMemory;
@@ -96,7 +95,7 @@ public interface IErnest
 	/**
 	 * @return The value of Ernet's current attention. 
 	 */
-	public int getAttention();
+	//public int getAttention();
 	
 	/**
 	 * @param schemaLabel The action label in the environment.

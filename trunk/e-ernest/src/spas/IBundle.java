@@ -45,6 +45,8 @@ public interface IBundle
 	 * @return true if there is no act that have a different observation in this bundle.
 	 */
 	public boolean isConsistent(IAct act);
+	public String effectlabel(IAct act); 
+	public IAct resultingAct(IAct act);
 
 	/**
 	 * @return true if there is no act that have a different observation in this bundle.

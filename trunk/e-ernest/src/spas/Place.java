@@ -19,11 +19,12 @@ import ernest.Ernest;
 public class Place implements IPlace //, Cloneable
 {
 	/** Types of places */
-	public static int EVOKE_PHENOMENON = 0;
-	public static int SIMULATION = 1;
+	public static int ENACTION_PLACE = 0;
+	public static int SIMULATION_PLACE = 1;
 	public static int UNKNOWN = 2;
 	public static int AFFORD = 3;
 	public static int FOCUS = 4;
+	public static int ACTIVATED_PLACE = 5;
 
 	/** The position in spatial memory */
 	private Point3f m_position = new Point3f();

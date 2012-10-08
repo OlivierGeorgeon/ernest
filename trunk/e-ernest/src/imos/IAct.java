@@ -86,19 +86,14 @@ public interface IAct  extends Comparable<IAct>
 	public int getColor();
 	
 	/**
-	 * @return The position of the phenomena that is concerned by the enaction of this act.
-	 */
-	//public Point3f getEndPosition();
-	
-	/**
 	 * @param position The position of the phenomena that is concerned by the enaction of this act.
 	 */
-	public void setStartPosition(Point3f position);
+	public void setPosition(Point3f position);
 	
 	/**
 	 * @return The position of the phenomena that is concerned by the enaction of this act.
 	 */
-	public Point3f getStartPosition();
+	public Point3f getPosition();
 	
 	/**
 	 * If this act concerns only one place then it can be an element of a compresence at this place.
@@ -118,4 +113,14 @@ public interface IAct  extends Comparable<IAct>
 	 * (Inverse of the displacement of the agent in the environment caused by this act)
 	 */
 	public Transform3D getTransform();	
+	
+	/**
+	 * @param effectLabel The effect code of this act.
+	 */
+	public void setEffectLabel(String effectLabel);
+	
+	/**
+	 * @return The effect code of this act.
+	 */
+	public String getEffectLabel();
 }

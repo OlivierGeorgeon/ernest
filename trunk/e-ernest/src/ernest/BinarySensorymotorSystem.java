@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
-import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;

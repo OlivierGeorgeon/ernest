@@ -48,7 +48,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static int SIMULATION_CONSISTENT = 1;
 	public final static int SIMULATION_AFFORD = 2;
 	public final static int SIMULATION_REACH = 3;
-	public final static int SIMULATION_REACH2 = 4;
+	//public final static int SIMULATION_REACH2 = 4;
 	public final static int SIMULATION_NEWCOMPRESENCE = 5;
 	
 	/** The duration of persistence in local space memory. */
@@ -159,9 +159,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			//boolean afford = false;
 			for (IPlace p : m_places)
 			{
-				if (p.getType() == Place.EVOKE_PHENOMENON)
+				if (p.getType() == Place.ENACTION_PLACE)
 				{
-					if (p.getAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
+					if (p.getAct().getPosition().epsilonEquals(p.getPosition(), .1f))
 					{
 						// This place affords itself
 						if (subsequentAct==null || subsequentAct.getSatisfaction() < p.getAct().getSatisfaction())
@@ -171,10 +171,10 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					// This place also affords its compresences
 					for (IBundle b : m_spas.evokeCompresences(p.getAct()))
 					{
-						if (b.getFirstAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
+						if (b.getFirstAct().getPosition().epsilonEquals(p.getPosition(), .1f))
 							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getFirstAct().getSatisfaction())
 								subsequentAct = b.getFirstAct();
-						if (b.getSecondAct().getStartPosition().epsilonEquals(p.getPosition(), .1f))
+						if (b.getSecondAct().getPosition().epsilonEquals(p.getPosition(), .1f))
 							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getSecondAct().getSatisfaction())
 								subsequentAct = b.getSecondAct();
 					}
@@ -199,9 +199,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		{
 			for (IPlace pl : m_places)
 			{
-				if (pl.getType() == Place.EVOKE_PHENOMENON)
+				if (pl.getType() == Place.ENACTION_PLACE)
 				{
-					if (act.getStartPosition().epsilonEquals(pl.getPosition(), .1f) && !act.equals(pl.getAct()) && act.getColor() == 0x73E600)
+					if (act.getPosition().epsilonEquals(pl.getPosition(), .1f) && !act.equals(pl.getAct()) && act.getColor() == 0x73E600)
 					{
 						newCopresence = true;
 						// Test if the copresence already exists
@@ -262,31 +262,38 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	{
 		IEnaction enaction = new Enaction();
 		
-		//boolean consistent = false;
 		boolean unknown = true;
 		boolean consistent = true;
 		boolean afford = false;
+		//String effectLabel ="";
+		IAct enactedAct = null;
 		int simulationStatus = SIMULATION_INCONSISTENT;
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{
-			// The start position concerned by this act
-			Point3f position = new Point3f(act.getStartPosition()); 
+			Point3f concernedPosition = new Point3f(act.getPosition()); 
 			
 			for (IPlace p : m_places)
 			{
-				if (p.isInCell(position) && p.getType() == Place.EVOKE_PHENOMENON)
+				if (p.isInCell(concernedPosition) && p.getType() == Place.ENACTION_PLACE)
 				{
 					unknown = false;
 					if (p.getAct().equals(act))
+					{
 						// This place affords itself
 						afford = true;
+						enactedAct = act;
+					}
 					else
 						// This place affords its compresences
 						for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
 						{
 							if (!bundle.isConsistent(act)) consistent = false; 
 							if (bundle.afford(act)) afford = true;
+							IAct bundleAct = bundle.resultingAct(act); 
+							if (bundleAct != null)
+								enactedAct = bundleAct; 
+							enaction.getEffect().setLabel(bundle.effectlabel(act));
 						}
 				}
 			}	
@@ -299,7 +306,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				{
 					simulationStatus = SIMULATION_UNKNOWN;
 					// Mark an unknown interaction
-					IPlace sim = addPlace(position, Place.UNKNOWN);
+					IPlace sim = addPlace(concernedPosition, Place.UNKNOWN);
 					sim.setAct(act);
 					sim.setValue(0xB0B0FF);
 				}
@@ -314,7 +321,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					// No place that contains an incompatible act was fond at this location
 					simulationStatus = SIMULATION_CONSISTENT;
 					// Mark a consistent interaction
-					IPlace sim = addPlace(position, Place.UNKNOWN);
+					IPlace sim = addPlace(concernedPosition, Place.UNKNOWN);
 					sim.setAct(act);
 					sim.setValue(act.getColor());
 				}
@@ -323,9 +330,12 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 					// A place that contains this act is found at this location
 					simulationStatus = SIMULATION_AFFORD;
 					// Mark an afforded interaction
-					IPlace sim = addPlace(position, Place.AFFORD);
+					IPlace sim = addPlace(concernedPosition, Place.AFFORD);
 					sim.setAct(act);
 					sim.setValue(act.getColor());
+					// the simulated enacted act is the intended act
+					enaction.setEnactedPrimitiveAct(act);
+					enaction.getEffect().setLabel(act.getEffectLabel());
 				}
 			}
 			
@@ -368,7 +378,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		int value = Ernest.UNANIMATED_COLOR;
 		for (IPlace p : m_places)
 		{
-			if (p.isInCell(position) && p.getType() == Place.EVOKE_PHENOMENON)
+			if (p.isInCell(position) && p.getType() == Place.ENACTION_PLACE)
 				if (value != 0x73E600 && value != 0x00E6A0)
 				value = p.getValue();
 		}	
@@ -425,7 +435,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Place.EVOKE_PHENOMENON)
+			if (p.getType() == Place.ENACTION_PLACE)
 			{
 				//if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION +1) // -1
 				if (p.getUpdateCount() < m_clock - PERSISTENCE_DURATION +1) // -1
@@ -469,7 +479,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
 		for (IPlace p : m_places)
 			//if (p.evokePhenomenon(m_clock))
-			if (p.getType() == Place.EVOKE_PHENOMENON)
+			if (p.getType() == Place.ENACTION_PLACE)
 				interactionPlaces.add(p);
 
 		// Create new copresence bundles 
@@ -498,7 +508,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Place.SIMULATION || p.getType() == Place.UNKNOWN || p.getType() == Place.AFFORD)
+			if (p.getType() == Place.SIMULATION_PLACE || p.getType() == Place.UNKNOWN || p.getType() == Place.AFFORD)
 				it.remove();
 		}
 	}

@@ -24,6 +24,8 @@ public class Act implements IAct
 	/** The act's status. True = Success, False = Failure */
 	private boolean m_status = false;
 	
+	private String m_effectLabel ="";
+	
 	/** The act's satisfaction value. Represents Ernest's satisfaction to enact the act */
 	private int m_satisfaction = 0;
 	
@@ -67,7 +69,7 @@ public class Act implements IAct
 			String label = "(" + s.getLabel() +")";
 			int satisfaction = s.getContextAct().getSatisfaction() + s.getIntentionAct().getSatisfaction();
 		
-			return new Act(label, s, true, satisfaction, Imos.HYPOTHETICAL);
+			return new Act(label, s, "", true, satisfaction, Imos.HYPOTHETICAL);
 		}
 	}
 	
@@ -90,7 +92,7 @@ public class Act implements IAct
 			// The failing act is RELIABLE because its schema had to be reliable to be enacted and 
 			// making it possible to experience its failure.
 			
-			return new Act(label, s, false, satisfaction, Imos.RELIABLE);
+			return new Act(label, s, "", false, satisfaction, Imos.RELIABLE);
 		}
 	}
 	
@@ -103,23 +105,25 @@ public class Act implements IAct
 	 * @param confidence The degree of confidence Ernest has in this act.
 	 * @return The created act.
 	 */
-	public static IAct createAct(String label, ISchema s, boolean status, int satisfaction, int confidence)
+	public static IAct createPrimitiveAct(String moveLabel, String effectLabel, ISchema s, int satisfaction)
 	{
-		return new Act(label, s, status, satisfaction, confidence);
+		return new Act(moveLabel + effectLabel, s, effectLabel, true, satisfaction, Imos.RELIABLE);
 	}
 	
 	/**
 	 * The abstract constructor for an act
 	 * @param label The act's label
 	 * @param s The act's schema if any
+	 * @param effectLabel the code of the effect.
 	 * @param status The act's status if any: True for success, false for failure
 	 * @param type the module
 	 * @param confidence The degree of confidence Ernest has in this act
 	 */
-	protected Act(String label, ISchema s, boolean status, int satisfaction, int confidence)
+	protected Act(String label, ISchema s, String effectLabel, boolean status, int satisfaction, int confidence)
 	{
 		m_label = label;
 		m_schema = s;
+		m_effectLabel = effectLabel;
 		m_status = status;
 		m_satisfaction = satisfaction;
 		m_confidence = confidence;
@@ -261,7 +265,7 @@ public class Act implements IAct
 //		return position;
 //	}
 
-	public void setStartPosition(Point3f position) 
+	public void setPosition(Point3f position) 
 	{
 		m_startPosition.set(position);
 	}
@@ -272,14 +276,14 @@ public class Act implements IAct
 	 * If composite schema, return the start position of its intention
 	 * to which the invert transformation of its context is applied.
 	 */
-	public Point3f getStartPosition() 
+	public Point3f getPosition() 
 	{
 		Point3f startPosition = new Point3f();
 		if (m_schema.isPrimitive())
 			startPosition.set(m_startPosition);
 		else
 		{
-			startPosition.set(m_schema.getIntentionAct().getStartPosition());
+			startPosition.set(m_schema.getIntentionAct().getPosition());
 			Transform3D tf = new Transform3D(m_schema.getContextAct().getTransform());
 			tf.invert();
 			tf.transform(startPosition);
@@ -302,7 +306,7 @@ public class Act implements IAct
 			concernOnePlace = true;
 		else
 		{
-			Point3f startPosition = new Point3f(m_schema.getContextAct().getStartPosition());
+			Point3f startPosition = new Point3f(m_schema.getContextAct().getPosition());
 			if (startPosition.equals(new Point3f()))
 				concernOnePlace = true;
 			
@@ -336,5 +340,15 @@ public class Act implements IAct
 	public Transform3D getTransform() 
 	{
 		return m_transform;
+	}
+
+	public void setEffectLabel(String effectLabel) 
+	{
+		m_effectLabel = effectLabel;
+	}
+
+	public String getEffectLabel() 
+	{
+		return m_effectLabel;
 	}
 }
