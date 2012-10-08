@@ -1,6 +1,7 @@
 package spas;
 
 import imos.IAct;
+import imos.IActProposition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import ernest.IEnaction;
 import ernest.ITracer;
 
 /**
@@ -29,8 +31,7 @@ public interface ISpas
 	 * @param interactionPlace The place where the ongoing interaction started.
 	 * @param observation The current observation.
 	 */
-	//public void step(IObservation observation);
-	public void track(Transform3D transformation);
+	public void track(IEnaction enaction);
 
 	/**
 	 * Provide a rgb code to display the local space map in the environment.
@@ -90,4 +91,9 @@ public interface ISpas
 	public int getValue(Point3f position);
 	
 	public ISpatialMemory getSpatialMemory();
+	
+	public void simulatePrimitiveAct(IEnaction enaction);
+	public IActProposition runSimulation(IAct act);
+
+
 }

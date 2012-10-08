@@ -12,10 +12,8 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
-import ernest.Effect;
 import ernest.Enaction;
 import ernest.Ernest;
-import ernest.IEffect;
 import ernest.IEnaction;
 import ernest.ITracer;
 
@@ -119,18 +117,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		m_places.add(place);
 		return place;
 	}
-	
-	/**
-	 * Update the local space memory according to the agent's moves.
-	 * @param translation The translation vector in egocentric referential (provide the opposite vector from the agent's movement).
-	 * @param rotation The rotation value (provide the opposite value from the agent's movement).
-	 */
-//	public void transform(IAct act)
-//	{
-//		for (IPlace p : m_places)
-//		    p.transform(act.getTransform());
-//
-//	}
 	
 	public void transform(Transform3D transform)
 	{
@@ -435,7 +421,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getType() == Place.ENACTION_PLACE)
+			if (p.getType() == Place.ENACTION_PLACE || p.getType() == Place.EVOKED_PLACE )
 			{
 				//if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION +1) // -1
 				if (p.getUpdateCount() < m_clock - PERSISTENCE_DURATION +1) // -1
@@ -445,6 +431,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			{
 				//if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION)
 				if (p.getUpdateCount() < m_clock - PERSISTENCE_DURATION)
+					it.remove();
+				else if (p.getType() == Place.AFFORD || p.getType() == Place.SIMULATION_PLACE || p.getType() == Place.UNKNOWN)
 					it.remove();
 			}
 		}
@@ -464,54 +452,54 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		m_places = places;
 	}
 		
-	/**
-	 * Construct new copresence bundles.
-	 * (Do not create copresences among the same schemas)
-	 * @param observation The observation 
-	 * @param spas A reference to the spatial system to add bundles
-	 */
-	public void copresence(ISpas spas)
-	{
-		// Clear the places that are older than the persistence of spatial memory
-		clear();
-		
-		// Get the list of interaction places (that can evoke phenomena).
-		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
-		for (IPlace p : m_places)
-			//if (p.evokePhenomenon(m_clock))
-			if (p.getType() == Place.ENACTION_PLACE)
-				interactionPlaces.add(p);
+//	/**
+//	 * Construct new copresence bundles.
+//	 * (Do not create copresences among the same schemas)
+//	 * @param observation The observation 
+//	 * @param spas A reference to the spatial system to add bundles
+//	 */
+//	public void copresence(ISpas spas)
+//	{
+//		// Clear the places that are older than the persistence of spatial memory
+//		clear();
+//		
+//		// Get the list of interaction places (that can evoke phenomena).
+//		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
+//		for (IPlace p : m_places)
+//			//if (p.evokePhenomenon(m_clock))
+//			if (p.getType() == Place.ENACTION_PLACE)
+//				interactionPlaces.add(p);
+//
+//		// Create new copresence bundles 
+//		
+//		for (IPlace interactionPlace : interactionPlaces)
+//		{
+//			if (interactionPlace.getAct().concernOnePlace())
+//			{
+//				for (IPlace secondPlace : interactionPlaces)
+//				{
+//					if (secondPlace.getAct().concernOnePlace())
+//					{
+//						if (!interactionPlace.getAct().getSchema().equals(secondPlace.getAct().getSchema()) && interactionPlace.isInCell(secondPlace.getPosition())
+//								&& interactionPlace.getAct().getColor() == secondPlace.getAct().getColor())
+//						{
+//							spas.addBundle(interactionPlace.getAct(), secondPlace.getAct());
+//						}
+//					}
+//				}
+//			}
+//		}	
+//	}
 
-		// Create new copresence bundles 
-		
-		for (IPlace interactionPlace : interactionPlaces)
-		{
-			if (interactionPlace.getAct().concernOnePlace())
-			{
-				for (IPlace secondPlace : interactionPlaces)
-				{
-					if (secondPlace.getAct().concernOnePlace())
-					{
-						if (!interactionPlace.getAct().getSchema().equals(secondPlace.getAct().getSchema()) && interactionPlace.isInCell(secondPlace.getPosition())
-								&& interactionPlace.getAct().getColor() == secondPlace.getAct().getColor())
-						{
-							spas.addBundle(interactionPlace.getAct(), secondPlace.getAct());
-						}
-					}
-				}
-			}
-		}	
-	}
-
-	public void clearSimulation() 
-	{
-		for (Iterator it = m_places.iterator(); it.hasNext();)
-		{
-			IPlace p = (IPlace)it.next();
-			if (p.getType() == Place.SIMULATION_PLACE || p.getType() == Place.UNKNOWN || p.getType() == Place.AFFORD)
-				it.remove();
-		}
-	}
+//	public void clearSimulation() 
+//	{
+//		for (Iterator it = m_places.iterator(); it.hasNext();)
+//		{
+//			IPlace p = (IPlace)it.next();
+//			if (p.getType() == Place.SIMULATION_PLACE || p.getType() == Place.UNKNOWN || p.getType() == Place.AFFORD)
+//				it.remove();
+//		}
+//	}
 	
 	public void setTransform(Transform3D transform) 
 	{

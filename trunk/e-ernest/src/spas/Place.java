@@ -24,7 +24,7 @@ public class Place implements IPlace //, Cloneable
 	public static int UNKNOWN = 2;
 	public static int AFFORD = 3;
 	public static int FOCUS = 4;
-	public static int ACTIVATED_PLACE = 5;
+	public static int EVOKED_PLACE = 5;
 
 	/** The position in spatial memory */
 	private Point3f m_position = new Point3f();
