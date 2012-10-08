@@ -12,7 +12,6 @@ import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Element;
 
-import spas.IObservation;
 import spas.IPlace;
 import spas.LocalSpaceMemory;
 
@@ -110,18 +109,41 @@ public class EpisodicMemory
 		m_acts.clear();
 	}
 
+//	/**
+//	 * Add an act to episodic memory if it does not already exist
+//	 * @param label The act's label
+//	 * @param schema The act's schema
+//	 * @param status The act's status
+//	 * @param satisfaction The act's satisfaction
+//	 * @param confidence The act's confidence
+//	 * @return the new act if created or the already existing acts
+//	 */
+//	public IAct addAct(String label, ISchema schema, int satisfaction)
+//	{
+//		IAct a = Act.createPrimitiveAct(label, schema, satisfaction);
+//		
+//		int i = m_acts.indexOf(a);
+//		if (i == -1)
+//			// The act does not exist
+//			m_acts.add(a);
+//		else 
+//			// The act already exists: return a pointer to it.
+//			a =  m_acts.get(i);
+//		return a;
+//	}
+	
 	/**
 	 * Add an act to episodic memory if it does not already exist
-	 * @param label The act's label
-	 * @param schema The act's schema
-	 * @param status The act's status
+	 * @param moveLabel The move label
+	 * @param effectLabel The effect label
 	 * @param satisfaction The act's satisfaction
-	 * @param confidence The act's confidence
 	 * @return the new act if created or the already existing acts
 	 */
-	public IAct addAct(String label, ISchema schema, boolean status, int satisfaction, int confidence)
+	public IAct addPrimitiveAct(String moveLabel, String effectLabel, int satisfaction)
 	{
-		IAct a = Act.createAct(label, schema, status, satisfaction, confidence);
+		ISchema s =  addPrimitiveSchema(moveLabel);
+		
+		IAct a = Act.createPrimitiveAct(moveLabel, effectLabel, s, satisfaction);
 		
 		int i = m_acts.indexOf(a);
 		if (i == -1)
@@ -443,7 +465,7 @@ public class EpisodicMemory
 			tf.invert();
 			tf.transform(or);
 			
-			if (a.getStartPosition().epsilonEquals(position, .1f) && or.epsilonEquals(orientation, .1f) )
+			if (a.getPosition().epsilonEquals(position, .1f) && or.epsilonEquals(orientation, .1f) )
 				if ( act == null || a.getSatisfaction() > act.getSatisfaction()) 
 					act = a;
 		}

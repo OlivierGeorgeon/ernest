@@ -44,7 +44,7 @@ public interface ISpas
 	 * Provide a rgb code to display the object of Ernest's attention in the environment.
 	 * @return The value of the focus bundle.
 	 */
-	public int getAttention();
+	//public int getAttention();
 
 	/**
 	 * Set the place list (from Simon's local space map).

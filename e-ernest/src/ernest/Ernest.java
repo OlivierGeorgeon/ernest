@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.vecmath.Vector3f;
 
-import spas.IObservation;
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpas;
@@ -277,7 +276,6 @@ public class Ernest implements IErnest
 		{
             m_tracer.startNewEvent(m_imos.getCounter());
 			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-			//effect.trace(m_tracer);
 		}                
 		
 		// Determine the primitive enacted act from the intended act and the effect.
@@ -344,10 +342,10 @@ public class Ernest implements IErnest
 	{
 		return m_spas.getValue(i,j);
 	}
-	public int getAttention()
-	{
-		return m_spas.getAttention();
-	}
+//	public int getAttention()
+//	{
+//		return m_spas.getAttention();
+//	}
 
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{
