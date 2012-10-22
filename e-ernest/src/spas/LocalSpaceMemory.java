@@ -41,13 +41,13 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static Point3f DIRECTION_BEHIND_RIGHT = new Point3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
 	public final static float    SOMATO_RADIUS = 1f;
 	
-	public final static int SIMULATION_INCONSISTENT = -1;
-	public final static int SIMULATION_UNKNOWN = 0;
-	public final static int SIMULATION_CONSISTENT = 1;
-	public final static int SIMULATION_AFFORD = 2;
-	public final static int SIMULATION_REACH = 3;
+	//public final static int SIMULATION_INCONSISTENT = -1;
+	//public final static int SIMULATION_UNKNOWN = 0;
+	//public final static int SIMULATION_CONSISTENT = 1;
+	//public final static int SIMULATION_AFFORD = 2;
+	//public final static int SIMULATION_REACH = 10;
 	//public final static int SIMULATION_REACH2 = 4;
-	public final static int SIMULATION_NEWCOMPRESENCE = 5;
+	public final static int SIMULATION_NEWCOMPRESENCE = 11;
 	
 	/** The duration of persistence in local space memory. */
 	public static int PERSISTENCE_DURATION = 10;//50;
@@ -120,8 +120,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	
 	public void transform(Transform3D transform)
 	{
-		for (IPlace p : m_places)
-		    p.transform(transform);
+		if (transform != null)
+			for (IPlace p : m_places)
+				p.transform(transform);
 	}
 	
 	public IActProposition runSimulation(IAct act, ISpas spas)
@@ -140,7 +141,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		//if (status != SIMULATION_INCONSISTENT && !trans.epsilonEquals(new Vector3f(), .1f))
 		
 		IAct subsequentAct = null;
-		if (status != SIMULATION_INCONSISTENT && !act.getTransform().epsilonEquals(new Transform3D(), .1f))
+		if (status != Place.INCONSISTENT && !act.getTransform().epsilonEquals(new Transform3D(), .1f))
 		{
 			//boolean afford = false;
 			for (IPlace p : m_places)
@@ -169,11 +170,11 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}
 		
 		int subsequentSatisfaction = 0;
-		if (subsequentAct != null && subsequentAct.getSatisfaction() > 0)
-		{
-			subsequentSatisfaction = subsequentAct.getSatisfaction();
-			status = SIMULATION_REACH;
-		}		
+//		if (subsequentAct != null && subsequentAct.getSatisfaction() > 0)
+//		{
+//			subsequentSatisfaction = subsequentAct.getSatisfaction();
+//			status = SIMULATION_REACH;
+//		}		
 
 		//Revert the transformation in spatial memory 
 		m_transform.invert();
@@ -181,7 +182,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		
 		// If this act creates a new copresences then propose it
 		boolean newCopresence = false;
-		if (status != SIMULATION_INCONSISTENT)
+		if (status != Place.INCONSISTENT)
 		{
 			for (IPlace pl : m_places)
 			{
@@ -210,14 +211,14 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		final int UNKNOWN_SATISFACTION = 1000;
 		
 		// If this act is afforded by the spatial situation then propose it.
-		if (status == LocalSpaceMemory.SIMULATION_AFFORD)
+		if (status == Place.AFFORD)
 		{
 			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
 			p = new ActProposition(act, w, 0);
 		}
 
 		// If this act informs the spatial situation then propose it.
-		if (status == LocalSpaceMemory.SIMULATION_UNKNOWN)
+		if (status == Place.UNKNOWN)
 		{
 			if (act.getSchema().getLabel().equals("-") || act.getSchema().getLabel().equals("/") || act.getSchema().getLabel().equals("\\"))
 			{
@@ -226,11 +227,11 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}
 		
 		// If this act reaches a situation where another act is afforded then propose it.
-		if (status == LocalSpaceMemory.SIMULATION_REACH)
-		{
-			int w = SPATIAL_AFFORDANCE_WEIGHT ;
-			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
-		}
+//		if (status == LocalSpaceMemory.SIMULATION_REACH)
+//		{
+//			int w = SPATIAL_AFFORDANCE_WEIGHT ;
+//			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
+//		}
 		
 		// If this act reaches a situation where another act is afforded then propose it.
 		if (status == LocalSpaceMemory.SIMULATION_NEWCOMPRESENCE)
@@ -253,7 +254,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		boolean afford = false;
 		//String effectLabel ="";
 		IAct enactedAct = null;
-		int simulationStatus = SIMULATION_INCONSISTENT;
+		int simulationStatus = Place.INCONSISTENT;
 		ISchema s = act.getSchema();
 		if (s.isPrimitive())
 		{
@@ -290,7 +291,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				
 				if (act.getColor() == 0xFFFFFF)
 				{
-					simulationStatus = SIMULATION_UNKNOWN;
+					simulationStatus = Place.UNKNOWN;
 					// Mark an unknown interaction
 					IPlace sim = addPlace(concernedPosition, Place.UNKNOWN);
 					sim.setAct(act);
@@ -305,7 +306,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				if (consistent)
 				{
 					// No place that contains an incompatible act was fond at this location
-					simulationStatus = SIMULATION_CONSISTENT;
+					simulationStatus = Place.DISPLACEMENT;
 					// Mark a consistent interaction
 					IPlace sim = addPlace(concernedPosition, Place.UNKNOWN);
 					sim.setAct(act);
@@ -314,7 +315,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				if (afford)
 				{
 					// A place that contains this act is found at this location
-					simulationStatus = SIMULATION_AFFORD;
+					simulationStatus = Place.AFFORD;
 					// Mark an afforded interaction
 					IPlace sim = addPlace(concernedPosition, Place.AFFORD);
 					sim.setAct(act);
@@ -335,14 +336,14 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		else 
 		{
 			simulationStatus = simulate(act.getSchema().getContextAct()).getSimulationStatus();
-			if (simulationStatus > SIMULATION_INCONSISTENT)
+			if (simulationStatus != Place.INCONSISTENT)
 			{
 				int status2 = simulate(act.getSchema().getIntentionAct()).getSimulationStatus();
-				if (status2 == SIMULATION_INCONSISTENT)
-					simulationStatus = SIMULATION_INCONSISTENT;
+				if (status2 == Place.INCONSISTENT)
+					simulationStatus = Place.INCONSISTENT;
 				else
 				{
-					if (simulationStatus == SIMULATION_AFFORD && (status2 == SIMULATION_CONSISTENT || status2 == SIMULATION_UNKNOWN))
+					if (simulationStatus == Place.AFFORD && (status2 == Place.DISPLACEMENT || status2 == Place.UNKNOWN))
 						simulationStatus = status2;
 				}
 			}
@@ -402,16 +403,16 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	 * Clear the places in front (but not below Ernest) 
 	 * (will be replaced by new seen places).
 	 */
-	public void clearFront()
-	{
-		for (Iterator it = m_places.iterator(); it.hasNext();)
-		{
-			IPlace l = (IPlace)it.next();
-			if (l.getDirection() > - Math.PI/2 && l.getDirection() < Math.PI/2 &&
-				l.getDistance() > 1)
-				it.remove();
-		}
-	}
+//	public void clearFront()
+//	{
+//		for (Iterator it = m_places.iterator(); it.hasNext();)
+//		{
+//			IPlace l = (IPlace)it.next();
+//			if (l.getDirection() > - Math.PI/2 && l.getDirection() < Math.PI/2 &&
+//				l.getDistance() > 1)
+//				it.remove();
+//		}
+//	}
 	
 	/**
 	 * Clear all the places older than PERSISTENCE_DURATION.
@@ -424,15 +425,15 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			if (p.getType() == Place.ENACTION_PLACE || p.getType() == Place.EVOKED_PLACE )
 			{
 				//if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION +1) // -1
-				if (p.getUpdateCount() < m_clock - PERSISTENCE_DURATION +1) // -1
+				if (p.getClock() < m_clock - PERSISTENCE_DURATION +1) // -1
 					it.remove();
 			}
 			else
 			{
 				//if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION)
-				if (p.getUpdateCount() < m_clock - PERSISTENCE_DURATION)
+				if (p.getClock() < m_clock - PERSISTENCE_DURATION)
 					it.remove();
-				else if (p.getType() == Place.AFFORD || p.getType() == Place.SIMULATION_PLACE || p.getType() == Place.UNKNOWN)
+				else if (p.getType() == Place.AFFORD || p.getType() == Place.UNKNOWN)// || p.getType() == Place.SIMULATION_PLACE)
 					it.remove();
 			}
 		}

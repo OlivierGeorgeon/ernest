@@ -68,7 +68,7 @@ public interface ISpas
 	 * @param type This place's type.
 	 * @return The crated place
 	 */
-	public IPlace addPlace(Point3f position, int type);
+	//public IPlace addPlace(Point3f position, int type);
 
 	/**
 	 * Tick the clock of spatial memory

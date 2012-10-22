@@ -23,6 +23,7 @@ import spas.LocalSpaceMemory;
 //import spas.Place;
 //import spas.Spas;
 //import utils.ErnestUtils;
+import spas.Place;
 
 /**
  * Implement Ernest 12.0's sensorimotor system.
@@ -272,7 +273,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
 		int status = simulationMemory.runSimulation(act, m_spas).getStatus();
 		
-		return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
+		//return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
+		return (status == Place.UNKNOWN || status == Place.DISPLACEMENT || status == Place.AFFORD);
 
 		//return true;
 	}
