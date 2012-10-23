@@ -89,27 +89,27 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 		return new ArrayList<IPlace>();
 	}
 
-	public boolean checkConsistency(IAct act) 
-	{
-		return true;
-	}
+//	public boolean checkConsistency(IAct act) 
+//	{
+//		return true;
+//	}
 
 	public IAct situationAct() 
 	{
 		return null;
 	}
 
-	public ArrayList<IProposition> getPropositionList() 
-	{
-		// TODO Auto-generated method stub
-		return new ArrayList<IProposition>();
-	}
-
-	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts) 
-	{
-		// TODO Auto-generated method stub
-		return new ArrayList<IActProposition>();
-	}
+//	public ArrayList<IProposition> getPropositionList() 
+//	{
+//		// TODO Auto-generated method stub
+//		return new ArrayList<IProposition>();
+//	}
+//
+//	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts) 
+//	{
+//		// TODO Auto-generated method stub
+//		return new ArrayList<IActProposition>();
+//	}
 
 	public void updateSpas(IEnaction enaction) 
 	{
@@ -125,9 +125,9 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 //		m_spatialMemory.clearSimulation();
 //	}
 //	
-	protected IActProposition runSimulation(IAct a)
-	{
-		return m_spas.runSimulation(a);
-		//return m_spatialMemory.runSimulation(a, m_spas);
-	}
+//	protected IActProposition runSimulation(IAct a)
+//	{
+//		return m_spas.runSimulation(a);
+//		//return m_spatialMemory.runSimulation(a, m_spas);
+//	}
 }

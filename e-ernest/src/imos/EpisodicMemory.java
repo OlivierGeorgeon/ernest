@@ -311,7 +311,7 @@ public class EpisodicMemory
                     int e = 0;
 					
 					// If the intention is consistent with spatial memory 
-					if (m_sensorimotorSystem.checkConsistency(proposedAct))
+					//if (m_sensorimotorSystem.checkConsistency(proposedAct))
 					{
 					
 						// If the intention is reliable then a proposition is constructed
@@ -351,11 +351,11 @@ public class EpisodicMemory
 							}
 						}
 					}//
-					else
-					{
-						if (m_tracer != null)
-							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
-					}
+//					else
+//					{
+//						if (m_tracer != null)
+//							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
+//					}
 				}
 			}
 
@@ -561,5 +561,10 @@ public class EpisodicMemory
 	public ArrayList<IAct> getActs()
 	{
 		return m_acts;
+	}
+
+	public ArrayList<ISchema> getSchemas()
+	{
+		return m_schemas;
 	}
 }

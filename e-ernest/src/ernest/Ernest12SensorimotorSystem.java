@@ -262,57 +262,57 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 //				place2.setAct(primitiveAct);
 //			}
 //			// Apply the spatial transformation to spatial memory
-		m_spas.tick();
+		//m_spas.tick();
 		m_spas.track(enaction);			
 //		}
 
 	}
 	
-	public boolean checkConsistency(IAct act) 
-	{
-		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
-		int status = simulationMemory.runSimulation(act, m_spas).getStatus();
-		
-		//return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
-		return (status == Place.UNKNOWN || status == Place.DISPLACEMENT || status == Place.AFFORD);
-
-		//return true;
-	}
+//	public boolean checkConsistency(IAct act) 
+//	{
+//		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
+//		int status = simulationMemory.runSimulation(act, m_spas).getStatus();
+//		
+//		//return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
+//		return (status == Place.UNKNOWN || status == Place.DISPLACEMENT || status == Place.AFFORD);
+//
+//		//return true;
+//	}
 	
-	/**
-	 * Generate a list of propositions for acts
-	 * based on the simulation of all reliable acts in spatial memory. 
-	 * Propose all acts that are afforded by the spatial context
-	 * and primitive acts that inform about unknown places.
-	 */
-	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts)
-	{
-		ArrayList<IActProposition> propositionList = new ArrayList<IActProposition>();
-		
-		Object activations = null;
-		if (m_tracer != null)
-			activations = m_tracer.addEventElement("copresence_propositions", true);
-
-		// Simulate all acts in spatial memory. 
-		
-		for (IAct a : acts)
-		{
-			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
-			{
-				IActProposition p = runSimulation(a);
-				propositionList.add(p);				
-				if (m_tracer != null)
-					m_tracer.addSubelement(activations, "proposition", p.toString());
-			}
-						
-//			if (m_frame != null) 
+//	/**
+//	 * Generate a list of propositions for acts
+//	 * based on the simulation of all reliable acts in spatial memory. 
+//	 * Propose all acts that are afforded by the spatial context
+//	 * and primitive acts that inform about unknown places.
+//	 */
+//	public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts)
+//	{
+//		ArrayList<IActProposition> propositionList = new ArrayList<IActProposition>();
+//		
+//		Object activations = null;
+//		if (m_tracer != null)
+//			activations = m_tracer.addEventElement("copresence_propositions", true);
+//
+//		// Simulate all acts in spatial memory. 
+//		
+//		for (IAct a : acts)
+//		{
+//			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 //			{
-//				m_frame.repaint(); 
-//				ErnestUtils.sleep(500);
+//				IActProposition p = runSimulation(a);
+//				propositionList.add(p);				
+//				if (m_tracer != null)
+//					m_tracer.addSubelement(activations, "proposition", p.toString());
 //			}
-		}	
-		return propositionList;
-	}	
+//						
+////			if (m_frame != null) 
+////			{
+////				m_frame.repaint(); 
+////				ErnestUtils.sleep(500);
+////			}
+//		}	
+//		return propositionList;
+//	}	
 	
 //	public void setFrame(JFrame frame)
 //	{

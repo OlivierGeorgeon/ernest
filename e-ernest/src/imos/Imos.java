@@ -67,7 +67,7 @@ public class Imos implements IImos
 	/**
 	 * The list of acts that can activate a new intention. 
 	 */
-	private List<IAct> m_activationList = new ArrayList<IAct>();
+	private ArrayList<IAct> m_activationList = new ArrayList<IAct>();
 
 	/** 
 	 * The decided intention
@@ -77,7 +77,7 @@ public class Imos implements IImos
 	/**
 	 * The primitive intended act in the current automatic loop.
 	 */
-	private IAct m_primitiveIntention = null;
+	//private IAct m_primitiveIntention = null;
 
 	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
@@ -224,6 +224,183 @@ public class Imos implements IImos
 	}
 	
 	/**
+	 * Track the current enaction. 
+	 * @param enaction The current enaction.
+	 */
+	public void track(IEnaction enaction) 
+	{
+		IAct previousPrimitiveIntention = enaction.getIntendedPrimitiveAct();
+		IAct primitiveEnaction = enaction.getEnactedPrimitiveAct();
+		IAct m_intentionAct = enaction.getTopAct();
+		
+		m_imosCycle++;		
+		
+		IAct topEnactedAct = null;
+		IAct nextTopIntention = null;
+		
+		// We track the current enaction (Except on startup when the primitive intention is null).
+
+		enaction.trace(m_tracer);
+
+		if (previousPrimitiveIntention != null)
+		{
+			// Compute the top actually enacted act
+			
+			topEnactedAct = enactedAct(previousPrimitiveIntention.getSchema(), primitiveEnaction);
+			System.out.println("Enacted " + topEnactedAct );
+			
+			// Compute the next sub-intention, null if we have reached the end of the intended act.
+			
+			nextTopIntention = nextAct(previousPrimitiveIntention, primitiveEnaction);
+			enaction.setTopEnactedAct(topEnactedAct);
+		}					
+		enaction.setTopRemainingAct(nextTopIntention);
+		
+		// If we have a context and we don't have a top intention to continue then we record and we shift the context. ========
+
+		if (topEnactedAct != null && nextTopIntention == null)
+		{
+			// TODO also compute surprise in the case of primitive intention acts.  
+			if (m_intentionAct != topEnactedAct) 
+				m_internalState= "!";
+			if (m_intentionAct.getSchema().isPrimitive() && m_intentionAct == topEnactedAct)
+			{
+				if (m_tracer != null) 
+					m_tracer.addEventElement("intention_correct", m_intentionAct.getLabel());
+			}
+			if (m_intentionAct.getSchema().isPrimitive() && m_intentionAct != topEnactedAct)
+			{
+				if (m_tracer != null) 
+					m_tracer.addEventElement("intention_incorrect", m_intentionAct.getLabel());
+			}
+
+			System.out.println("New decision ================ ");
+			
+			// Process the performed act
+			
+			IAct performedAct = null;
+
+			ISchema intendedSchema = m_intentionAct.getSchema();
+			
+			if (intendedSchema == topEnactedAct.getSchema()) performedAct = topEnactedAct;
+			else	performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,topEnactedAct.getSatisfaction());
+			
+			//m_tracer.addEventElement("top_performed", performedAct.getLabel() );
+			System.out.println("Performed " + performedAct );
+			
+			// learn from the  context and the performed act
+			m_episodicMemory.resetLearnCount();
+			List<IAct> streamContextList = m_episodicMemory.record(m_contextList, performedAct);
+						
+			// learn from the base context and the stream act			
+			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of hte list
+			 {
+				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
+				 System.out.println("Streaming " + streamAct);
+				 if (streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
+					 m_episodicMemory.record(m_baseContextList, streamAct);
+			 }
+
+			// learn from the current context and the actually enacted act			
+			if (topEnactedAct != performedAct)
+			{
+				System.out.println("Learn from enacted");
+				List<IAct> streamContextList2 = m_episodicMemory.record(m_contextList, topEnactedAct);
+				// learn from the base context and the streamAct2
+				if (streamContextList2.size() > 0)
+				{
+					IAct streamAct2 = streamContextList2.get(0);
+					System.out.println("Streaming2 " + streamAct2 );
+					if (streamAct2.getSchema().getWeight() > ACTIVATION_THRESH)
+						m_episodicMemory.record(m_baseContextList, streamAct2);
+				}
+			}	
+			
+			// Learn from the phenomena
+			
+			m_episodicMemory.record(m_contextList,m_sensorimotorSystem.situationAct());
+
+			// Update the context. =========
+			
+			// Acts that match a phenomenon are added to the activation list			
+			//m_episodicMemory.evokeAct(m_activationList, m_phenomenaList);
+
+			//ArrayList<IPlace> phenomenaList = m_sensorimotorSystem.getPhenomena();
+			shiftDecisionCycle(topEnactedAct, performedAct, streamContextList);
+			
+		}
+		
+		// Log the activation list and the learned count for debug
+		System.out.println("Activation context list: ");
+		Object activation = null;
+		if (m_tracer != null)
+			activation = m_tracer.addEventElement("activation_context_acts");
+		for (IAct a : m_activationList)	
+		{	
+			if (m_tracer != null)
+				m_tracer.addSubelement(activation, "act", a.getLabel());
+			System.out.println(a);
+		}
+		if (m_tracer != null)
+			m_tracer.addEventElement("learn_count", m_episodicMemory.getLearnCount() + "");
+		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
+		
+		
+//		// If we don't have an ongoing intention then we choose a new intention. ======
+//		
+//		if (nextTopIntention == null)
+//		{
+//			//ArrayList<IProposition> propositionList = m_sensorimotorSystem.getPropositionList();
+//			ArrayList<IActProposition> propositionList = m_sensorimotorSystem.getPropositionList(m_episodicMemory.getActs());
+//			nextTopIntention = m_episodicMemory.selectAct(m_activationList, propositionList);
+//			m_intentionAct = nextTopIntention;
+//			enaction.setTopAct(nextTopIntention);
+//			enaction.setStep(0);
+//			//m_newIntention = true;
+//		}
+//		else 
+//			enaction.setStep(enaction.getStep() + 1);
+//			//m_newIntention = false;
+//		
+//
+//		// Spread the selected intention's activation to primitive acts.
+//		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)		
+//		//IAct activePrimitiveAct = spreadActivation(intentionAct);
+//		//List<IAct> activePrimitiveActs = new ArrayList<IAct>(10);
+//		//activePrimitiveActs.add(activePrimitiveAct);
+//		// Sensorymotor acts compete and Ernest selects that with the highest activation
+//		//IAct nextPrimitiveAct = selectAct(activePrimitiveActs);		
+//		//m_primitiveIntention = nextPrimitiveAct;
+//		
+//		//m_primitiveIntention = selectAct(activePrimitiveActs);		
+//
+//		IAct nextPrimitiveIntention = spreadActivation(nextTopIntention);
+//		
+//		if (m_tracer != null)
+//			m_tracer.addEventElement("next_primitive_intention", nextPrimitiveIntention.getLabel());
+//		
+//		//return nextPrimitiveAct;
+//		enaction.setIntendedPrimitiveAct(nextPrimitiveIntention);
+//		//return m_primitiveIntention;
+//				
+	}
+
+	public ArrayList<IAct> getActivationList()
+	{
+		return m_activationList;
+	}
+
+	public ArrayList<IAct> getActs()
+	{
+		return m_episodicMemory.getActs();
+	}
+
+	public ArrayList<ISchema> getSchemas()
+	{
+		return m_episodicMemory.getSchemas();
+	}
+
+	/**
 	 * The main method of the Intrinsic Motivation System.
 	 * Follow-up the sequence at hand, and chooses the next primitive interaction to try to enact. 
 	 * @param enaction The current enaction.
@@ -231,7 +408,7 @@ public class Imos implements IImos
 	 */
 	public void step(IEnaction enaction) 
 	{
-		//IAct primitiveIntention = enaction.getIntendedPrimitiveAct();
+		IAct m_primitiveIntention = enaction.getIntendedPrimitiveAct();
 		IAct primitiveEnaction = enaction.getEnactedPrimitiveAct();
 		//IAct topIntention = enaction.getTopAct();
 		
@@ -263,7 +440,7 @@ public class Imos implements IImos
 		
 			// Update spatial memory
 			
-			enaction.setAffordanceAct(enactedAct);
+			enaction.setTopEnactedAct(enactedAct);
 			//m_sensorimotorSystem.updateSpas(primitiveEnaction, enactedAct);
 			m_sensorimotorSystem.updateSpas(enaction);
 		}	
@@ -272,8 +449,6 @@ public class Imos implements IImos
 
 		if (intentionAct == null && enactedAct != null)
 		{
-			//m_sensorimotorSystem.stepSpas(enactedAct);
-			
 			// log the previous decision cycle
 
 			// TODO also compute surprise in the case of primitive intention acts.  
@@ -370,7 +545,7 @@ public class Imos implements IImos
 		if (intentionAct == null)
 		{
 			//ArrayList<IProposition> propositionList = m_sensorimotorSystem.getPropositionList();
-			ArrayList<IActProposition> propositionList = m_sensorimotorSystem.getPropositionList(m_episodicMemory.getActs());
+			ArrayList<IActProposition> propositionList = new ArrayList();// = m_sensorimotorSystem.getPropositionList(m_episodicMemory.getActs());
 			intentionAct = m_episodicMemory.selectAct(m_activationList, propositionList);
 			m_intentionAct = intentionAct;
 			enaction.setTopAct(intentionAct);
