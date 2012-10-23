@@ -92,7 +92,7 @@ public interface ISpas
 	
 	public ISpatialMemory getSpatialMemory();
 	
-	public void simulatePrimitiveAct(IEnaction enaction);
+	//public void simulatePrimitiveAct(IEnaction enaction);
 	public IActProposition runSimulation(IAct act);
 
 

@@ -1,6 +1,8 @@
 package imos;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import spas.IPlace;
 import spas.ISpas;
 import ernest.IEffect;
@@ -22,6 +24,11 @@ public interface IImos
 	 * @param enaction The current enaction.
 	 */
 	public void step(IEnaction enaction); 
+
+	public void track(IEnaction enaction); 
+	public ArrayList<IAct> getActivationList();
+	public ArrayList<IAct> getActs();
+	public ArrayList<ISchema> getSchemas();
 
 	/**
 	 * Constructs a new interaction in episodic memory.

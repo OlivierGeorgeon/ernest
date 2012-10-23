@@ -57,7 +57,7 @@ public interface ISpatialMemory
 	/**
 	 * Remove places that are older than the decay laps
 	 */
-	public void clear();
+	public void decay();
 
 	/**
 	 * @return The list of places in this spatial memory

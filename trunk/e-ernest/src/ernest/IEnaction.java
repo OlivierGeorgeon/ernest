@@ -52,12 +52,22 @@ public interface IEnaction
 	/**
 	 * @param act The last highest-level act enacted
 	 */
-	public void setAffordanceAct(IAct act);
+	public void setTopEnactedAct(IAct act);
 	
 	/**
 	 * @return The last highest-level act enacted
 	 */
-	public IAct getAffordanceAct();	
+	public IAct getTopEnactedAct();	
+
+	/**
+	 * @param act The last highest-level act enacted
+	 */
+	public void setTopRemainingAct(IAct act);
+	
+	/**
+	 * @return The last highest-level act enacted
+	 */
+	public IAct getTopRemainingAct();	
 
 	/**
 	 * @param step The rank of the primitive act in the current enaction 

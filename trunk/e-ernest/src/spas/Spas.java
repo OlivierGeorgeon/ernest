@@ -3,7 +3,6 @@ package spas;
 import imos.ActProposition;
 import imos.IAct;
 import imos.IActProposition;
-import imos.ISchema;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +12,6 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import ernest.Enaction;
-import ernest.Ernest;
 import ernest.IEnaction;
 import ernest.ITracer;
 
@@ -56,10 +54,13 @@ public class Spas implements ISpas
 	 */
 	public void track(IEnaction enaction) 
 	{
-		if (enaction.getEffect().getLocation() != null)
+		tick();
+		
+		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveAct() != null)
 		{
-			addPlace(new Point3f(enaction.getEffect().getLocation()), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveAct());			
-			constructCopresence();
+			addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveAct());			
+			m_localSpaceMemory.decay();
+			constructCopresence(enaction);
 			evokePlaces(enaction);
 		}
 		
@@ -69,10 +70,10 @@ public class Spas implements ISpas
 	}
 
 	/**
-	 * TODO Merge it with the function Track
+	 * TODO Use it to track actual enactions
 	 * @param enaction The enaction to simulate
 	 */
-	public void simulatePrimitiveAct(IEnaction enaction)
+	private void simulatePrimitiveAct(IEnaction enaction)
 	{
 		boolean affordIntention = false;
 		boolean affordMove = false;
@@ -100,7 +101,6 @@ public class Spas implements ISpas
 						affordDisplacement = true;
 						affordMove = true;
 						affordIntention = true;
-						//enaction.getEffect().setLabel(enactedAct.getEffectLabel());
 					}
 					
 					if (!affordMove)
@@ -111,7 +111,6 @@ public class Spas implements ISpas
 							// This move has already been experienced concerning this place
 							affordMove = true;								
 							enactedAct = concernedPlace.getAct();
-							//enaction.getEffect().setLabel(enactedAct.getEffectLabel());
 						
 							if (concernedPlace.getAct().getTransform().epsilonEquals(intendedAct.getTransform(), .1f) &&
 								!intendedAct.getTransform().epsilonEquals(new Transform3D(), .1f))
@@ -166,8 +165,6 @@ public class Spas implements ISpas
 	{
 		IEnaction enaction = new Enaction();
 		
-		//int simulationStatus = LocalSpaceMemory.SIMULATION_INCONSISTENT;
-		//ISchema s = act.getSchema();
 		if (act.getSchema().isPrimitive())
 		{
 			enaction.setIntendedPrimitiveAct(act);
@@ -202,14 +199,9 @@ public class Spas implements ISpas
 		
 		// Test if the resulting situation leads to an affordance
 		
-		Vector3f trans = new Vector3f(); 
-		act.getTransform().get(trans); // Get the translation part of this act's transformation
-		//if (status != SIMULATION_INCONSISTENT && !trans.epsilonEquals(new Vector3f(), .1f))
-		
 		IAct subsequentAct = null;
 		if (status != Place.INCONSISTENT && !act.getTransform().epsilonEquals(new Transform3D(), .1f))
 		{
-			//boolean afford = false;
 			for (IPlace p : m_localSpaceMemory.getPlaceList())
 			{
 				if (p.getType() == Place.ENACTION_PLACE || p.getType() == Place.EVOKED_PLACE )
@@ -219,17 +211,6 @@ public class Spas implements ISpas
 						if (subsequentAct==null || subsequentAct.getSatisfaction() < p.getAct().getSatisfaction())
 							subsequentAct = p.getAct();
 					}					
-//					//else
-//					// This place also affords its compresences
-//					for (IBundle b : evokeCompresences(p.getAct()))
-//					{
-//						if (b.getFirstAct().getPosition().epsilonEquals(p.getPosition(), .1f))
-//							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getFirstAct().getSatisfaction())
-//								subsequentAct = b.getFirstAct();
-//						if (b.getSecondAct().getPosition().epsilonEquals(p.getPosition(), .1f))
-//							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getSecondAct().getSatisfaction())
-//								subsequentAct = b.getSecondAct();
-//					}
 				}
 			}
 		}
@@ -319,43 +300,51 @@ public class Spas implements ISpas
 			return 0xFFFFFF;
 	}
 	
+//	/**
+//	 * Construct new copresence bundles.
+//	 * (Do not create copresences among the same interactions)
+//	 */
+//	private void constructCopresence()
+//	{
+//		// Get the list of interaction places (that can evoke phenomena).
+//		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
+//		for (IPlace p : m_localSpaceMemory.getPlaceList())
+//			//if (p.evokePhenomenon(m_clock))
+//			if (p.getType() == Place.ENACTION_PLACE)
+//				interactionPlaces.add(p);
+//
+//		// Create new copresence bundles 
+//		
+//		for (IPlace interactionPlace : interactionPlaces)
+//		{
+//			if (interactionPlace.getAct().concernOnePlace())
+//			{
+//				for (IPlace secondPlace : interactionPlaces)
+//				{
+//					if (secondPlace.getAct().concernOnePlace())
+//					{
+//						if (!interactionPlace.getAct().getSchema().equals(secondPlace.getAct().getSchema()) && interactionPlace.isInCell(secondPlace.getPosition())
+//								&& interactionPlace.getAct().getColor() == secondPlace.getAct().getColor())
+//						{
+//							addBundle(interactionPlace.getAct(), secondPlace.getAct());
+//						}
+//					}
+//				}
+//			}
+//		}	
+//	}
+	
 	/**
 	 * Construct new copresence bundles.
-	 * (Do not create copresences among the same schemas)
-	 * @param observation The observation 
-	 * @param spas A reference to the spatial system to add bundles
+	 * (Do not create copresences among the same interactions)
 	 */
-	private void constructCopresence()
+	private void constructCopresence(IEnaction enaction)
 	{
-		// Clear the places that are older than the persistence of spatial memory
-		m_localSpaceMemory.clear();
-		
-		// Get the list of interaction places (that can evoke phenomena).
-		ArrayList<IPlace> interactionPlaces = new ArrayList<IPlace>();
-		for (IPlace p : m_localSpaceMemory.getPlaceList())
-			//if (p.evokePhenomenon(m_clock))
-			if (p.getType() == Place.ENACTION_PLACE)
-				interactionPlaces.add(p);
-
-		// Create new copresence bundles 
-		
-		for (IPlace interactionPlace : interactionPlaces)
-		{
-			if (interactionPlace.getAct().concernOnePlace())
-			{
-				for (IPlace secondPlace : interactionPlaces)
-				{
-					if (secondPlace.getAct().concernOnePlace())
-					{
-						if (!interactionPlace.getAct().getSchema().equals(secondPlace.getAct().getSchema()) && interactionPlace.isInCell(secondPlace.getPosition())
-								&& interactionPlace.getAct().getColor() == secondPlace.getAct().getColor())
-						{
-							addBundle(interactionPlace.getAct(), secondPlace.getAct());
-						}
-					}
-				}
-			}
-		}	
+		IAct enactedAct = enaction.getEnactedPrimitiveAct();
+		for (IPlace place : m_localSpaceMemory.getPlaceList())
+			if (place.getType() == Place.ENACTION_PLACE && place.getAct().concernOnePlace() && place.isInCell(enaction.getEffect().getLocation()))
+				if (!place.getAct().getSchema().equals(enactedAct.getSchema()))
+					addBundle(place.getAct(), enactedAct);						
 	}
 	
 	/**

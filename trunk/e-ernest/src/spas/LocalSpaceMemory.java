@@ -417,7 +417,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	/**
 	 * Clear all the places older than PERSISTENCE_DURATION.
 	 */
-	public void clear()
+	public void decay()
 	{
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{

@@ -164,8 +164,11 @@ public class Ernest implements IErnest
 	/** Ernest's Intrinsically motivated Schema Mechanism. */
 	private IImos m_imos ;
 	
+	/** Ernest's decisional Mechanism. */
+	private IDecider m_decider ;
+	
 	/** Ernest's sensorymotor system. */
-	private ISensorymotorSystem m_sensorymotorSystem;
+	private ISensorymotorSystem m_sensorimotorSystem;
 
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
@@ -186,9 +189,10 @@ public class Ernest implements IErnest
 	 */
 	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
 	{
-		m_sensorymotorSystem = sensor;
-		m_sensorymotorSystem.init(m_spas, m_imos, m_tracer);
-		m_imos.setSensorimotorSystem(m_sensorymotorSystem);
+		m_sensorimotorSystem = sensor;
+		m_sensorimotorSystem.init(m_spas, m_imos, m_tracer);
+		m_imos.setSensorimotorSystem(m_sensorimotorSystem);
+		m_decider = new Decider(m_imos, m_spas, m_tracer);
 	};
 	
 	/**
@@ -227,7 +231,7 @@ public class Ernest implements IErnest
 		// Determine the primitive enacted act from the enacted schema and the observation.
 		
 		//IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
-		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
+		IAct enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
@@ -252,7 +256,7 @@ public class Ernest implements IErnest
 		// Determine the primitive enacted act from the enacted schema and the observation.
 		
 		//IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
-		IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
+		IAct enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
@@ -271,7 +275,7 @@ public class Ernest implements IErnest
 	{
 		m_enaction.setEffect(effect);
 		
-		// Start the tracing of a new interaction cycle.
+		// Start a new interaction cycle.
 		if (m_tracer != null)
 		{
             m_tracer.startNewEvent(m_imos.getCounter());
@@ -283,12 +287,16 @@ public class Ernest implements IErnest
 		IAct enactedPrimitiveAct = null;
 		if (m_enaction.getIntendedPrimitiveAct() != null)
 			enactedPrimitiveAct = m_imos.addInteraction(m_enaction.getIntendedPrimitiveAct().getSchema().getLabel(), effect.getLabel(), 0);
-
-		// Let Ernest decide for the next primitive schema to enact.
-		
 		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
+
+		// track the enaction 
 		
-		m_imos.step(m_enaction);
+		m_imos.track(m_enaction);
+		m_spas.track(m_enaction);			
+		
+		// Decide the next thing to enact
+		
+		m_decider.decide(m_enaction);			
 		
 		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();		
 	}
@@ -306,7 +314,7 @@ public class Ernest implements IErnest
 		// Determine the primitive enacted act from the enacted schema and the stimuli received from the environment.		
 		
 		//enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, stimuli);
-		enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), stimuli);
+		enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), stimuli);
 		
 		// Let Ernest decide for the next primitive schema to enact.
 		
@@ -320,7 +328,7 @@ public class Ernest implements IErnest
 		
 		// Once the decision is made, compute the intensity.
 		
-		primitiveSchema[1] = m_sensorymotorSystem.impulsion(primitiveSchema[0]);
+		primitiveSchema[1] = m_sensorimotorSystem.impulsion(primitiveSchema[0]);
 		
 		// Return the schema to enact and its intensity.
 		
@@ -335,7 +343,7 @@ public class Ernest implements IErnest
 	 */
 	public int[] update(int[][] stimuli) 
 	{
-		return m_sensorymotorSystem.update(stimuli);
+		return m_sensorimotorSystem.update(stimuli);
 	}
 	
 	public int getValue(int i, int j)
@@ -350,7 +358,7 @@ public class Ernest implements IErnest
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{
 		//return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
-		return m_sensorymotorSystem.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+		return m_sensorimotorSystem.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
 
 //	public void setPlaceList(ArrayList<IPlace> placeList)
@@ -365,7 +373,7 @@ public class Ernest implements IErnest
 
 	public void setSegmentList(ArrayList<ISegment> segmentList) 
 	{
-		m_sensorymotorSystem.setSegmentList(segmentList);
+		m_sensorimotorSystem.setSegmentList(segmentList);
 	}
 
 	public int getCounter() 
@@ -388,7 +396,7 @@ public class Ernest implements IErnest
 
 	public ISpatialMemory getSpatialSimulation() 
 	{
-		return m_sensorymotorSystem.getSpatialSimulation();
+		return m_sensorimotorSystem.getSpatialSimulation();
 	}
 
 //	public void setFrame(JFrame frame) 
