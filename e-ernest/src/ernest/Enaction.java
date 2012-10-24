@@ -1,5 +1,11 @@
 package ernest;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
+
 import utils.ErnestUtils;
 import imos.IAct;
 
@@ -14,10 +20,15 @@ public class Enaction implements IEnaction
 	private IAct m_intendedPrimitiveAct = null;
 	private IAct m_enactedPrimitiveAct = null;
 	private IAct m_topAct = null;
-	private IAct m_affordanceAct = null;
+	private IAct m_topEnactedAct = null;
 	private IAct m_topRemainingAct = null;
 	private int m_simulationStatus = 0;
 	private int m_step = 0;
+	private ArrayList<IAct> m_previousLearningContext   = new ArrayList<IAct>();
+	private ArrayList<IAct> m_initialLearningContext   = new ArrayList<IAct>();
+	private ArrayList<IAct> m_finalLearningContext   = new ArrayList<IAct>();
+	private ArrayList<IAct> m_finalActivationContext = new ArrayList<IAct>();
+	private int m_nbActLearned = 0;
 	
 	public void setEffect(IEffect effect) 
 	{
@@ -51,12 +62,12 @@ public class Enaction implements IEnaction
 	
 	public void setTopEnactedAct(IAct act) 
 	{
-		m_affordanceAct = act;
+		m_topEnactedAct = act;
 	}
 
 	public IAct getTopEnactedAct() 
 	{
-		return m_affordanceAct;
+		return m_topEnactedAct;
 	}
 	
 	public void setTopRemainingAct(IAct act) 
@@ -99,10 +110,147 @@ public class Enaction implements IEnaction
 		return m_enactedPrimitiveAct;
 	}
 	
+	public boolean isOver()
+	{
+		return (m_topRemainingAct == null);
+	}
+	
+	/**
+	 * Add a list of acts to the context list (scope). 
+	 * This list is used to learn new schemas in the next decision cycle.
+	 * @param actList The list of acts to append in the context list.
+	 */
+	private void addContextList(List<IAct> actList) 
+	{
+		for (IAct act : actList)
+		{
+			if (!m_finalLearningContext.contains(act))
+				m_finalLearningContext.add(act);
+		}
+	}
+
+	/**
+	 * Add an act to the list of acts in the context and in the focus list. 
+	 * The focus list is used for learning new schemas in the next decision cycle.
+	 * @param act The act that will be added to the context list and to the focus list.
+	 */
+	private void addActivationAct(IAct act) 
+	{
+		if (act != null)
+		{
+			if (!m_finalLearningContext.contains(act))
+				m_finalLearningContext.add(act);
+			if (!m_finalActivationContext.contains(act))
+				m_finalActivationContext.add(act);
+		}
+	}
+
+	/**
+	 * Shift the context when a decision cycle terminates and the next begins.
+	 * The context list is passed to the base context list.
+	 * The activation list is reinitialized from the enacted act and the performed act.
+	 * The context list is reinitialized from the activation list and the additional list provided as a parameter. 
+	 * @param enactedAct The act that was actually enacted during the terminating decision cycle.
+	 * @param performedAct The act that was performed during the terminating decision cycle.
+	 * @param contextList The additional acts to add to the new context list
+	 */
+	public void setFinalContext(IAct enactedAct, IAct performedAct, ArrayList<IAct> contextList)
+	{
+		// The current context list becomes the base context list
+		//m_baseContextList = new ArrayList<IAct>(m_contextList);
+		
+		// The enacted act is added first to the activation list
+		addActivationAct(enactedAct); 
+
+		// Add the performed act if different
+		if (enactedAct != performedAct)
+			addActivationAct(performedAct);
+
+		// if the actually enacted act is not primitive, its intention also belongs to the context
+		if (!enactedAct.getSchema().isPrimitive())
+			addActivationAct(enactedAct.getSchema().getIntentionAct());	
+		
+		// add the streamcontext list to the context list
+		addContextList(contextList);
+	}
+	
+	public ArrayList<IAct> getFinalLearningContext()
+	{
+		return m_finalLearningContext;
+	}
+	public ArrayList<IAct> getFinalActivationContext()
+	{
+		return m_finalActivationContext;
+	}
+	public void setInitialLearningContext(ArrayList<IAct> learningContext) 
+	{
+		m_initialLearningContext = learningContext;
+	}
+
+	public ArrayList<IAct> getInitialLearningContext() 
+	{
+		return m_initialLearningContext;
+	}
+	public void setPreviousLearningContext(ArrayList<IAct> learningContext) 
+	{
+		m_previousLearningContext = learningContext;
+	}
+
+	public ArrayList<IAct> getPreviousLearningContext() 
+	{
+		return m_previousLearningContext;
+	}
+
+	public void setNbActLearned(int nbActLearned) 
+	{
+		nbActLearned = nbActLearned;
+	}
+
+//	public void traceInitialize(ITracer tracer) 
+//	{
+//		if (tracer != null)
+//		{
+//			Object e = tracer.addEventElement("initialize_enaction");
+//
+//		}
+//	}
+
+	public void traceCarry(ITracer tracer)
+	{
+		if (tracer != null)
+		{
+			Object e = tracer.addEventElement("carry_enaction");
+
+			tracer.addSubelement(e, "top_intention", m_topAct.getLabel());
+			tracer.addSubelement(e, "top_level", m_topAct.getLength() + "");
+			if (m_topEnactedAct != null)
+				tracer.addSubelement(e, "top_enacted", m_topEnactedAct.getLabel());
+			tracer.addSubelement(e, "top_remaining", m_topRemainingAct.getLabel());
+			tracer.addSubelement(e, "next_step", m_step + "");
+			tracer.addSubelement(e, "next_primitive_intended_act", m_intendedPrimitiveAct.getLabel());
+		}
+	}
+	
+	public void traceTerminate(ITracer tracer)
+	{
+		if (tracer != null)
+		{
+			Object e = tracer.addEventElement("terminate_enaction");
+			
+			Object activation = tracer.addSubelement(e, "activation_context_acts");
+			for (IAct a : m_finalActivationContext)	
+				tracer.addSubelement(activation, "act", a.getLabel());
+
+			Object learning = tracer.addSubelement(e, "learning_context_acts");
+			for (IAct a : m_finalLearningContext)	
+				tracer.addSubelement(learning, "act", a.getLabel());
+
+				tracer.addEventElement("learn_count", m_nbActLearned + "");
+		}
+	}
+	
 	public void trace(ITracer tracer) 
 	{
-		m_effect.trace(tracer);
-		
 		if (tracer != null) 
 		{
 			if (m_topAct != null)
@@ -116,7 +264,6 @@ public class Enaction implements IEnaction
 			if (m_enactedPrimitiveAct !=  null)
 			{
 				tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
-				//tracer.addEventElement("primitive_enacted_color", ErnestUtils.hexColor(m_enactedPrimitiveAct.getColor()));
 				tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveAct.getSchema().getLabel());
 				tracer.addEventElement("satisfaction", m_enactedPrimitiveAct.getSatisfaction()/10 + "");
 			}

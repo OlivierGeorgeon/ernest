@@ -1,5 +1,8 @@
 package ernest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import imos.IAct;
 
 /**
@@ -88,9 +91,27 @@ public interface IEnaction
 	 * @param simulationStatus The status of simulating this enaction in spatial memory.
 	 */
 	public void setSimulationStatus(int simulationStatus);
+	
+	/**
+	 * @return True if this enaction is terminated.
+	 */
+	public boolean isOver();
+	
+	public void setFinalContext(IAct enactedAct, IAct performedAct, ArrayList<IAct> contextList);
+	public ArrayList<IAct> getFinalLearningContext();
+	public ArrayList<IAct> getFinalActivationContext();
+	public void setInitialLearningContext(ArrayList<IAct> learningContext);
+	public ArrayList<IAct>  getInitialLearningContext();
+	public void setPreviousLearningContext(ArrayList<IAct> learningContext);
+	public ArrayList<IAct>  getPreviousLearningContext();
+	public void setNbActLearned(int nbActLearned);
+	
 
 	/**
 	 * @param tracer The tracer
 	 */
+	//public void traceInitialize(ITracer tracer);
+	public void traceCarry(ITracer tracer);
+	public void traceTerminate(ITracer tracer);
 	public void trace(ITracer tracer);
 }

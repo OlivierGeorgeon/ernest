@@ -22,14 +22,14 @@ import imos.Proposition;
  * based on the current state of sequential and spatial memory
  * @author Olivier
  */
-public class Decider implements IDecider 
+public class DeciderImos implements IDecider 
 {
 	IImos m_imos;
 	ISpas m_spas;
 	ITracer m_tracer;
 	int m_maxSchemaLength = 4;
 
-	Decider(IImos imos, ISpas spas, ITracer tracer)
+	DeciderImos(IImos imos, ISpas spas, ITracer tracer)
 	{
 		m_imos = imos;
 		m_spas = spas;
@@ -38,26 +38,17 @@ public class Decider implements IDecider
 	
 	public void decide(IEnaction enaction) 
 	{
-		// If we don't have an ongoing intention then we choose a new intention. ======
+		IEnaction newEnaction = new Enaction();
 		
-		if (enaction.getTopRemainingAct() == null)
-		{
-			ArrayList<IActProposition> propositionList = getPropositionList(m_imos.getActs());
-			IAct nextTopIntention = selectAct(enaction.getFinalActivationContext(), propositionList);
-			enaction.setTopAct(nextTopIntention);
-			enaction.setTopRemainingAct(nextTopIntention);
-			enaction.setStep(0);
-		}
-		else 
-			enaction.setStep(enaction.getStep() + 1);
-		
+		System.out.println("New decision ================ ");
 
-		IAct nextPrimitiveIntention = spreadActivation(enaction.getTopRemainingAct());
+		IAct nextTopIntention = selectAct(enaction.getFinalActivationContext());
 		
-		if (m_tracer != null)
-			m_tracer.addEventElement("next_primitive_intention", nextPrimitiveIntention.getLabel());
+		newEnaction.setTopAct(nextTopIntention);
+		//newEnaction.setTopRemainingAct(nextTopIntention);
+		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
+		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		
-		enaction.setIntendedPrimitiveAct(nextPrimitiveIntention);
 	}
 	
 	/**
@@ -67,7 +58,7 @@ public class Decider implements IDecider
 	 * @param propositionList The list of propositions made by the spatial system.
 	 * @return The selected act.
 	 */
-	private IAct selectAct(List<IAct> activationList, List<IActProposition> propositionList)
+	private IAct selectAct(List<IAct> activationList)
 	{
 		List<IActProposition> proposals = new ArrayList<IActProposition>();	
 		
@@ -77,7 +68,7 @@ public class Decider implements IDecider
 		if (m_tracer != null)
 		{
 			activations = m_tracer.addEventElement("activations", true);
-			inconsistences = m_tracer.addEventElement("inconsistences", true);
+			//inconsistences = m_tracer.addEventElement("inconsistences", true);
 		}
 		for (ISchema s : m_imos.getSchemas())
 		{
@@ -107,7 +98,7 @@ public class Decider implements IDecider
                     int e = 0;
 					
 					// If the intention is consistent with spatial memory 
-					if (checkConsistency(proposedAct))
+					//if (checkConsistency(proposedAct))
 					{
 					
 						// If the intention is reliable then a proposition is constructed
@@ -147,11 +138,11 @@ public class Decider implements IDecider
 							}
 						}
 					}//
-					else
-					{
-						if (m_tracer != null)
-							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
-					}
+//					else
+//					{
+//						if (m_tracer != null)
+//							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
+//					}
 				}
 			}
 
@@ -182,14 +173,14 @@ public class Decider implements IDecider
 		
 		// Add the propositions from the spatial system 
 		
-		for (IActProposition proposition : propositionList)
-		{
-			int i = proposals.indexOf(proposition);
-			if (i == -1)
-				proposals.add(proposition);
-			else
-				proposals.get(i).update(proposition.getWeight(), proposition.getExpectation());
-		}
+//		for (IActProposition proposition : propositionList)
+//		{
+//			int i = proposals.indexOf(proposition);
+//			if (i == -1)
+//				proposals.add(proposition);
+//			else
+//				proposals.get(i).update(proposition.getWeight(), proposition.getExpectation());
+//		}
 
 		// Log the propositions
 		
@@ -207,7 +198,7 @@ public class Decider implements IDecider
 		
 		// TODO Update the expected satisfaction of each proposed schema based on the local map anticipation
 		
-		IAct a = selectAct(proposals);
+		IAct a = selectAct2(proposals);
 
 //		// sort by weighted proposition...
 //		Collections.sort(proposals);
@@ -250,8 +241,8 @@ public class Decider implements IDecider
 	public void carry(IEnaction enaction)
 	{
 		enaction.setIntendedPrimitiveAct(spreadActivation(enaction.getTopRemainingAct()));
-		
-		enaction.trace(m_tracer);
+		enaction.setStep(enaction.getStep() + 1);
+		enaction.traceCarry(m_tracer);
 	}
 
 	/**
@@ -277,48 +268,10 @@ public class Decider implements IDecider
 			primitiveAct = spreadActivation(subact);
 		}
 		
-		if (m_tracer != null)
-			m_tracer.addEventElement("prescribed_intention", primitiveAct.getLabel());
-		
 		return primitiveAct;
-	}
-	
-	/**
-	 * Generate a list of propositions for acts
-	 * based on the simulation of all reliable acts in spatial memory. 
-	 * Propose all acts that are afforded by the spatial context
-	 * and primitive acts that inform about unknown places.
-	 */
-	private ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts)
-	{
-		ArrayList<IActProposition> propositionList = new ArrayList<IActProposition>();
-		
-		Object activations = null;
-		if (m_tracer != null)
-			activations = m_tracer.addEventElement("copresence_propositions", true);
-
-		// Simulate all acts in spatial memory. 
-		
-		for (IAct a : acts)
-		{
-			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
-			{
-				IActProposition p = m_spas.runSimulation(a);
-				propositionList.add(p);				
-				if (m_tracer != null)
-					m_tracer.addSubelement(activations, "proposition", p.toString());
-			}
-						
-//			if (m_frame != null) 
-//			{
-//				m_frame.repaint(); 
-//				ErnestUtils.sleep(500);
-//			}
-		}	
-		return propositionList;
 	}	
 
-	private IAct selectAct(List<IActProposition> propositions)
+	private IAct selectAct2(List<IActProposition> propositions)
 	{
 		
 		//Construct a list of schemaPropositions from the list of actPropositions.
@@ -389,18 +342,5 @@ public class Decider implements IDecider
 			m_tracer.addEventElement("select", a.toString());
 
 		return a;
-	}
-	
-	private boolean checkConsistency(IAct act) 
-	{
-		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
-		int status = simulationMemory.runSimulation(act, m_spas).getStatus();
-		
-		//return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
-		return (status == Place.UNKNOWN || status == Place.DISPLACEMENT || status == Place.AFFORD);
-
-		//return true;
-	}
-	
-
+	}	
 }

@@ -12,4 +12,9 @@ public interface IDecider
 	 * @param enaction The current enaction.
 	 */
 	public void decide(IEnaction enaction);
+	
+	/**
+	 * @param enaction The current enaction.
+	 */
+	public void carry(IEnaction enaction);
 }

@@ -233,8 +233,8 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 		return act;
 	}
 
-	public void updateSpas(IEnaction enaction)
-	{
+//	public void updateSpas(IEnaction enaction)
+//	{
 //		// Add this act into spatial memory
 //		IAct primitiveAct = enaction.getEnactedPrimitiveAct();
 //		IAct topAct = enaction.getAffordanceAct();
@@ -262,11 +262,11 @@ public class Ernest12SensorimotorSystem extends BinarySensorymotorSystem
 //				place2.setAct(primitiveAct);
 //			}
 //			// Apply the spatial transformation to spatial memory
-		//m_spas.tick();
-		m_spas.track(enaction);			
+//		//m_spas.tick();
+//		m_spas.track(enaction);			
 //		}
-
-	}
+//
+//	}
 	
 //	public boolean checkConsistency(IAct act) 
 //	{
