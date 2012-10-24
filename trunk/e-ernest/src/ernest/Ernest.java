@@ -192,7 +192,7 @@ public class Ernest implements IErnest
 		m_sensorimotorSystem = sensor;
 		m_sensorimotorSystem.init(m_spas, m_imos, m_tracer);
 		m_imos.setSensorimotorSystem(m_sensorimotorSystem);
-		m_decider = new Decider(m_imos, m_spas, m_tracer);
+		m_decider = new DeciderImos(m_imos, m_spas, m_tracer);
 	};
 	
 	/**
@@ -280,23 +280,24 @@ public class Ernest implements IErnest
 		{
             m_tracer.startNewEvent(m_imos.getCounter());
 			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+			effect.trace(m_tracer);
 		}                
 		
-		// Determine the primitive enacted act from the intended act and the effect.
-		
-		IAct enactedPrimitiveAct = null;
-		if (m_enaction.getIntendedPrimitiveAct() != null)
-			enactedPrimitiveAct = m_imos.addInteraction(m_enaction.getIntendedPrimitiveAct().getSchema().getLabel(), effect.getLabel(), 0);
-		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
-
 		// track the enaction 
 		
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
 		
-		// Decide the next thing to enact
+		// Decision cycle
+		if (m_enaction.isOver())
+		{
+			m_imos.terminate(m_enaction);
+			m_decider.decide(m_enaction);
+		}
+
+		// Carry out the current enaction
 		
-		m_decider.decide(m_enaction);			
+		m_decider.carry(m_enaction);
 		
 		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();		
 	}
@@ -396,7 +397,8 @@ public class Ernest implements IErnest
 
 	public ISpatialMemory getSpatialSimulation() 
 	{
-		return m_sensorimotorSystem.getSpatialSimulation();
+		return m_spas.getSpatialMemory();
+		//return m_sensorimotorSystem.getSpatialSimulation();
 	}
 
 //	public void setFrame(JFrame frame) 

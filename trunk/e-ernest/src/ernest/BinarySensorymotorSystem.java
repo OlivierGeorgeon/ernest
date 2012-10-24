@@ -94,10 +94,10 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 //		return true;
 //	}
 
-	public IAct situationAct() 
-	{
-		return null;
-	}
+//	public IAct situationAct() 
+//	{
+//		return null;
+//	}
 
 //	public ArrayList<IProposition> getPropositionList() 
 //	{
@@ -111,14 +111,14 @@ public class BinarySensorymotorSystem implements ISensorymotorSystem
 //		return new ArrayList<IActProposition>();
 //	}
 
-	public void updateSpas(IEnaction enaction) 
-	{
-	}
+//	public void updateSpas(IEnaction enaction) 
+//	{
+//	}
 	
-	public ISpatialMemory getSpatialSimulation()
-	{
-		return m_spatialMemory;
-	}
+//	public ISpatialMemory getSpatialSimulation()
+//	{
+//		return m_spatialMemory;
+//	}
 	
 //	protected void clearSimulation()
 //	{

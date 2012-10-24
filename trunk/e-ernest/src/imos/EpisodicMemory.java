@@ -236,9 +236,9 @@ public class EpisodicMemory
 	 * @param intentionAct The intention.
 	 * @return A list of the acts created from the learning. The first act of the list is the stream act if the first act of the contextList was the performed act.
 	 */
-	public List<IAct> record(List<IAct> contextList, IAct intentionAct)
+	public ArrayList<IAct> record(List<IAct> contextList, IAct intentionAct)
 	{
-		List<IAct> newContextList= new ArrayList<IAct>(20);;
+		ArrayList<IAct> newContextList= new ArrayList<IAct>(20);
 		
 		if (intentionAct != null)
 		{

@@ -1,6 +1,7 @@
 package ernest;
 
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -12,6 +13,7 @@ public class Effect implements IEffect
 	private Point3f m_location = new Point3f();
 	private Transform3D m_transformation = new Transform3D();
 	private int m_color = 0xFFFFFF;
+	private float m_angle =0;
 	
 	public void setLabel(String label) 
 	{
@@ -41,6 +43,7 @@ public class Effect implements IEffect
 	public void setTransformation(float angle, float x) 
 	{
 		m_transformation.setIdentity();
+		m_angle = angle;
 		m_transformation.rotZ(angle);
 		m_transformation.setTranslation(new Vector3f(x,0,0));
 	}
@@ -64,9 +67,18 @@ public class Effect implements IEffect
 	{
 		if (tracer != null)
 		{
-			tracer.addEventElement("primitive_enacted_color", ErnestUtils.hexColor(m_color));
-			Object e = tracer.addEventElement("current_observation");
-			tracer.addSubelement(e, "stimuli", m_label + "");
+			Object e = tracer.addEventElement("effect");
+			tracer.addSubelement(e, "label", m_label + "");
+			tracer.addSubelement(e, "color", ErnestUtils.hexColor(m_color));
+			tracer.addSubelement(e, "position_x", m_location.x +"");
+			tracer.addSubelement(e, "position_y", m_location.y +"");
+			Matrix3f rot = new Matrix3f();
+			Vector3f trans = new Vector3f();
+			m_transformation.get(rot, trans);
+			tracer.addSubelement(e, "translation_x", trans.x +"");
+			tracer.addSubelement(e, "translation_y", trans.y +"");
+			//tracer.addSubelement(e, "rotation", m_angle +"");
+			tracer.addSubelement(e, "rotation", - Math.atan2(rot.m01,rot.m00) +"");
 		}
 	}
 }

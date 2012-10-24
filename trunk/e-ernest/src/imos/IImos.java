@@ -26,7 +26,8 @@ public interface IImos
 	public void step(IEnaction enaction); 
 
 	public void track(IEnaction enaction); 
-	public ArrayList<IAct> getActivationList();
+	public void terminate(IEnaction enaction);
+	//public ArrayList<IAct> getActivationList();
 	public ArrayList<IAct> getActs();
 	public ArrayList<ISchema> getSchemas();
 
