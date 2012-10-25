@@ -48,12 +48,12 @@ public final class ErnestUtils
 		int g = (value & 0x00FF00)/256;
 		int b = (value & 0x0000FF);
 		
-		String s = format(r) + format(g) + format(b);
+		String s = formatHex(r) + formatHex(g) + formatHex(b);
 
 		return s;
 	}
 	
-	private static String format(int i)
+	private static String formatHex(int i)
 	{
 		if (i == 0)
 			return "00";
@@ -61,6 +61,25 @@ public final class ErnestUtils
 			return "0" + Integer.toString(i, 16).toUpperCase();
 		else
 			return Integer.toString(i, 16).toUpperCase();
+	}
+	
+	public static String format(float f, int d)
+	{
+		String format;
+		//float exp = 10^d;
+		format = Integer.toString(Math.round(f * (float)Math.pow(10, d)));
+		if (d> 0) 
+		{
+			if (format.length() > d)
+				format = format.substring(0, format.length()-d) + "." + format.substring(format.length()-d, format.length());
+			if (format.length() == d)
+				format = "0." + format;
+			if (format.length() == d -1)
+				format = "0.0" + format;
+			// TODO manage d > 2
+		}
+		
+		return format;
 	}
 	
 	public static void sleep(int t)

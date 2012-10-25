@@ -36,28 +36,19 @@ public class Decider implements IDecider
 		m_tracer = tracer;
 	}
 	
-	public void decide(IEnaction enaction) 
+	public IEnaction decide(IEnaction enaction) 
 	{
-		// If we don't have an ongoing intention then we choose a new intention. ======
-		
-		if (enaction.getTopRemainingAct() == null)
-		{
-			ArrayList<IActProposition> propositionList = getPropositionList(m_imos.getActs());
-			IAct nextTopIntention = selectAct(enaction.getFinalActivationContext(), propositionList);
-			enaction.setTopAct(nextTopIntention);
-			enaction.setTopRemainingAct(nextTopIntention);
-			enaction.setStep(0);
-		}
-		else 
-			enaction.setStep(enaction.getStep() + 1);
-		
+		IEnaction newEnaction = new Enaction();
 
-		IAct nextPrimitiveIntention = spreadActivation(enaction.getTopRemainingAct());
+		ArrayList<IActProposition> propositionList = getPropositionList(m_imos.getActs());
+		IAct nextTopIntention = selectAct(enaction.getFinalActivationContext(), propositionList);
 		
-		if (m_tracer != null)
-			m_tracer.addEventElement("next_primitive_intention", nextPrimitiveIntention.getLabel());
+		newEnaction.setTopAct(nextTopIntention);
+		newEnaction.setTopRemainingAct(nextTopIntention);
+		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
+		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		
-		enaction.setIntendedPrimitiveAct(nextPrimitiveIntention);
+		return newEnaction;
 	}
 	
 	/**

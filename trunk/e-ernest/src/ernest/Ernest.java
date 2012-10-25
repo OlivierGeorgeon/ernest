@@ -280,7 +280,7 @@ public class Ernest implements IErnest
 		{
             m_tracer.startNewEvent(m_imos.getCounter());
 			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-			effect.trace(m_tracer);
+			//effect.trace(m_tracer);
 		}                
 		
 		// track the enaction 
@@ -292,7 +292,7 @@ public class Ernest implements IErnest
 		if (m_enaction.isOver())
 		{
 			m_imos.terminate(m_enaction);
-			m_decider.decide(m_enaction);
+			m_enaction = m_decider.decide(m_enaction);
 		}
 
 		// Carry out the current enaction

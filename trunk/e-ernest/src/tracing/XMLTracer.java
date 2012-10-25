@@ -108,10 +108,10 @@ public class XMLTracer implements ITracer<Element>
 	{
 		Element event = m_document.createElement("event");
 		
-		m_id++;
 		event.setAttribute("id", m_id + "");
 		event.setAttribute("source", source);
 		event.setAttribute("date", t + "");
+		m_id++;
 			
 		Element ty = m_document.createElement("type");
 		ty.setTextContent(type);

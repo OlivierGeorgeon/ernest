@@ -11,7 +11,7 @@ public interface IDecider
 	/**
 	 * @param enaction The current enaction.
 	 */
-	public void decide(IEnaction enaction);
+	public IEnaction decide(IEnaction enaction);
 	
 	/**
 	 * @param enaction The current enaction.
