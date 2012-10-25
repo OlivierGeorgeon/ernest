@@ -191,7 +191,7 @@ public class Ernest implements IErnest
 	{
 		m_sensorimotorSystem = sensor;
 		m_sensorimotorSystem.init(m_spas, m_imos, m_tracer);
-		m_imos.setSensorimotorSystem(m_sensorimotorSystem);
+		//m_imos.setSensorimotorSystem(m_sensorimotorSystem);
 		m_decider = new DeciderImos(m_imos, m_spas, m_tracer);
 	};
 	
@@ -221,55 +221,55 @@ public class Ernest implements IErnest
 	 * @param status The status received as a feedback from the previous primitive enaction.
 	 * @return The next primitive schema to enact.
 	 */
-	public String step(boolean status) 
-	{
-		if (m_tracer != null)
-		{
-            m_tracer.startNewEvent(m_imos.getCounter());
-			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-		}                
-		// Determine the primitive enacted act from the enacted schema and the observation.
-		
-		//IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
-		IAct enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
-		
-		// Let Ernest decide for the next primitive schema to enact.
-		
-		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
-		//m_primitiveAct = m_imos.step(enactedPrimitiveAct);
-		m_imos.step(m_enaction);
-		//m_primitiveAct = m_enaction.getIntendedPrimitiveAct();
-		
-		// Return the schema to enact.
-		
-		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();
-		//return m_primitiveAct.getSchema().getLabel();
-	}
+//	public String step(boolean status) 
+//	{
+//		if (m_tracer != null)
+//		{
+//            m_tracer.startNewEvent(m_imos.getCounter());
+//			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+//		}                
+//		// Determine the primitive enacted act from the enacted schema and the observation.
+//		
+//		//IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
+//		IAct enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
+//		
+//		// Let Ernest decide for the next primitive schema to enact.
+//		
+//		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
+//		//m_primitiveAct = m_imos.step(enactedPrimitiveAct);
+//		m_imos.step(m_enaction);
+//		//m_primitiveAct = m_enaction.getIntendedPrimitiveAct();
+//		
+//		// Return the schema to enact.
+//		
+//		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();
+//		//return m_primitiveAct.getSchema().getLabel();
+//	}
 
-	public String step(String status) 
-	{
-		if (m_tracer != null)
-		{
-            m_tracer.startNewEvent(m_imos.getCounter());
-			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-		}                
-		// Determine the primitive enacted act from the enacted schema and the observation.
-		
-		//IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
-		IAct enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
-		
-		// Let Ernest decide for the next primitive schema to enact.
-		
-		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
-		//m_primitiveAct = m_imos.step(enactedPrimitiveAct);
-		m_imos.step(m_enaction);
-		
-		//m_primitiveAct = m_enaction.getIntendedPrimitiveAct();
-		// Return the schema to enact.
-		
-		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();
-		//return m_primitiveAct.getSchema().getLabel();
-	}
+//	public String step(String status) 
+//	{
+//		if (m_tracer != null)
+//		{
+//            m_tracer.startNewEvent(m_imos.getCounter());
+//			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+//		}                
+//		// Determine the primitive enacted act from the enacted schema and the observation.
+//		
+//		//IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
+//		IAct enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
+//		
+//		// Let Ernest decide for the next primitive schema to enact.
+//		
+//		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
+//		//m_primitiveAct = m_imos.step(enactedPrimitiveAct);
+//		m_imos.step(m_enaction);
+//		
+//		//m_primitiveAct = m_enaction.getIntendedPrimitiveAct();
+//		// Return the schema to enact.
+//		
+//		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();
+//		//return m_primitiveAct.getSchema().getLabel();
+//	}
 
 	public String step(IEffect effect) 
 	{
@@ -280,7 +280,6 @@ public class Ernest implements IErnest
 		{
             m_tracer.startNewEvent(m_imos.getCounter());
 			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-			//effect.trace(m_tracer);
 		}                
 		
 		// track the enaction 
@@ -307,34 +306,30 @@ public class Ernest implements IErnest
 	 * @param stimuli The matrix of stimuli privided by the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public int[] step(int[][] stimuli) 
-	{
-		int primitiveSchema[] = new int[2];
-		IAct enactedPrimitiveAct;
-		
-		// Determine the primitive enacted act from the enacted schema and the stimuli received from the environment.		
-		
-		//enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, stimuli);
-		enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), stimuli);
-		
-		// Let Ernest decide for the next primitive schema to enact.
-		
-		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
-		//m_primitiveAct = m_imos.step(enactedPrimitiveAct);
-		m_imos.step(m_enaction);
-		//m_primitiveAct = m_enaction.getIntendedPrimitiveAct();
-
-		//primitiveSchema[0] = m_primitiveAct.getSchema().getLabel().toCharArray()[0];
-		primitiveSchema[0] = m_enaction.getIntendedPrimitiveAct().getSchema().getLabel().toCharArray()[0];
-		
-		// Once the decision is made, compute the intensity.
-		
-		primitiveSchema[1] = m_sensorimotorSystem.impulsion(primitiveSchema[0]);
-		
-		// Return the schema to enact and its intensity.
-		
-		return primitiveSchema;
-	}
+//	public int[] step(int[][] stimuli) 
+//	{
+//		int primitiveSchema[] = new int[2];
+//		IAct enactedPrimitiveAct;
+//		
+//		// Determine the primitive enacted act from the enacted schema and the stimuli received from the environment.		
+//		
+//		enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), stimuli);
+//		
+//		// Let Ernest decide for the next primitive schema to enact.
+//		
+//		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
+//		m_imos.step(m_enaction);
+//
+//		primitiveSchema[0] = m_enaction.getIntendedPrimitiveAct().getSchema().getLabel().toCharArray()[0];
+//		
+//		// Once the decision is made, compute the intensity.
+//		
+//		primitiveSchema[1] = m_sensorimotorSystem.impulsion(primitiveSchema[0]);
+//		
+//		// Return the schema to enact and its intensity.
+//		
+//		return primitiveSchema;
+//	}
 
 	/**
 	 * Update Ernest when the environment is refreshed.

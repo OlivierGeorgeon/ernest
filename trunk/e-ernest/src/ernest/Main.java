@@ -79,7 +79,10 @@ public class Main
 			//tracer.startNewEvent(iCycle++);
 			
 			//schema = ernest.step(status);
-			schema = ernest.step(status ? "t" : "f");
+			IEffect effect = new Effect();
+			effect.setLabel(status ? "t" : "f");
+			//schema = ernest.step(status ? "t" : "f");
+			schema = ernest.step(effect);
 			status = environment.enact(schema);
 			
 			//tracer.close(); // Needed with the XMLTracer to save the xml file each time.

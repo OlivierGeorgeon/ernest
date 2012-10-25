@@ -52,37 +52,30 @@ public class Imos implements IImos
 	/** Random generator used to break a tie when selecting a schema... */
 	//private static Random m_rand = new Random(); 
 	
-	//private boolean m_newIntention = true;
-
 	/**
 	 * The context to learn new schemas with the first learning mechanism.
 	 */
-	private List<IAct> m_contextList = new ArrayList<IAct>();
+	//private List<IAct> m_contextList = new ArrayList<IAct>();
 	
 	/**
 	 * The context to learn new schemas with the second learning mechanism.
 	 */
-	private List<IAct> m_baseContextList = new ArrayList<IAct>();
+	//private List<IAct> m_baseContextList = new ArrayList<IAct>();
 	
 	/**
 	 * The list of acts that can activate a new intention. 
 	 */
-	private ArrayList<IAct> m_activationList = new ArrayList<IAct>();
+	//private ArrayList<IAct> m_activationList = new ArrayList<IAct>();
 
 	/** 
 	 * The decided intention
 	 */
-	private IAct m_intentionAct = null;
-
-	/**
-	 * The primitive intended act in the current automatic loop.
-	 */
-	//private IAct m_primitiveIntention = null;
+	//private IAct m_intentionAct = null;
 
 	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
 	
-	private ISensorymotorSystem m_sensorimotorSystem = null;
+	//private ISensorymotorSystem m_sensorimotorSystem = null;
 
 	/**
 	 * Constructor for the Intrinsic Motivation system.
@@ -116,11 +109,11 @@ public class Imos implements IImos
 		m_episodicMemory.setTracer(tracer);
 	}
 	
-	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem)
-	{
-		m_sensorimotorSystem = sensorimotorSystem;
-		m_episodicMemory.setSensorimotorSystem(sensorimotorSystem);
-	}
+//	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem)
+//	{
+//		m_sensorimotorSystem = sensorimotorSystem;
+//		m_episodicMemory.setSensorimotorSystem(sensorimotorSystem);
+//	}
 	
 	/**
 	 * Get a string description of the imos's internal state for display in the environment.
@@ -156,67 +149,67 @@ public class Imos implements IImos
 		return a;		
 	}
 
-	/**
-	 * Add a list of acts to the context list (scope). 
-	 * This list is used to learn new schemas in the next decision cycle.
-	 * @param actList The list of acts to append in the context list.
-	 */
-	private void addContextList(List<IAct> actList) 
-	{
-		for (IAct act : actList)
-		{
-			if (!m_contextList.contains(act))
-				m_contextList.add(act);
-		}
-	}
+//	/**
+//	 * Add a list of acts to the context list (scope). 
+//	 * This list is used to learn new schemas in the next decision cycle.
+//	 * @param actList The list of acts to append in the context list.
+//	 */
+//	private void addContextList(List<IAct> actList) 
+//	{
+//		for (IAct act : actList)
+//		{
+//			if (!m_contextList.contains(act))
+//				m_contextList.add(act);
+//		}
+//	}
 
-	/**
-	 * Add an act to the list of acts in the context and in the focus list. 
-	 * The focus list is used for learning new schemas in the next decision cycle.
-	 * @param act The act that will be added to the context list and to the focus list.
-	 */
-	private void addActivationAct(IAct act) 
-	{
-		if (act != null)
-		{
-			if (!m_contextList.contains(act))
-				m_contextList.add(act);
-			if (!m_activationList.contains(act))
-				m_activationList.add(act);
-		}
-	}
+//	/**
+//	 * Add an act to the list of acts in the context and in the focus list. 
+//	 * The focus list is used for learning new schemas in the next decision cycle.
+//	 * @param act The act that will be added to the context list and to the focus list.
+//	 */
+//	private void addActivationAct(IAct act) 
+//	{
+//		if (act != null)
+//		{
+//			if (!m_contextList.contains(act))
+//				m_contextList.add(act);
+//			if (!m_activationList.contains(act))
+//				m_activationList.add(act);
+//		}
+//	}
 
-	/**
-	 * Shift the context when a decision cycle terminates and the next begins.
-	 * The context list is passed to the base context list.
-	 * The activation list is reinitialized from the enacted act and the performed act.
-	 * The context list is reinitialized from the activation list and the additional list provided as a parameter. 
-	 * @param enactedAct The act that was actually enacted during the terminating decision cycle.
-	 * @param performedAct The act that was performed during the terminating decision cycle.
-	 * @param contextList The additional acts to add to the new context list
-	 */
-	private void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList)
-	{
-		// The current context list becomes the base context list
-		m_baseContextList = new ArrayList<IAct>(m_contextList);
-		
-		m_contextList.clear();
-		m_activationList.clear();
-		
-		// The enacted act is added first to the activation list
-		addActivationAct(enactedAct); 
-
-		// Add the performed act if different
-		if (enactedAct != performedAct)
-			addActivationAct(performedAct);
-
-		// if the actually enacted act is not primitive, its intention also belongs to the context
-		if (!enactedAct.getSchema().isPrimitive())
-			addActivationAct(enactedAct.getSchema().getIntentionAct());	
-		
-		// add the streamcontext list to the context list
-		addContextList(contextList);
-	}
+//	/**
+//	 * Shift the context when a decision cycle terminates and the next begins.
+//	 * The context list is passed to the base context list.
+//	 * The activation list is reinitialized from the enacted act and the performed act.
+//	 * The context list is reinitialized from the activation list and the additional list provided as a parameter. 
+//	 * @param enactedAct The act that was actually enacted during the terminating decision cycle.
+//	 * @param performedAct The act that was performed during the terminating decision cycle.
+//	 * @param contextList The additional acts to add to the new context list
+//	 */
+//	private void shiftDecisionCycle(IAct enactedAct, IAct performedAct, List<IAct> contextList)
+//	{
+//		// The current context list becomes the base context list
+//		m_baseContextList = new ArrayList<IAct>(m_contextList);
+//		
+//		m_contextList.clear();
+//		m_activationList.clear();
+//		
+//		// The enacted act is added first to the activation list
+//		addActivationAct(enactedAct); 
+//
+//		// Add the performed act if different
+//		if (enactedAct != performedAct)
+//			addActivationAct(performedAct);
+//
+//		// if the actually enacted act is not primitive, its intention also belongs to the context
+//		if (!enactedAct.getSchema().isPrimitive())
+//			addActivationAct(enactedAct.getSchema().getIntentionAct());	
+//		
+//		// add the streamcontext list to the context list
+//		addContextList(contextList);
+//	}
 	
 	/**
 	 * Track the current enaction. 
@@ -342,184 +335,184 @@ public class Imos implements IImos
 		return m_episodicMemory.getSchemas();
 	}
 
-	/**
-	 * The main method of the Intrinsic Motivation System.
-	 * Follow-up the sequence at hand, and chooses the next primitive interaction to try to enact. 
-	 * @param enaction The current enaction.
-	 * @return The primitive interaction to try to enact next. 
-	 */
-	public void step(IEnaction enaction) 
-	{
-		IAct m_primitiveIntention = enaction.getIntendedPrimitiveAct();
-		IAct primitiveEnaction = enaction.getEnactedPrimitiveAct();
-		//IAct topIntention = enaction.getTopAct();
-		
-		m_imosCycle++;		
-		m_internalState= "";
-		
-		//m_episodicMemory.reach(new Point3f(0,1,0), new Vector3f(0,1,0));
-		//m_episodicMemory.reach(new Point3f(0,-1,0), new Vector3f(0,-1,0));
-		//m_episodicMemory.reach(new Point3f(0,0,0), new Vector3f(-1,0,0));
-
-		IAct intentionAct = null;
-		IAct enactedAct = null;
-		
-		// We track the current enaction (Except on startup when the primitive intention is null).
-
-		enaction.trace(m_tracer);
-
-		if (m_primitiveIntention != null)
-		{
-			// Compute the actually enacted act
-			
-			enactedAct = enactedAct(m_primitiveIntention.getSchema(), primitiveEnaction);
-			System.out.println("Enacted " + enactedAct );
-			
-			// Compute the next sub-intention, null if we have reached the end of the intended act.
-			
-			intentionAct = nextAct(m_primitiveIntention, primitiveEnaction);
-			
-		
-			// Update spatial memory
-			
-			enaction.setTopEnactedAct(enactedAct);
-
-			//m_sensorimotorSystem.updateSpas(enaction);
-		}	
-
-		// If we have a context and the current enaction is over then we record and we shift the context. ========
-
-		if (intentionAct == null && enactedAct != null)
-		{
-			// log the previous decision cycle
-
-			// TODO also compute surprise in the case of primitive intention acts.  
-			if (m_intentionAct != enactedAct)// && !m_intentionAct.getStatus()) 
-				m_internalState= "!";
-			if (m_intentionAct.getSchema().isPrimitive() && m_intentionAct == enactedAct)
-			{
-				if (m_tracer != null) 
-					m_tracer.addEventElement("intention_correct", m_intentionAct.getLabel());
-			}
-			if (m_intentionAct.getSchema().isPrimitive() && m_intentionAct != enactedAct)
-			{
-				if (m_tracer != null) 
-					m_tracer.addEventElement("intention_incorrect", m_intentionAct.getLabel());
-			}
-			//m_tracer.addEventElement("top_enacted_act", enactedAct.getLabel());
-			//m_tracer.addEventElement("interrupted", m_internalState);
-			//m_tracer.addEventElement("new_intention", "true");
-
-			System.out.println("New decision ================ ");
-			
-			// Process the performed act
-			
-			IAct performedAct = null;
-
-			ISchema intendedSchema = m_intentionAct.getSchema();
-			
-			if (intendedSchema == enactedAct.getSchema()) performedAct = enactedAct;
-			else	performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
-			
-			//m_tracer.addEventElement("top_performed", performedAct.getLabel() );
-			System.out.println("Performed " + performedAct );
-			
-			// learn from the  context and the performed act
-			m_episodicMemory.resetLearnCount();
-			List<IAct> streamContextList = m_episodicMemory.record(m_contextList, performedAct);
-						
-			// learn from the base context and the stream act			
-			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of hte list
-			 {
-				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
-				 System.out.println("Streaming " + streamAct);
-				 if (streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
-					 m_episodicMemory.record(m_baseContextList, streamAct);
-			 }
-
-			// learn from the current context and the actually enacted act			
-			if (enactedAct != performedAct)
-			{
-				System.out.println("Learn from enacted");
-				List<IAct> streamContextList2 = m_episodicMemory.record(m_contextList, enactedAct);
-				// learn from the base context and the streamAct2
-				if (streamContextList2.size() > 0)
-				{
-					IAct streamAct2 = streamContextList2.get(0);
-					System.out.println("Streaming2 " + streamAct2 );
-					if (streamAct2.getSchema().getWeight() > ACTIVATION_THRESH)
-						m_episodicMemory.record(m_baseContextList, streamAct2);
-				}
-			}	
-			
-			// Learn from the phenomena
-			
-			//m_episodicMemory.record(m_contextList,m_sensorimotorSystem.situationAct());
-
-			// Update the context. =========
-			
-			// Acts that match a phenomenon are added to the activation list			
-			//m_episodicMemory.evokeAct(m_activationList, m_phenomenaList);
-
-			//ArrayList<IPlace> phenomenaList = m_sensorimotorSystem.getPhenomena();
-			shiftDecisionCycle(enactedAct, performedAct, streamContextList);
-			
-		}
-		
-		// Log the activation list and the learned count for debug
-		System.out.println("Activation context list: ");
-		Object activation = null;
-		if (m_tracer != null)
-			activation = m_tracer.addEventElement("activation_context_acts");
-		for (IAct a : m_activationList)	
-		{	
-			if (m_tracer != null)
-				m_tracer.addSubelement(activation, "act", a.getLabel());
-			System.out.println(a);
-		}
-		if (m_tracer != null)
-			m_tracer.addEventElement("learn_count", m_episodicMemory.getLearnCount() + "");
-		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
-		
-		
-		// If we don't have an ongoing intention then we choose a new intention. ======
-		
-		if (intentionAct == null)
-		{
-			//ArrayList<IProposition> propositionList = m_sensorimotorSystem.getPropositionList();
-			ArrayList<IActProposition> propositionList = new ArrayList();// = m_sensorimotorSystem.getPropositionList(m_episodicMemory.getActs());
-			intentionAct = m_episodicMemory.selectAct(m_activationList, propositionList);
-			m_intentionAct = intentionAct;
-			enaction.setTopAct(intentionAct);
-			enaction.setStep(0);
-			//m_newIntention = true;
-		}
-		else 
-			enaction.setStep(enaction.getStep() + 1);
-			//m_newIntention = false;
-		
-
-		// Spread the selected intention's activation to primitive acts.
-		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)		
-		//IAct activePrimitiveAct = spreadActivation(intentionAct);
-		//List<IAct> activePrimitiveActs = new ArrayList<IAct>(10);
-		//activePrimitiveActs.add(activePrimitiveAct);
-		// Sensorymotor acts compete and Ernest selects that with the highest activation
-		//IAct nextPrimitiveAct = selectAct(activePrimitiveActs);		
-		//m_primitiveIntention = nextPrimitiveAct;
-		
-		//m_primitiveIntention = selectAct(activePrimitiveActs);		
-
-		m_primitiveIntention = spreadActivation(intentionAct);
-		
-		if (m_tracer != null)
-			m_tracer.addEventElement("next_primitive_intention", m_primitiveIntention.getLabel());
-		
-		//return nextPrimitiveAct;
-		enaction.setIntendedPrimitiveAct(m_primitiveIntention);
-		//return m_primitiveIntention;
-				
-	}
+//	/**
+//	 * The main method of the Intrinsic Motivation System.
+//	 * Follow-up the sequence at hand, and chooses the next primitive interaction to try to enact. 
+//	 * @param enaction The current enaction.
+//	 * @return The primitive interaction to try to enact next. 
+//	 */
+//	public void step(IEnaction enaction) 
+//	{
+//		IAct m_primitiveIntention = enaction.getIntendedPrimitiveAct();
+//		IAct primitiveEnaction = enaction.getEnactedPrimitiveAct();
+//		//IAct topIntention = enaction.getTopAct();
+//		
+//		m_imosCycle++;		
+//		m_internalState= "";
+//		
+//		//m_episodicMemory.reach(new Point3f(0,1,0), new Vector3f(0,1,0));
+//		//m_episodicMemory.reach(new Point3f(0,-1,0), new Vector3f(0,-1,0));
+//		//m_episodicMemory.reach(new Point3f(0,0,0), new Vector3f(-1,0,0));
+//
+//		IAct intentionAct = null;
+//		IAct enactedAct = null;
+//		
+//		// We track the current enaction (Except on startup when the primitive intention is null).
+//
+//		enaction.trace(m_tracer);
+//
+//		if (m_primitiveIntention != null)
+//		{
+//			// Compute the actually enacted act
+//			
+//			enactedAct = enactedAct(m_primitiveIntention.getSchema(), primitiveEnaction);
+//			System.out.println("Enacted " + enactedAct );
+//			
+//			// Compute the next sub-intention, null if we have reached the end of the intended act.
+//			
+//			intentionAct = nextAct(m_primitiveIntention, primitiveEnaction);
+//			
+//		
+//			// Update spatial memory
+//			
+//			enaction.setTopEnactedAct(enactedAct);
+//
+//			//m_sensorimotorSystem.updateSpas(enaction);
+//		}	
+//
+//		// If we have a context and the current enaction is over then we record and we shift the context. ========
+//
+//		if (intentionAct == null && enactedAct != null)
+//		{
+//			// log the previous decision cycle
+//
+//			// TODO also compute surprise in the case of primitive intention acts.  
+//			if (m_intentionAct != enactedAct)// && !m_intentionAct.getStatus()) 
+//				m_internalState= "!";
+//			if (m_intentionAct.getSchema().isPrimitive() && m_intentionAct == enactedAct)
+//			{
+//				if (m_tracer != null) 
+//					m_tracer.addEventElement("intention_correct", m_intentionAct.getLabel());
+//			}
+//			if (m_intentionAct.getSchema().isPrimitive() && m_intentionAct != enactedAct)
+//			{
+//				if (m_tracer != null) 
+//					m_tracer.addEventElement("intention_incorrect", m_intentionAct.getLabel());
+//			}
+//			//m_tracer.addEventElement("top_enacted_act", enactedAct.getLabel());
+//			//m_tracer.addEventElement("interrupted", m_internalState);
+//			//m_tracer.addEventElement("new_intention", "true");
+//
+//			System.out.println("New decision ================ ");
+//			
+//			// Process the performed act
+//			
+//			IAct performedAct = null;
+//
+//			ISchema intendedSchema = m_intentionAct.getSchema();
+//			
+//			if (intendedSchema == enactedAct.getSchema()) performedAct = enactedAct;
+//			else	performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,enactedAct.getSatisfaction());
+//			
+//			//m_tracer.addEventElement("top_performed", performedAct.getLabel() );
+//			System.out.println("Performed " + performedAct );
+//			
+//			// learn from the  context and the performed act
+//			m_episodicMemory.resetLearnCount();
+//			List<IAct> streamContextList = m_episodicMemory.record(m_contextList, performedAct);
+//						
+//			// learn from the base context and the stream act			
+//			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of hte list
+//			 {
+//				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
+//				 System.out.println("Streaming " + streamAct);
+//				 if (streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
+//					 m_episodicMemory.record(m_baseContextList, streamAct);
+//			 }
+//
+//			// learn from the current context and the actually enacted act			
+//			if (enactedAct != performedAct)
+//			{
+//				System.out.println("Learn from enacted");
+//				List<IAct> streamContextList2 = m_episodicMemory.record(m_contextList, enactedAct);
+//				// learn from the base context and the streamAct2
+//				if (streamContextList2.size() > 0)
+//				{
+//					IAct streamAct2 = streamContextList2.get(0);
+//					System.out.println("Streaming2 " + streamAct2 );
+//					if (streamAct2.getSchema().getWeight() > ACTIVATION_THRESH)
+//						m_episodicMemory.record(m_baseContextList, streamAct2);
+//				}
+//			}	
+//			
+//			// Learn from the phenomena
+//			
+//			//m_episodicMemory.record(m_contextList,m_sensorimotorSystem.situationAct());
+//
+//			// Update the context. =========
+//			
+//			// Acts that match a phenomenon are added to the activation list			
+//			//m_episodicMemory.evokeAct(m_activationList, m_phenomenaList);
+//
+//			//ArrayList<IPlace> phenomenaList = m_sensorimotorSystem.getPhenomena();
+//			shiftDecisionCycle(enactedAct, performedAct, streamContextList);
+//			
+//		}
+//		
+//		// Log the activation list and the learned count for debug
+//		System.out.println("Activation context list: ");
+//		Object activation = null;
+//		if (m_tracer != null)
+//			activation = m_tracer.addEventElement("activation_context_acts");
+//		for (IAct a : m_activationList)	
+//		{	
+//			if (m_tracer != null)
+//				m_tracer.addSubelement(activation, "act", a.getLabel());
+//			System.out.println(a);
+//		}
+//		if (m_tracer != null)
+//			m_tracer.addEventElement("learn_count", m_episodicMemory.getLearnCount() + "");
+//		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
+//		
+//		
+//		// If we don't have an ongoing intention then we choose a new intention. ======
+//		
+//		if (intentionAct == null)
+//		{
+//			//ArrayList<IProposition> propositionList = m_sensorimotorSystem.getPropositionList();
+//			ArrayList<IActProposition> propositionList = new ArrayList();// = m_sensorimotorSystem.getPropositionList(m_episodicMemory.getActs());
+//			intentionAct = m_episodicMemory.selectAct(m_activationList, propositionList);
+//			m_intentionAct = intentionAct;
+//			enaction.setTopAct(intentionAct);
+//			enaction.setStep(0);
+//			//m_newIntention = true;
+//		}
+//		else 
+//			enaction.setStep(enaction.getStep() + 1);
+//			//m_newIntention = false;
+//		
+//
+//		// Spread the selected intention's activation to primitive acts.
+//		// (so far, only selected intentions activate primitive acts, but one day there could be an additional bottom-up activation mechanism)		
+//		//IAct activePrimitiveAct = spreadActivation(intentionAct);
+//		//List<IAct> activePrimitiveActs = new ArrayList<IAct>(10);
+//		//activePrimitiveActs.add(activePrimitiveAct);
+//		// Sensorymotor acts compete and Ernest selects that with the highest activation
+//		//IAct nextPrimitiveAct = selectAct(activePrimitiveActs);		
+//		//m_primitiveIntention = nextPrimitiveAct;
+//		
+//		//m_primitiveIntention = selectAct(activePrimitiveActs);		
+//
+//		m_primitiveIntention = spreadActivation(intentionAct);
+//		
+//		if (m_tracer != null)
+//			m_tracer.addEventElement("next_primitive_intention", m_primitiveIntention.getLabel());
+//		
+//		//return nextPrimitiveAct;
+//		enaction.setIntendedPrimitiveAct(m_primitiveIntention);
+//		//return m_primitiveIntention;
+//				
+//	}
 	
 	/**
 	 * Recursively construct the current actually enacted act. 
@@ -609,80 +602,70 @@ public class Imos implements IImos
 		return nextAct;
 	}
 	
-	/**
-	 * Select the act that has the highest activation in a list.
-	 * If several are tied pick one at random.
-	 * @param acts the list of acts to search in.
-	 * @return The selected act.
-	 */
-	private IAct selectAct(List<IAct> acts)
-	{
-		// sort by weighted proposition...
-		Collections.sort(acts);
-		
-		// count how many are tied with the  highest weighted proposition
-		int count = 0;
-		int wp = acts.get(0).getActivation();
-		for (IAct a : acts)
-		{
-			if (a.getActivation() != wp)
-				break;
-			count++;
-		}
+//	/**
+//	 * Select the act that has the highest activation in a list.
+//	 * If several are tied pick one at random.
+//	 * @param acts the list of acts to search in.
+//	 * @return The selected act.
+//	 */
+//	private IAct selectAct(List<IAct> acts)
+//	{
+//		// sort by weighted proposition...
+//		Collections.sort(acts);
+//		
+//		// count how many are tied with the  highest weighted proposition
+//		int count = 0;
+//		int wp = acts.get(0).getActivation();
+//		for (IAct a : acts)
+//		{
+//			if (a.getActivation() != wp)
+//				break;
+//			count++;
+//		}
+//	
+//		// pick one at random from the top of the proposal list
+//		// count is equal to the number of proposals that are tied...
+//	
+//		//IAct a = acts.get(m_rand.nextInt(count));
+//		IAct a = acts.get(0); // always select the first
+//		
+//		return a ;
+//	}
 	
-		// pick one at random from the top of the proposal list
-		// count is equal to the number of proposals that are tied...
-	
-		//IAct a = acts.get(m_rand.nextInt(count));
-		IAct a = acts.get(0); // always select the first
-		
-		return a ;
-	}
-	
-	/**
-	 * Recursively prescribe an act's subacts and subschemas.
-	 * (Set the subacts' activation equal to the prescribing act's activation, not used)
-	 * @param The prescriber act.
-	 * @return The prescribed act.
-	 */
-	private IAct spreadActivation(IAct a)
-	{
-		IAct primitiveAct = null;
-		ISchema subschema = a.getSchema();
-		subschema.setPrescriberAct(a);
-		
-		if (subschema.isPrimitive())
-			primitiveAct = a;
-		else
-		{
-			subschema.setPointer(0);
-			IAct subact = subschema.getContextAct();
-			subact.setPrescriberSchema(subschema);
-			//subact.setActivation(a.getActivation());
-			primitiveAct = spreadActivation(subact);
-		}
-		
-		//if (m_tracer != null)
-		//	m_tracer.addEventElement("prescribed_intention", primitiveAct.getLabel());
-		
-		return primitiveAct;
-	}
+//	/**
+//	 * Recursively prescribe an act's subacts and subschemas.
+//	 * (Set the subacts' activation equal to the prescribing act's activation, not used)
+//	 * @param The prescriber act.
+//	 * @return The prescribed act.
+//	 */
+//	private IAct spreadActivation(IAct a)
+//	{
+//		IAct primitiveAct = null;
+//		ISchema subschema = a.getSchema();
+//		subschema.setPrescriberAct(a);
+//		
+//		if (subschema.isPrimitive())
+//			primitiveAct = a;
+//		else
+//		{
+//			subschema.setPointer(0);
+//			IAct subact = subschema.getContextAct();
+//			subact.setPrescriberSchema(subschema);
+//			//subact.setActivation(a.getActivation());
+//			primitiveAct = spreadActivation(subact);
+//		}
+//		
+//		//if (m_tracer != null)
+//		//	m_tracer.addEventElement("prescribed_intention", primitiveAct.getLabel());
+//		
+//		return primitiveAct;
+//	}
 
 	public int getCounter() 
 	{
 		return m_imosCycle;
 	}
 
-//	public boolean newIntention() 
-//	{
-//		return m_newIntention;
-//	}
-
-//	public boolean compositeIntention() 
-//	{
-//		return (m_intentionAct.getLength() > 1);
-//	}
-//	
     public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct)
     {
     	
