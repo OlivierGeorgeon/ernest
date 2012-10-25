@@ -116,7 +116,7 @@ public class Proposition implements IProposition
 	public String toString()
 	{
 			
-		String s = m_schema + " proposition_weight=" + m_weight + " expecte_act:" + m_act;
+		String s = m_schema + " with weight = " + m_weight/10 + " expecting act: " + m_act + " with satisfaction " + m_act.getSatisfaction()/10 ;
 		return s;
 	}
 }

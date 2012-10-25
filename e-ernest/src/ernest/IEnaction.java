@@ -83,6 +83,11 @@ public interface IEnaction
 	public int getStep();
 	
 	/**
+	 * @param correct false if the top intention was not correctly enacted
+	 */
+	public void setCorrect(boolean correct);
+	
+	/**
 	 * @return The status of simulating this enaction in spatial memory.
 	 */
 	public int getSimulationStatus();
@@ -110,7 +115,7 @@ public interface IEnaction
 	/**
 	 * @param tracer The tracer
 	 */
-	//public void traceInitialize(ITracer tracer);
+	public void traceTrack(ITracer tracer);
 	public void traceCarry(ITracer tracer);
 	public void traceTerminate(ITracer tracer);
 	public void trace(ITracer tracer);

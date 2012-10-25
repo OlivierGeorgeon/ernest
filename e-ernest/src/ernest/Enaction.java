@@ -28,7 +28,8 @@ public class Enaction implements IEnaction
 	private ArrayList<IAct> m_initialLearningContext   = new ArrayList<IAct>();
 	private ArrayList<IAct> m_finalLearningContext   = new ArrayList<IAct>();
 	private ArrayList<IAct> m_finalActivationContext = new ArrayList<IAct>();
-	private int m_nbActLearned = 0;
+	private int m_nbSchemaLearned = 0;
+	private boolean m_correct = true;
 	
 	public void setEffect(IEffect effect) 
 	{
@@ -115,6 +116,10 @@ public class Enaction implements IEnaction
 		return (m_topRemainingAct == null);
 	}
 	
+	public void setCorrect(boolean correct) 
+	{
+		m_correct = correct;
+	}
 	/**
 	 * Add a list of acts to the context list (scope). 
 	 * This list is used to learn new schemas in the next decision cycle.
@@ -203,17 +208,30 @@ public class Enaction implements IEnaction
 
 	public void setNbActLearned(int nbActLearned) 
 	{
-		nbActLearned = nbActLearned;
+		m_nbSchemaLearned = nbActLearned;
 	}
 
-//	public void traceInitialize(ITracer tracer) 
-//	{
-//		if (tracer != null)
-//		{
-//			Object e = tracer.addEventElement("initialize_enaction");
-//
-//		}
-//	}
+	public void traceTrack(ITracer tracer) 
+	{
+		if (tracer != null && m_intendedPrimitiveAct != null)
+		{
+			//tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
+			tracer.addEventElement("top_level", m_topAct.getSchema().getLength() + "");
+			tracer.addEventElement("satisfaction", m_enactedPrimitiveAct.getSatisfaction()/10 + "");
+			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveAct.getSchema().getLabel());
+
+			m_effect.trace(tracer);
+			
+			Object e = tracer.addEventElement("track_enaction");
+		
+			tracer.addSubelement(e, "top_intention", m_topAct.getLabel());
+			//tracer.addSubelement(e, "top_level", m_topAct.getSchema().getLength() + "");
+			tracer.addSubelement(e, "step", m_step + "");
+			tracer.addSubelement(e, "primitive_intended_act", m_intendedPrimitiveAct.getLabel());
+			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
+			//tracer.addSubelement(e, "satisfaction", m_enactedPrimitiveAct.getSatisfaction()/10 + "");
+		}
+	}
 
 	public void traceCarry(ITracer tracer)
 	{
@@ -237,15 +255,17 @@ public class Enaction implements IEnaction
 		{
 			Object e = tracer.addEventElement("terminate_enaction");
 			
-			Object activation = tracer.addSubelement(e, "activation_context_acts");
+			if (!m_correct) tracer.addSubelement(e, "incorrect");
+			
+			Object activation = tracer.addSubelement(e, "activation_context");
 			for (IAct a : m_finalActivationContext)	
 				tracer.addSubelement(activation, "act", a.getLabel());
 
-			Object learning = tracer.addSubelement(e, "learning_context_acts");
+			Object learning = tracer.addSubelement(e, "learning_context");
 			for (IAct a : m_finalLearningContext)	
 				tracer.addSubelement(learning, "act", a.getLabel());
 
-				tracer.addEventElement("learn_count", m_nbActLearned + "");
+			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
 		}
 	}
 	
@@ -269,4 +289,5 @@ public class Enaction implements IEnaction
 			}
 		}
 	}
+
 }

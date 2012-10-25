@@ -70,15 +70,15 @@ public class Effect implements IEffect
 			Object e = tracer.addEventElement("effect");
 			tracer.addSubelement(e, "label", m_label + "");
 			tracer.addSubelement(e, "color", ErnestUtils.hexColor(m_color));
-			tracer.addSubelement(e, "position_x", m_location.x +"");
-			tracer.addSubelement(e, "position_y", m_location.y +"");
+			tracer.addSubelement(e, "position_x", ErnestUtils.format(m_location.x,0));
+			tracer.addSubelement(e, "position_y", ErnestUtils.format(m_location.y,0));
 			Matrix3f rot = new Matrix3f();
 			Vector3f trans = new Vector3f();
 			m_transformation.get(rot, trans);
-			tracer.addSubelement(e, "translation_x", trans.x +"");
-			tracer.addSubelement(e, "translation_y", trans.y +"");
+			tracer.addSubelement(e, "translation_x", ErnestUtils.format(trans.x,0));
+			tracer.addSubelement(e, "translation_y", ErnestUtils.format(trans.y,0));
 			//tracer.addSubelement(e, "rotation", m_angle +"");
-			tracer.addSubelement(e, "rotation", - Math.atan2(rot.m01,rot.m00) +"");
+			tracer.addSubelement(e, "rotation", ErnestUtils.format((float) - Math.atan2(rot.m01,rot.m00),2));
 		}
 	}
 }

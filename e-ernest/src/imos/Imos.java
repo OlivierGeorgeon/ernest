@@ -245,26 +245,15 @@ public class Imos implements IImos
 			
 			// Compute the next intention, null if we have reached the end of the intended act.
 			topRemainingAct = nextAct(intendedPrimitiveAct, enactedPrimitiveAct);			
-
-			// Trace
-			if (m_tracer != null )
-			{
-				m_tracer.addEventElement("primitive_intended_act", intendedPrimitiveAct.getLabel());
-				m_tracer.addEventElement("primitive_enacted_act", enactedPrimitiveAct.getLabel());
-				m_tracer.addEventElement("primitive_enacted_schema", enactedPrimitiveAct.getSchema().getLabel());
-				m_tracer.addEventElement("satisfaction", enactedPrimitiveAct.getSatisfaction()/10 + "");
-				if (enaction.getTopAct().getSchema().isPrimitive())
-				{
-					if (intendedPrimitiveAct.equals(enactedPrimitiveAct)) m_tracer.addEventElement("intention_correct");
-					else m_tracer.addEventElement("intention_incorrect");
-				}
-			}
 		}					
 		
 		// Update the current enaction
 		enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
 		enaction.setTopEnactedAct(topEnactedAct);
 		enaction.setTopRemainingAct(topRemainingAct);
+
+		// Trace
+		enaction.traceTrack(m_tracer);
 	}
 	
 	/**
@@ -286,7 +275,10 @@ public class Imos implements IImos
 		{
 			// Surprise if the enacted act is not that intended
 			if (topIntendedAct != topEnactedAct) 
-				m_internalState= "!";			
+			{
+				m_internalState= "!";
+				enaction.setCorrect(false);
+			}
 			
 			// Compute the performed act
 			// (the act based on the schema that was originally intended)
@@ -338,20 +330,6 @@ public class Imos implements IImos
 		enaction.setNbActLearned(m_episodicMemory.getLearnCount());
 		enaction.traceTerminate(m_tracer);
 
-//		// Log the activation list and the learned count for debug
-//		System.out.println("Activation context list: ");
-//		Object activation = null;
-//		if (m_tracer != null)
-//			activation = m_tracer.addEventElement("activation_context_acts");
-//		for (IAct a : m_activationList)	
-//		{	
-//			if (m_tracer != null)
-//				m_tracer.addSubelement(activation, "act", a.getLabel());
-//			System.out.println(a);
-//		}
-//		if (m_tracer != null)
-//			m_tracer.addEventElement("learn_count", m_episodicMemory.getLearnCount() + "");
-//		System.out.println("Learned : " + m_episodicMemory.getLearnCount() + " schemas.");
 	}
 
 	public ArrayList<IAct> getActs()
@@ -595,8 +573,9 @@ public class Imos implements IImos
 		{
 			if (prescribedAct == enactedAct)
 			{
-				if (m_tracer != null)
-					m_tracer.addEventElement("intention_correct", prescribedAct.getLabel());
+				//if (m_tracer != null)
+				//	m_tracer.addEventElement("intention_correct", prescribedAct.getLabel());
+				System.out.println("intention_correct " + prescribedAct.getLabel());
 				// Correctly enacted
 				if (prescriberSchema.getPointer() == 0)
 				{
@@ -615,16 +594,17 @@ public class Imos implements IImos
 			}
 			else
 			{
-				if (m_tracer != null)
-					m_tracer.addEventElement("intention_incorrect", prescribedAct.getLabel());
+				//if (m_tracer != null)
+				//	m_tracer.addEventElement("intention_incorrect", prescribedAct.getLabel());
+				System.out.println("intention_incorrect " + prescribedAct.getLabel());
 				// move to prescriber act with a failure status
 				IAct prescriberAct = prescriberSchema.getPrescriberAct();
 				nextAct = nextAct(prescriberAct, prescriberSchema.getFailingAct());				
 			}
 		}
 		
-		if (nextAct !=null && m_tracer != null)
-			m_tracer.addEventElement("composite_intention", nextAct.getLabel());
+		//if (nextAct !=null && m_tracer != null)
+		//	m_tracer.addEventElement("composite_intention", nextAct.getLabel());
 
 		return nextAct;
 	}
