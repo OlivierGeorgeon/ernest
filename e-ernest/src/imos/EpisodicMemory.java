@@ -32,7 +32,7 @@ public class EpisodicMemory
 	/** The tracer */
 	private ITracer m_tracer;
 	
-	private ISensorymotorSystem m_sensorimotorSystem;
+	//private ISensorymotorSystem m_sensorimotorSystem;
 	
 	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
 	private int m_regularitySensibilityThreshold;
@@ -69,10 +69,10 @@ public class EpisodicMemory
 		m_tracer = tracer;
 	}
 
-	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem)
-	{
-		m_sensorimotorSystem = sensorimotorSystem;
-	}
+//	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem)
+//	{
+//		m_sensorimotorSystem = sensorimotorSystem;
+//	}
 	/**
 	 * @param threshold The regularity sensibility threshold
 	 */
@@ -99,15 +99,15 @@ public class EpisodicMemory
 	 */
 	public void resetLearnCount() { m_learnCount = 0; };
 
-	/**
-	 * Reset the episodic memory.
-	 * TODO Maybe should not clear primitive schemas and acts.
-	 */
-	public void clear() 
-	{
-		m_schemas.clear();
-		m_acts.clear();
-	}
+//	/**
+//	 * Reset the episodic memory.
+//	 * TODO Maybe should not clear primitive schemas and acts.
+//	 */
+//	public void clear() 
+//	{
+//		m_schemas.clear();
+//		m_acts.clear();
+//	}
 
 //	/**
 //	 * Add an act to episodic memory if it does not already exist
@@ -264,162 +264,268 @@ public class EpisodicMemory
 		return newContextList; 
 	}
 
-	/**
-	 * Select an intention act from a given activation list.
-	 * The selected act receives an activation value 
-	 * @param activationList The list of acts that in the sequential context that activate episodic memory.
-	 * @param propositionList The list of propositions made by the spatial system.
-	 * @return The selected act.
-	 */
-	public IAct selectAct(List<IAct> activationList, List<IActProposition> propositionList)
-	{
-		List<IActProposition> proposals = new ArrayList<IActProposition>();	
-		
-		// Browse all the existing schemas 
-		Object activations = null;
-		Object inconsistences = null;
-		if (m_tracer != null)
-		{
-			activations = m_tracer.addEventElement("activations", true);
-			inconsistences = m_tracer.addEventElement("inconsistences", true);
-		}
-		for (ISchema s : m_schemas)
-		{
-			if (!s.isPrimitive())
-			{
-				// Activate the schemas that match the context 
-				boolean activated = false;
-				for (IAct contextAct : activationList)
-				{
-					if (s.getContextAct().equals(contextAct))
-					{
-						activated = true;
-						if (m_tracer != null)
-							m_tracer.addSubelement(activations, "activation", s + " expected_satisfaction=" + s.getIntentionAct().getSatisfaction());
-						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
-					}
-				}
-				
-				// Activated schemas propose their intention
-				if (activated)
-				{
-					IAct proposedAct = s.getIntentionAct();
-					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
-					int w = s.getWeight() ;//* proposedAct.getSatisfaction();
-                    // The expectation is the proposing schema's weight signed with the proposed act's status  
-                    //int e = s.getWeight() * (s.getIntentionAct().getStatus() ? 1 : -1);
-                    int e = 0;
-					
-					// If the intention is consistent with spatial memory 
-					//if (m_sensorimotorSystem.checkConsistency(proposedAct))
-					{
-					
-						// If the intention is reliable then a proposition is constructed
-						if ((proposedAct.getConfidence() == Imos.RELIABLE ) &&						 
-							(proposedAct.getSchema().getLength() <= m_maxSchemaLength ))
-						{
-							//IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
-							IActProposition p = new ActProposition(proposedAct, w, e);
-		
-							int i = proposals.indexOf(p);
-							if (i == -1)
-								proposals.add(p);
-							else
-								proposals.get(i).update(w, e);
-						}
-						// If the intention is not reliable
-						// if the intention's schema has not passed the threshold then  
-						// the activation is propagated to the intention's schema's context
-						else
-						{
-							// Expect the value of the intention's schema's intention
-							e = proposedAct.getSchema().getIntentionAct().getSatisfaction();
-							
-							if (!proposedAct.getSchema().isPrimitive())
-							{
-								// only if the intention's intention is positive (this is some form of positive anticipation)
-								if (proposedAct.getSchema().getIntentionAct().getSatisfaction() > 0)
-								{
-									//IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
-									IActProposition p = new ActProposition(proposedAct.getSchema().getContextAct(), w, e);
-									int i = proposals.indexOf(p);
-									if (i == -1)
-										proposals.add(p);
-									else
-										proposals.get(i).update(w, e);
-								}
-							}
-						}
-					}//
-//					else
+//	/**
+//	 * Select an intention act from a given activation list.
+//	 * The selected act receives an activation value 
+//	 * @param activationList The list of acts that in the sequential context that activate episodic memory.
+//	 * @param propositionList The list of propositions made by the spatial system.
+//	 * @return The selected act.
+//	 */
+//	public IAct selectAct(List<IAct> activationList, List<IActProposition> propositionList)
+//	{
+//		List<IActProposition> proposals = new ArrayList<IActProposition>();	
+//		
+//		// Browse all the existing schemas 
+//		Object activations = null;
+//		Object inconsistences = null;
+//		if (m_tracer != null)
+//		{
+//			activations = m_tracer.addEventElement("activations", true);
+//			inconsistences = m_tracer.addEventElement("inconsistences", true);
+//		}
+//		for (ISchema s : m_schemas)
+//		{
+//			if (!s.isPrimitive())
+//			{
+//				// Activate the schemas that match the context 
+//				boolean activated = false;
+//				for (IAct contextAct : activationList)
+//				{
+//					if (s.getContextAct().equals(contextAct))
 //					{
+//						activated = true;
 //						if (m_tracer != null)
-//							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
+//							m_tracer.addSubelement(activations, "activation", s + " expected_satisfaction=" + s.getIntentionAct().getSatisfaction());
+//						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 //					}
-				}
-			}
-
-			// Primitive sensorymotor schemas also receive a default proposition for themselves
-//			if (s.isPrimitive())
+//				}
+//				
+//				// Activated schemas propose their intention
+//				if (activated)
+//				{
+//					IAct proposedAct = s.getIntentionAct();
+//					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
+//					int w = s.getWeight() ;//* proposedAct.getSatisfaction();
+//                    // The expectation is the proposing schema's weight signed with the proposed act's status  
+//                    //int e = s.getWeight() * (s.getIntentionAct().getStatus() ? 1 : -1);
+//                    int e = 0;
+//					
+//					// If the intention is consistent with spatial memory 
+//					//if (m_sensorimotorSystem.checkConsistency(proposedAct))
+//					{
+//					
+//						// If the intention is reliable then a proposition is constructed
+//						if ((proposedAct.getConfidence() == Imos.RELIABLE ) &&						 
+//							(proposedAct.getSchema().getLength() <= m_maxSchemaLength ))
+//						{
+//							//IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
+//							IActProposition p = new ActProposition(proposedAct, w, e);
+//		
+//							int i = proposals.indexOf(p);
+//							if (i == -1)
+//								proposals.add(p);
+//							else
+//								proposals.get(i).update(w, e);
+//						}
+//						// If the intention is not reliable
+//						// if the intention's schema has not passed the threshold then  
+//						// the activation is propagated to the intention's schema's context
+//						else
+//						{
+//							// Expect the value of the intention's schema's intention
+//							e = proposedAct.getSchema().getIntentionAct().getSatisfaction();
+//							
+//							if (!proposedAct.getSchema().isPrimitive())
+//							{
+//								// only if the intention's intention is positive (this is some form of positive anticipation)
+//								if (proposedAct.getSchema().getIntentionAct().getSatisfaction() > 0)
+//								{
+//									//IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
+//									IActProposition p = new ActProposition(proposedAct.getSchema().getContextAct(), w, e);
+//									int i = proposals.indexOf(p);
+//									if (i == -1)
+//										proposals.add(p);
+//									else
+//										proposals.get(i).update(w, e);
+//								}
+//							}
+//						}
+//					}//
+////					else
+////					{
+////						if (m_tracer != null)
+////							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
+////					}
+//				}
+//			}
+//
+//			// Primitive sensorymotor schemas also receive a default proposition for themselves
+////			if (s.isPrimitive())
+////			{
+////				//IProposition p = new Proposition(s, 0, 0);
+////				if (s.getSucceedingAct() != null)
+////				{
+////					IActProposition p = new ActProposition(s.getSucceedingAct(), 0, 0);
+////					if (!proposals.contains(p))
+////						proposals.add(p);
+////				}
+////			}       
+//		}
+//		
+//		// Primitive acts also receive a default proposition for themselves
+//		for(IAct a : m_acts)
+//		{
+//			if (a.getSchema().isPrimitive())
 //			{
 //				//IProposition p = new Proposition(s, 0, 0);
-//				if (s.getSucceedingAct() != null)
-//				{
-//					IActProposition p = new ActProposition(s.getSucceedingAct(), 0, 0);
-//					if (!proposals.contains(p))
-//						proposals.add(p);
-//				}
+//				IActProposition p = new ActProposition(a, 0, 0);
+//				if (!proposals.contains(p))
+//					proposals.add(p);
 //			}       
-		}
-		
-		// Primitive acts also receive a default proposition for themselves
-		for(IAct a : m_acts)
-		{
-			if (a.getSchema().isPrimitive())
-			{
-				//IProposition p = new Proposition(s, 0, 0);
-				IActProposition p = new ActProposition(a, 0, 0);
-				if (!proposals.contains(p))
-					proposals.add(p);
-			}       
-		}
-		
-		// Add the propositions from the spatial system 
-		
-		for (IActProposition proposition : propositionList)
-		{
-			int i = proposals.indexOf(proposition);
-			if (i == -1)
-				proposals.add(proposition);
-			else
-				proposals.get(i).update(proposition.getWeight(), proposition.getExpectation());
-		}
-
-		// Log the propositions
-		
-		//System.out.println("Propose: ");
-		Object proposalElmt = null;
-		if (m_tracer != null)
-			proposalElmt = m_tracer.addEventElement("act_propositions", true);
-		
-		for (IActProposition p : proposals)
-		{
-			if (m_tracer != null)
-				m_tracer.addSubelement(proposalElmt, "propose", p.toString());
-			//System.out.println(p);
-		}
-		
-		// TODO Update the expected satisfaction of each proposed schema based on the local map anticipation
-		
-		IAct a = selectAct(proposals);
-
-//		// sort by weighted proposition...
-//		Collections.sort(proposals);
+//		}
 //		
-//		// count how many are tied with the  highest weighted proposition
+//		// Add the propositions from the spatial system 
+//		
+//		for (IActProposition proposition : propositionList)
+//		{
+//			int i = proposals.indexOf(proposition);
+//			if (i == -1)
+//				proposals.add(proposition);
+//			else
+//				proposals.get(i).update(proposition.getWeight(), proposition.getExpectation());
+//		}
+//
+//		// Log the propositions
+//		
+//		//System.out.println("Propose: ");
+//		Object proposalElmt = null;
+//		if (m_tracer != null)
+//			proposalElmt = m_tracer.addEventElement("act_propositions", true);
+//		
+//		for (IActProposition p : proposals)
+//		{
+//			if (m_tracer != null)
+//				m_tracer.addSubelement(proposalElmt, "propose", p.toString());
+//			//System.out.println(p);
+//		}
+//		
+//		// TODO Update the expected satisfaction of each proposed schema based on the local map anticipation
+//		
+//		IAct a = selectAct(proposals);
+//
+////		// sort by weighted proposition...
+////		Collections.sort(proposals);
+////		
+////		// count how many are tied with the  highest weighted proposition
+////		int count = 0;
+////		int wp = proposals.get(0).getWeight();
+////		for (IProposition p : proposals)
+////		{
+////			if (p.getWeight() != wp)
+////				break;
+////			count++;
+////		}
+////
+////		// pick one at random from the top of the proposal list
+////		// count is equal to the number of proposals that are tied...
+////
+////		IProposition p = null;
+////		if (DETERMINISTIC)
+////			p = proposals.get(0); // Always take the first
+////		else
+////			p = proposals.get(m_rand.nextInt(count)); // Break the tie at random
+////		
+////		ISchema s = p.getSchema();
+////		
+////		//IAct a = p.getAct();
+////		IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
+//		
+//		// Activate the selected act in Episodic memory.
+//		// (The act's activation is set equal to its proposition's weight)
+////		a.setActivation(p.getWeight());
+//		
+//		// TODO at some point we may implement a smarter mechanism to spread the activation to sub-acts.
+//
+////		System.out.println("Select:" + a);
+//
+//		return a ;
+//	}
+
+//	/**
+//	 * @return an act that permits to reach a position and an orientation relative to the agent.
+//	 */
+//	public IAct reach(Point3f position, Vector3f orientation)
+//	{
+//		IAct act = null;
+//		
+//		for (IAct a : m_acts)
+//		{
+//			Vector3f or = new Vector3f(1,0,0);
+//			Transform3D tf = new Transform3D(a.getTransform());
+//			tf.invert();
+//			tf.transform(or);
+//			
+//			if (a.getPosition().epsilonEquals(position, .1f) && or.epsilonEquals(orientation, .1f) )
+//				if ( act == null || a.getSatisfaction() > act.getSatisfaction()) 
+//					act = a;
+//		}
+//		
+//		if (m_tracer != null && act != null)
+//		{
+//			Object reach = m_tracer.addEventElement("reach", true);			
+//			m_tracer.addSubelement(reach, "position", "(" + position.x + ", " + position.y + ", " + position.z + ")" );
+//			m_tracer.addSubelement(reach, "orientation", "(" + orientation.x + ", " + orientation.y + ", " + orientation.z + ")" );
+//			m_tracer.addSubelement(reach, "act", act.toString() );
+//		}
+//			
+//		return act;
+//	}
+	
+//	private IAct selectAct(List<IActProposition> propositions)
+//	{
+//		
+//		//Construct a list of schemaPropositions from the list of actPropositions.
+//		
+//		List<IProposition> schemaPropositions = new ArrayList<IProposition>();	
+//		for (IActProposition actProposition : propositions)
+//		{
+//			int w = actProposition.getWeight() * (actProposition.getAct().getSatisfaction() + actProposition.getExpectation());
+//			int e = actProposition.getWeight();
+//			IProposition schemaProposition = new Proposition(actProposition.getAct().getSchema(), w, e, actProposition.getAct());
+//			int i = schemaPropositions.indexOf(schemaProposition);
+//			if (i == -1)
+//				schemaPropositions.add(schemaProposition);
+//			else
+//				schemaPropositions.get(i).update(w, e, actProposition.getAct());
+//		}
+//		
+////		// Primitive sensorymotor schemas also receive a default proposition for themselves
+////		for (ISchema s : m_schemas)
+////			if (s.isPrimitive())
+////			{
+////				IProposition p = new Proposition(s, 0, 0);
+////				if (!schemaPropositions.contains(p))
+////					schemaPropositions.add(p);
+////			}       
+//
+//		// sort by weighted proposition...
+//		Collections.sort(schemaPropositions);
+//		
+//		Object proposalElmt = null;
+//		if (m_tracer != null)
+//			proposalElmt = m_tracer.addEventElement("schema_proposition", true);
+//		
+//		for (IProposition p : schemaPropositions)
+//		{
+//			if (m_tracer != null)
+//				m_tracer.addSubelement(proposalElmt, "propose", p.toString());
+//			//System.out.println(p);
+//		}
+//		
+//		// count how many are tied with the highest weighted proposition
 //		int count = 0;
-//		int wp = proposals.get(0).getWeight();
-//		for (IProposition p : proposals)
+//		int wp = schemaPropositions.get(0).getWeight();
+//		for (IProposition p : schemaPropositions)
 //		{
 //			if (p.getWeight() != wp)
 //				break;
@@ -431,128 +537,22 @@ public class EpisodicMemory
 //
 //		IProposition p = null;
 //		if (DETERMINISTIC)
-//			p = proposals.get(0); // Always take the first
+//			p = schemaPropositions.get(0); // Always take the first
 //		else
-//			p = proposals.get(m_rand.nextInt(count)); // Break the tie at random
+//			p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
+//				
+//		//IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
+//		IAct a = p.getAct();
 //		
-//		ISchema s = p.getSchema();
-//		
-//		//IAct a = p.getAct();
-//		IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
-		
-		// Activate the selected act in Episodic memory.
-		// (The act's activation is set equal to its proposition's weight)
 //		a.setActivation(p.getWeight());
-		
-		// TODO at some point we may implement a smarter mechanism to spread the activation to sub-acts.
-
+//		
 //		System.out.println("Select:" + a);
-
-		return a ;
-	}
-
-	/**
-	 * @return an act that permits to reach a position and an orientation relative to the agent.
-	 */
-	public IAct reach(Point3f position, Vector3f orientation)
-	{
-		IAct act = null;
-		
-		for (IAct a : m_acts)
-		{
-			Vector3f or = new Vector3f(1,0,0);
-			Transform3D tf = new Transform3D(a.getTransform());
-			tf.invert();
-			tf.transform(or);
-			
-			if (a.getPosition().epsilonEquals(position, .1f) && or.epsilonEquals(orientation, .1f) )
-				if ( act == null || a.getSatisfaction() > act.getSatisfaction()) 
-					act = a;
-		}
-		
-		if (m_tracer != null && act != null)
-		{
-			Object reach = m_tracer.addEventElement("reach", true);			
-			m_tracer.addSubelement(reach, "position", "(" + position.x + ", " + position.y + ", " + position.z + ")" );
-			m_tracer.addSubelement(reach, "orientation", "(" + orientation.x + ", " + orientation.y + ", " + orientation.z + ")" );
-			m_tracer.addSubelement(reach, "act", act.toString() );
-		}
-			
-		return act;
-	}
-	
-	private IAct selectAct(List<IActProposition> propositions)
-	{
-		
-		//Construct a list of schemaPropositions from the list of actPropositions.
-		
-		List<IProposition> schemaPropositions = new ArrayList<IProposition>();	
-		for (IActProposition actProposition : propositions)
-		{
-			int w = actProposition.getWeight() * (actProposition.getAct().getSatisfaction() + actProposition.getExpectation());
-			int e = actProposition.getWeight();
-			IProposition schemaProposition = new Proposition(actProposition.getAct().getSchema(), w, e, actProposition.getAct());
-			int i = schemaPropositions.indexOf(schemaProposition);
-			if (i == -1)
-				schemaPropositions.add(schemaProposition);
-			else
-				schemaPropositions.get(i).update(w, e, actProposition.getAct());
-		}
-		
-//		// Primitive sensorymotor schemas also receive a default proposition for themselves
-//		for (ISchema s : m_schemas)
-//			if (s.isPrimitive())
-//			{
-//				IProposition p = new Proposition(s, 0, 0);
-//				if (!schemaPropositions.contains(p))
-//					schemaPropositions.add(p);
-//			}       
-
-		// sort by weighted proposition...
-		Collections.sort(schemaPropositions);
-		
-		Object proposalElmt = null;
-		if (m_tracer != null)
-			proposalElmt = m_tracer.addEventElement("schema_proposition", true);
-		
-		for (IProposition p : schemaPropositions)
-		{
-			if (m_tracer != null)
-				m_tracer.addSubelement(proposalElmt, "propose", p.toString());
-			//System.out.println(p);
-		}
-		
-		// count how many are tied with the highest weighted proposition
-		int count = 0;
-		int wp = schemaPropositions.get(0).getWeight();
-		for (IProposition p : schemaPropositions)
-		{
-			if (p.getWeight() != wp)
-				break;
-			count++;
-		}
-
-		// pick one at random from the top of the proposal list
-		// count is equal to the number of proposals that are tied...
-
-		IProposition p = null;
-		if (DETERMINISTIC)
-			p = schemaPropositions.get(0); // Always take the first
-		else
-			p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
-				
-		//IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
-		IAct a = p.getAct();
-		
-		a.setActivation(p.getWeight());
-		
-		System.out.println("Select:" + a);
-
-		if (m_tracer != null)
-			m_tracer.addEventElement("select", a.toString());
-
-		return a;
-	}
+//
+//		if (m_tracer != null)
+//			m_tracer.addEventElement("select", a.toString());
+//
+//		return a;
+//	}
 	
 	/**
 	 * @param activationList The list into which to add the act generated by the phenomena.

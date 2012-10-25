@@ -53,21 +53,20 @@ public interface IErnest
 	 * @param status The status received as feedback from the previous schema enaction.
 	 * @return The next primitive schema to enact.
 	 */
-	public String step(boolean status);
+	//public String step(boolean status);
 
 	/**
 	 * Run Ernest one step.
 	 * @param status The status received as feedback from the previous schema enaction.
 	 * @return The next primitive schema to enact.
 	 */
-	public String step(String status);
+	//public String step(String status);
 	
 	/**
 	 * Run Ernest one step.
-	 * @param observation The matrix of stimuli received from the environment.
+	 * @param effect The effect recieved from the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	//public String step(IObservation observation);
 	public String step(IEffect effect);
 	
 	/**
@@ -75,7 +74,7 @@ public interface IErnest
 	 * @param stimuli The matrix of stimuli received from the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public int[] step(int[][] stimuli);
+	//public int[] step(int[][] stimuli);
 	
 	/**
 	 * Update Ernest on each environment refresh 

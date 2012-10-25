@@ -23,7 +23,7 @@ public interface IImos
 	 * Follow-up the sequence at hand, and chooses the next primitive interaction to try to enact. 
 	 * @param enaction The current enaction.
 	 */
-	public void step(IEnaction enaction); 
+	//public void step(IEnaction enaction); 
 
 	public void track(IEnaction enaction); 
 	public void terminate(IEnaction enaction);
@@ -63,7 +63,7 @@ public interface IImos
 	/**
 	 * @param sensorimotorSystem The sensorimotor system
 	 */
-	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem);
+	//public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem);
 
     /**
      * Can be used to initialize Ernest with inborn composite schemes
