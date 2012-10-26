@@ -4,6 +4,7 @@ package imos;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -38,10 +39,28 @@ public class Imos implements IImos
 	/** Reliable act (Can be chosen as an intention and can support higher-level learning). */
 	public static final int RELIABLE = 2;
 	
+	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
+	private int m_regularitySensibilityThreshold;
+
+	/** Maximum length of a schema (For the schema to be chosen as an intention) */
+	//private int m_maxSchemaLength;
+	
+	/** A list of all the schemas ever created ... */
+	private ArrayList<ISchema> m_schemas = new ArrayList<ISchema>(1000);
+
+	/** A list of all the acts ever created. */
+	private ArrayList<IAct> m_acts = new ArrayList<IAct>(2000);
+	
+	/** If true then the IMOS does not use random */
+	public static boolean DETERMINISTIC = true; 
+
+	/** Counter of learned schemas for tracing */
+	private int m_nbSchemaLearned = 0;
+	
 	/**
 	 * The episodic memory
 	 */
-	private EpisodicMemory m_episodicMemory;
+	//private EpisodicMemory m_episodicMemory;
 
 	/** The Tracer. */
 	private ITracer<Object> m_tracer = null; //new Tracer("trace.txt");
@@ -83,7 +102,8 @@ public class Imos implements IImos
 	 */
 	public Imos()
 	{
-		m_episodicMemory = new EpisodicMemory(REG_SENS_THRESH, SCHEMA_MAX_LENGTH);
+		m_regularitySensibilityThreshold = REG_SENS_THRESH;
+		//m_episodicMemory = new EpisodicMemory(REG_SENS_THRESH, SCHEMA_MAX_LENGTH);
 	}
 	
 	/**
@@ -97,7 +117,8 @@ public class Imos implements IImos
 	 */
 	public Imos(int regularitySensibilityThreshold, int maxShemaLength)
 	{
-		m_episodicMemory = new EpisodicMemory(regularitySensibilityThreshold, maxShemaLength);
+		m_regularitySensibilityThreshold = regularitySensibilityThreshold;
+		//m_episodicMemory = new EpisodicMemory(regularitySensibilityThreshold, maxShemaLength);
 	}
 
 	/**
@@ -106,7 +127,7 @@ public class Imos implements IImos
 	public void setTracer(ITracer<Object> tracer)
 	{
 		m_tracer = tracer;
-		m_episodicMemory.setTracer(tracer);
+		//m_episodicMemory.setTracer(tracer);
 	}
 	
 //	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem)
@@ -135,18 +156,44 @@ public class Imos implements IImos
 	 */
 	public IAct addInteraction(String moveLabel, String effectLabel, int satisfaction)
 	{
-//		IAct a = null;
-//		String actLabel = moveLabel + effectLabel;
-//		ISchema s =  m_episodicMemory.addPrimitiveSchema(moveLabel);
-//		
-//		a = m_episodicMemory.addAct(actLabel, s, satisfaction * 10);
-
 		// Primitive satisfactions are multiplied by 10 internally for rounding issues.   
 		// (this value does not impact the agent's behavior)
-		IAct a = m_episodicMemory.addPrimitiveAct(moveLabel, effectLabel, satisfaction * 10);
+		//IAct a = m_episodicMemory.addPrimitiveAct(moveLabel, effectLabel, satisfaction * 10);
+
+		
+		ISchema s =  addPrimitiveSchema(moveLabel);
+		
+		// Primitive satisfactions are multiplied by 10 internally for rounding issues.   
+		// (this value does not impact the agent's behavior)
+		IAct a = Act.createPrimitiveAct(moveLabel, effectLabel, s, satisfaction * 10);
+		
+		int i = m_acts.indexOf(a);
+		if (i == -1)
+			// The act does not exist
+			m_acts.add(a);
+		else 
+			// The act already exists: return a pointer to it.
+			a =  m_acts.get(i);
 		
 		System.out.println("Primitive interaction " + a.toString() + " " + a.getSatisfaction());
 		return a;		
+	}
+
+	/**
+	 * Add a primitive schema 
+	 * @param label The schema's string identifier.
+	 * @return The created primitive schema.
+	 */
+	private ISchema addPrimitiveSchema(String label) 
+	{
+		ISchema s =  Schema.createPrimitiveSchema(m_schemas.size() + 1, label);
+		int i = m_schemas.indexOf(s);
+		if (i == -1)
+			m_schemas.add(s);
+		else
+			// The schema already exists: return a pointer to it.
+			s =  m_schemas.get(i);
+    	return s;
 	}
 
 //	/**
@@ -285,14 +332,17 @@ public class Imos implements IImos
 				performedAct = topEnactedAct;
 			else	
 				// The intended schema was not enacted: the performed act is the intended schema with fail status
-				performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,topEnactedAct.getSatisfaction());
+				//performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,topEnactedAct.getSatisfaction());
+				performedAct = addFailingInteraction(intendedSchema,topEnactedAct.getSatisfaction());
 			
 			//m_tracer.addEventElement("top_performed", performedAct.getLabel() );
 			System.out.println("Performed " + performedAct );
 			
 			// learn from the  context and the performed act
-			m_episodicMemory.resetLearnCount();
-			ArrayList<IAct> streamContextList = m_episodicMemory.record(initialLearningContext, performedAct);
+			//m_episodicMemory.resetLearnCount();
+			m_nbSchemaLearned = 0;
+			//ArrayList<IAct> streamContextList = m_episodicMemory.record(initialLearningContext, performedAct);
+			ArrayList<IAct> streamContextList = record(initialLearningContext, performedAct);
 						
 			// learn from the base context and the stream act			
 			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of the list
@@ -300,39 +350,111 @@ public class Imos implements IImos
 				 IAct streamAct = streamContextList.get(0); // The stream act is the first learned 
 				 System.out.println("Streaming " + streamAct);
 				 if (streamAct.getSchema().getWeight() > ACTIVATION_THRESH)
-					 m_episodicMemory.record(previousLearningContext, streamAct);
+					 //m_episodicMemory.record(previousLearningContext, streamAct);
+					 record(previousLearningContext, streamAct);
 			 }
 
 			// learn from the current context and the actually enacted act			
 			if (topEnactedAct != performedAct)
 			{
 				System.out.println("Learn from enacted");
-				List<IAct> streamContextList2 = m_episodicMemory.record(initialLearningContext, topEnactedAct);
+				//List<IAct> streamContextList2 = m_episodicMemory.record(initialLearningContext, topEnactedAct);
+				List<IAct> streamContextList2 = record(initialLearningContext, topEnactedAct);
 				// learn from the base context and the streamAct2
 				if (streamContextList2.size() > 0)
 				{
 					IAct streamAct2 = streamContextList2.get(0);
 					System.out.println("Streaming2 " + streamAct2 );
 					if (streamAct2.getSchema().getWeight() > ACTIVATION_THRESH)
-						m_episodicMemory.record(previousLearningContext, streamAct2);
+						//m_episodicMemory.record(previousLearningContext, streamAct2);
+						record(previousLearningContext, streamAct2);
 				}
 			}	
 			
 			enaction.setFinalContext(topEnactedAct, performedAct, streamContextList);			
 		}
-		enaction.setNbActLearned(m_episodicMemory.getLearnCount());
+		//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
+		enaction.setNbActLearned(m_nbSchemaLearned);
 		enaction.traceTerminate(m_tracer);
 
 	}
 
+	/**
+	 * Add or update a failing possibility of interaction between Ernest and its environment.
+	 * Add or update the schema's failing act to Ernest's memory. 
+	 * If the failing act does not exist then create it. 
+	 * If the failing act exists then update its satisfaction.
+	 * @param schema The schema that failed.
+	 * @param satisfaction The satisfaction obtained during the failure.
+	 * @return The failing act.
+	 */
+    private IAct addFailingInteraction(ISchema schema, int satisfaction)
+    {
+    	IAct failingAct = schema.getFailingAct();
+    	
+		if (!schema.isPrimitive())
+		{
+			if (failingAct == null)
+			{
+				failingAct = Act.createCompositeFailingAct(schema, satisfaction);
+				schema.setFailingAct(failingAct);
+				m_acts.add(failingAct);
+			}
+			else
+				// If the failing act already exists then 
+				//  its satisfaction is averaged with the previous value
+				failingAct.setSatisfaction((failingAct.getSatisfaction() + satisfaction)/2);
+		}
+		
+		return failingAct;
+    }
+
+	/**
+	 * Learn from an enacted intention after a given context.
+	 * Returns the list of learned acts that are based on reliable subacts. The first act of the list is the stream act.
+	 * @param contextList The list of acts that constitute the context in which the learning occurs.
+	 * @param intentionAct The intention.
+	 * @return A list of the acts created from the learning. The first act of the list is the stream act if the first act of the contextList was the performed act.
+	 */
+	private ArrayList<IAct> record(List<IAct> contextList, IAct intentionAct)
+	{
+		ArrayList<IAct> newContextList= new ArrayList<IAct>(20);
+		
+		if (intentionAct != null)
+		{
+			// For each act in the context ...
+			for (IAct contextAct : contextList)
+			{
+				// Build a new schema with the context act and the intention act 
+				//ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
+				ISchema newSchema = addCompositeSchema(contextAct, intentionAct);
+				newSchema.incWeight(m_regularitySensibilityThreshold);
+				//System.out.println("learned " + newSchema.getLabel());
+				
+					// Created acts are part of the context 
+					// if their context and intention have passed the regularity
+					// if they are based on reliable no�mes
+				if ((contextAct.getConfidence() == Imos.RELIABLE) &&
+  				   (intentionAct.getConfidence() == Imos.RELIABLE))
+				{
+					newContextList.add(newSchema.getSucceedingAct());
+					// System.out.println("Reliable schema " + newSchema);
+				}
+			}
+		}
+		return newContextList; 
+	}
+
 	public ArrayList<IAct> getActs()
 	{
-		return m_episodicMemory.getActs();
+		return m_acts;
+		//return m_episodicMemory.getActs();
 	}
 
 	public ArrayList<ISchema> getSchemas()
 	{
-		return m_episodicMemory.getSchemas();
+		return m_schemas;
+		//return m_episodicMemory.getSchemas();
 	}
 
 //	/**
@@ -540,7 +662,8 @@ public class Imos implements IImos
 			else
 			{
 				// enacted the prescriber's intention
-				ISchema enactedSchema = m_episodicMemory.addCompositeInteraction(prescriberSchema.getContextAct(), a);
+				//ISchema enactedSchema = m_episodicMemory.addCompositeInteraction(prescriberSchema.getContextAct(), a);
+				ISchema enactedSchema = addCompositeSchema(prescriberSchema.getContextAct(), a);
 				enactedAct = enactedAct(prescriberSchema, enactedSchema.getSucceedingAct());
 			}
 		}
@@ -669,9 +792,59 @@ public class Imos implements IImos
     public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct)
     {
     	
-    	IAct act =  m_episodicMemory.addCompositeInteraction(contextAct, intentionAct).getSucceedingAct();
-    	//act.setConfidence(Imos.RELIABLE);
+    	//IAct act =  m_episodicMemory.addCompositeInteraction(contextAct, intentionAct).getSucceedingAct();
+    	IAct act =  addCompositeSchema(contextAct, intentionAct).getSucceedingAct();
+    	
+//    	ISchema s = Schema.createCompositeSchema(m_schemas.size() + 1, contextAct, intentionAct);
+//    	
+//		int i = m_schemas.indexOf(s);
+//		if (i == -1)
+//		{
+//			// The schema does not exist: create its succeeding act and add it to Ernest's memory
+//			IAct a = Act.createCompositeSucceedingAct(s); 
+//	    	s.setSucceedingAct(a);
+//			m_schemas.add(s);
+//			m_acts.add(a);
+//			//m_learnCount++;
+//			m_nbSchemaLearned++;
+//		}
+//		else
+//			// The schema already exists: return a pointer to it.
+//			s =  m_schemas.get(i);
+//    	//return s;
+//
+//    	IAct act = s.getSucceedingAct();
+    	
     	act.setConfidence(Imos.HYPOTHETICAL);
     	return act;
     }
+    
+	/**
+	 * Add a composite schema and its succeeding act that represent a composite possibility 
+	 * of interaction between Ernest and its environment. 
+	 * @param contextAct The context Act.
+	 * @param intentionAct The intention Act.
+	 * @return The schema made of the two specified acts, whether it has been created or it already existed. 
+	 */
+    private ISchema addCompositeSchema(IAct contextAct, IAct intentionAct)
+    {
+    	ISchema s = Schema.createCompositeSchema(m_schemas.size() + 1, contextAct, intentionAct);
+    	
+		int i = m_schemas.indexOf(s);
+		if (i == -1)
+		{
+			// The schema does not exist: create its succeeding act and add it to Ernest's memory
+			IAct a = Act.createCompositeSucceedingAct(s); 
+	    	s.setSucceedingAct(a);
+			m_schemas.add(s);
+			m_acts.add(a);
+			//m_learnCount++;
+			m_nbSchemaLearned++;
+		}
+		else
+			// The schema already exists: return a pointer to it.
+			s =  m_schemas.get(i);
+    	return s;
+    }
+
 }
