@@ -1,17 +1,11 @@
 package imos;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import spas.IPlace;
-import spas.ISpas;
-import ernest.IEffect;
 import ernest.IEnaction;
 import ernest.ITracer;
 
-
 /**
- * The Intrinsically Motivated Schema mechanism.
+ * The Intrinsically Motivated Schema mechanism (Ernest's sequential system).
  * @author ogeorgeon
  */
 public interface IImos 
@@ -22,16 +16,26 @@ public interface IImos
 	public void setRegularityThreshold(int regularityThreshold);
 
 	/**
-	 * The main method of the Intrinsic Motivation System.
-	 * Follow-up the sequence at hand, and chooses the next primitive interaction to try to enact. 
+	 * Track the enaction at hand. 
 	 * @param enaction The current enaction.
 	 */
-	//public void step(IEnaction enaction); 
-
 	public void track(IEnaction enaction); 
+	
+	/**
+	 * Terminates the enaction at hand
+	 * Record and reinforce new schemas and construct the final context.
+	 * @param enaction The current enaction that is being terminated.
+	 */
 	public void terminate(IEnaction enaction);
-	//public ArrayList<IAct> getActivationList();
+	
+	/**
+	 * @return The list of acts.
+	 */
 	public ArrayList<IAct> getActs();
+	
+	/**
+	 * @return The list of schemes
+	 */
 	public ArrayList<ISchema> getSchemas();
 
 	/**
@@ -58,16 +62,11 @@ public interface IImos
 	public String getInternalState();
 	
 	/**
-	 * The counter of cognitive cycles.
-	 * @return The current cognitive cycle number.
+	 * The counter of interaction cycles.
+	 * @return The current interaction cycle number.
 	 */
 	public int getCounter();
 	
-	/**
-	 * @param sensorimotorSystem The sensorimotor system
-	 */
-	//public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem);
-
     /**
      * Can be used to initialize Ernest with inborn composite schemes
      * @param contextAct The context act

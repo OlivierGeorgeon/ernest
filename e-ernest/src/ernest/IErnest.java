@@ -33,32 +33,11 @@ public interface IErnest
 	public void setTracer(ITracer tracer);
 
 	/**
-	 * Set Ernest's sensorymotor system.
-	 * (The sensorymotor system is instantiated by the environment so that the environment can choose the suitable sensorymotor system)
-	 * @param sensorymotorSystem Ernest's sensorymotor system
-	 */
-	//public void setSensorymotorSystem(ISensorymotorSystem sensorymotorSystem);
-	
-	/**
 	 * Get a description of Ernest's internal state.
 	 * (This is used to display Ernest's internal state in the environment)
 	 * @return A representation of Ernest's internal state
 	 */
 	public String internalState();
-	
-	/**
-	 * Run Ernest one step.
-	 * @param status The status received as feedback from the previous schema enaction.
-	 * @return The next primitive schema to enact.
-	 */
-	//public String step(boolean status);
-
-	/**
-	 * Run Ernest one step.
-	 * @param status The status received as feedback from the previous schema enaction.
-	 * @return The next primitive schema to enact.
-	 */
-	//public String step(String status);
 	
 	/**
 	 * Run Ernest one step.
@@ -68,32 +47,12 @@ public interface IErnest
 	public String step(IEffect effect);
 	
 	/**
-	 * Run Ernest one step.
-	 * @param stimuli The matrix of stimuli received from the environment.
-	 * @return The next primitive schema to enact.
-	 */
-	//public int[] step(int[][] stimuli);
-	
-	/**
-	 * Update Ernest on each environment refresh 
-	 * (not necessarilly a cognitive step for Ernest).
-	 * @param stimuli The matrix of stimuli received from the environment.
-	 * @return The next primitive schema to enact.
-	 */
-	//public int[] update(int[][] stimuli); 
-
-	/**
 	 * @param i x coordinate (0 = left, 2 = right)
 	 * @param j y coordinate (0 = ahead, 2 = behind)
 	 * @return The value in the corresponding place in the environment. 
 	 */
 	public int getValue(int i, int j);
 
-	/**
-	 * @return The value of Ernet's current attention. 
-	 */
-	//public int getAttention();
-	
 	/**
 	 * @param schemaLabel The action label in the environment.
 	 * @param stimuliLabel The stimuli.
@@ -102,12 +61,6 @@ public interface IErnest
 	 */
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
 
-	/**
-	 * @param placeList The list of places in Ernest's local space memory.
-	 */
-	//public void setPlaceList(ArrayList<IPlace> placeList);
-	//public void setSegmentList(ArrayList<ISegment> segmentList);
-	
 	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
@@ -123,9 +76,8 @@ public interface IErnest
 	 */
 	public int getUpdateCount();
 	
+	/**
+	 * @return Ernest's spatial memory for display.
+	 */
 	public ISpatialMemory getSpatialSimulation();
-	
-	//public void setFrame(JFrame frame);
-	
-	//public IPlace getFocusPlace();	
 }
