@@ -5,14 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
-import spas.IPlace;
-import spas.LocalSpaceMemory;
-import utils.ErnestUtils;
-import ernest.Ernest;
 import ernest.IEnaction;
 import ernest.ITracer;
 
@@ -41,9 +33,6 @@ public class Imos implements IImos
 	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
 	private int m_regularitySensibilityThreshold;
 
-	/** Maximum length of a schema (For the schema to be chosen as an intention) */
-	//private int m_maxSchemaLength;
-	
 	/** A list of all the schemas ever created ... */
 	private ArrayList<ISchema> m_schemas = new ArrayList<ISchema>(1000);
 
@@ -87,11 +76,8 @@ public class Imos implements IImos
 	 * @param regularitySensibilityThreshold  The regularity sensibility threshold.
 	 * A lower value favors the faster adoption of possibly less satisfying sequences, 
 	 * a higher value favors the slower adoption of possibly more satisfying sequences.
-	 * @param maxShemaLength The maximum length of schemas.
-	 * A lower value makes learning longer sequences impossible, 
-	 * a higher value makes possible the adoption of unnecessarily long sequences.
 	 */
-	public Imos(int regularitySensibilityThreshold, int maxShemaLength)
+	public Imos(int regularitySensibilityThreshold)
 	{
 		m_regularitySensibilityThreshold = regularitySensibilityThreshold;
 	}

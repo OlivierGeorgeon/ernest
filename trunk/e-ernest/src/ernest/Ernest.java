@@ -31,7 +31,7 @@ public class Ernest implements IErnest
 
 	/** Ernest's retina resolution  */
 	public static int RESOLUTION_RETINA = 2; //12;
-	public static int CENTER_RETINA = 0; //55; 
+	//public static int CENTER_RETINA = 0; //55; 
 		
 	/** Ernest's colliculus resolution  */
 	//public static int RESOLUTION_COLLICULUS = 24;
@@ -94,12 +94,12 @@ public class Ernest implements IErnest
 	/** Visual stimulation of seeing nothing */
 	public static int STIMULATION_VISUAL_UNSEEN = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
 
-	
-	public static int PHENOMENON_FISH  = 0x9680FF;//255 * 65536 + 255 * 256 + 255;	
-	public static int PHENOMENON_EMPTY = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;	
-	public static int PHENOMENON_WALL  = 0x008000;//255 * 65536 + 255 * 256 + 255;
-	public static int PHENOMENON_ALGA  = 0x73E600;
-	public static int PHENOMENON_BRICK = 0x00E6A0;
+	/** Color of empty places for desplay */	
+	public static int PHENOMENON_EMPTY = 0xFFFFFF;	
+//	public static int PHENOMENON_FISH  = 0x9680FF;//255 * 65536 + 255 * 256 + 255;	
+//	public static int PHENOMENON_WALL  = 0x008000;//255 * 65536 + 255 * 256 + 255;
+//	public static int PHENOMENON_ALGA  = 0x73E600;
+//	public static int PHENOMENON_BRICK = 0x00E6A0;
 
 	/** Color unanimated */
 	public static int UNANIMATED_COLOR = 0x808080;
@@ -149,14 +149,8 @@ public class Ernest implements IErnest
 	/** Social Stimulation nothing */	
 	public static int STIMULATION_SOCIAL_NOTHING = 0x000000;
 	
-	/** Ernest's primitive schema currently enacted */
-	//private IAct m_primitiveAct = null;
-	
 	/** Ernest's current enaction */
 	private IEnaction m_enaction = new Enaction();
-	
-	/** Ernest's intention is being inhibited by the anticipated observation */
-	private boolean m_inhibited = false;
 	
 	/** Ernest's spatial system. */
 	private ISpas m_spas = new Spas();
@@ -167,9 +161,6 @@ public class Ernest implements IErnest
 	/** Ernest's decisional Mechanism. */
 	private IDecider m_decider = new DeciderImos(m_imos, m_spas);
 	
-	/** Ernest's sensorymotor system. */
-	//private ISensorymotorSystem m_sensorimotorSystem;
-
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
 	
@@ -180,10 +171,8 @@ public class Ernest implements IErnest
 	 */
 	public void setParameters(int regularityThreshold, int maxSchemaLength) 
 	{
-		//m_imos = new Imos(regularityThreshold, schemaMaxLength);
 		m_imos.setRegularityThreshold(regularityThreshold);
 		m_decider.setMaxSchemaLength(maxSchemaLength);
-		
 	}
 
 	/**
@@ -199,16 +188,6 @@ public class Ernest implements IErnest
 	}
 
 	/**
-	 * Let the environment set the sensorymotor system.
-	 * @param sensor The sensorymotor system.
-	 */
-//	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
-//	{
-//		m_sensorimotorSystem = sensor;
-//		m_sensorimotorSystem.init(m_spas, m_imos, m_tracer);
-//	};
-	
-	/**
 	 * Get a description of Ernest's internal state (to display in the environment).
 	 * @return A representation of Ernest's internal state
 	 */
@@ -217,62 +196,6 @@ public class Ernest implements IErnest
 		return m_imos.getInternalState();
 	}
 		
-//	/**
-//	 * Ernest's main process.
-//	 * (All environments return at least a boolean feedback from Ernest's actions) 
-//	 * @param status The status received as a feedback from the previous primitive enaction.
-//	 * @return The next primitive schema to enact.
-//	 */
-//	public String step(boolean status) 
-//	{
-//		if (m_tracer != null)
-//		{
-//            m_tracer.startNewEvent(m_imos.getCounter());
-//			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-//		}                
-//		// Determine the primitive enacted act from the enacted schema and the observation.
-//		
-//		//IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
-//		IAct enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
-//		
-//		// Let Ernest decide for the next primitive schema to enact.
-//		
-//		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
-//		//m_primitiveAct = m_imos.step(enactedPrimitiveAct);
-//		m_imos.step(m_enaction);
-//		//m_primitiveAct = m_enaction.getIntendedPrimitiveAct();
-//		
-//		// Return the schema to enact.
-//		
-//		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();
-//		//return m_primitiveAct.getSchema().getLabel();
-//	}
-
-//	public String step(String status) 
-//	{
-//		if (m_tracer != null)
-//		{
-//            m_tracer.startNewEvent(m_imos.getCounter());
-//			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
-//		}                
-//		// Determine the primitive enacted act from the enacted schema and the observation.
-//		
-//		//IAct enactedPrimitiveAct = m_sensorymotorSystem.enactedAct(m_primitiveAct, status);
-//		IAct enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), status);
-//		
-//		// Let Ernest decide for the next primitive schema to enact.
-//		
-//		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
-//		//m_primitiveAct = m_imos.step(enactedPrimitiveAct);
-//		m_imos.step(m_enaction);
-//		
-//		//m_primitiveAct = m_enaction.getIntendedPrimitiveAct();
-//		// Return the schema to enact.
-//		
-//		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();
-//		//return m_primitiveAct.getSchema().getLabel();
-//	}
-
 	public String step(IEffect effect) 
 	{
 		m_enaction.setEffect(effect);
@@ -303,65 +226,19 @@ public class Ernest implements IErnest
 		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();		
 	}
 
-	/**
-	 * Ernest's main cognitive loop in the case of an environment that provides a matrix of stimuli.
-	 * @param stimuli The matrix of stimuli privided by the environment.
-	 * @return The next primitive schema to enact.
-	 */
-//	public int[] step(int[][] stimuli) 
-//	{
-//		int primitiveSchema[] = new int[2];
-//		IAct enactedPrimitiveAct;
-//		
-//		// Determine the primitive enacted act from the enacted schema and the stimuli received from the environment.		
-//		
-//		enactedPrimitiveAct = m_sensorimotorSystem.enactedAct(m_enaction.getIntendedPrimitiveAct(), stimuli);
-//		
-//		// Let Ernest decide for the next primitive schema to enact.
-//		
-//		m_enaction.setEnactedPrimitiveAct(enactedPrimitiveAct);
-//		m_imos.step(m_enaction);
-//
-//		primitiveSchema[0] = m_enaction.getIntendedPrimitiveAct().getSchema().getLabel().toCharArray()[0];
-//		
-//		// Once the decision is made, compute the intensity.
-//		
-//		primitiveSchema[1] = m_sensorimotorSystem.impulsion(primitiveSchema[0]);
-//		
-//		// Return the schema to enact and its intensity.
-//		
-//		return primitiveSchema;
-//	}
-
 	public int getValue(int i, int j)
 	{
 		return m_spas.getValue(i,j);
 	}
-//	public int getAttention()
-//	{
-//		return m_spas.getAttention();
-//	}
-
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{
 		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
-		//return m_sensorimotorSystem.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
-
-//	public void setPlaceList(ArrayList<IPlace> placeList)
-//	{
-//		m_spas.setPlaceList(placeList);
-//	}
 
 	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_spas.getPlaceList();
 	}
-
-//	public void setSegmentList(ArrayList<ISegment> segmentList) 
-//	{
-//		m_sensorimotorSystem.setSegmentList(segmentList);
-//	}
 
 	public int getCounter() 
 	{
@@ -371,11 +248,6 @@ public class Ernest implements IErnest
 			return m_imos.getCounter();
 	}
 
-//	public IPlace getFocusPlace() 
-//	{
-//		return m_spas.getFocusPlace();
-//	}
-
 	public int getUpdateCount() 
 	{
 		return m_spas.getClock();
@@ -384,10 +256,7 @@ public class Ernest implements IErnest
 	public ISpatialMemory getSpatialSimulation() 
 	{
 		return m_spas.getSpatialMemory();
-		//return m_sensorimotorSystem.getSpatialSimulation();
 	}
-	
-	
 
 //	public void setFrame(JFrame frame) 
 //	{
