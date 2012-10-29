@@ -17,6 +17,10 @@ import ernest.ITracer;
  */
 public interface IImos 
 {
+	/**
+	 * @param regularityThreshold The regularity sensibility threshold.
+	 */
+	public void setRegularityThreshold(int regularityThreshold);
 
 	/**
 	 * The main method of the Intrinsic Motivation System.

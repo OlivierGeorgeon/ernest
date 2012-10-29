@@ -29,12 +29,22 @@ public class Decider implements IDecider
 	ITracer m_tracer;
 	int m_maxSchemaLength = 4;
 
-	Decider(IImos imos, ISpas spas, ITracer tracer)
+	Decider(IImos imos, ISpas spas)
 	{
 		m_imos = imos;
 		m_spas = spas;
+	}
+
+	public void setTracer(ITracer tracer)
+	{
 		m_tracer = tracer;
 	}
+	
+	public void setMaxSchemaLength(int maxSchemaLength)
+	{
+		m_maxSchemaLength = maxSchemaLength;
+	}
+
 	
 	public IEnaction decide(IEnaction enaction) 
 	{

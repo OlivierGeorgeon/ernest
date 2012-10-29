@@ -5,8 +5,6 @@ import imos.IAct;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
-import javax.vecmath.Vector3f;
-
 import spas.IPlace;
 import spas.ISegment;
 import spas.ISpatialMemory;
@@ -23,16 +21,9 @@ public interface IErnest
 	 * Set Ernest's fundamental learning parameters.
 	 * Use null to leave a value unchanged.
 	 * @param regularityThreshold The Regularity Sensibility Threshold.
-	 * @param schemaMaxLength The Maximum Schema Length.
+	 * @param maxSchemaLength The Maximum Schema Length.
 	 */
-	public void setParameters(int regularityThreshold, int schemaMaxLength); 
-	
-	/**
-	 * Set Ernest's sensorymotor system.
-	 * (The sensorymotor system is instantiated by the environment so that the environment can choose the suitable sensorymotor system)
-	 * @param sensorymotorSystem Ernest's sensorymotor system
-	 */
-	public void setSensorymotorSystem(ISensorymotorSystem sensorymotorSystem);
+	public void setParameters(int regularityThreshold, int maxSchemaLength); 
 	
     /**
 	 * Initialize the tracer that generates Ernest's activity trace.
@@ -41,6 +32,13 @@ public interface IErnest
 	 */
 	public void setTracer(ITracer tracer);
 
+	/**
+	 * Set Ernest's sensorymotor system.
+	 * (The sensorymotor system is instantiated by the environment so that the environment can choose the suitable sensorymotor system)
+	 * @param sensorymotorSystem Ernest's sensorymotor system
+	 */
+	//public void setSensorymotorSystem(ISensorymotorSystem sensorymotorSystem);
+	
 	/**
 	 * Get a description of Ernest's internal state.
 	 * (This is used to display Ernest's internal state in the environment)
@@ -82,7 +80,7 @@ public interface IErnest
 	 * @param stimuli The matrix of stimuli received from the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public int[] update(int[][] stimuli); 
+	//public int[] update(int[][] stimuli); 
 
 	/**
 	 * @param i x coordinate (0 = left, 2 = right)
@@ -108,7 +106,7 @@ public interface IErnest
 	 * @param placeList The list of places in Ernest's local space memory.
 	 */
 	//public void setPlaceList(ArrayList<IPlace> placeList);
-	public void setSegmentList(ArrayList<ISegment> segmentList);
+	//public void setSegmentList(ArrayList<ISegment> segmentList);
 	
 	/**
 	 * @return The list of places in Ernest's local space memory.

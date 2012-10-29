@@ -70,18 +70,4 @@ public interface ISensorymotorSystem
 	public int impulsion(int intentionSchema);
 	public void setSegmentList(ArrayList<ISegment> segmentList);
 	
-	//public ArrayList<IPlace> getPhenomena();
-	//public boolean checkConsistency(IAct act);
-	
-	//public IAct situationAct();
-	//public ArrayList<IProposition> getPropositionList();
-	//public ArrayList<IActProposition> getPropositionList(ArrayList<IAct> acts);
-	//public void updateSpas(IEnaction enaction);
-	
-	//public IAct anticipateInteraction(ISchema s, int e, ArrayList<IAct> acts);
-	
-	//public ISpatialMemory getSpatialSimulation();
-	
-	//public void setFrame(JFrame frame);
-
 }

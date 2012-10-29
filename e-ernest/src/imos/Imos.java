@@ -25,7 +25,7 @@ import ernest.ITracer;
 public class Imos implements IImos 
 {	
 	/** Default regularity sensibility threshold (The weight threshold for an act to become reliable). */
-	public final int REG_SENS_THRESH = 5;
+	public final int REG_SENS_THRESH = 6;
 
 	/** Default maximum length of a schema (For the schema to be chosen as an intention) */
 	public final int SCHEMA_MAX_LENGTH = 100;
@@ -57,11 +57,6 @@ public class Imos implements IImos
 	/** Counter of learned schemas for tracing */
 	private int m_nbSchemaLearned = 0;
 	
-	/**
-	 * The episodic memory
-	 */
-	//private EpisodicMemory m_episodicMemory;
-
 	/** The Tracer. */
 	private ITracer<Object> m_tracer = null; //new Tracer("trace.txt");
 
@@ -71,31 +66,9 @@ public class Imos implements IImos
 	/** Random generator used to break a tie when selecting a schema... */
 	//private static Random m_rand = new Random(); 
 	
-	/**
-	 * The context to learn new schemas with the first learning mechanism.
-	 */
-	//private List<IAct> m_contextList = new ArrayList<IAct>();
-	
-	/**
-	 * The context to learn new schemas with the second learning mechanism.
-	 */
-	//private List<IAct> m_baseContextList = new ArrayList<IAct>();
-	
-	/**
-	 * The list of acts that can activate a new intention. 
-	 */
-	//private ArrayList<IAct> m_activationList = new ArrayList<IAct>();
-
-	/** 
-	 * The decided intention
-	 */
-	//private IAct m_intentionAct = null;
-
 	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
 	
-	//private ISensorymotorSystem m_sensorimotorSystem = null;
-
 	/**
 	 * Constructor for the Intrinsic Motivation system.
 	 * Use default parameters REG_SENS_THRESH and SCHEMA_MAX_LENGTH.
@@ -103,7 +76,11 @@ public class Imos implements IImos
 	public Imos()
 	{
 		m_regularitySensibilityThreshold = REG_SENS_THRESH;
-		//m_episodicMemory = new EpisodicMemory(REG_SENS_THRESH, SCHEMA_MAX_LENGTH);
+	}
+	
+	public void setRegularityThreshold(int regularityThreshold)
+	{
+		m_regularitySensibilityThreshold = regularityThreshold;
 	}
 	
 	/**
@@ -118,7 +95,6 @@ public class Imos implements IImos
 	public Imos(int regularitySensibilityThreshold, int maxShemaLength)
 	{
 		m_regularitySensibilityThreshold = regularitySensibilityThreshold;
-		//m_episodicMemory = new EpisodicMemory(regularitySensibilityThreshold, maxShemaLength);
 	}
 
 	/**
@@ -127,14 +103,7 @@ public class Imos implements IImos
 	public void setTracer(ITracer<Object> tracer)
 	{
 		m_tracer = tracer;
-		//m_episodicMemory.setTracer(tracer);
 	}
-	
-//	public void setSensorimotorSystem(ISensorymotorSystem sensorimotorSystem)
-//	{
-//		m_sensorimotorSystem = sensorimotorSystem;
-//		m_episodicMemory.setSensorimotorSystem(sensorimotorSystem);
-//	}
 	
 	/**
 	 * Get a string description of the imos's internal state for display in the environment.
@@ -794,26 +763,6 @@ public class Imos implements IImos
     	
     	//IAct act =  m_episodicMemory.addCompositeInteraction(contextAct, intentionAct).getSucceedingAct();
     	IAct act =  addCompositeSchema(contextAct, intentionAct).getSucceedingAct();
-    	
-//    	ISchema s = Schema.createCompositeSchema(m_schemas.size() + 1, contextAct, intentionAct);
-//    	
-//		int i = m_schemas.indexOf(s);
-//		if (i == -1)
-//		{
-//			// The schema does not exist: create its succeeding act and add it to Ernest's memory
-//			IAct a = Act.createCompositeSucceedingAct(s); 
-//	    	s.setSucceedingAct(a);
-//			m_schemas.add(s);
-//			m_acts.add(a);
-//			//m_learnCount++;
-//			m_nbSchemaLearned++;
-//		}
-//		else
-//			// The schema already exists: return a pointer to it.
-//			s =  m_schemas.get(i);
-//    	//return s;
-//
-//    	IAct act = s.getSucceedingAct();
     	
     	act.setConfidence(Imos.HYPOTHETICAL);
     	return act;

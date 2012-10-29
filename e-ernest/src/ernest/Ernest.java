@@ -162,13 +162,13 @@ public class Ernest implements IErnest
 	private ISpas m_spas = new Spas();
 
 	/** Ernest's Intrinsically motivated Schema Mechanism. */
-	private IImos m_imos ;
+	private IImos m_imos = new Imos();
 	
 	/** Ernest's decisional Mechanism. */
-	private IDecider m_decider ;
+	private IDecider m_decider = new DeciderImos(m_imos, m_spas);
 	
 	/** Ernest's sensorymotor system. */
-	private ISensorymotorSystem m_sensorimotorSystem;
+	//private ISensorymotorSystem m_sensorimotorSystem;
 
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
@@ -178,23 +178,14 @@ public class Ernest implements IErnest
 	 * @param regularityThreshold The Regularity Sensibility Threshold.
 	 * @param schemaMaxLength The Maximum Schema Length
 	 */
-	public void setParameters(int regularityThreshold, int schemaMaxLength) 
+	public void setParameters(int regularityThreshold, int maxSchemaLength) 
 	{
-		m_imos = new Imos(regularityThreshold, schemaMaxLength);
+		//m_imos = new Imos(regularityThreshold, schemaMaxLength);
+		m_imos.setRegularityThreshold(regularityThreshold);
+		m_decider.setMaxSchemaLength(maxSchemaLength);
+		
 	}
 
-	/**
-	 * Let the environment set the sensorymotor system.
-	 * @param sensor The sensorymotor system.
-	 */
-	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
-	{
-		m_sensorimotorSystem = sensor;
-		m_sensorimotorSystem.init(m_spas, m_imos, m_tracer);
-		//m_imos.setSensorimotorSystem(m_sensorimotorSystem);
-		m_decider = new DeciderImos(m_imos, m_spas, m_tracer);
-	};
-	
 	/**
 	 * Let the environment set the tracer.
 	 * @param tracer The tracer.
@@ -204,8 +195,19 @@ public class Ernest implements IErnest
 		m_tracer = tracer;
 		m_imos.setTracer(m_tracer); 
 		m_spas.setTracer(m_tracer);
+		m_decider.setTracer(m_tracer);
 	}
 
+	/**
+	 * Let the environment set the sensorymotor system.
+	 * @param sensor The sensorymotor system.
+	 */
+//	public void setSensorymotorSystem(ISensorymotorSystem sensor) 
+//	{
+//		m_sensorimotorSystem = sensor;
+//		m_sensorimotorSystem.init(m_spas, m_imos, m_tracer);
+//	};
+	
 	/**
 	 * Get a description of Ernest's internal state (to display in the environment).
 	 * @return A representation of Ernest's internal state
@@ -337,10 +339,10 @@ public class Ernest implements IErnest
 	 * @param stimuli The matrix of stimuli provided by the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public int[] update(int[][] stimuli) 
-	{
-		return m_sensorimotorSystem.update(stimuli);
-	}
+//	public int[] update(int[][] stimuli) 
+//	{
+//		return m_sensorimotorSystem.update(stimuli);
+//	}
 	
 	public int getValue(int i, int j)
 	{
@@ -353,8 +355,8 @@ public class Ernest implements IErnest
 
 	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{
-		//return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
-		return m_sensorimotorSystem.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+		//return m_sensorimotorSystem.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
 
 //	public void setPlaceList(ArrayList<IPlace> placeList)
@@ -367,10 +369,10 @@ public class Ernest implements IErnest
 		return m_spas.getPlaceList();
 	}
 
-	public void setSegmentList(ArrayList<ISegment> segmentList) 
-	{
-		m_sensorimotorSystem.setSegmentList(segmentList);
-	}
+//	public void setSegmentList(ArrayList<ISegment> segmentList) 
+//	{
+//		m_sensorimotorSystem.setSegmentList(segmentList);
+//	}
 
 	public int getCounter() 
 	{
@@ -395,6 +397,8 @@ public class Ernest implements IErnest
 		return m_spas.getSpatialMemory();
 		//return m_sensorimotorSystem.getSpatialSimulation();
 	}
+	
+	
 
 //	public void setFrame(JFrame frame) 
 //	{
