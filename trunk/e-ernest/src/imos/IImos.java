@@ -7,7 +7,6 @@ import spas.IPlace;
 import spas.ISpas;
 import ernest.IEffect;
 import ernest.IEnaction;
-import ernest.ISensorymotorSystem;
 import ernest.ITracer;
 
 

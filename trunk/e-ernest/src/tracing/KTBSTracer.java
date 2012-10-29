@@ -90,7 +90,6 @@ public class KTBSTracer implements ITracer<Element> //TODO
 	
 	/**
 	 * Initialize the tracer.
-	 * @param fileName The name of the trace file
 	 */
 	public KTBSTracer(String baseURL, String traceModel)
 	{

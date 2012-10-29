@@ -98,11 +98,10 @@ public class Act implements IAct
 	
 	/**
 	 * Create an act.
-	 * @param label The act's label.
+	 * @param moveLabel The move's label.
+	 * @param effectLabel The effect's label.
 	 * @param s The act's schema. 
-	 * @param status The act's status: True for success, false for failure.
 	 * @param satisfaction The act's satisfaction value.
-	 * @param confidence The degree of confidence Ernest has in this act.
 	 * @return The created act.
 	 */
 	public static IAct createPrimitiveAct(String moveLabel, String effectLabel, ISchema s, int satisfaction)

@@ -176,7 +176,7 @@ public class Ernest implements IErnest
 	/**
 	 * Set Ernest's fundamental learning parameters.
 	 * @param regularityThreshold The Regularity Sensibility Threshold.
-	 * @param schemaMaxLength The Maximum Schema Length
+	 * @param maxSchemaLength The Maximum Schema Length
 	 */
 	public void setParameters(int regularityThreshold, int maxSchemaLength) 
 	{
@@ -217,12 +217,12 @@ public class Ernest implements IErnest
 		return m_imos.getInternalState();
 	}
 		
-	/**
-	 * Ernest's main process.
-	 * (All environments return at least a boolean feedback from Ernest's actions) 
-	 * @param status The status received as a feedback from the previous primitive enaction.
-	 * @return The next primitive schema to enact.
-	 */
+//	/**
+//	 * Ernest's main process.
+//	 * (All environments return at least a boolean feedback from Ernest's actions) 
+//	 * @param status The status received as a feedback from the previous primitive enaction.
+//	 * @return The next primitive schema to enact.
+//	 */
 //	public String step(boolean status) 
 //	{
 //		if (m_tracer != null)
@@ -333,17 +333,6 @@ public class Ernest implements IErnest
 //		return primitiveSchema;
 //	}
 
-	/**
-	 * Update Ernest when the environment is refreshed.
-	 * May trigger a new cognitive loop
-	 * @param stimuli The matrix of stimuli provided by the environment.
-	 * @return The next primitive schema to enact.
-	 */
-//	public int[] update(int[][] stimuli) 
-//	{
-//		return m_sensorimotorSystem.update(stimuli);
-//	}
-	
 	public int getValue(int i, int j)
 	{
 		return m_spas.getValue(i,j);

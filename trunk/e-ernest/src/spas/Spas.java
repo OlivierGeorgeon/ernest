@@ -362,15 +362,6 @@ public class Spas implements ISpas
 		}
 	}
 	
-	/**
-	 * Set the list of saliences from the list provided by VacuumSG.
-	 * @param salienceList The list of saliences provided by VacuumSG.
-	 */
-//	public void setPlaceList(List<IPlace> placeList)
-//	{
-//		m_placeList = placeList;
-//	}
-		
 	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_localSpaceMemory.getPlaceList();

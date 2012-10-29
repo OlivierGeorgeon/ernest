@@ -14,7 +14,6 @@ import spas.LocalSpaceMemory;
 import utils.ErnestUtils;
 import ernest.Ernest;
 import ernest.IEnaction;
-import ernest.ISensorymotorSystem;
 import ernest.ITracer;
 
 /**
