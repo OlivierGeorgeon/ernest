@@ -24,11 +24,10 @@ public class Main
 		// Create an Ernest agent.
 		
 		IErnest ernest = new Ernest();
-		//BinarySensorymotorSystem sms = new BinarySensorymotorSystem();
 		ITracer tracer = null; 
 		
 		///////////// Uncomment this line to generate traces ///////////////////////////
-        tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        //tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
 		// tracer = new Tracer(null);
         ////////////////////////////////////////////////////////////////////////////////
 		
@@ -36,7 +35,6 @@ public class Main
 		
 		ernest.setParameters(6, 10);
 		ernest.setTracer(tracer);
-		//ernest.setSensorymotorSystem(sms);
 
 		// Set Ernest's primitive interactions and motivations.
 		
@@ -75,14 +73,14 @@ public class Main
 		
 		while (true)
 		{
-			////////// Insert a breakpoint below to easily follow Ernest in Eclipse debug mode. ////// 
+			////////// Insert a breakpoint below to easily follow Ernest in Eclipse debugger. ////// 
 			System.out.println("Step #" + iCycle++);
 			//////////////////////////////////////////////////////////////////////////////////////////
 			
 			schema = ernest.step(effect);
 			effect = environment.enact(schema);
 			
-			//tracer.close(); // Needed with the XMLTracer to save the xml file each time.
+			//tracer.close(); // Needed with the XMLTracer to save the xml file on each interaction cycle.
 		}
 
 	}

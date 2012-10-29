@@ -28,8 +28,7 @@ public interface ISpas
 	
 	/**
 	 * The main routine of the Spatial System that is called on each interaction cycle.
-	 * @param interactionPlace The place where the ongoing interaction started.
-	 * @param observation The current observation.
+	 * @param enaction The current enaction.
 	 */
 	public void track(IEnaction enaction);
 

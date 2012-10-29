@@ -89,7 +89,7 @@ public interface ISpatialMemory
 //	public void clearSimulation();
 
 	/**
-	 * @param The transformation of spatial memory relatively to the agent.
+	 * @param transform The transformation of spatial memory relatively to the agent.
 	 */
 	public void setTransform(Transform3D transform);
 	

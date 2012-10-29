@@ -12,7 +12,7 @@ public interface IEffect
 {
 	
 	/**
-	 * @param effect The elementary effect of the enacted primitive scheme.
+	 * @param label The elementary effect of the enacted primitive scheme.
 	 */
 	public void setLabel(String label);
 	
