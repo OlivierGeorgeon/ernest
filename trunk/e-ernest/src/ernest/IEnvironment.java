@@ -10,7 +10,7 @@ public interface IEnvironment
 	/**
 	 * Enact a primitive schema and return the enaction status.
 	 * @param s The primitive schema that Ernest has chosen to enact.
-	 * @return The status that results from the enaction of the primitive schema in the environment.
+	 * @return The effect that results from the enaction of the primitive schema in the environment.
 	 */
-	public boolean enact(String s);
+	public IEffect enact(String s);
 }

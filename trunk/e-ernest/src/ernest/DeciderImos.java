@@ -3,10 +3,7 @@ package ernest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import spas.ISpas;
-import spas.ISpatialMemory;
-import spas.Place;
 import imos.ActProposition;
 import imos.IAct;
 import imos.IActProposition;
@@ -29,13 +26,22 @@ public class DeciderImos implements IDecider
 	ITracer m_tracer;
 	int m_maxSchemaLength = 10;
 
-	DeciderImos(IImos imos, ISpas spas, ITracer tracer)
+	DeciderImos(IImos imos, ISpas spas)
 	{
 		m_imos = imos;
 		m_spas = spas;
+	}
+
+	public void setTracer(ITracer tracer)
+	{
 		m_tracer = tracer;
 	}
 	
+	public void setMaxSchemaLength(int maxSchemaLength)
+	{
+		m_maxSchemaLength = maxSchemaLength;
+	}
+
 	public IEnaction decide(IEnaction enaction) 
 	{
 		IEnaction newEnaction = new Enaction();

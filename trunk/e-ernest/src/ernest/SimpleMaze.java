@@ -1,40 +1,62 @@
 package ernest;
 
-import java.util.List;
-import java.util.ArrayList;
-
 /**
- * A very simple maze environment used to test Ernest.  
- * Corresponds to the demo at http://e-ernest.blogspot.com/2010/12/java-ernest-72-in-vacuum.html
+ * This class implements the Small Loop Environment
+ *  
+ * The Small Loop Problem: A challenge for artificial emergent cognition. 
+ * Olivier L. Georgeon, James B. Marshall. 
+ * BICA2012, Annual Conference on Biologically Inspired Cognitive Architectures. 
+ * Palermo, Italy. (October 31, 2012).
+ * http://e-ernest.blogspot.fr/2012/05/challenge-emergent-cognition.html
+ *   
  * @author mcohen
  * @author ogeorgeon
  */
 public class SimpleMaze implements IEnvironment 
 {
-
-	private static final int WIDTH = 9;	
-	private static final int HEIGHT = 8;	
-
 	private static final int ORIENTATION_UP    = 0;
 	private static final int ORIENTATION_RIGHT = 1;
 	private static final int ORIENTATION_DOWN  = 2;
 	private static final int ORIENTATION_LEFT  = 3;
 
-	private int m_x = 3;
-	private int m_y = 5;
-	private int m_o = 0;
+	// The Small Loop Environment
+	
+	private static final int WIDTH = 6;	
+	private static final int HEIGHT = 6;	
+	private int m_x = 4;
+	private int m_y = 1;
+	private int m_o = 2;
 	
 	private char[][] m_board = 
 		{
-		 {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'},
-		 {'x', ' ', ' ', ' ', 'x', 'x', 'x', 'x', 'x'},
-		 {'x', ' ', 'x', ' ', ' ', ' ', 'x', 'x', 'x'},
-		 {'x', ' ', 'x', 'x', 'x', ' ', ' ', ' ', 'x'},
-		 {'x', ' ', ' ', ' ', 'x', 'x', 'x', ' ', 'x'},
-		 {'x', 'x', 'x', ' ', ' ', ' ', 'x', ' ', 'x'},
-		 {'x', 'x', 'x', 'x', 'x', ' ', ' ', ' ', 'x'},
-		 {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'},
+		 {'x', 'x', 'x', 'x', 'x', 'x'},
+		 {'x', ' ', ' ', ' ', ' ', 'x'},
+		 {'x', ' ', 'x', 'x', ' ', 'x'},
+		 {'x', ' ', ' ', 'x', ' ', 'x'},
+		 {'x', 'x', ' ', ' ', ' ', 'x'},
+		 {'x', 'x', 'x', 'x', 'x', 'x'},
 		};
+	
+//  This is the Simple Maze environment presented here: 	
+//	http://e-ernest.blogspot.com/2010/12/java-ernest-72-in-vacuum.html
+//	
+//	private static final int WIDTH = 9;	
+//	private static final int HEIGHT = 8;	
+//	private int m_x = 3;
+//	private int m_y = 5;
+//	private int m_o = 0;
+//	
+//	private char[][] m_board = 
+//		{
+//		 {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'},
+//		 {'x', ' ', ' ', ' ', 'x', 'x', 'x', 'x', 'x'},
+//		 {'x', ' ', 'x', ' ', ' ', ' ', 'x', 'x', 'x'},
+//		 {'x', ' ', 'x', 'x', 'x', ' ', ' ', ' ', 'x'},
+//		 {'x', ' ', ' ', ' ', 'x', 'x', 'x', ' ', 'x'},
+//		 {'x', 'x', 'x', ' ', ' ', ' ', 'x', ' ', 'x'},
+//		 {'x', 'x', 'x', 'x', 'x', ' ', ' ', ' ', 'x'},
+//		 {'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x', 'x'},
+//		};
 	
 	private char[] m_agent = 
 	{ '^', '>', 'v', '<' };
@@ -45,22 +67,22 @@ public class SimpleMaze implements IEnvironment
 	 * @return The boolean feedback resulting from the schema enaction.
 	 */
 
-	public boolean enact(String s) 
+	public IEffect enact(String s) 
 	{
-		boolean bRet = false;
+		IEffect effect = null;
 		
 		if (s.equals(">"))
-			bRet = move();
+			effect = move();
 		else if (s.equals("^"))
-			bRet = left();
+			effect = left();
 		else if (s.equals("v"))
-			bRet = right();
+			effect = right();
 		else if (s.equals("-"))
-			bRet = Touch();
+			effect = Touch();
 		else if (s.equals("\\"))
-			bRet = TouchRight();
+			effect = TouchRight();
 		else if (s.equals("/"))
-			bRet = TouchLeft();
+			effect = TouchLeft();
 		
 		// print the maze
 		for (int i = 0; i < HEIGHT; i++)
@@ -75,158 +97,140 @@ public class SimpleMaze implements IEnvironment
 			System.out.println();
 		}
 		
-		return bRet;
+		return effect;
 	}
 
 	/**
 	 * Turn to the right. 
 	 */
-	private boolean right()
+	private IEffect right()
 	{
+		IEffect effect = new Effect();
+		effect.setLabel("f");
+		effect.setColor(0xFFFFFF);
+		
 		m_o++;
 		
 		if (m_o > ORIENTATION_LEFT)
 			m_o = ORIENTATION_UP;
 
-		boolean status =  false  ;
+		// In the Simple Maze, the effect may vary according to the wall in front after turning
+//		if (((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
+//			((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' ')) ||
+//			((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' ')) ||
+//			((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' ')))
+//			{effect.setLabel("t");effect.setColor(0x00FF00);}
 
-		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
-			status = true;
-
-		if ((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
-			status = true;
-
-		if ((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' '))
-			status = true;
-
-		if ((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' '))
-			status = true;
-
-		return status;
+		return effect;
 	}
 	
 	/**
 	 * Turn to the left. 
 	 */
-	private boolean left()
+	private IEffect left()
 	{
+		IEffect effect = new Effect();
+		effect.setLabel("f");
+		effect.setColor(0xFFFFFF);
+		
 		m_o--;
 		
 		if (m_o < 0)
 			m_o = ORIENTATION_LEFT;
 
-		boolean status =  false  ;
+		// In the Simple Maze, the effect may vary according to the wall in front after turning
+//		if (((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
+//			((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' ')) ||
+//			((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' ')) ||
+//			((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' ')))
+//			{effect.setLabel("t");effect.setColor(0x00FF00);}
 
-		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
-			status = true;
-
-		if ((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
-			status = true;
-
-		if ((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' '))
-			status = true;
-
-		if ((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' '))
-			status = true;
-
-		return status;
+		return effect;
 	}
 	
 	/**
 	 * Move forward to the direction of the current orientation.
 	 */
-	private boolean move()
+	private IEffect move()
 	{
+		IEffect effect = new Effect();
+		effect.setLabel("f");
+		effect.setColor(0xFF0000);
 
 		boolean status = false;
 
 		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ' ))
-					{m_y--; status = true; }
+				{m_y--; effect.setLabel("t"); effect.setColor(0xFFFFFF);}
 
 		if ((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' ' ))
-					{m_y++; status = true; }
+				{m_y++; effect.setLabel("t"); effect.setColor(0xFFFFFF);}
 
 		if ((m_o == ORIENTATION_RIGHT) && ( m_x < WIDTH ) && (m_board[m_y][m_x + 1] == ' ' ))
-					{m_x++; status = true; }
+				{m_x++; effect.setLabel("t"); effect.setColor(0xFFFFFF);}
 
 		if ((m_o == ORIENTATION_LEFT) && ( m_x > 0 ) && (m_board[m_y][m_x - 1] == ' ' ))
-					{m_x--; status = true; }
+				{m_x--; effect.setLabel("t"); effect.setColor(0xFFFFFF);}
 
 		if (!status)
 			System.out.println("Ouch");
 
-		return status;
+		return effect;
 	}
 	
 	/**
 	 * Touch the square forward.
 	 * Succeeds if there is a wall, fails otherwise 
 	 */
-	private boolean Touch()
+	private IEffect Touch()
 	{
+		IEffect effect = new Effect();
+		effect.setLabel("t");
+		effect.setColor(0x008000);
 
-		boolean status = true;
+		if (((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
+			((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' ')) ||
+			((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' ')) ||
+			((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' ')))
+		   	{effect.setLabel("f");effect.setColor(0xFFFFFF);}
 
-		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
-		    	status = false;
-
-		if ((m_o == ORIENTATION_DOWN) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
-				status = false;
-
-		if ((m_o == ORIENTATION_RIGHT) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' '))
-		    	status = false;
-
-		if ((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' '))
-		    	status = false;
-
-		return status;
+		return effect;
 	}
 	
 	/**
 	 * Touch the square to the right.
 	 * Succeeds if there is a wall, fails otherwise. 
 	 */
-	private boolean TouchRight()
+	private IEffect TouchRight()
 	{
+		IEffect effect = new Effect();
+		effect.setLabel("t");
+		effect.setColor(0x008000);
 
-		boolean status = true;
-	
-		if ((m_o == ORIENTATION_UP) && (m_x > 0) && (m_board[m_y][m_x + 1] == ' '))
-		    	status = false;
+		if (((m_o == ORIENTATION_UP) && (m_x > 0) && (m_board[m_y][m_x + 1] == ' ')) ||
+			((m_o == ORIENTATION_DOWN) && (m_x < WIDTH) && (m_board[m_y][m_x - 1] == ' ')) ||
+			((m_o == ORIENTATION_RIGHT) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' ')) ||
+			((m_o == ORIENTATION_LEFT) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')))
+			{effect.setLabel("f");effect.setColor(0xFFFFFF);}
 
-		if ((m_o == ORIENTATION_DOWN) && (m_x < WIDTH) && (m_board[m_y][m_x - 1] == ' '))
-				status = false;
-
-		if ((m_o == ORIENTATION_RIGHT) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
-		    	status = false;
-
-		if ((m_o == ORIENTATION_LEFT) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
-		    	status = false;
-	
-		return status;
+		return effect;
 	}
 
 	/**
 	 * Touch the square forward.
 	 * Succeeds if there is a wall, fails otherwise 
 	 */
-	private boolean TouchLeft()
+	private IEffect TouchLeft()
 	{
-
-		boolean status = true;
+		IEffect effect = new Effect();
+		effect.setLabel("t");
+		effect.setColor(0x008000);
 	
-		if ((m_o == ORIENTATION_UP) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' '))
-		    	status = false;
+		if (((m_o == ORIENTATION_UP) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' ')) ||
+			((m_o == ORIENTATION_DOWN) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' ')) ||
+			((m_o == ORIENTATION_RIGHT) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
+			((m_o == ORIENTATION_LEFT) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' ')))
+			{effect.setLabel("f");effect.setColor(0xFFFFFF);}
 
-		if ((m_o == ORIENTATION_DOWN) && (m_x < WIDTH) && (m_board[m_y][m_x + 1] == ' '))
-				status = false;
-
-		if ((m_o == ORIENTATION_RIGHT) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' '))
-		    	status = false;
-
-		if ((m_o == ORIENTATION_LEFT) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' '))
-		    	status = false;
-	
-		return status;
+		return effect;
 	}
 }
