@@ -14,19 +14,17 @@ import imos.Imos;
 import imos.Proposition;
 
 /**
- * A decider decides what interaction to try to enact next
- * when the previous decision cycle is over
- * based on the current state of sequential and spatial memory
+ * This is the regular decider for Ernest 7 that does not use spatial memory.
  * @author Olivier
  */
-public class DeciderImos implements IDecider 
+public class Decider implements IDecider 
 {
 	IImos m_imos;
 	ISpas m_spas;
 	ITracer m_tracer;
 	int m_maxSchemaLength = 10;
 
-	DeciderImos(IImos imos, ISpas spas)
+	Decider(IImos imos, ISpas spas)
 	{
 		m_imos = imos;
 		m_spas = spas;
@@ -65,7 +63,7 @@ public class DeciderImos implements IDecider
 	 * @param propositionList The list of propositions made by the spatial system.
 	 * @return The selected act.
 	 */
-	private IAct selectAct(List<IAct> activationList)
+	protected IAct selectAct(List<IAct> activationList)
 	{
 		List<IActProposition> actPropositions = new ArrayList<IActProposition>();	
 		List<IProposition> schemaPropositions = new ArrayList<IProposition>();	
@@ -270,7 +268,6 @@ public class DeciderImos implements IDecider
 		if (m_tracer != null)
 			m_tracer.addSubelement(decision, "select", a.toString());
 
-
 		return a ;
 	}
 
@@ -305,69 +302,5 @@ public class DeciderImos implements IDecider
 		}
 		
 		return primitiveAct;
-	}	
-
-	private IAct selectAct2(List<IActProposition> propositions)
-	{
-		
-		//Construct a list of schemaPropositions from the list of actPropositions.
-		
-		List<IProposition> schemaPropositions = new ArrayList<IProposition>();	
-		for (IActProposition actProposition : propositions)
-		{
-			int w = actProposition.getWeight() * (actProposition.getAct().getSatisfaction() + actProposition.getExpectation());
-			int e = actProposition.getWeight();
-			IProposition schemaProposition = new Proposition(actProposition.getAct().getSchema(), w, e, actProposition.getAct());
-			int i = schemaPropositions.indexOf(schemaProposition);
-			if (i == -1)
-				schemaPropositions.add(schemaProposition);
-			else
-				schemaPropositions.get(i).update(w, e, actProposition.getAct());
-		}
-		
-		// sort by weighted proposition...
-		Collections.sort(schemaPropositions);
-		
-		Object proposalElmt = null;
-		if (m_tracer != null)
-			proposalElmt = m_tracer.addEventElement("schema_propositions", true);
-		
-		for (IProposition p : schemaPropositions)
-		{
-			if (m_tracer != null)
-				m_tracer.addSubelement(proposalElmt, "schema", p.toString());
-			//System.out.println(p);
-		}
-		
-		// count how many are tied with the highest weighted proposition
-		int count = 0;
-		int wp = schemaPropositions.get(0).getWeight();
-		for (IProposition p : schemaPropositions)
-		{
-			if (p.getWeight() != wp)
-				break;
-			count++;
-		}
-
-		// pick one at random from the top of the proposal list
-		// count is equal to the number of proposals that are tied...
-
-		IProposition p = null;
-		//if (DETERMINISTIC)
-			p = schemaPropositions.get(0); // Always take the first
-		//else
-		//	p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
-				
-		//IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
-		IAct a = p.getAct();
-		
-		a.setActivation(p.getWeight());
-		
-		System.out.println("Select:" + a);
-
-		if (m_tracer != null)
-			m_tracer.addEventElement("select", a.toString());
-
-		return a;
 	}	
 }
