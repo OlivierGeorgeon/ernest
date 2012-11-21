@@ -82,6 +82,9 @@ public final class ErnestUtils
 		return format;
 	}
 	
+	/**
+	 * @param t The duration of sleep in 1/100 seconds
+	 */
 	public static void sleep(int t)
 	{
 		try
