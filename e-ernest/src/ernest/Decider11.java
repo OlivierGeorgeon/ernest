@@ -22,14 +22,14 @@ import imos.Proposition;
  * based on the current state of sequential and spatial memory
  * @author Olivier
  */
-public class Decider implements IDecider 
+public class Decider11 implements IDecider 
 {
 	IImos m_imos;
 	ISpas m_spas;
 	ITracer m_tracer;
 	int m_maxSchemaLength = 4;
 
-	Decider(IImos imos, ISpas spas)
+	Decider11(IImos imos, ISpas spas)
 	{
 		m_imos = imos;
 		m_spas = spas;
