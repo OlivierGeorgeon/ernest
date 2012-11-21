@@ -159,7 +159,8 @@ public class Ernest implements IErnest
 	private IImos m_imos = new Imos();
 	
 	/** Ernest's decisional Mechanism. */
-	private IDecider m_decider = new DeciderImos(m_imos, m_spas);
+	private IDecider m_decider = new Decider12(m_imos, m_spas);
+	// private IDecider m_decider = new Decider(m_imos, m_spas); // Regular decider for Ernest 7.
 	
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
