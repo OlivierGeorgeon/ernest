@@ -12,6 +12,7 @@ import spas.ISpatialMemory;
 //import spas.IStimulation;
 import spas.Spas;
 //import spas.Stimulation;
+import imos.Enaction;
 import imos.IAct;
 import imos.IEnaction;
 import imos.IImos;

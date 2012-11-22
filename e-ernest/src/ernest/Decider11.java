@@ -8,6 +8,7 @@ import spas.ISpas;
 import spas.ISpatialMemory;
 import spas.Place;
 import imos.ActProposition;
+import imos.Enaction;
 import imos.IAct;
 import imos.IActProposition;
 import imos.IEnaction;
