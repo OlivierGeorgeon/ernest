@@ -18,4 +18,5 @@ public interface IInteraction
 	public int getfailPostValue();
 	public void setfailPostWeight(int failPostWeight);
 	public int getfailPostWeight();
+	public int getLength();
 }

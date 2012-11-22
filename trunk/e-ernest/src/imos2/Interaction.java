@@ -15,6 +15,7 @@ public class Interaction implements IInteraction
 	private int m_enactionWeight = 0;
 	private int m_failPostValue = 0;
 	private int m_failPostWeight = 0;
+	private int m_length = 1;
 	
 	/**
 	 * @param moveLabel The move label.
@@ -46,6 +47,8 @@ public class Interaction implements IInteraction
 		m_preInteraction = preInteraction;
 		m_postInteraction = postInteraction;
 		m_enactionValue = enactionValue;
+		if (!primitive)
+			m_length = preInteraction.getLength() + postInteraction.getLength();
 	}
 	
 	public IInteraction getPreInteraction() 
@@ -133,5 +136,10 @@ public class Interaction implements IInteraction
 	public int getEnactionWeight() 
 	{
 		return m_enactionWeight;
+	}
+
+	public int getLength() 
+	{
+		return m_length;
 	}
 }
