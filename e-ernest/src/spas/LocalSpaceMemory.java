@@ -3,6 +3,7 @@ package spas;
 import imos.ActProposition;
 import imos.IAct;
 import imos.IActProposition;
+import imos.IEnaction;
 import imos.ISchema;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
 import ernest.Enaction;
 import ernest.Ernest;
-import ernest.IEnaction;
 import ernest.ITracer;
 
 /**

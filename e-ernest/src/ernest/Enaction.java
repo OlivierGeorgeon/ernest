@@ -2,12 +2,8 @@ package ernest;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
-
-import utils.ErnestUtils;
 import imos.IAct;
+import imos.IEnaction;
 
 /**
  * A structure used to manage the enaction of a scheme in the real world

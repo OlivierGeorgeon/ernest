@@ -7,6 +7,7 @@ import spas.ISpas;
 import imos.ActProposition;
 import imos.IAct;
 import imos.IActProposition;
+import imos.IEnaction;
 import imos.IImos;
 import imos.IProposition;
 import imos.ISchema;
@@ -46,7 +47,9 @@ public class Decider implements IDecider
 		
 		System.out.println("New decision ================ ");
 
-		IAct nextTopIntention = selectAct(enaction.getFinalActivationContext());
+		ArrayList<IActProposition> actPropositions = proposeActs(enaction.getFinalActivationContext());
+		IAct nextTopIntention = selectAct(actPropositions);
+		//IAct nextTopIntention = selectAct(enaction.getFinalActivationContext());
 		
 		newEnaction.setTopAct(nextTopIntention);
 		newEnaction.setTopRemainingAct(nextTopIntention);
@@ -57,41 +60,31 @@ public class Decider implements IDecider
 	}
 	
 	/**
-	 * Select an intention act from a given activation list.
-	 * The selected act receives an activation value 
-	 * @param activationList The list of acts that in the sequential context that activate episodic memory.
-	 * @param propositionList The list of propositions made by the spatial system.
-	 * @return The selected act.
+	 * Construct a list of proposed acts based on the current context
+	 * @param activationList The list of acts that form the current context.
+	 * @return The list of proposed acts.
 	 */
-	protected IAct selectAct(List<IAct> activationList)
+	protected ArrayList<IActProposition> proposeActs(ArrayList<IAct> activationList)
 	{
-		List<IActProposition> actPropositions = new ArrayList<IActProposition>();	
-		List<IProposition> schemaPropositions = new ArrayList<IProposition>();	
+		ArrayList<IActProposition> actPropositions = new ArrayList<IActProposition>();	
 		
-		// Browse all the existing schemas 
-		Object decision = null;
-		Object activations = null;
-		Object inconsistences = null;
+		// Prepare the tracer.
+		Object propositions = null;
 		if (m_tracer != null)
-		{
-			decision = m_tracer.addEventElement("decision", true);
-			activations = m_tracer.addSubelement(decision, "activated_schemas");
-			//inconsistences = m_tracer.addEventElement("inconsistences", true);
-		}
+			propositions = m_tracer.addEventElement("proposed_acts", true);
 
 		// Primitive acts receive a default proposition for themselves
 		for(IAct a : m_imos.getActs())
 		{
 			if (a.getSchema().isPrimitive())
 			{
-				//IProposition p = new Proposition(s, 0, 0);
 				IActProposition p = new ActProposition(a, 0, 0);
 				if (!actPropositions.contains(p))
 					actPropositions.add(p);
 			}       
 		}
 
-		
+		// Browse all the existing schemas 
 		for (ISchema s : m_imos.getSchemas())
 		{
 			if (!s.isPrimitive())
@@ -104,7 +97,7 @@ public class Decider implements IDecider
 					{
 						activated = true;
 						if (m_tracer != null)
-							m_tracer.addSubelement(activations, "schema", s + " intention " + s.getIntentionAct() + ((s.getIntentionAct().getConfidence() == Imos.RELIABLE ) ? " reliable" : " unreliable" ));
+							m_tracer.addSubelement(propositions, "schema", s + " intention " + s.getIntentionAct() + ((s.getIntentionAct().getConfidence() == Imos.RELIABLE ) ? " reliable" : " unreliable" ));
 						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
@@ -120,96 +113,69 @@ public class Decider implements IDecider
                     int e = s.getWeight();// * (s.getIntentionAct().getStatus() ? 1 : -1);
                     //int e = 0;
 					
-					// If the intention is consistent with spatial memory 
-					//if (checkConsistency(proposedAct))
+					// If the intention is reliable then a proposition is constructed
+					if ((proposedAct.getConfidence() == Imos.RELIABLE ) &&						 
+						(proposedAct.getSchema().getLength() <= m_maxSchemaLength ))
 					{
-					
-						// If the intention is reliable then a proposition is constructed
-						if ((proposedAct.getConfidence() == Imos.RELIABLE ) &&						 
-							(proposedAct.getSchema().getLength() <= m_maxSchemaLength ))
-						{
-							//IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
-							IActProposition p = new ActProposition(proposedAct, w, e);
-		
-							int i = actPropositions.indexOf(p);
-							if (i == -1)
-								actPropositions.add(p);
-							else
-								actPropositions.get(i).update(w, e);
-						}
-						// If the intention is not reliable
-						// if the intention's schema has not passed the threshold then  
-						// the activation is propagated to the intention's schema's context
+						//IProposition p = new Proposition(s.getIntentionAct().getSchema(), w, e);
+						IActProposition p = new ActProposition(proposedAct, w, e);
+	
+						int i = actPropositions.indexOf(p);
+						if (i == -1)
+							actPropositions.add(p);
 						else
+							actPropositions.get(i).update(w, e);
+					}
+					// If the intention is not reliable
+					// if the intention's schema has not passed the threshold then  
+					// the activation is propagated to the intention's schema's context
+					else
+					{
+						// Expect the value of the intention's schema's intention
+						//e = proposedAct.getSchema().getIntentionAct().getSatisfaction();
+						
+						if (!proposedAct.getSchema().isPrimitive())
 						{
-							// Expect the value of the intention's schema's intention
-							//e = proposedAct.getSchema().getIntentionAct().getSatisfaction();
-							
-							if (!proposedAct.getSchema().isPrimitive())
+							// only if the intention's intention is positive (this is some form of positive anticipation)
+							if (proposedAct.getSchema().getIntentionAct().getSatisfaction() > 0)
 							{
-								// only if the intention's intention is positive (this is some form of positive anticipation)
-								if (proposedAct.getSchema().getIntentionAct().getSatisfaction() > 0)
-								{
-									//IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
-									IActProposition p = new ActProposition(proposedAct.getSchema().getContextAct(), w, e);
-									int i = actPropositions.indexOf(p);
-									if (i == -1)
-										actPropositions.add(p);
-									else
-										actPropositions.get(i).update(w, e);
-								}
+								//IProposition p = new Proposition(proposedAct.getSchema().getContextAct().getSchema(), w, e);
+								IActProposition p = new ActProposition(proposedAct.getSchema().getContextAct(), w, e);
+								int i = actPropositions.indexOf(p);
+								if (i == -1)
+									actPropositions.add(p);
+								else
+									actPropositions.get(i).update(w, e);
 							}
 						}
-					}//
-//					else
-//					{
-//						if (m_tracer != null)
-//							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
-//					}
+					}
 				}
 			}
-//			// Primitive sensorymotor schemas also receive a default proposition for their succeeding act
-//			if (s.isPrimitive())
-//			{
-//				//IProposition p = new Proposition(s, 0, 0);
-//				if (s.getSucceedingAct() != null)
-//				{
-//					IActProposition p = new ActProposition(s.getSucceedingAct(), 0, 0);
-//					if (!actPropositions.contains(p))
-//						actPropositions.add(p);
-//				}
-//			}       
 		}
 		
-		
-		// Add the propositions from the spatial system 
-		
-//		for (IActProposition proposition : propositionList)
-//		{
-//			int i = proposals.indexOf(proposition);
-//			if (i == -1)
-//				proposals.add(proposition);
-//			else
-//				proposals.get(i).update(proposition.getWeight(), proposition.getExpectation());
-//		}
-
 		// Log the propositions
 		
 		//System.out.println("Propose: ");
 		Object proposalElmt = null;
 		if (m_tracer != null)
-			proposalElmt = m_tracer.addSubelement(decision, "proposed_acts");
-		
-		for (IActProposition p : actPropositions)
 		{
-			if (m_tracer != null)
+			proposalElmt = m_tracer.addSubelement(propositions, "proposed_acts");
+		
+			for (IActProposition p : actPropositions)
 				m_tracer.addSubelement(proposalElmt, "act", p.toString());
-			//System.out.println(p);
 		}
-		
-		// TODO Update the expected satisfaction of each proposed schema based on the local map anticipation
-		
+		return actPropositions;
+	}
+	
+	/**
+	 * Select an act from the list of proposed acts
+	 * @param actPropositions The list of act propostion.
+	 * @return The selected act.
+	 */
+	protected IAct selectAct(ArrayList<IActProposition> actPropositions)
+	{
 		//Construct a list of schemaPropositions from the list of actPropositions.
+		ArrayList<IProposition> schemaPropositions = new ArrayList<IProposition>();	
 		
 		for (IActProposition actProposition : actPropositions)
 		{
@@ -225,19 +191,8 @@ public class Decider implements IDecider
 				schemaPropositions.get(i).update(w, e, actProposition.getAct());
 		}
 		
-		// sort by weighted proposition...
+		// sort the schema propositions by weight.
 		Collections.sort(schemaPropositions);
-		
-		Object proposition = null;
-		if (m_tracer != null)
-			proposition = m_tracer.addSubelement(decision, "proposed_schemas");
-		
-		for (IProposition p : schemaPropositions)
-		{
-			if (m_tracer != null)
-				m_tracer.addSubelement(proposition, "schema", p.toString());
-			//System.out.println(p);
-		}
 		
 		// count how many are tied with the highest weighted proposition
 		int count = 0;
@@ -252,28 +207,39 @@ public class Decider implements IDecider
 		// pick one at random from the top of the proposal list
 		// count is equal to the number of proposals that are tied...
 
-		IProposition p = null;
+		IProposition selectedProposition = null;
 		//if (DETERMINISTIC)
-			p = schemaPropositions.get(0); // Always take the first
+			selectedProposition = schemaPropositions.get(0); // Always take the first
 		//else
 		//	p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
 				
-		//IAct a = m_sensorimotorSystem.anticipateInteraction(p.getSchema(), p.getExpectation(), m_acts);
-		IAct a = p.getAct();
+		IAct a = selectedProposition.getAct();
 		
-		a.setActivation(p.getWeight());
+		a.setActivation(selectedProposition.getWeight());
 		
 		System.out.println("Select:" + a);
 
+		// Trace the schema propositions
+		Object decision = null;
+		Object proposition = null;
 		if (m_tracer != null)
+		{
+			decision = m_tracer.addEventElement("decision", true);
+			proposition = m_tracer.addSubelement(decision, "proposed_schemas");
+		
+			for (IProposition p : schemaPropositions)
+					m_tracer.addSubelement(proposition, "schema", p.toString());
+			
 			m_tracer.addSubelement(decision, "select", a.toString());
-
-		return a ;
+		}
+		
+		return a;
 	}
 
 	public void carry(IEnaction enaction)
 	{
-		enaction.setIntendedPrimitiveAct(spreadActivation(enaction.getTopRemainingAct()));
+		IAct intendedPrimitiveAct = spreadActivation(enaction.getTopRemainingAct());
+		enaction.setIntendedPrimitiveAct(intendedPrimitiveAct);
 		enaction.setStep(enaction.getStep() + 1);
 		enaction.traceCarry(m_tracer);
 	}

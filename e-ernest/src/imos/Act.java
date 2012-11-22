@@ -21,11 +21,6 @@ import ernest.Ernest;
  */
 public class Act implements IAct
 {
-	/** The act's status. True = Success, False = Failure */
-	private boolean m_status = false;
-	
-	private String m_effectLabel ="";
-	
 	/** The act's satisfaction value. Represents Ernest's satisfaction to enact the act */
 	private int m_satisfaction = 0;
 	
@@ -35,7 +30,10 @@ public class Act implements IAct
 	/** The schema that prescribes this act during enaction */
 	private ISchema m_prescriberSchema = null;
 	
-	/** the label */
+	/** The effect label */
+	private String m_effectLabel ="";
+	
+	/** The act's label */
 	private String m_label = "";
 	
 	/** Ernest's confidence in this act. Only RELIABLE acts generate higher-level learning  */
@@ -123,7 +121,7 @@ public class Act implements IAct
 		m_label = label;
 		m_schema = s;
 		m_effectLabel = effectLabel;
-		m_status = status;
+		//m_status = status;
 		m_satisfaction = satisfaction;
 		m_confidence = confidence;
 		if (s == null)
@@ -158,11 +156,6 @@ public class Act implements IAct
 	public void setActivation(int a)           
 	{ 
 		m_activation = a; 
-	}
-	
-	public boolean getStatus()                 
-	{ 
-		return m_status; 
 	}
 	
 	public int getSatisfaction()           

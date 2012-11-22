@@ -1,5 +1,7 @@
 package ernest;
 
+import imos.IEnaction;
+
 /**
  * A decider decides what interaction to try to enact next
  * when the previous decision cycle is over
