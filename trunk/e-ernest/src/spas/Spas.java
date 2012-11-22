@@ -3,6 +3,7 @@ package spas;
 import imos.ActProposition;
 import imos.IAct;
 import imos.IActProposition;
+import imos.IEnaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,6 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import ernest.Enaction;
-import ernest.IEnaction;
 import ernest.ITracer;
 
 /**

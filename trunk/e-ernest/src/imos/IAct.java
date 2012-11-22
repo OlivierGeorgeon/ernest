@@ -14,11 +14,6 @@ import javax.vecmath.Vector3f;
 public interface IAct  extends Comparable<IAct>
 {
 	/**
-	 * @return The act's enaction status. True for success, false for failure.
-	 */
-	public boolean getStatus();
-	
-	/**
 	 * @return The act's string representation.
 	 */
 	public String getLabel();
@@ -78,7 +73,6 @@ public interface IAct  extends Comparable<IAct>
 	 * @param color The color used to display this interaction.
 	 */	
 	public void setColor(int color);
-
 	
 	/**
 	 * @return The color used to display this interaction.
@@ -123,4 +117,5 @@ public interface IAct  extends Comparable<IAct>
 	 * @return The effect code of this act.
 	 */
 	public String getEffectLabel();
+	
 }

@@ -1,7 +1,6 @@
 package imos;
 
 import java.util.ArrayList;
-import ernest.IEnaction;
 import ernest.ITracer;
 
 /**
@@ -73,6 +72,6 @@ public interface IImos
      * @param intentionAct The intention act
      * @return The created composite interaction 
      */
-    public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct);
+    //public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct);
 
 }

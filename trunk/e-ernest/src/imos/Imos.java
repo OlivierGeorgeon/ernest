@@ -1,11 +1,12 @@
 package imos;
 
 
+import imos2.IInteraction;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import ernest.IEnaction;
 import ernest.ITracer;
 
 /**
@@ -38,6 +39,9 @@ public class Imos implements IImos
 
 	/** A list of all the acts ever created. */
 	private ArrayList<IAct> m_acts = new ArrayList<IAct>(2000);
+	
+	/** A list of all the acts ever created. Aimed to replace schemas and acts*/
+	private ArrayList<IInteraction> m_interactions = new ArrayList<IInteraction>(2000);
 	
 	/** If true then the IMOS does not use random */
 	public static boolean DETERMINISTIC = true; 
@@ -438,15 +442,15 @@ public class Imos implements IImos
 		return m_imosCycle;
 	}
 
-    public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct)
-    {
-    	
-    	//IAct act =  m_episodicMemory.addCompositeInteraction(contextAct, intentionAct).getSucceedingAct();
-    	IAct act =  addCompositeSchema(contextAct, intentionAct).getSucceedingAct();
-    	
-    	act.setConfidence(Imos.HYPOTHETICAL);
-    	return act;
-    }
+//    public IAct addCompositeInteraction(IAct contextAct, IAct intentionAct)
+//    {
+//    	
+//    	//IAct act =  m_episodicMemory.addCompositeInteraction(contextAct, intentionAct).getSucceedingAct();
+//    	IAct act =  addCompositeSchema(contextAct, intentionAct).getSucceedingAct();
+//    	
+//    	act.setConfidence(Imos.HYPOTHETICAL);
+//    	return act;
+//    }
     
 	/**
 	 * Add a composite schema and its succeeding act that represent a composite possibility 

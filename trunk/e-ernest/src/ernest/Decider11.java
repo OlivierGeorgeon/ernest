@@ -10,6 +10,7 @@ import spas.Place;
 import imos.ActProposition;
 import imos.IAct;
 import imos.IActProposition;
+import imos.IEnaction;
 import imos.IImos;
 import imos.IProposition;
 import imos.ISchema;
