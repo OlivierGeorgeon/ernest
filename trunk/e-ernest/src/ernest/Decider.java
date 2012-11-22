@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import spas.ISpas;
 import imos.ActProposition;
+import imos.Enaction;
 import imos.IAct;
 import imos.IActProposition;
 import imos.IEnaction;

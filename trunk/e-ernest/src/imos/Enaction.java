@@ -1,9 +1,11 @@
-package ernest;
+package imos;
 
 import java.util.ArrayList;
 import java.util.List;
-import imos.IAct;
-import imos.IEnaction;
+
+import ernest.Effect;
+import ernest.IEffect;
+import ernest.ITracer;
 
 /**
  * A structure used to manage the enaction of a scheme in the real world

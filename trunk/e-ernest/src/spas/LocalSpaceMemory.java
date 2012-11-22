@@ -1,6 +1,7 @@
 package spas;
 
 import imos.ActProposition;
+import imos.Enaction;
 import imos.IAct;
 import imos.IActProposition;
 import imos.IEnaction;
@@ -13,7 +14,6 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
-import ernest.Enaction;
 import ernest.Ernest;
 import ernest.ITracer;
 
