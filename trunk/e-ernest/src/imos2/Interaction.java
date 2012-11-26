@@ -6,6 +6,10 @@ package imos2;
  */
 public class Interaction implements IInteraction 
 {
+	public static int CORRECT_CONTINUE = 0;
+	public static int INCORRECT_INTERRUPTED = 1;
+	public static int CORRECT_COMPLETED = 2;
+	
 	private String m_moveLabel ="";
 	private String m_effectLabel = "";
 	private boolean m_primitive = true;
@@ -16,6 +20,8 @@ public class Interaction implements IInteraction
 	private int m_failPostValue = 0;
 	private int m_failPostWeight = 0;
 	private int m_length = 1;
+	private IInteraction m_prescriber = null;
+	private int m_step = 0;
 	
 	/**
 	 * @param moveLabel The move label.
@@ -141,5 +147,61 @@ public class Interaction implements IInteraction
 	public int getLength() 
 	{
 		return m_length;
+	}
+
+	public void setStep(int step) 
+	{
+		m_step = step;
+	}
+
+	public int getStep() 
+	{
+		return m_step;
+	}
+
+	public void setPrescriber(IInteraction prescriber) 
+	{
+		m_prescriber = prescriber;
+	}
+
+	public IInteraction getPrescriber() 
+	{
+		return m_prescriber;
+	}
+	
+	/**
+	 * Update the prescriber if this interaction was enacted
+	 */
+	public IInteraction updatePrescriber()
+	{
+		IInteraction nextInteraction = null;
+		if (m_prescriber != null)
+		{
+			int step = m_prescriber.getStep();
+			if (step == 0)
+			{
+				// The prescriber's pre-interaction was enacted
+				m_prescriber.setStep(step + 1);
+				nextInteraction = m_prescriber.getPostInteraction();
+			}
+			else
+			{
+				// The prescriber's post-interaction was enacted
+				// Update the prescriber's prescriber
+				nextInteraction = m_prescriber.updatePrescriber();
+			}
+		}
+		
+		return nextInteraction;
+	}
+
+	public void terminate()
+	{
+		if (m_prescriber != null)
+		{
+			m_prescriber.terminate();
+			m_prescriber = null;
+		}
+		m_step = 0;
 	}
 }

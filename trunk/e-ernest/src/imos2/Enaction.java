@@ -29,6 +29,8 @@ public class Enaction implements IEnaction
 	private int m_nbSchemaLearned = 0;
 	private boolean m_correct = true;
 	
+	private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();
+	
 	public void setEffect(IEffect effect) 
 	{
 		m_effect = effect;
@@ -99,7 +101,7 @@ public class Enaction implements IEnaction
 		return m_simulationStatus;
 	}
 
-	public void setEnactedPrimitiveAct(IInteraction act) 
+	public void setEnactedPrimitiveInteraction(IInteraction act) 
 	{
 		m_enactedPrimitiveAct = act;
 	}
@@ -286,6 +288,16 @@ public class Enaction implements IEnaction
 				tracer.addEventElement("satisfaction", m_enactedPrimitiveAct.getEnactionValue()/10 + "");
 			}
 		}
+	}
+
+	public void addOngoingInteraction(IInteraction interaction) 
+	{
+		m_ongoingInteractions.add(interaction);
+	}
+
+	public ArrayList<IInteraction> getOngoingInteractions() 
+	{
+		return m_ongoingInteractions;
 	}
 
 }

@@ -36,7 +36,7 @@ public interface IEnaction
 	/**
 	 * @param act The last primitive act enacted
 	 */
-	public void setEnactedPrimitiveAct(IInteraction interaction);
+	public void setEnactedPrimitiveInteraction(IInteraction interaction);
 	
 	/**
 	 * @return The last primitive act enacted
@@ -120,4 +120,8 @@ public interface IEnaction
 	public void traceCarry(ITracer tracer);
 	public void traceTerminate(ITracer tracer);
 	public void trace(ITracer tracer);
+	
+	public void addOngoingInteraction(IInteraction intraction);
+	public ArrayList<IInteraction> getOngoingInteractions();
+	
 }

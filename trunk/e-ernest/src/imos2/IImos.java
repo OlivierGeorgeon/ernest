@@ -30,7 +30,7 @@ public interface IImos
 	/**
 	 * @return The list of interactions.
 	 */
-	public ArrayList<IInteraction> getInteractionss();
+	public ArrayList<IInteraction> getInteractions();
 	
 	/**
 	 * Constructs a new interaction in episodic memory.

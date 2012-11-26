@@ -4,7 +4,6 @@ package imos;
 import imos2.IInteraction;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import ernest.ITracer;
