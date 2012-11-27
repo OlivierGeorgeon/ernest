@@ -204,4 +204,18 @@ public class Interaction implements IInteraction
 		}
 		m_step = 0;
 	}
+
+	public IInteraction prescribe() 
+	{
+		IInteraction prescribedInteraction = null;
+		if (m_primitive)
+			prescribedInteraction = this;
+		else
+		{
+			m_step = 0;
+			m_preInteraction.setPrescriber(this);
+			prescribedInteraction = m_preInteraction.prescribe();
+		}
+		return prescribedInteraction;		
+	}
 }
