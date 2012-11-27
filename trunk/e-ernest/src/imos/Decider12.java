@@ -1,16 +1,8 @@
-package ernest;
+package imos;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import imos.ActProposition;
-import imos.IAct;
-import imos.IActProposition;
-import imos.IImos;
-import imos.IProposition;
-import imos.ISchema;
-import imos.Imos;
-import imos.Proposition;
 import spas.ISpas;
 
 /**

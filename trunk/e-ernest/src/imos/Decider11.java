@@ -1,22 +1,14 @@
-package ernest;
+package imos;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ernest.ITracer;
+
 import spas.ISpas;
 import spas.ISpatialMemory;
 import spas.Place;
-import imos.ActProposition;
-import imos.Enaction;
-import imos.IAct;
-import imos.IActProposition;
-import imos.IEnaction;
-import imos.IImos;
-import imos.IProposition;
-import imos.ISchema;
-import imos.Imos;
-import imos.Proposition;
 
 /**
  * A decider decides what interaction to try to enact next

@@ -73,4 +73,14 @@ public class Proposition implements IProposition
 		
 		return ret;
 	}
+
+	/**
+	 * Generate a textual representation of the proposition for debug.
+	 * @return A string that represents the proposition. 
+	 */
+	public String toString()
+	{
+		String s = m_interaction + " with weight = " + m_weight/10 ;
+		return s;
+	}
 }

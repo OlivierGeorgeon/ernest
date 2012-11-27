@@ -38,6 +38,9 @@ public class Imos implements IImos
 	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
 	
+	public Imos()
+	{
+	}
 	/**
 	 * Constructor for the sequential system.
 	 * @param regularitySensibilityThreshold  The regularity sensibility threshold.
@@ -87,13 +90,15 @@ public class Imos implements IImos
 		
 		int j = m_interactions.indexOf(i);
 		if (j == -1)
-			// The act does not exist
+		{
+			// The interaction does not exist
 			m_interactions.add(i);
+			System.out.println("Define primitive interaction " + i);
+		}
 		else 
-			// The act already exists: return a pointer to it.
+			// The interaction already exists: return a pointer to it.
 			i =  m_interactions.get(j);
 		
-		System.out.println("Primitive interaction " + i.toString() + " " + i.getEnactionValue());
 		return i;		
 	}
 
@@ -139,13 +144,14 @@ public class Imos implements IImos
 		// If we are not on startup
 		if (intendedPrimitiveInteraction != null)
 		{
-			// Compute the enacted primitive act from the intended act and the effect.
+			// Compute the enacted primitive interaction from the move and the effect.
 			// Compute the enaction value of interactions that were not yet recorded
 			enactedPrimitiveInteraction = addInteraction(intendedPrimitiveInteraction.getMoveLabel(), enaction.getEffect().getLabel(), 0);
 
 			// Compute the top actually enacted act
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
 			// TODO compute the actually enacted interaction.
+			topEnactedInteraction = enactedPrimitiveInteraction;
 			
 			// Update the prescriber hierarchy.
 			if (intendedPrimitiveInteraction.equals(enactedPrimitiveInteraction)) 
@@ -153,10 +159,13 @@ public class Imos implements IImos
 			else
 				intendedPrimitiveInteraction.terminate();
 			
-			System.out.println("Enacted " + topEnactedInteraction );
-			
 			// Compute the next intention, null if we have reached the end of the intended act.
-			//topRemainingInteraction = nextInteraction(intendedPrimitiveInteraction, enactedPrimitiveInteraction);			
+			//topRemainingInteraction = nextInteraction(intendedPrimitiveInteraction, enactedPrimitiveInteraction);	
+			
+			System.out.println("Enacted primitive interaction " + enactedPrimitiveInteraction );
+			System.out.println("Top remaining interaction " + topRemainingInteraction );
+			System.out.println("Enacted top interaction " + topEnactedInteraction );
+			
 		}					
 		
 		// Update the current enaction
@@ -177,16 +186,16 @@ public class Imos implements IImos
 	 */
 	public void terminate(IEnaction enaction)
 	{
-		IInteraction topIntendedAct = enaction.getTopInteraction();
-		IInteraction topEnactedAct  = enaction.getTopEnactedInteraction();
+		IInteraction intendedTopInteraction = enaction.getTopInteraction();
+		IInteraction enactedTopInteraction  = enaction.getTopEnactedInteraction();
 		ArrayList<IInteraction> previousLearningContext = enaction.getPreviousLearningContext();
 		ArrayList<IInteraction> initialLearningContext = enaction.getInitialLearningContext();
 		
 		// if we are not on startup
-		if (topEnactedAct != null)
+		if (enactedTopInteraction != null)
 		{
-			// Surprise if the enacted act is not that intended
-			if (topIntendedAct != topEnactedAct) 
+			// Surprise if the enacted interaction is not that intended
+			if (intendedTopInteraction != enactedTopInteraction) 
 			{
 				m_internalState= "!";
 				enaction.setCorrect(false);
@@ -215,37 +224,40 @@ public class Imos implements IImos
 			m_nbSchemaLearned = 0;
 			//ArrayList<IAct> streamContextList = m_episodicMemory.record(initialLearningContext, performedAct);
 			//ArrayList<IInteraction> streamContextList = record(initialLearningContext, performedAct);
-			ArrayList<IInteraction> streamContextList = record(initialLearningContext, topEnactedAct);
+			System.out.println("Learn from enacted top interaction");
+			ArrayList<IInteraction> streamContextList = record(initialLearningContext, enactedTopInteraction);
 						
 			// learn from the base context and the stream act			
 			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of the list
 			 {
-				 IInteraction streamAct = streamContextList.get(0); // The stream act is the first learned 
-				 System.out.println("Streaming " + streamAct);
-				 if (streamAct.getEnactionWeight() > ACTIVATION_THRESH)
-					 //m_episodicMemory.record(previousLearningContext, streamAct);
-					 record(previousLearningContext, streamAct);
+				 IInteraction streamInteraction = streamContextList.get(0); // The stream act is the first learned 
+				 System.out.println("Streaming " + streamInteraction);
+				 if (streamInteraction.getEnactionWeight() > ACTIVATION_THRESH)
+				 {
+					System.out.println("Learn from stream interaction");
+					record(previousLearningContext, streamInteraction);
+				 }
 			 }
 
-			// learn from the current context and the actually enacted act			
-			//if (topEnactedAct != performedAct)
-			{
-				System.out.println("Learn from enacted");
-				//List<IAct> streamContextList2 = m_episodicMemory.record(initialLearningContext, topEnactedAct);
-				List<IInteraction> streamContextList2 = record(initialLearningContext, topEnactedAct);
-				// learn from the base context and the streamAct2
-				if (streamContextList2.size() > 0)
-				{
-					IInteraction streamAct2 = streamContextList2.get(0);
-					System.out.println("Streaming2 " + streamAct2 );
-					if (streamAct2.getEnactionWeight() > ACTIVATION_THRESH)
-						//m_episodicMemory.record(previousLearningContext, streamAct2);
-						record(previousLearningContext, streamAct2);
-				}
-			}	
+//			// learn from the current context and the actually enacted act			
+//			//if (topEnactedAct != performedAct)
+//			{
+//				System.out.println("Learn from enacted");
+//				//List<IAct> streamContextList2 = m_episodicMemory.record(initialLearningContext, topEnactedAct);
+//				List<IInteraction> streamContextList2 = record(initialLearningContext, enactedTopInteraction);
+//				// learn from the base context and the streamAct2
+//				if (streamContextList2.size() > 0)
+//				{
+//					IInteraction streamAct2 = streamContextList2.get(0);
+//					System.out.println("Streaming2 " + streamAct2 );
+//					if (streamAct2.getEnactionWeight() > ACTIVATION_THRESH)
+//						//m_episodicMemory.record(previousLearningContext, streamAct2);
+//						record(previousLearningContext, streamAct2);
+//				}
+//			}	
 			
 			//enaction.setFinalContext(topEnactedAct, performedAct, streamContextList);			
-			enaction.setFinalContext(topEnactedAct, topEnactedAct, streamContextList);			
+			enaction.setFinalContext(enactedTopInteraction, enactedTopInteraction, streamContextList);			
 		}
 		//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
 		enaction.setNbActLearned(m_nbSchemaLearned);
@@ -254,33 +266,38 @@ public class Imos implements IImos
 	}
 
 	/**
-	 * Learn from an enacted intention after a given context.
+	 * Learn from an enacted interaction after a given context.
 	 * Returns the list of learned acts that are based on reliable subacts. The first act of the list is the stream act.
 	 * @param contextList The list of acts that constitute the context in which the learning occurs.
-	 * @param intentionAct The intention.
+	 * @param enactedInteraction The intention.
 	 * @return A list of the acts created from the learning. The first act of the list is the stream act if the first act of the contextList was the performed act.
 	 */
-	private ArrayList<IInteraction> record(List<IInteraction> contextList, IInteraction intentionAct)
+	private ArrayList<IInteraction> record(List<IInteraction> contextList, IInteraction enactedInteraction)
 	{
+		
+		Object learnElmnt = null;
+		if (m_tracer != null)
+		{
+			//Object propositionElmt = m_tracer.addSubelement(decision, "proposed_moves");
+			learnElmnt = m_tracer.addEventElement("learned", true);
+		}
+		
 		ArrayList<IInteraction> newContextList= new ArrayList<IInteraction>(20);
 		
-		if (intentionAct != null)
+		if (enactedInteraction != null)
 		{
-			// For each act in the context ...
-			for (IInteraction contextInteraction : contextList)
+			for (IInteraction preInteraction : contextList)
 			{
-				// Build a new schema with the context act and the intention act 
-				//ISchema newSchema = addCompositeInteraction(contextAct, intentionAct);
-				IInteraction newInteraction = addCompositeInteraction(contextInteraction, intentionAct);
-				//newSchema.incWeight(m_regularitySensibilityThreshold);
+				// Build a new interaction with the context pre-interaction and the enacted post-interaction 
+				IInteraction newInteraction = addCompositeInteraction(preInteraction, enactedInteraction);
 				newInteraction.setEnactionWeight(newInteraction.getEnactionWeight() + 1);
-				//System.out.println("learned " + newSchema.getLabel());
-				
-					// Created acts are part of the context 
-					// if their context and intention have passed the regularity
-					// if they are based on reliable interactions
-				if ((contextInteraction.getEnactionWeight() > m_regularitySensibilityThreshold) &&
-  				   (intentionAct.getEnactionWeight() > m_regularitySensibilityThreshold))
+				System.out.println("learned " + newInteraction);
+				m_tracer.addSubelement(learnElmnt, "interaction", newInteraction.toString());
+			
+				// The new interaction belongs to the context 
+				// if its pre-interaction and post-interaction have passed the regularity threshold
+				if ((preInteraction.getEnactionWeight()     > m_regularitySensibilityThreshold) &&
+  				    (enactedInteraction.getEnactionWeight() > m_regularitySensibilityThreshold))
 				{
 					newContextList.add(newInteraction);
 					// System.out.println("Reliable schema " + newSchema);
