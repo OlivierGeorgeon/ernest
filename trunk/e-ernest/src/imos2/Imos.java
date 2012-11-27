@@ -278,7 +278,7 @@ public class Imos implements IImos
 				
 					// Created acts are part of the context 
 					// if their context and intention have passed the regularity
-					// if they are based on reliable no�mes
+					// if they are based on reliable interactions
 				if ((contextInteraction.getEnactionWeight() > m_regularitySensibilityThreshold) &&
   				   (intentionAct.getEnactionWeight() > m_regularitySensibilityThreshold))
 				{
@@ -298,5 +298,10 @@ public class Imos implements IImos
 	public int getCounter() 
 	{
 		return m_imosCycle;
+	}
+
+	public int getRegularityThreshold() 
+	{
+		return m_regularitySensibilityThreshold;
 	}
 }

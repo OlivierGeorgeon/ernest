@@ -13,6 +13,7 @@ public interface IImos
 	 * @param regularityThreshold The regularity sensibility threshold.
 	 */
 	public void setRegularityThreshold(int regularityThreshold);
+	public int getRegularityThreshold();
 
 	/**
 	 * Track the enaction at hand. 

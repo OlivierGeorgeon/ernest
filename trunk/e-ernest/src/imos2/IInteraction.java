@@ -23,6 +23,13 @@ public interface IInteraction
 	public void setPrescriber(IInteraction prescriber);
 	public IInteraction getPrescriber();
 	public int getStep();
+	
+	/**
+	 * Prescribe this interaction's preInteraction
+	 * This method applies recursively to all this interaction's sub interactions.
+	 * @return The primitive interaction at the bottom of the hierarchy
+	 */
+	public IInteraction prescribe();
 
 	/**
 	 * Update the prescriber if this interaction was enacted
