@@ -6,6 +6,8 @@ package imos2;
  */
 public class Interaction implements IInteraction 
 {
+	private static int PRIMITIVE_WEIGHT = 100;
+	
 	public static int CORRECT_CONTINUE = 0;
 	public static int INCORRECT_INTERRUPTED = 1;
 	public static int CORRECT_COMPLETED = 2;
@@ -26,7 +28,7 @@ public class Interaction implements IInteraction
 	/**
 	 * @param moveLabel The move label.
 	 * @param effectLabel The effect label.
-	 * @param enactionValue The enaction value.
+	 * @param enactionValue The value of enacting this interaction.
 	 * @return The created primitive interaction.
 	 */
 	public static IInteraction createPrimitiveInteraction(String moveLabel, String effectLabel, int enactionValue)
@@ -53,7 +55,9 @@ public class Interaction implements IInteraction
 		m_preInteraction = preInteraction;
 		m_postInteraction = postInteraction;
 		m_enactionValue = enactionValue;
-		if (!primitive)
+		if (primitive)
+			m_enactionWeight = PRIMITIVE_WEIGHT;
+		else
 			m_length = preInteraction.getLength() + postInteraction.getLength();
 	}
 	
@@ -218,4 +222,10 @@ public class Interaction implements IInteraction
 		}
 		return prescribedInteraction;		
 	}
+	
+	public String toString()
+	{
+		return getLabel() + "(" + m_enactionValue/10 + "," + m_enactionWeight + ")";
+	}
+
 }

@@ -15,8 +15,8 @@ import ernest.ITracer;
 public class Enaction implements IEnaction 
 {
 	private IEffect m_effect = new Effect();
-	private IInteraction m_intendedPrimitiveAct = null;
-	private IInteraction m_enactedPrimitiveAct = null;
+	private IInteraction m_intendedPrimitiveInteraction = null;
+	private IInteraction m_enactedPrimitiveInteraction = null;
 	private IInteraction m_topAct = null;
 	private IInteraction m_topEnactedAct = null;
 	private IInteraction m_topRemainingAct = null;
@@ -43,12 +43,12 @@ public class Enaction implements IEnaction
 
 	public void setIntendedPrimitiveInteraction(IInteraction act) 
 	{
-		m_intendedPrimitiveAct = act;
+		m_intendedPrimitiveInteraction = act;
 	}
 
 	public IInteraction getIntendedPrimitiveInteraction() 
 	{
-		return m_intendedPrimitiveAct;
+		return m_intendedPrimitiveInteraction;
 	}
 
 	public void setTopInteraction(IInteraction act) 
@@ -103,12 +103,12 @@ public class Enaction implements IEnaction
 
 	public void setEnactedPrimitiveInteraction(IInteraction act) 
 	{
-		m_enactedPrimitiveAct = act;
+		m_enactedPrimitiveInteraction = act;
 	}
 
 	public IInteraction getEnactedPrimitiveInteraction() 
 	{
-		return m_enactedPrimitiveAct;
+		return m_enactedPrimitiveInteraction;
 	}
 	
 	public boolean isOver()
@@ -213,12 +213,12 @@ public class Enaction implements IEnaction
 
 	public void traceTrack(ITracer tracer) 
 	{
-		if (tracer != null && m_intendedPrimitiveAct != null)
+		if (tracer != null && m_intendedPrimitiveInteraction != null)
 		{
 			//tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addEventElement("top_level", m_topAct.getLength() + "");
-			tracer.addEventElement("satisfaction", m_enactedPrimitiveAct.getEnactionValue()/10 + "");
-			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveAct.getLabel());
+			tracer.addEventElement("satisfaction", m_enactedPrimitiveInteraction.getEnactionValue()/10 + "");
+			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getMoveLabel());
 
 			m_effect.trace(tracer);
 			
@@ -227,8 +227,8 @@ public class Enaction implements IEnaction
 			tracer.addSubelement(e, "top_intention", m_topAct.getLabel());
 			//tracer.addSubelement(e, "top_level", m_topAct.getSchema().getLength() + "");
 			tracer.addSubelement(e, "step", m_step + "");
-			tracer.addSubelement(e, "primitive_intended_act", m_intendedPrimitiveAct.getLabel());
-			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
+			tracer.addSubelement(e, "primitive_intended_act", m_intendedPrimitiveInteraction.getLabel());
+			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
 			//tracer.addSubelement(e, "satisfaction", m_enactedPrimitiveAct.getSatisfaction()/10 + "");
 		}
 	}
@@ -245,7 +245,7 @@ public class Enaction implements IEnaction
 				tracer.addSubelement(e, "top_enacted", m_topEnactedAct.getLabel());
 			tracer.addSubelement(e, "top_remaining", m_topRemainingAct.getLabel());
 			tracer.addSubelement(e, "next_step", m_step + "");
-			tracer.addSubelement(e, "next_primitive_intended_act", m_intendedPrimitiveAct.getLabel());
+			tracer.addSubelement(e, "next_primitive_intended_act", m_intendedPrimitiveInteraction.getLabel());
 		}
 	}
 	
@@ -258,12 +258,14 @@ public class Enaction implements IEnaction
 			if (!m_correct) tracer.addSubelement(e, "incorrect");
 			
 			Object activation = tracer.addSubelement(e, "activation_context");
-			for (IInteraction a : m_finalActivationContext)	
-				tracer.addSubelement(activation, "act", a.getLabel());
-
+			for (IInteraction i : m_finalActivationContext)	
+			{
+				System.out.println("Activation context " + i);
+				tracer.addSubelement(activation, "interaction", i.getLabel());
+			}
 			Object learning = tracer.addSubelement(e, "learning_context");
-			for (IInteraction a : m_finalLearningContext)	
-				tracer.addSubelement(learning, "act", a.getLabel());
+			for (IInteraction i : m_finalLearningContext)	
+				tracer.addSubelement(learning, "interaction", i.getLabel());
 
 			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
 		}
@@ -279,13 +281,13 @@ public class Enaction implements IEnaction
 				tracer.addEventElement("top_level", m_topAct.getLength() + "");
 			}
 			tracer.addEventElement("new_intention", m_step == 0 ? "true" : "false");
-			if (m_intendedPrimitiveAct != null)
-				tracer.addEventElement("primitive_intended_act", m_intendedPrimitiveAct.getLabel());
-			if (m_enactedPrimitiveAct !=  null)
+			if (m_intendedPrimitiveInteraction != null)
+				tracer.addEventElement("primitive_intended_act", m_intendedPrimitiveInteraction.getLabel());
+			if (m_enactedPrimitiveInteraction !=  null)
 			{
-				tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
-				tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveAct.getLabel());
-				tracer.addEventElement("satisfaction", m_enactedPrimitiveAct.getEnactionValue()/10 + "");
+				tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
+				tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getMoveLabel());
+				tracer.addEventElement("satisfaction", m_enactedPrimitiveInteraction.getEnactionValue()/10 + "");
 			}
 		}
 	}

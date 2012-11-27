@@ -1,19 +1,11 @@
-package ernest;
+package imos;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import ernest.ITracer;
 import spas.ISpas;
-import imos.ActProposition;
-import imos.Enaction;
-import imos.IAct;
-import imos.IActProposition;
-import imos.IEnaction;
-import imos.IImos;
-import imos.IProposition;
-import imos.ISchema;
-import imos.Imos;
-import imos.Proposition;
 
 /**
  * This is the regular decider for Ernest 7 that does not use spatial memory.

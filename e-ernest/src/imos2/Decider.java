@@ -1,5 +1,6 @@
 package imos2;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import ernest.ITracer;
@@ -16,7 +17,7 @@ public class Decider implements IDecider
 	ITracer m_tracer;
 	int m_maxSchemaLength = 10;
 
-	Decider(IImos imos, ISpas spas)
+	public Decider(IImos imos, ISpas spas)
 	{
 		m_imos = imos;
 		m_spas = spas;
@@ -60,9 +61,13 @@ public class Decider implements IDecider
 		ArrayList<IProposition> propositions = new ArrayList<IProposition>();	
 		
 		// Prepare the tracer.
-		Object propElmt = null;
+		Object decisionElmt = null;
+		Object activationElmt = null;
 		if (m_tracer != null)
-			propElmt = m_tracer.addEventElement("proposed_acts", true);
+		{
+			decisionElmt = m_tracer.addEventElement("activation", true);
+			activationElmt = m_tracer.addSubelement(decisionElmt, "activated_interactions");
+		}
 
 		// Primitive acts receive a default proposition for themselves
 		for(IInteraction a : m_imos.getInteractions())
@@ -88,7 +93,7 @@ public class Decider implements IDecider
 					{
 						activated = true;
 						if (m_tracer != null)
-							m_tracer.addSubelement(propElmt, "interaction", s + " intention " + s.getPostInteraction() + " w=" + s.getPostInteraction().getEnactionWeight());
+							m_tracer.addSubelement(activationElmt, "interaction", s + " intention " + s.getPostInteraction() + " w=" + s.getPostInteraction().getEnactionWeight());
 						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
@@ -148,29 +153,47 @@ public class Decider implements IDecider
 		Object proposalElmt = null;
 		if (m_tracer != null)
 		{
-			proposalElmt = m_tracer.addSubelement(propositions, "proposed_acts");
+			proposalElmt = m_tracer.addSubelement(decisionElmt, "proposed_interaction");
 		
 			for (IProposition p : propositions)
-				m_tracer.addSubelement(proposalElmt, "act", p.toString());
+			{
+				System.out.println("proposition " + p);
+				m_tracer.addSubelement(proposalElmt, "proposition", p.toString());
+			}
 		}
 		return propositions;
 	}
 	
 	/**
 	 * Select an act from the list of proposed acts
-	 * @param actPropositions The list of act propostion.
+	 * @param propositions The list of act propostion.
 	 * @return The selected act.
 	 */
-	protected IInteraction selectAct(ArrayList<IProposition> actPropositions)
+	protected IInteraction selectAct(ArrayList<IProposition> propositions)
 	{
 		
-		// sort the schema propositions by weight.
-		Collections.sort(actPropositions);
+		//Construct a list of schemaPropositions from the list of actPropositions.
+		ArrayList<IMoveProposition> movePropositions = new ArrayList<IMoveProposition>();	
 		
-		// count how many are tied with the highest weighted proposition
+		for (IProposition interactionProposition : propositions)
+		{
+			int w = interactionProposition.getWeight();
+			int e = interactionProposition.getExpectation();
+			IMoveProposition moveProposition = new MoveProposition(interactionProposition.getInteraction().getMoveLabel(), w, e, interactionProposition.getInteraction());
+			int i = movePropositions.indexOf(moveProposition);
+			if (i == -1)
+				movePropositions.add(moveProposition);
+			else
+				movePropositions.get(i).update(w, e, interactionProposition.getInteraction());
+		}
+		
+		// Sort the propositions by weight.
+		Collections.sort(movePropositions);
+		
+		// Count how many are tied with the highest weighted proposition
 		int count = 0;
-		int wp = actPropositions.get(0).getWeight();
-		for (IProposition p : actPropositions)
+		int wp = movePropositions.get(0).getWeight();
+		for (IMoveProposition p : movePropositions)
 		{
 			if (p.getWeight() != wp)
 				break;
@@ -180,9 +203,9 @@ public class Decider implements IDecider
 		// pick one at random from the top of the proposal list
 		// count is equal to the number of proposals that are tied...
 
-		IProposition selectedProposition = null;
+		IMoveProposition selectedProposition = null;
 		//if (DETERMINISTIC)
-			selectedProposition = actPropositions.get(0); // Always take the first
+			selectedProposition = movePropositions.get(0); // Always take the first
 		//else
 		//	p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
 				
@@ -194,9 +217,13 @@ public class Decider implements IDecider
 
 		// Trace the schema propositions
 		Object decision = null;
-		Object proposition = null;
 		if (m_tracer != null)
 		{
+			//Object propositionElmt = m_tracer.addSubelement(decision, "proposed_moves");
+			Object propositionElmt = m_tracer.addEventElement("proposed_moves", true);
+			for (IMoveProposition p : movePropositions)
+				m_tracer.addSubelement(propositionElmt, "move", p.toString());
+			
 			decision = m_tracer.addEventElement("decision", true);
 			m_tracer.addSubelement(decision, "select", a.toString());
 		}

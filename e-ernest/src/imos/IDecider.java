@@ -1,6 +1,6 @@
-package ernest;
+package imos;
 
-import imos.IEnaction;
+import ernest.ITracer;
 
 /**
  * A decider decides what interaction to try to enact next

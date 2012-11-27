@@ -1,6 +1,7 @@
 package ernest;
 
-import imos.IAct;
+//import imos.IAct;
+import imos2.IInteraction;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,8 @@ public interface IErnest
 	 * @param satisfaction The satisfaction.
 	 * @return The created or already existing act.
 	 */
-	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
+	//public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
+	public IInteraction addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
 
 	/**
 	 * @return The list of places in Ernest's local space memory.

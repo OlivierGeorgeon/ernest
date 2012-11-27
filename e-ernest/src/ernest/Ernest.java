@@ -12,11 +12,14 @@ import spas.ISpatialMemory;
 //import spas.IStimulation;
 import spas.Spas;
 //import spas.Stimulation;
-import imos.Enaction;
-import imos.IAct;
-import imos.IEnaction;
-import imos.IImos;
-import imos.Imos;
+import imos2.Enaction;
+//import imos.IAct;
+import imos2.IEnaction;
+import imos2.IImos;
+import imos2.IInteraction;
+import imos2.Imos;
+import imos2.Decider;
+import imos2.IDecider;
 
 
 /**
@@ -196,7 +199,7 @@ public class Ernest implements IErnest
 	 */
 	public String internalState() 
 	{
-		return m_imos.getInternalState();
+		return ""; //m_imos.getInternalState();
 	}
 		
 	public String step(IEffect effect) 
@@ -213,7 +216,7 @@ public class Ernest implements IErnest
 		// track the enaction 
 		
 		m_imos.track(m_enaction);
-		m_spas.track(m_enaction);			
+		//m_spas.track(m_enaction);			
 		
 		// Decision cycle
 		if (m_enaction.isOver())
@@ -226,14 +229,17 @@ public class Ernest implements IErnest
 		
 		m_decider.carry(m_enaction);
 		
-		return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();		
+		//return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();		
+		return m_enaction.getIntendedPrimitiveInteraction().getMoveLabel();		
 	}
 
 	public int getValue(int i, int j)
 	{
 		return m_spas.getValue(i,j);
 	}
-	public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
+	
+	//public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
+	public IInteraction addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
 	{
 		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
 	}
