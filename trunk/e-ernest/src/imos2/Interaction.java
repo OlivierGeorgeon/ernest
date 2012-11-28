@@ -1,5 +1,8 @@
 package imos2;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
  * @author Olivier
@@ -19,12 +22,13 @@ public class Interaction implements IInteraction
 	private IInteraction m_postInteraction = null;
 	private int m_enactionValue = 0;
 	private int m_enactionWeight = 0;
-	private int m_failPostValue = 0;
-	private int m_failPostWeight = 0;
 	private int m_length = 1;
 	private IInteraction m_prescriber = null;
 	private int m_step = 0;
 	
+	//private Hashtable<IInteraction,Integer> m_failures = new Hashtable<IInteraction,Integer>();
+	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
+
 	/**
 	 * @param moveLabel The move label.
 	 * @param effectLabel The effect label.
@@ -44,7 +48,8 @@ public class Interaction implements IInteraction
 	public static IInteraction createCompositeInteraction(IInteraction preInteraction, IInteraction postInteraction)
 	{
 		int enactionValue = preInteraction.getEnactionValue() + postInteraction.getEnactionValue();
-		return new Interaction("", "", false, preInteraction, postInteraction, enactionValue);
+		String moveLabel = preInteraction.getLabel() + postInteraction.getLabel();
+		return new Interaction(moveLabel, "", false, preInteraction, postInteraction, enactionValue);
 	}
 	
 	protected Interaction(String moveLabel, String effectLabel, boolean primitive, IInteraction preInteraction, IInteraction postInteraction, int enactionValue)
@@ -74,26 +79,6 @@ public class Interaction implements IInteraction
 	public int getEnactionValue() 
 	{
 		return m_enactionValue;
-	}
-
-	public void setfailPostValue(int failPostValue) 
-	{
-		m_failPostValue = failPostValue;
-	}
-
-	public int getfailPostValue()
-	{
-		return m_failPostValue;
-	}
-
-	public void setfailPostWeight(int failPostWeight) 
-	{
-		m_failPostWeight = failPostWeight;
-	}
-
-	public int getfailPostWeight() 
-	{
-		return m_failPostWeight;
 	}
 
 	public String getMoveLabel() 
@@ -178,21 +163,24 @@ public class Interaction implements IInteraction
 	 */
 	public IInteraction updatePrescriber()
 	{
+		IInteraction prescriber = m_prescriber;
+		m_prescriber = null;
 		IInteraction nextInteraction = null;
-		if (m_prescriber != null)
+		if (prescriber != null)
 		{
-			int step = m_prescriber.getStep();
+			int step = prescriber.getStep();
 			if (step == 0)
 			{
 				// The prescriber's pre-interaction was enacted
-				m_prescriber.setStep(step + 1);
-				nextInteraction = m_prescriber.getPostInteraction();
+				prescriber.setStep(step + 1);
+				nextInteraction = prescriber.getPostInteraction();
+				nextInteraction.setPrescriber(prescriber);
 			}
 			else
 			{
 				// The prescriber's post-interaction was enacted
 				// Update the prescriber's prescriber
-				nextInteraction = m_prescriber.updatePrescriber();
+				nextInteraction = prescriber.updatePrescriber();
 			}
 		}
 		
@@ -226,6 +214,22 @@ public class Interaction implements IInteraction
 	public String toString()
 	{
 		return getLabel() + "(" + m_enactionValue/10 + "," + m_enactionWeight + ")";
+	}
+
+	public IInteraction addAlternateInteraction(IInteraction interaction) 
+	{
+		IInteraction alternateInteraction = interaction;
+		int i = m_alternateInteractions.indexOf(interaction);
+		if (i == -1)
+			m_alternateInteractions.add(interaction);
+		else
+			alternateInteraction = m_alternateInteractions.get(i);
+		return alternateInteraction;
+	}
+
+	public ArrayList<IInteraction> getAlternateInteractions() 
+	{
+		return m_alternateInteractions;
 	}
 
 }

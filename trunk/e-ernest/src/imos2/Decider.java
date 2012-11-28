@@ -40,7 +40,7 @@ public class Decider implements IDecider
 		System.out.println("New decision ================ ");
 
 		ArrayList<IProposition> actPropositions = proposeInteractions(enaction.getFinalActivationContext());
-		IInteraction nextTopIntention = selectAct(actPropositions);
+		IInteraction nextTopIntention = selectInteraction2(actPropositions);
 		//IAct nextTopIntention = selectAct(enaction.getFinalActivationContext());
 		
 		newEnaction.setTopInteraction(nextTopIntention);
@@ -74,7 +74,7 @@ public class Decider implements IDecider
 		{
 			if (a.getPrimitive())
 			{
-				IProposition p = new Proposition(a, 0, 0);
+				IProposition p = new Proposition(a, 0, 0, a.getMoveLabel());
 				if (!propositions.contains(p))
 					propositions.add(p);
 			}       
@@ -93,7 +93,7 @@ public class Decider implements IDecider
 					{
 						activated = true;
 						if (m_tracer != null)
-							m_tracer.addSubelement(activationElmt, "interaction", s + " intention " + s.getPostInteraction() + " w=" + s.getPostInteraction().getEnactionWeight());
+							m_tracer.addSubelement(activationElmt, "interaction", s + " intention " + s.getPostInteraction());
 						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
 					}
 				}
@@ -101,19 +101,19 @@ public class Decider implements IDecider
 				// Activated schemas propose their intention
 				if (activated)
 				{
-					IInteraction proposedAct = s.getPostInteraction();
+					IInteraction proposedInteraction = s.getPostInteraction();
 					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
-					int w = s.getEnactionWeight() * proposedAct.getEnactionValue();
+					int w = s.getEnactionWeight() * proposedInteraction.getEnactionValue();
 					//int w = s.getWeight();
                     // The expectation is the proposing schema's weight signed with the proposed act's status  
                     int e = s.getEnactionWeight();// * (s.getIntentionAct().getStatus() ? 1 : -1);
                     //int e = 0;
 					
 					// If the intention is reliable then a proposition is constructed
-					if ((proposedAct.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
-						(proposedAct.getLength() <= m_maxSchemaLength ))
+					if ((proposedInteraction.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
+						(proposedInteraction.getLength() <= m_maxSchemaLength ))
 					{
-						IProposition p = new Proposition(proposedAct, w, e);
+						IProposition p = new Proposition(proposedInteraction, w, e, proposedInteraction.getMoveLabel());
 	
 						int i = propositions.indexOf(p);
 						if (i == -1)
@@ -129,12 +129,12 @@ public class Decider implements IDecider
 						// Expect the value of the intention's schema's intention
 						//e = proposedAct.getSchema().getIntentionAct().getSatisfaction();
 						
-						if (!proposedAct.getPrimitive())
+						if (!proposedInteraction.getPrimitive())
 						{
 							// only if the intention's intention is positive (this is some form of positive anticipation)
-							if (proposedAct.getPostInteraction().getEnactionValue() > 0)
+							if (proposedInteraction.getPostInteraction().getEnactionValue() > 0)
 							{
-								IProposition p = new Proposition(proposedAct.getPreInteraction(), w, e);
+								IProposition p = new Proposition(proposedInteraction.getPreInteraction(), w, e, proposedInteraction.getPreInteraction().getMoveLabel());
 								int i = propositions.indexOf(p);
 								if (i == -1)
 									propositions.add(p);
@@ -169,10 +169,10 @@ public class Decider implements IDecider
 	 * @param propositions The list of act propostion.
 	 * @return The selected act.
 	 */
-	protected IInteraction selectAct(ArrayList<IProposition> propositions)
+	protected IInteraction selectInteraction(ArrayList<IProposition> propositions)
 	{
 		
-		//Construct a list of schemaPropositions from the list of actPropositions.
+		// Construct a list of move propositions from the list of interaction propositions.
 		ArrayList<IMoveProposition> movePropositions = new ArrayList<IMoveProposition>();	
 		
 		for (IProposition interactionProposition : propositions)
@@ -222,6 +222,89 @@ public class Decider implements IDecider
 			//Object propositionElmt = m_tracer.addSubelement(decision, "proposed_moves");
 			Object propositionElmt = m_tracer.addEventElement("proposed_moves", true);
 			for (IMoveProposition p : movePropositions)
+				m_tracer.addSubelement(propositionElmt, "move", p.toString());
+			
+			decision = m_tracer.addEventElement("decision", true);
+			m_tracer.addSubelement(decision, "select", a.toString());
+		}
+		
+		return a;
+	}
+
+	/**
+	 * Select an act from the list of proposed acts
+	 * @param propositions The list of act propostion.
+	 * @return The selected act.
+	 */
+	protected IInteraction selectInteraction2(ArrayList<IProposition> propositions)
+	{
+		// Propositions for alternate interactions get the move label of their parent interaction
+		for (IProposition interactionProposition : propositions)
+		{
+			for (IInteraction i : interactionProposition.getInteraction().getAlternateInteractions())
+			{
+				for (IProposition ip : propositions)
+				{
+					if (ip.getInteraction().equals(i) && !ip.getTransferred())
+					{
+						interactionProposition.addWeight(ip.getWeight());
+						ip.setTransferred(true);
+					}
+				}
+			}
+		}
+		
+//		// Construct a list of move propositions from the list of interaction propositions.
+//		ArrayList<IMoveProposition> movePropositions = new ArrayList<IMoveProposition>();	
+//		
+//		for (IProposition interactionProposition : propositions)
+//		{
+//			int w = interactionProposition.getWeight();
+//			int e = interactionProposition.getExpectation();
+//			IMoveProposition moveProposition = new MoveProposition(interactionProposition.getMoveLabel(), w, e, interactionProposition.getInteraction());
+//			int i = movePropositions.indexOf(moveProposition);
+//			if (i == -1)
+//				movePropositions.add(moveProposition);
+//			else
+//				movePropositions.get(i).update(w, e, interactionProposition.getInteraction());
+//		}
+		
+		
+		// Sort the propositions by weight.
+		Collections.sort(propositions);
+		
+		// Count how many are tied with the highest weighted proposition
+		int count = 0;
+		int wp = propositions.get(0).getWeight();
+		for (IProposition p : propositions)
+		{
+			if (p.getWeight() != wp)
+				break;
+			count++;
+		}
+
+		// pick one at random from the top of the proposal list
+		// count is equal to the number of proposals that are tied...
+
+		IProposition selectedProposition = null;
+		//if (DETERMINISTIC)
+			selectedProposition = propositions.get(0); // Always take the first
+		//else
+		//	p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
+				
+		IInteraction a = selectedProposition.getInteraction();
+		
+		//a.setActivation(selectedProposition.getWeight());
+		
+		System.out.println("Select:" + a);
+
+		// Trace the schema propositions
+		Object decision = null;
+		if (m_tracer != null)
+		{
+			//Object propositionElmt = m_tracer.addSubelement(decision, "proposed_moves");
+			Object propositionElmt = m_tracer.addEventElement("consolidated_propositions", true);
+			for (IProposition p : propositions)
 				m_tracer.addSubelement(propositionElmt, "move", p.toString());
 			
 			decision = m_tracer.addEventElement("decision", true);

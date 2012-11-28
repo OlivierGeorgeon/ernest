@@ -12,6 +12,8 @@ public class Proposition implements IProposition
 	private IInteraction m_interaction;
 	private int m_weight = 0; 
 	private int m_expectation = 0;
+	private String m_moveLabel = "";
+	private boolean m_transferred = false;
 	
 	/**
 	 * Constructor. 
@@ -19,16 +21,21 @@ public class Proposition implements IProposition
 	 * @param w The proposal's weight.
 	 * @param e The proposal's expectation.
 	 */
-	public Proposition(IInteraction i, int w, int e)
+	public Proposition(IInteraction i, int w, int e, String m)
 	{
 		m_interaction = i;
 		m_weight = w;
 		m_expectation = e;
+		m_moveLabel = m;
 	}
 
 	public int compareTo(IProposition o) 
 	{
-		return new Integer(o.getWeight()).compareTo(m_weight);
+		//Transferred propositions are smaller 
+		int oo = (o.getTransferred() ?  -10000 : 0);
+		int ot = (m_transferred ? -10000 : 0);
+		int c = new Integer(o.getWeight() + oo).compareTo(m_weight + ot);
+		return c; 
 	}
 
 	public IInteraction getInteraction() 
@@ -80,7 +87,32 @@ public class Proposition implements IProposition
 	 */
 	public String toString()
 	{
-		String s = m_interaction + " with weight = " + m_weight/10 ;
+		String s = m_interaction + " with weight = " + m_weight/10 + " transferred = " + m_transferred;
 		return s;
+	}
+
+	public void setMoveLabel(String move) 
+	{
+		m_moveLabel = move;
+	}
+
+	public String getMoveLabel() 
+	{
+		return m_moveLabel;
+	}
+
+	public void addWeight(int w) 
+	{
+		m_weight += w;
+	}
+
+	public void setTransferred(boolean transferred) 
+	{
+		m_transferred = transferred;
+	}
+
+	public boolean getTransferred() 
+	{
+		return m_transferred;
 	}
 }

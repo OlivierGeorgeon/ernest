@@ -1,11 +1,13 @@
 package imos2;
 
 /**
- * A proposal that Ernest enacts an interaction. 
+ * A proposal that Ernest performs a move. 
  * @author ogeorgeon
  */
-public interface IProposition extends Comparable<IProposition> 
+public interface IMoveProposition extends Comparable<IMoveProposition> 
 {
+	public String getMove();
+	
 	/**
 	 * @return The proposition's schema.
 	 */
@@ -25,7 +27,7 @@ public interface IProposition extends Comparable<IProposition>
 	 * @param w The weight to add to the proposition.
 	 * @param e The expectatin to add to the proposition.
 	 */
-	public void update(int w, int e);
+	public void update(int w, int e, IInteraction i);
 		
 	/**
 	 * Two propositions are equal if they propose the same schema. 
@@ -33,11 +35,4 @@ public interface IProposition extends Comparable<IProposition>
 	public boolean equals(Object o);
 	
 	public String toString();
-	
-	public void setMoveLabel(String move);
-	public String getMoveLabel();
-	
-	public void addWeight(int w);
-	public void setTransferred(boolean transferred);
-	public boolean getTransferred();
 }

@@ -1,8 +1,6 @@
 package imos2;
 
 
-import imos2.IInteraction;
-
 import java.util.ArrayList;
 import java.util.List;
 import ernest.ITracer;
@@ -137,6 +135,7 @@ public class Imos implements IImos
 		m_imosCycle++;		
 		
 		IInteraction intendedPrimitiveInteraction = enaction.getIntendedPrimitiveInteraction();
+		IInteraction topIntendedInteraction       = enaction.getTopInteraction();
 		IInteraction enactedPrimitiveInteraction  = null;
 		IInteraction topEnactedInteraction        = null;
 		IInteraction topRemainingInteraction      = null;
@@ -150,14 +149,16 @@ public class Imos implements IImos
 
 			// Compute the top actually enacted act
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
-			// TODO compute the actually enacted interaction.
-			topEnactedInteraction = enactedPrimitiveInteraction;
+			// TODO compute the actually enacted top interaction.
+			topEnactedInteraction = topEnactedInteraction(enactedPrimitiveInteraction, intendedPrimitiveInteraction);
 			
 			// Update the prescriber hierarchy.
 			if (intendedPrimitiveInteraction.equals(enactedPrimitiveInteraction)) 
 				topRemainingInteraction = intendedPrimitiveInteraction.updatePrescriber();
 			else
+			{
 				intendedPrimitiveInteraction.terminate();
+			}
 			
 			// Compute the next intention, null if we have reached the end of the intended act.
 			//topRemainingInteraction = nextInteraction(intendedPrimitiveInteraction, enactedPrimitiveInteraction);	
@@ -199,6 +200,8 @@ public class Imos implements IImos
 			{
 				m_internalState= "!";
 				enaction.setCorrect(false);
+				intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
+				System.out.println(intendedTopInteraction + " has alternate interaction " + enactedTopInteraction );
 			}
 			
 //			// Compute the performed act
@@ -321,4 +324,42 @@ public class Imos implements IImos
 	{
 		return m_regularitySensibilityThreshold;
 	}
+	
+	/**
+	 * Recursively construct the current actually enacted act. 
+	 *  (may construct extra intermediary schemas but that's ok because their weight is not incremented)
+	 * @param enactedInteraction The enacted interaction.
+	 * @param intendedInteraction The intended interaction.
+	 * @return the actually enacted interaction
+	 */
+	private IInteraction topEnactedInteraction(IInteraction enactedInteraction, IInteraction intendedInteraction)
+	{
+		IInteraction topEnactedInteraction = null;
+		IInteraction prescriberInteraction = intendedInteraction.getPrescriber();
+		
+		if (prescriberInteraction == null)
+			// top interaction
+			topEnactedInteraction = enactedInteraction;
+		else
+		{
+			// The i was prescribed
+			if (prescriberInteraction.getStep() == 0)
+			{
+				// enacted the prescriber's pre-interaction 
+				//topEnactedInteraction = enactedAct(prescriberSchema, a);
+				topEnactedInteraction = topEnactedInteraction(enactedInteraction, prescriberInteraction);
+			}
+			else
+			{
+				// enacted the prescriber's post-interaction
+				IInteraction interaction = addCompositeInteraction(prescriberInteraction.getPreInteraction(), enactedInteraction);
+				topEnactedInteraction = topEnactedInteraction(interaction, prescriberInteraction);
+				//topEnactedInteraction = enactedAct(prescriberSchema, enactedSchema.getSucceedingAct());
+			}
+		}
+			
+		return topEnactedInteraction;
+	}
+	
+
 }
