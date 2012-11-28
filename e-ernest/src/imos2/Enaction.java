@@ -18,7 +18,7 @@ public class Enaction implements IEnaction
 	private IInteraction m_intendedPrimitiveInteraction = null;
 	private IInteraction m_enactedPrimitiveInteraction = null;
 	private IInteraction m_topAct = null;
-	private IInteraction m_topEnactedAct = null;
+	private IInteraction m_topEnactedInteraction = null;
 	private IInteraction m_topRemainingAct = null;
 	private int m_simulationStatus = 0;
 	private int m_step = 0;
@@ -61,14 +61,14 @@ public class Enaction implements IEnaction
 		return m_topAct;
 	}
 	
-	public void setTopEnactedInteraction(IInteraction act) 
+	public void setTopEnactedInteraction(IInteraction interaction) 
 	{
-		m_topEnactedAct = act;
+		m_topEnactedInteraction = interaction;
 	}
 
 	public IInteraction getTopEnactedInteraction() 
 	{
-		return m_topEnactedAct;
+		return m_topEnactedInteraction;
 	}
 	
 	public void setTopRemainingInteraction(IInteraction act) 
@@ -225,10 +225,10 @@ public class Enaction implements IEnaction
 			Object e = tracer.addEventElement("track_enaction");
 		
 			tracer.addSubelement(e, "top_intention", m_topAct.getLabel());
-			//tracer.addSubelement(e, "top_level", m_topAct.getSchema().getLength() + "");
+			tracer.addSubelement(e, "top_enacted_interaction", m_topEnactedInteraction.getLabel());
 			tracer.addSubelement(e, "step", m_step + "");
-			tracer.addSubelement(e, "primitive_intended_act", m_intendedPrimitiveInteraction.getLabel());
-			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
+			tracer.addSubelement(e, "primitive_intended_interaction", m_intendedPrimitiveInteraction.getLabel());
+			tracer.addSubelement(e, "primitive_enacted_interaction", m_enactedPrimitiveInteraction.getLabel());
 			//tracer.addSubelement(e, "satisfaction", m_enactedPrimitiveAct.getSatisfaction()/10 + "");
 		}
 	}
@@ -239,13 +239,13 @@ public class Enaction implements IEnaction
 		{
 			Object e = tracer.addEventElement("carry_enaction");
 
-			tracer.addSubelement(e, "top_intention", m_topAct.getLabel());
+			tracer.addSubelement(e, "top_intention", m_topAct.toString());
 			tracer.addSubelement(e, "top_level", m_topAct.getLength() + "");
-			if (m_topEnactedAct != null)
-				tracer.addSubelement(e, "top_enacted", m_topEnactedAct.getLabel());
-			tracer.addSubelement(e, "top_remaining", m_topRemainingAct.getLabel());
+			if (m_topEnactedInteraction != null)
+				tracer.addSubelement(e, "top_enacted", m_topEnactedInteraction.toString());
+			tracer.addSubelement(e, "top_remaining", m_topRemainingAct.toString());
 			tracer.addSubelement(e, "next_step", m_step + "");
-			tracer.addSubelement(e, "next_primitive_intended_act", m_intendedPrimitiveInteraction.getLabel());
+			tracer.addSubelement(e, "next_primitive_intended_act", m_intendedPrimitiveInteraction.toString());
 		}
 	}
 	

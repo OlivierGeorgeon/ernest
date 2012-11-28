@@ -1,5 +1,7 @@
 package imos2;
 
+import java.util.ArrayList;
+
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
  * @author Olivier
@@ -14,15 +16,27 @@ public interface IInteraction
 	public int getEnactionWeight();
 	public IInteraction getPreInteraction();
 	public IInteraction getPostInteraction();
-	public void setfailPostValue(int failPostValue);
-	public int getfailPostValue();
-	public void setfailPostWeight(int failPostWeight);
-	public int getfailPostWeight();
 	public int getLength();
+	
+	/**
+	 * @param step The current step during the enaction of this interaction.
+	 */
 	public void setStep(int step);
-	public void setPrescriber(IInteraction prescriber);
-	public IInteraction getPrescriber();
+	
+	/**
+	 * @return The current step during the enaction of this interaction.
+	 */
 	public int getStep();
+	
+	/**
+	 * @param prescriber The interaction that prescribes the enaction of this interaction.
+	 */
+	public void setPrescriber(IInteraction prescriber);
+	
+	/**
+	 * @return The interaction that prescribes the enaction of this interaction.
+	 */
+	public IInteraction getPrescriber();
 	
 	/**
 	 * Prescribe this interaction's preInteraction
@@ -41,4 +55,11 @@ public interface IInteraction
 	 * Clear the prescriber hierarchy
 	 */
 	public void terminate();
+	
+	/**
+	 * @param interaction The actually enacted interaction
+	 * @return The number of time 
+	 */
+	public IInteraction addAlternateInteraction(IInteraction interaction);
+	public ArrayList<IInteraction> getAlternateInteractions();
 }
