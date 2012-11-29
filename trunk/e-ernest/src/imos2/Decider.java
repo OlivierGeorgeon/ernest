@@ -1,6 +1,5 @@
 package imos2;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import ernest.ITracer;
@@ -17,6 +16,10 @@ public class Decider implements IDecider
 	ITracer m_tracer;
 	int m_maxSchemaLength = 10;
 
+	/**
+	 * @param imos The sequential system
+	 * @param spas The spatial system
+	 */
 	public Decider(IImos imos, ISpas spas)
 	{
 		m_imos = imos;
@@ -40,8 +43,7 @@ public class Decider implements IDecider
 		System.out.println("New decision ================ ");
 
 		ArrayList<IProposition> actPropositions = proposeInteractions(enaction.getFinalActivationContext());
-		IInteraction nextTopIntention = selectInteraction2(actPropositions);
-		//IAct nextTopIntention = selectAct(enaction.getFinalActivationContext());
+		IInteraction nextTopIntention = selectInteraction(actPropositions);
 		
 		newEnaction.setTopInteraction(nextTopIntention);
 		newEnaction.setTopRemainingInteraction(nextTopIntention);
@@ -52,9 +54,9 @@ public class Decider implements IDecider
 	}
 	
 	/**
-	 * Construct a list of proposed acts based on the current context
-	 * @param activationList The list of acts that form the current context.
-	 * @return The list of proposed acts.
+	 * Construct a list of propositions based on the current context
+	 * @param activationList The list of interactions that form the current context.
+	 * @return The list of propositions.
 	 */
 	protected ArrayList<IProposition> proposeInteractions(ArrayList<IInteraction> activationList)
 	{
@@ -69,91 +71,82 @@ public class Decider implements IDecider
 			activationElmt = m_tracer.addSubelement(decisionElmt, "activated_interactions");
 		}
 
-		// Primitive acts receive a default proposition for themselves
+		// Primitive interactions receive a default proposition for themselves
 		for(IInteraction a : m_imos.getInteractions())
 		{
 			if (a.getPrimitive())
 			{
-				IProposition p = new Proposition(a, 0, 0, a.getMoveLabel());
+				IProposition p = new Proposition(a, 0, a.getMoveLabel());
 				if (!propositions.contains(p))
 					propositions.add(p);
 			}       
 		}
 
-		// Browse all the existing schemas 
-		for (IInteraction s : m_imos.getInteractions())
+		// Browse all the existing interactions 
+		for (IInteraction i : m_imos.getInteractions())
 		{
-			if (!s.getPrimitive())
+			if (!i.getPrimitive())
 			{
-				// Activate the schemas that match the context 
+				// If this interaction's pre-interaction belongs to the context then this interaction is activated 
 				boolean activated = false;
 				for (IInteraction contextAct : activationList)
 				{
-					if (s.getPreInteraction().equals(contextAct))
+					if (i.getPreInteraction().equals(contextAct))
 					{
 						activated = true;
 						if (m_tracer != null)
-							m_tracer.addSubelement(activationElmt, "interaction", s + " intention " + s.getPostInteraction());
-						//System.out.println("Activate " + s + " s=" + s.getIntentionAct().getSatisfaction());
+							m_tracer.addSubelement(activationElmt, "interaction", i + " intention " + i.getPostInteraction());
 					}
 				}
 				
-				// Activated schemas propose their intention
+				// Activated interactions propose their post-interaction
 				if (activated)
 				{
-					IInteraction proposedInteraction = s.getPostInteraction();
-					// The weight is the proposing schema's weight multiplied by the proposed act's satisfaction
-					int w = s.getEnactionWeight() * proposedInteraction.getEnactionValue();
-					//int w = s.getWeight();
-                    // The expectation is the proposing schema's weight signed with the proposed act's status  
-                    int e = s.getEnactionWeight();// * (s.getIntentionAct().getStatus() ? 1 : -1);
-                    //int e = 0;
+					IInteraction proposedInteraction = i.getPostInteraction();
+					// The weight is the proposing interaction's weight multiplied by the proposed interaction's satisfaction
+					int w = i.getEnactionWeight() * proposedInteraction.getEnactionValue();
 					
 					// If the intention is reliable then a proposition is constructed
-					if ((proposedInteraction.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
-						(proposedInteraction.getLength() <= m_maxSchemaLength ))
+//					if ((proposedInteraction.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
+//						(proposedInteraction.getLength() <= m_maxSchemaLength ))
 					{
-						IProposition p = new Proposition(proposedInteraction, w, e, proposedInteraction.getMoveLabel());
+						IProposition p = new Proposition(proposedInteraction, w, proposedInteraction.getMoveLabel());
 	
-						int i = propositions.indexOf(p);
-						if (i == -1)
+						int j = propositions.indexOf(p);
+						if (j == -1)
 							propositions.add(p);
 						else
-							propositions.get(i).update(w, e);
+							propositions.get(j).addWeight(w);
 					}
 					// If the intention is not reliable
-					// if the intention's schema has not passed the threshold then  
-					// the activation is propagated to the intention's schema's context
-					else
-					{
-						// Expect the value of the intention's schema's intention
-						//e = proposedAct.getSchema().getIntentionAct().getSatisfaction();
-						
-						if (!proposedInteraction.getPrimitive())
-						{
-							// only if the intention's intention is positive (this is some form of positive anticipation)
-							if (proposedInteraction.getPostInteraction().getEnactionValue() > 0)
-							{
-								IProposition p = new Proposition(proposedInteraction.getPreInteraction(), w, e, proposedInteraction.getPreInteraction().getMoveLabel());
-								int i = propositions.indexOf(p);
-								if (i == -1)
-									propositions.add(p);
-								else
-									propositions.get(i).update(w, e);
-							}
-						}
-					}
+					// then the activation is propagated to the intention's pre-interaction
+//					else
+//					{
+//						if (!proposedInteraction.getPrimitive())
+//						{
+//							// only if the intention's intention is positive (this is some form of positive anticipation)
+//							if (proposedInteraction.getPostInteraction().getEnactionValue() > 0)
+//							{
+//								IProposition p = new Proposition(proposedInteraction.getPreInteraction(), w, proposedInteraction.getPreInteraction().getMoveLabel());
+//								int j = propositions.indexOf(p);
+//								if (j == -1)
+//									propositions.add(p);
+//								else
+//									propositions.get(j).addWeight(w);
+//							}
+//						}
+//					}
 				}
 			}
 		}
 		
-		// Log the propositions
+		// Trace the propositions
 		
 		//System.out.println("Propose: ");
 		Object proposalElmt = null;
 		if (m_tracer != null)
 		{
-			proposalElmt = m_tracer.addSubelement(decisionElmt, "proposed_interaction");
+			proposalElmt = m_tracer.addSubelement(decisionElmt, "propositions");
 		
 			for (IProposition p : propositions)
 			{
@@ -161,157 +154,67 @@ public class Decider implements IDecider
 				m_tracer.addSubelement(proposalElmt, "proposition", p.toString());
 			}
 		}
+		
 		return propositions;
 	}
 	
 	/**
-	 * Select an act from the list of proposed acts
-	 * @param propositions The list of act propostion.
-	 * @return The selected act.
+	 * Select an interaction from the list of proposed interactions
+	 * @param propositions The list of propositions.
+	 * @return The selected interaction.
 	 */
 	protected IInteraction selectInteraction(ArrayList<IProposition> propositions)
 	{
-		
-		// Construct a list of move propositions from the list of interaction propositions.
-		ArrayList<IMoveProposition> movePropositions = new ArrayList<IMoveProposition>();	
-		
-		for (IProposition interactionProposition : propositions)
-		{
-			int w = interactionProposition.getWeight();
-			int e = interactionProposition.getExpectation();
-			IMoveProposition moveProposition = new MoveProposition(interactionProposition.getInteraction().getMoveLabel(), w, e, interactionProposition.getInteraction());
-			int i = movePropositions.indexOf(moveProposition);
-			if (i == -1)
-				movePropositions.add(moveProposition);
-			else
-				movePropositions.get(i).update(w, e, interactionProposition.getInteraction());
-		}
-		
-		// Sort the propositions by weight.
-		Collections.sort(movePropositions);
-		
-		// Count how many are tied with the highest weighted proposition
-		int count = 0;
-		int wp = movePropositions.get(0).getWeight();
-		for (IMoveProposition p : movePropositions)
-		{
-			if (p.getWeight() != wp)
-				break;
-			count++;
-		}
-
-		// pick one at random from the top of the proposal list
-		// count is equal to the number of proposals that are tied...
-
-		IMoveProposition selectedProposition = null;
-		//if (DETERMINISTIC)
-			selectedProposition = movePropositions.get(0); // Always take the first
-		//else
-		//	p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
-				
-		IInteraction a = selectedProposition.getInteraction();
-		
-		//a.setActivation(selectedProposition.getWeight());
-		
-		System.out.println("Select:" + a);
-
-		// Trace the schema propositions
-		Object decision = null;
+		Object selectionElmt = null;
+		Object consolidationElmt = null;
 		if (m_tracer != null)
 		{
-			//Object propositionElmt = m_tracer.addSubelement(decision, "proposed_moves");
-			Object propositionElmt = m_tracer.addEventElement("proposed_moves", true);
-			for (IMoveProposition p : movePropositions)
-				m_tracer.addSubelement(propositionElmt, "move", p.toString());
-			
-			decision = m_tracer.addEventElement("decision", true);
-			m_tracer.addSubelement(decision, "select", a.toString());
+			selectionElmt = m_tracer.addEventElement("selection", true);
+			consolidationElmt = m_tracer.addSubelement(selectionElmt, "consolidation");
 		}
 		
-		return a;
-	}
-
-	/**
-	 * Select an act from the list of proposed acts
-	 * @param propositions The list of act propostion.
-	 * @return The selected act.
-	 */
-	protected IInteraction selectInteraction2(ArrayList<IProposition> propositions)
-	{
-		// Propositions for alternate interactions get the move label of their parent interaction
+		// Transfer the weight of alternate interactions to their prominent interactions
 		for (IProposition interactionProposition : propositions)
 		{
 			for (IInteraction i : interactionProposition.getInteraction().getAlternateInteractions())
 			{
 				for (IProposition ip : propositions)
 				{
-					if (ip.getInteraction().equals(i) && !ip.getTransferred())
+					if (ip.getInteraction().equals(i))// && !ip.getTransferred())
 					{
 						interactionProposition.addWeight(ip.getWeight());
 						ip.setTransferred(true);
+						if (m_tracer != null)
+						{
+							m_tracer.addSubelement(consolidationElmt, "proposition", ip.getInteraction().getLabel() +  " transfers " + ip.getWeight()/10 + " to " + interactionProposition.getInteraction().getLabel());						
+						}
 					}
 				}
 			}
 		}
 		
-//		// Construct a list of move propositions from the list of interaction propositions.
-//		ArrayList<IMoveProposition> movePropositions = new ArrayList<IMoveProposition>();	
-//		
-//		for (IProposition interactionProposition : propositions)
-//		{
-//			int w = interactionProposition.getWeight();
-//			int e = interactionProposition.getExpectation();
-//			IMoveProposition moveProposition = new MoveProposition(interactionProposition.getMoveLabel(), w, e, interactionProposition.getInteraction());
-//			int i = movePropositions.indexOf(moveProposition);
-//			if (i == -1)
-//				movePropositions.add(moveProposition);
-//			else
-//				movePropositions.get(i).update(w, e, interactionProposition.getInteraction());
-//		}
-		
-		
 		// Sort the propositions by weight.
 		Collections.sort(propositions);
 		
-		// Count how many are tied with the highest weighted proposition
-		int count = 0;
-		int wp = propositions.get(0).getWeight();
-		for (IProposition p : propositions)
-		{
-			if (p.getWeight() != wp)
-				break;
-			count++;
-		}
-
-		// pick one at random from the top of the proposal list
-		// count is equal to the number of proposals that are tied...
-
-		IProposition selectedProposition = null;
-		//if (DETERMINISTIC)
-			selectedProposition = propositions.get(0); // Always take the first
-		//else
-		//	p = schemaPropositions.get(m_rand.nextInt(count)); // Break the tie at random
-				
-		IInteraction a = selectedProposition.getInteraction();
+		// Pick the most weighted proposition
+		IInteraction selectedInteraction = propositions.get(0).getInteraction();
 		
-		//a.setActivation(selectedProposition.getWeight());
-		
-		System.out.println("Select:" + a);
+		System.out.println("Select:" + selectedInteraction);
 
-		// Trace the schema propositions
-		Object decision = null;
+		// Trace the propositions
 		if (m_tracer != null)
 		{
-			//Object propositionElmt = m_tracer.addSubelement(decision, "proposed_moves");
-			Object propositionElmt = m_tracer.addEventElement("consolidated_propositions", true);
+			//Object propositionElmt = m_tracer.addEventElement("consolidated_propositions", true);
+			Object propositionElmt = m_tracer.addSubelement(selectionElmt, "consolidated_propositions");
 			for (IProposition p : propositions)
-				m_tracer.addSubelement(propositionElmt, "move", p.toString());
+				if (!p.getTransferred())
+					m_tracer.addSubelement(propositionElmt, "proposition", p.toString());
 			
-			decision = m_tracer.addEventElement("decision", true);
-			m_tracer.addSubelement(decision, "select", a.toString());
+			m_tracer.addSubelement(selectionElmt, "selected_interaction", selectedInteraction.toString());
+			m_tracer.addSubelement(selectionElmt, "angst", "" + propositions.get(0).getAngst());
 		}
 		
-		return a;
+		return selectedInteraction;
 	}
 
 	public void carry(IEnaction enaction)

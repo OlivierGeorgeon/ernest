@@ -187,6 +187,13 @@ public class Imos implements IImos
 	 */
 	public void terminate(IEnaction enaction)
 	{
+		Object terminateElmnt = null;
+		if (m_tracer != null)
+		{
+			//Object propositionElmt = m_tracer.addSubelement(decision, "proposed_moves");
+			terminateElmnt = m_tracer.addEventElement("learned_alternate", true);
+		}
+
 		IInteraction intendedTopInteraction = enaction.getTopInteraction();
 		IInteraction enactedTopInteraction  = enaction.getTopEnactedInteraction();
 		ArrayList<IInteraction> previousLearningContext = enaction.getPreviousLearningContext();
@@ -200,7 +207,11 @@ public class Imos implements IImos
 			{
 				m_internalState= "!";
 				enaction.setCorrect(false);
-				intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
+				boolean newAlternate = intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
+				if (newAlternate && m_tracer != null)
+				{
+					m_tracer.addSubelement(terminateElmnt, "interaction", intendedTopInteraction.getLabel() + " has alternate " + enactedTopInteraction.getLabel());
+				}
 				System.out.println(intendedTopInteraction + " has alternate interaction " + enactedTopInteraction );
 			}
 			
