@@ -1,19 +1,17 @@
 package imos2;
 
-import imos.IAct;
-import imos.ISchema;
-
 /**
- * A proposal that Ernest enacts an interaction. 
+ * A proposition that Ernest enacts an interaction. 
  * @author ogeorgeon
  */
 public class Proposition implements IProposition 
 {
 	private IInteraction m_interaction;
 	private int m_weight = 0; 
-	private int m_expectation = 0;
 	private String m_moveLabel = "";
 	private boolean m_transferred = false;
+	private int m_pros = 0;
+	private int m_cons = 0;
 	
 	/**
 	 * Constructor. 
@@ -21,11 +19,11 @@ public class Proposition implements IProposition
 	 * @param w The proposal's weight.
 	 * @param e The proposal's expectation.
 	 */
-	public Proposition(IInteraction i, int w, int e, String m)
+	public Proposition(IInteraction i, int w, String m)
 	{
 		m_interaction = i;
 		m_weight = w;
-		m_expectation = e;
+		if (w > 0) m_pros+=w; else m_cons+=w;
 		m_moveLabel = m;
 	}
 
@@ -47,18 +45,13 @@ public class Proposition implements IProposition
 	{
 		return m_weight;
 	}
-
-	public int getExpectation() 
-	{
-		return m_expectation;
-	}
-
-	public void update(int w, int e) 
+	
+	public void addWeight(int w) 
 	{
 		m_weight += w;
-		m_expectation +=e;
+		if (w > 0) m_pros+=w; else m_cons+=w;
 	}
-	
+
 	/**
 	 * Two propositions are equal if they propose the same interaction. 
 	 */
@@ -87,7 +80,7 @@ public class Proposition implements IProposition
 	 */
 	public String toString()
 	{
-		String s = m_interaction + " with weight = " + m_weight/10 + " transferred = " + m_transferred;
+		String s = m_interaction + " with weight = " + m_weight/10;// + " transferred = " + m_transferred;
 		return s;
 	}
 
@@ -101,11 +94,6 @@ public class Proposition implements IProposition
 		return m_moveLabel;
 	}
 
-	public void addWeight(int w) 
-	{
-		m_weight += w;
-	}
-
 	public void setTransferred(boolean transferred) 
 	{
 		m_transferred = transferred;
@@ -115,4 +103,17 @@ public class Proposition implements IProposition
 	{
 		return m_transferred;
 	}
+
+	public int getAngst() 
+	{
+		int angst = 1;
+		if (m_pros != 0)
+			angst = (int) Math.round(- 10f * m_cons / m_pros);
+		return angst;
+	}
+	
+//	private void updateProCon(int w)
+//	{
+//		if (w > 0) m_pros+=w; else m_cons+=w;
+//	}
 }

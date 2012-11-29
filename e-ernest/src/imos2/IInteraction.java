@@ -58,8 +58,8 @@ public interface IInteraction
 	
 	/**
 	 * @param interaction The actually enacted interaction
-	 * @return The number of time 
+	 * @return true if the alternate interaction is new 
 	 */
-	public IInteraction addAlternateInteraction(IInteraction interaction);
+	public boolean addAlternateInteraction(IInteraction interaction);
 	public ArrayList<IInteraction> getAlternateInteractions();
 }

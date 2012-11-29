@@ -216,15 +216,20 @@ public class Interaction implements IInteraction
 		return getLabel() + "(" + m_enactionValue/10 + "," + m_enactionWeight + ")";
 	}
 
-	public IInteraction addAlternateInteraction(IInteraction interaction) 
+	public boolean addAlternateInteraction(IInteraction interaction) 
 	{
+		boolean newAlternate = false;
 		IInteraction alternateInteraction = interaction;
 		int i = m_alternateInteractions.indexOf(interaction);
 		if (i == -1)
+		{
 			m_alternateInteractions.add(interaction);
+			newAlternate = true;
+		}
 		else
 			alternateInteraction = m_alternateInteractions.get(i);
-		return alternateInteraction;
+		
+		return newAlternate;
 	}
 
 	public ArrayList<IInteraction> getAlternateInteractions() 

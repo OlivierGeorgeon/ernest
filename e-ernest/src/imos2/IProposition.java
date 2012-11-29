@@ -1,13 +1,13 @@
 package imos2;
 
 /**
- * A proposal that Ernest enacts an interaction. 
+ * A proposition to enact an interaction. 
  * @author ogeorgeon
  */
 public interface IProposition extends Comparable<IProposition> 
 {
 	/**
-	 * @return The proposition's schema.
+	 * @return The interaction proposed by this proposition.
 	 */
 	public IInteraction getInteraction();
 	
@@ -17,27 +17,25 @@ public interface IProposition extends Comparable<IProposition>
 	public int getWeight();
 	
 	/**
-	 * @return The proposition's expectation.
-	 */
-	public int getExpectation();
-
-	/**
 	 * @param w The weight to add to the proposition.
-	 * @param e The expectatin to add to the proposition.
 	 */
-	public void update(int w, int e);
+	public void addWeight(int w);
 		
 	/**
-	 * Two propositions are equal if they propose the same schema. 
+	 * Two propositions are equal if they propose the same interaction. 
 	 */
 	public boolean equals(Object o);
 	
-	public String toString();
+	/**
+	 * The angst depends on the values at stake and on how tight are the pros and cons
+	 * @return The angst value associated with this choice
+	 */
+	public int getAngst();
+
 	
 	public void setMoveLabel(String move);
 	public String getMoveLabel();
 	
-	public void addWeight(int w);
 	public void setTransferred(boolean transferred);
 	public boolean getTransferred();
 }
