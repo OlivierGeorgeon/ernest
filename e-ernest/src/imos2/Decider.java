@@ -143,7 +143,7 @@ public class Decider implements IDecider
 						p.addWeight(w);
 						if (m_tracer != null)
 						{
-							m_tracer.addSubelement(consolidationElmt, "balance", p.getInteraction().getLabel() +  " weight  " + w/10 + " from " + alt.getLabel());						
+							m_tracer.addSubelement(consolidationElmt, "proposed", p.getInteraction().getLabel() + " alternate " + alt.getLabel() +  " of weight  " + w/10);						
 						}
 					}
 				}
@@ -217,13 +217,7 @@ public class Decider implements IDecider
 
 		// Trace the propositions
 		if (m_tracer != null)
-		{
-			//Object propositionElmt = m_tracer.addEventElement("consolidated_propositions", true);
-			Object propositionElmt = m_tracer.addSubelement(selectionElmt, "consolidated_propositions");
-			for (IProposition p : propositions)
-				if (!p.getTransferred())
-					m_tracer.addSubelement(propositionElmt, "proposition", p.toString());
-			
+		{			
 			m_tracer.addSubelement(selectionElmt, "selected_interaction", selectedInteraction.toString());
 			m_tracer.addSubelement(selectionElmt, "angst", "" + propositions.get(0).getAngst());
 		}

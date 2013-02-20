@@ -187,12 +187,6 @@ public class Imos implements IImos
 	 */
 	public void terminate(IEnaction enaction)
 	{
-		Object terminateElmnt = null;
-		if (m_tracer != null)
-		{
-			//Object propositionElmt = m_tracer.addSubelement(decision, "proposed_moves");
-			terminateElmnt = m_tracer.addEventElement("learned_alternate", true);
-		}
 
 		IInteraction intendedTopInteraction = enaction.getTopInteraction();
 		IInteraction enactedTopInteraction  = enaction.getTopEnactedInteraction();
@@ -304,9 +298,9 @@ public class Imos implements IImos
 	private void recordAlternate(List<IInteraction> contextList, IInteraction enactedInteraction, IInteraction intendedInteraction)
 	{
 		
-		Object learnElmnt = null;
+		Object alternateElmnt = null;
 		if (m_tracer != null)
-			learnElmnt = m_tracer.addEventElement("learned", true);
+			alternateElmnt = m_tracer.addEventElement("alternate", true);
 		
 		for (IInteraction preInteraction : contextList)
 		{
@@ -315,7 +309,8 @@ public class Imos implements IImos
 			
 			activatedInteraction.addAlternateInteraction(enactedInteraction);
 			System.out.println("Activated " + activatedInteraction);
-			m_tracer.addSubelement(learnElmnt, "activated ", activatedInteraction.toString() + " aternate " + enactedInteraction);
+			if (m_tracer != null)
+				m_tracer.addSubelement(alternateElmnt, "activated", activatedInteraction.toString() + " alternate " + enactedInteraction);
 		}
 	}
 
