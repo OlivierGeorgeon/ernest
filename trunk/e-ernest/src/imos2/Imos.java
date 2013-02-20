@@ -182,7 +182,7 @@ public class Imos implements IImos
 	 * Terminate the current enaction.
 	 * Use the top intended interaction, the top enacted interaction, the previous learning context, and the initial learning context.
 	 * Generates the final activation context and the final learning context.
-	 * Record or reinforce the learned acts and schemes. 
+	 * Record or reinforce the learned interactions. 
 	 * @param enaction The current enaction.
 	 */
 	public void terminate(IEnaction enaction)
@@ -206,42 +206,16 @@ public class Imos implements IImos
 			if (intendedTopInteraction != enactedTopInteraction) 
 			{
 				m_internalState= "!";
-				enaction.setCorrect(false);
-				boolean newAlternate = intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
-				if (newAlternate && m_tracer != null)
-				{
-					m_tracer.addSubelement(terminateElmnt, "interaction", intendedTopInteraction.getLabel() + " has alternate " + enactedTopInteraction.getLabel());
-				}
-				System.out.println(intendedTopInteraction + " has alternate interaction " + enactedTopInteraction );
+				enaction.setCorrect(false);				
+				recordAlternate(initialLearningContext, enactedTopInteraction, intendedTopInteraction);
 			}
 			
-//			// Compute the performed act
-//			// (the act based on the schema that was originally intended)
-//			
-//			IAct performedAct = null;
-//
-//			ISchema intendedSchema = topIntendedAct.getSchema();
-//			
-//			if (intendedSchema == topEnactedAct.getSchema())
-//				// The intended schema was enacted
-//				performedAct = topEnactedAct;
-//			else	
-//				// The intended schema was not enacted: the performed act is the intended schema with fail status
-//				//performedAct = m_episodicMemory.addFailingInteraction(intendedSchema,topEnactedAct.getSatisfaction());
-//				performedAct = addFailingInteraction(intendedSchema,topEnactedAct.getEnactionValue());
-//			
-//			//m_tracer.addEventElement("top_performed", performedAct.getLabel() );
-//			System.out.println("Performed " + performedAct );
-			
-			// learn from the  context and the performed act
-			//m_episodicMemory.resetLearnCount();
+			// learn from the  context and the enacted interaction
 			m_nbSchemaLearned = 0;
-			//ArrayList<IAct> streamContextList = m_episodicMemory.record(initialLearningContext, performedAct);
-			//ArrayList<IInteraction> streamContextList = record(initialLearningContext, performedAct);
 			System.out.println("Learn from enacted top interaction");
 			ArrayList<IInteraction> streamContextList = record(initialLearningContext, enactedTopInteraction);
 						
-			// learn from the base context and the stream act			
+			// learn from the base context and the stream interaction	
 			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of the list
 			 {
 				 IInteraction streamInteraction = streamContextList.get(0); // The stream act is the first learned 
@@ -319,6 +293,30 @@ public class Imos implements IImos
 			}
 		}
 		return newContextList; 
+	}
+
+	/**
+	 * Record the alternate interaction of the intended interaction.
+	 * @param contextList The list of acts that constitute the context in which the learning occurs.
+	 * @param enactedInteraction The enacted interaction.
+	 * @param intendedInteraction The intended interaction.
+	 */
+	private void recordAlternate(List<IInteraction> contextList, IInteraction enactedInteraction, IInteraction intendedInteraction)
+	{
+		
+		Object learnElmnt = null;
+		if (m_tracer != null)
+			learnElmnt = m_tracer.addEventElement("learned", true);
+		
+		for (IInteraction preInteraction : contextList)
+		{
+			// retrieve the activated interaction that proposed the intended interaction 
+			IInteraction activatedInteraction = addCompositeInteraction(preInteraction, intendedInteraction);
+			
+			activatedInteraction.addAlternateInteraction(enactedInteraction);
+			System.out.println("Activated " + activatedInteraction);
+			m_tracer.addSubelement(learnElmnt, "activated ", activatedInteraction.toString() + " aternate " + enactedInteraction);
+		}
 	}
 
 	public ArrayList<IInteraction> getInteractions()

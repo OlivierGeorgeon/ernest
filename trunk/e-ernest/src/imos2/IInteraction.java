@@ -60,6 +60,6 @@ public interface IInteraction
 	 * @param interaction The actually enacted interaction
 	 * @return true if the alternate interaction is new 
 	 */
-	public boolean addAlternateInteraction(IInteraction interaction);
+	public boolean addAlternateInteraction(IInteraction alternateInteraction);
 	public ArrayList<IInteraction> getAlternateInteractions();
 }
