@@ -1,5 +1,7 @@
 package imos2;
 
+import java.util.ArrayList;
+
 /**
  * A proposition that Ernest enacts an interaction. 
  * @author ogeorgeon
@@ -8,23 +10,24 @@ public class Proposition implements IProposition
 {
 	private IInteraction m_interaction;
 	private int m_weight = 0; 
-	private String m_moveLabel = "";
 	private boolean m_transferred = false;
 	private int m_pros = 0;
 	private int m_cons = 0;
 	
+	// The list of alternate interactions of the proposed interaction.
+	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
+
 	/**
 	 * Constructor. 
 	 * @param i The proposed interaction.
 	 * @param w The proposal's weight.
 	 * @param e The proposal's expectation.
 	 */
-	public Proposition(IInteraction i, int w, String m)
+	public Proposition(IInteraction i, int w)
 	{
 		m_interaction = i;
 		m_weight = w;
 		if (w > 0) m_pros+=w; else m_cons+=w;
-		m_moveLabel = m;
 	}
 
 	public int compareTo(IProposition o) 
@@ -84,16 +87,6 @@ public class Proposition implements IProposition
 		return s;
 	}
 
-	public void setMoveLabel(String move) 
-	{
-		m_moveLabel = move;
-	}
-
-	public String getMoveLabel() 
-	{
-		return m_moveLabel;
-	}
-
 	public void setTransferred(boolean transferred) 
 	{
 		m_transferred = transferred;
@@ -110,6 +103,26 @@ public class Proposition implements IProposition
 		if (m_pros != 0)
 			angst = (int) Math.round(- 10f * m_cons / m_pros);
 		return angst;
+	}
+
+	public boolean addAlternateInteraction(IInteraction alternateInteraction) 
+	{
+		boolean newAlternate = false;
+		int i = m_alternateInteractions.indexOf(alternateInteraction);
+		if (i == -1)
+		{
+			m_alternateInteractions.add(alternateInteraction);
+			newAlternate = true;
+		}
+		else
+			alternateInteraction = m_alternateInteractions.get(i);
+		
+		return newAlternate;
+	}
+
+	public ArrayList<IInteraction> getAlternateInteractions() 
+	{
+		return m_alternateInteractions;
 	}
 	
 //	private void updateProCon(int w)

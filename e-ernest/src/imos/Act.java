@@ -2,13 +2,6 @@ package imos;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
-import quicktime.qd3d.math.Point3D;
-
-import spas.LocalSpaceMemory;
-import utils.ErnestUtils;
-
 import ernest.Ernest;
 
 

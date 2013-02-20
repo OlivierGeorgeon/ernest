@@ -60,87 +60,97 @@ public class Decider implements IDecider
 	 */
 	protected ArrayList<IProposition> proposeInteractions(ArrayList<IInteraction> activationList)
 	{
+		// The list of activated interactions
+		ArrayList<IInteraction> activatedInteractions = new ArrayList<IInteraction>();	
+		// The list of propositions
 		ArrayList<IProposition> propositions = new ArrayList<IProposition>();	
 		
 		// Prepare the tracer.
 		Object decisionElmt = null;
 		Object activationElmt = null;
+		Object consolidationElmt = null;
 		if (m_tracer != null)
 		{
 			decisionElmt = m_tracer.addEventElement("activation", true);
 			activationElmt = m_tracer.addSubelement(decisionElmt, "activated_interactions");
+			consolidationElmt = m_tracer.addSubelement(decisionElmt, "consolidation");
 		}
 
-		// Primitive interactions receive a default proposition for themselves
+		// Construct a default proposition for primitive interactions
 		for(IInteraction a : m_imos.getInteractions())
 		{
 			if (a.getPrimitive())
 			{
-				IProposition p = new Proposition(a, 0, a.getMoveLabel());
+				IProposition p = new Proposition(a, 0);
 				if (!propositions.contains(p))
 					propositions.add(p);
 			}       
 		}
-
-		// Browse all the existing interactions 
+		
+		// Construct the list of activated interactions 
 		for (IInteraction i : m_imos.getInteractions())
 		{
 			if (!i.getPrimitive())
 			{
 				// If this interaction's pre-interaction belongs to the context then this interaction is activated 
-				boolean activated = false;
 				for (IInteraction contextAct : activationList)
 				{
 					if (i.getPreInteraction().equals(contextAct))
 					{
-						activated = true;
+						activatedInteractions.add(i);
 						if (m_tracer != null)
 							m_tracer.addSubelement(activationElmt, "interaction", i + " intention " + i.getPostInteraction());
 					}
 				}
+			}
+		}
+			
+		// Activated interactions propose their post interactions 
+		for (IInteraction i : activatedInteractions)
+		{
+			if (!i.getPrimitive())
+			{
+				IInteraction proposedInteraction = i.getPostInteraction();
+				int w = i.getEnactionWeight() * proposedInteraction.getEnactionValue();
+				IProposition p = new Proposition(proposedInteraction, w);
 				
-				// Activated interactions propose their post-interaction
-				if (activated)
+				int j = propositions.indexOf(p);
+				if (j == -1)
+					propositions.add(p);
+				else
 				{
-					IInteraction proposedInteraction = i.getPostInteraction();
-					// The weight is the proposing interaction's weight multiplied by the proposed interaction's satisfaction
-					int w = i.getEnactionWeight() * proposedInteraction.getEnactionValue();
-					
-					// If the intention is reliable then a proposition is constructed
-//					if ((proposedInteraction.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
-//						(proposedInteraction.getLength() <= m_maxSchemaLength ))
-					{
-						IProposition p = new Proposition(proposedInteraction, w, proposedInteraction.getMoveLabel());
-	
-						int j = propositions.indexOf(p);
-						if (j == -1)
-							propositions.add(p);
-						else
-							propositions.get(j).addWeight(w);
-					}
-					// If the intention is not reliable
-					// then the activation is propagated to the intention's pre-interaction
-//					else
-//					{
-//						if (!proposedInteraction.getPrimitive())
-//						{
-//							// only if the intention's intention is positive (this is some form of positive anticipation)
-//							if (proposedInteraction.getPostInteraction().getEnactionValue() > 0)
-//							{
-//								IProposition p = new Proposition(proposedInteraction.getPreInteraction(), w, proposedInteraction.getPreInteraction().getMoveLabel());
-//								int j = propositions.indexOf(p);
-//								if (j == -1)
-//									propositions.add(p);
-//								else
-//									propositions.get(j).addWeight(w);
-//							}
-//						}
-//					}
+					p = propositions.get(j);
+					p.addWeight(w);
+				}
+				
+				for (IInteraction alt : i.getAlternateInteractions())
+				{
+					p.addAlternateInteraction(alt);
 				}
 			}
 		}
 		
-		// Trace the propositions
+		// Transfer the weight of alternate interactions to their prominent interactions
+		for (IProposition p : propositions)
+		{
+			for (IInteraction alt : p.getAlternateInteractions())
+			{
+				for (IInteraction act : activatedInteractions)
+				{
+					if (act.getPostInteraction().equals(alt))
+					{
+						int w = act.getEnactionWeight() * alt.getEnactionValue();
+						p.addWeight(w);
+						if (m_tracer != null)
+						{
+							m_tracer.addSubelement(consolidationElmt, "balance", p.getInteraction().getLabel() +  " weight  " + w/10 + " from " + alt.getLabel());						
+						}
+					}
+				}
+			}
+		}
+		
+		// Trace the final propositions
 		
 		//System.out.println("Propose: ");
 		Object proposalElmt = null;
@@ -152,6 +162,10 @@ public class Decider implements IDecider
 			{
 				System.out.println("proposition " + p);
 				m_tracer.addSubelement(proposalElmt, "proposition", p.toString());
+				for (IInteraction i : p.getAlternateInteractions())
+				{
+					m_tracer.addSubelement(consolidationElmt, "alternate", i.getLabel());						
+				}
 			}
 		}
 		
@@ -166,32 +180,32 @@ public class Decider implements IDecider
 	protected IInteraction selectInteraction(ArrayList<IProposition> propositions)
 	{
 		Object selectionElmt = null;
-		Object consolidationElmt = null;
+		//Object consolidationElmt = null;
 		if (m_tracer != null)
 		{
 			selectionElmt = m_tracer.addEventElement("selection", true);
-			consolidationElmt = m_tracer.addSubelement(selectionElmt, "consolidation");
+			//consolidationElmt = m_tracer.addSubelement(selectionElmt, "consolidation");
 		}
 		
-		// Transfer the weight of alternate interactions to their prominent interactions
-		for (IProposition interactionProposition : propositions)
-		{
-			for (IInteraction i : interactionProposition.getInteraction().getAlternateInteractions())
-			{
-				for (IProposition ip : propositions)
-				{
-					if (ip.getInteraction().equals(i))// && !ip.getTransferred())
-					{
-						interactionProposition.addWeight(ip.getWeight());
-						ip.setTransferred(true);
-						if (m_tracer != null)
-						{
-							m_tracer.addSubelement(consolidationElmt, "proposition", ip.getInteraction().getLabel() +  " transfers " + ip.getWeight()/10 + " to " + interactionProposition.getInteraction().getLabel());						
-						}
-					}
-				}
-			}
-		}
+//		// Transfer the weight of alternate interactions to their prominent interactions
+//		for (IProposition interactionProposition : propositions)
+//		{
+//			for (IInteraction i : interactionProposition.getInteraction().getAlternateInteractions())
+//			{
+//				for (IProposition ip : propositions)
+//				{
+//					if (ip.getInteraction().equals(i))// && !ip.getTransferred())
+//					{
+//						interactionProposition.addWeight(ip.getWeight());
+//						ip.setTransferred(true);
+//						if (m_tracer != null)
+//						{
+//							m_tracer.addSubelement(consolidationElmt, "proposition", ip.getInteraction().getLabel() +  " transfers " + ip.getWeight()/10 + " to " + interactionProposition.getInteraction().getLabel());						
+//						}
+//					}
+//				}
+//			}
+//		}
 		
 		// Sort the propositions by weight.
 		Collections.sort(propositions);

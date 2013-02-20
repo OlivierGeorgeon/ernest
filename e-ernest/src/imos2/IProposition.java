@@ -1,5 +1,7 @@
 package imos2;
 
+import java.util.ArrayList;
+
 /**
  * A proposition to enact an interaction. 
  * @author ogeorgeon
@@ -31,10 +33,9 @@ public interface IProposition extends Comparable<IProposition>
 	 * @return The angst value associated with this choice
 	 */
 	public int getAngst();
-
 	
-	public void setMoveLabel(String move);
-	public String getMoveLabel();
+	public boolean addAlternateInteraction(IInteraction alternateInteraction);
+	public ArrayList<IInteraction> getAlternateInteractions();
 	
 	public void setTransferred(boolean transferred);
 	public boolean getTransferred();

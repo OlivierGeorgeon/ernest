@@ -26,7 +26,7 @@ public class Interaction implements IInteraction
 	private IInteraction m_prescriber = null;
 	private int m_step = 0;
 	
-	//private Hashtable<IInteraction,Integer> m_failures = new Hashtable<IInteraction,Integer>();
+	// The list of prominent interactions of which the post interaction is an alternate in the context of the pre interaction.
 	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
 
 	/**
@@ -216,14 +216,13 @@ public class Interaction implements IInteraction
 		return getLabel() + "(" + m_enactionValue/10 + "," + m_enactionWeight + ")";
 	}
 
-	public boolean addAlternateInteraction(IInteraction interaction) 
+	public boolean addAlternateInteraction(IInteraction alternateInteraction) 
 	{
 		boolean newAlternate = false;
-		IInteraction alternateInteraction = interaction;
-		int i = m_alternateInteractions.indexOf(interaction);
+		int i = m_alternateInteractions.indexOf(alternateInteraction);
 		if (i == -1)
 		{
-			m_alternateInteractions.add(interaction);
+			m_alternateInteractions.add(alternateInteraction);
 			newAlternate = true;
 		}
 		else
