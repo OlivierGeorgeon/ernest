@@ -1,5 +1,9 @@
 package imos2;
 
+import imos.ActProposition;
+import imos.IActProposition;
+import imos.Imos;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import ernest.ITracer;
@@ -112,39 +116,55 @@ public class Decider implements IDecider
 			{
 				IInteraction proposedInteraction = i.getPostInteraction();
 				int w = i.getEnactionWeight() * proposedInteraction.getEnactionValue();
-				IProposition p = new Proposition(proposedInteraction, w);
+				IProposition p = null;
 				
-				int j = propositions.indexOf(p);
-				if (j == -1)
-					propositions.add(p);
+				if ((proposedInteraction.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
+						(proposedInteraction.getLength() <= m_maxSchemaLength ))
+				{
+					p= new Proposition(proposedInteraction, w);
+				}
+				// if the intended interaction has not passed the threshold then  
+				// the activation is propagated to the intended interaction's pre interaction
 				else
 				{
-					p = propositions.get(j);
-					p.addWeight(w);
+					if (!proposedInteraction.getPrimitive())
+					{
+						// only if the intention's intention is positive (this is some form of positive anticipation)
+						if (proposedInteraction.getPostInteraction().getEnactionValue() > 0)
+							p = new Proposition(proposedInteraction.getPreInteraction(), w);
+					}
 				}
 				
-				for (IInteraction alt : i.getAlternateInteractions())
+				if (p!=null)
 				{
-					p.addAlternateInteraction(alt);
+					int j = propositions.indexOf(p);
+					if (j == -1)
+						propositions.add(p);
+					else
+					{
+						p = propositions.get(j);
+						p.addWeight(w);
+					}
 				}
 			}
 		}
 		
-		// Transfer the weight of alternate interactions to their prominent interactions
+		// Transfer the weight of alternate interactions to the proposition of their prominant interaction
 		for (IProposition p : propositions)
 		{
-			for (IInteraction alt : p.getAlternateInteractions())
+			//for (IInteraction alt : p.getAlternateInteractions())
+			for (IInteraction alt : p.getInteraction().getAlternateInteractions())
 			{
 				for (IInteraction act : activatedInteractions)
 				{
 					if (act.getPostInteraction().equals(alt))
 					{
 						int w = act.getEnactionWeight() * alt.getEnactionValue();
-						p.addWeight(w);
 						if (m_tracer != null)
 						{
-							m_tracer.addSubelement(consolidationElmt, "proposed", p.getInteraction().getLabel() + " alternate " + alt.getLabel() +  " of weight  " + w/10);						
+							m_tracer.addSubelement(consolidationElmt, "proposition", p + " alternate " + alt.getLabel() +  " of weight  " + w/10);						
 						}
+						p.addWeight(w);
 					}
 				}
 			}
@@ -162,10 +182,6 @@ public class Decider implements IDecider
 			{
 				System.out.println("proposition " + p);
 				m_tracer.addSubelement(proposalElmt, "proposition", p.toString());
-				for (IInteraction i : p.getAlternateInteractions())
-				{
-					m_tracer.addSubelement(consolidationElmt, "alternate", i.getLabel());						
-				}
 			}
 		}
 		
@@ -179,34 +195,6 @@ public class Decider implements IDecider
 	 */
 	protected IInteraction selectInteraction(ArrayList<IProposition> propositions)
 	{
-		Object selectionElmt = null;
-		//Object consolidationElmt = null;
-		if (m_tracer != null)
-		{
-			selectionElmt = m_tracer.addEventElement("selection", true);
-			//consolidationElmt = m_tracer.addSubelement(selectionElmt, "consolidation");
-		}
-		
-//		// Transfer the weight of alternate interactions to their prominent interactions
-//		for (IProposition interactionProposition : propositions)
-//		{
-//			for (IInteraction i : interactionProposition.getInteraction().getAlternateInteractions())
-//			{
-//				for (IProposition ip : propositions)
-//				{
-//					if (ip.getInteraction().equals(i))// && !ip.getTransferred())
-//					{
-//						interactionProposition.addWeight(ip.getWeight());
-//						ip.setTransferred(true);
-//						if (m_tracer != null)
-//						{
-//							m_tracer.addSubelement(consolidationElmt, "proposition", ip.getInteraction().getLabel() +  " transfers " + ip.getWeight()/10 + " to " + interactionProposition.getInteraction().getLabel());						
-//						}
-//					}
-//				}
-//			}
-//		}
-		
 		// Sort the propositions by weight.
 		Collections.sort(propositions);
 		
@@ -218,8 +206,9 @@ public class Decider implements IDecider
 		// Trace the propositions
 		if (m_tracer != null)
 		{			
+			Object selectionElmt = m_tracer.addEventElement("selection", true);
 			m_tracer.addSubelement(selectionElmt, "selected_interaction", selectedInteraction.toString());
-			m_tracer.addSubelement(selectionElmt, "angst", "" + propositions.get(0).getAngst());
+			//m_tracer.addSubelement(selectionElmt, "angst", "" + propositions.get(0).getAngst());
 		}
 		
 		return selectedInteraction;

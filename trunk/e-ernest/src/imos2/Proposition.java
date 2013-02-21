@@ -33,7 +33,7 @@ public class Proposition implements IProposition
 	public int compareTo(IProposition o) 
 	{
 		//Transferred propositions are smaller 
-		int oo = (o.getTransferred() ?  -10000 : 0);
+		int oo = 0 ; //(o.getTransferred() ?  -10000 : 0);
 		int ot = (m_transferred ? -10000 : 0);
 		int c = new Integer(o.getWeight() + oo).compareTo(m_weight + ot);
 		return c; 
@@ -105,25 +105,6 @@ public class Proposition implements IProposition
 		return angst;
 	}
 
-	public boolean addAlternateInteraction(IInteraction alternateInteraction) 
-	{
-		boolean newAlternate = false;
-		int i = m_alternateInteractions.indexOf(alternateInteraction);
-		if (i == -1)
-		{
-			m_alternateInteractions.add(alternateInteraction);
-			newAlternate = true;
-		}
-		else
-			alternateInteraction = m_alternateInteractions.get(i);
-		
-		return newAlternate;
-	}
-
-	public ArrayList<IInteraction> getAlternateInteractions() 
-	{
-		return m_alternateInteractions;
-	}
 	
 //	private void updateProCon(int w)
 //	{

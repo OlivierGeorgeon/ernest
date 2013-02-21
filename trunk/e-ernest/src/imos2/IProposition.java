@@ -34,9 +34,9 @@ public interface IProposition extends Comparable<IProposition>
 	 */
 	public int getAngst();
 	
-	public boolean addAlternateInteraction(IInteraction alternateInteraction);
-	public ArrayList<IInteraction> getAlternateInteractions();
+	//public boolean addAlternateInteraction(IInteraction alternateInteraction);
+	//public ArrayList<IInteraction> getAlternateInteractions();
 	
-	public void setTransferred(boolean transferred);
-	public boolean getTransferred();
+	//public void setTransferred(boolean transferred);
+	//public boolean getTransferred();
 }
