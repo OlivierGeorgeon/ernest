@@ -103,13 +103,13 @@ public class Imos implements IImos
 	/**
 	 * Add a composite schema and its succeeding act that represent a composite possibility 
 	 * of interaction between Ernest and its environment. 
-	 * @param contextInteraction The context Act.
-	 * @param intentionInteraction The intention Act.
+	 * @param preInteraction The context Act.
+	 * @param postInteraction The intention Act.
 	 * @return The schema made of the two specified acts, whether it has been created or it already existed. 
 	 */
-    private IInteraction addCompositeInteraction(IInteraction contextInteraction, IInteraction intentionInteraction)
+    private IInteraction addCompositeInteraction(IInteraction preInteraction, IInteraction postInteraction)
     {
-    	IInteraction i = Interaction.createCompositeInteraction(contextInteraction, intentionInteraction);
+    	IInteraction i = Interaction.createCompositeInteraction(preInteraction, postInteraction);
     	
 		int j = m_interactions.indexOf(i);
 		if (j == -1)
@@ -121,6 +121,18 @@ public class Imos implements IImos
 		else
 			// The schema already exists: return a pointer to it.
 			i =  m_interactions.get(j);
+    	
+    	// Any alternate interactions of the preInteraction is an alternate interaction of the composite interaction
+		Object alternateElmnt = null;
+		if (m_tracer != null)
+			alternateElmnt = m_tracer.addEventElement("alternate", true);
+    	for (IInteraction a: preInteraction.getAlternateInteractions())
+    	{
+    		boolean newAlternate = i.addAlternateInteraction(a);
+			if (m_tracer != null && newAlternate)
+				m_tracer.addSubelement(alternateElmnt, "prominent", i + " alternate " + a);
+    	}
+
     	return i;
     }
 
@@ -192,6 +204,11 @@ public class Imos implements IImos
 		IInteraction enactedTopInteraction  = enaction.getTopEnactedInteraction();
 		ArrayList<IInteraction> previousLearningContext = enaction.getPreviousLearningContext();
 		ArrayList<IInteraction> initialLearningContext = enaction.getInitialLearningContext();
+
+		Object alternateElmnt = null;
+		if (m_tracer != null)
+			alternateElmnt = m_tracer.addEventElement("alternate", true);
+
 		
 		// if we are not on startup
 		if (enactedTopInteraction != null)
@@ -200,8 +217,18 @@ public class Imos implements IImos
 			if (intendedTopInteraction != enactedTopInteraction) 
 			{
 				m_internalState= "!";
-				enaction.setCorrect(false);				
-				recordAlternate(initialLearningContext, enactedTopInteraction, intendedTopInteraction);
+				enaction.setCorrect(false);	
+				boolean newAlternate = intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
+				//recordAlternate(initialLearningContext, enactedTopInteraction, intendedTopInteraction);
+				if (m_tracer != null && newAlternate)
+					m_tracer.addSubelement(alternateElmnt, "prominent", intendedTopInteraction + " alternate " + enactedTopInteraction);
+
+				if (enactedTopInteraction.getPrimitive() && enactedTopInteraction.getPrimitive())
+				{
+					newAlternate = enactedTopInteraction.addAlternateInteraction(intendedTopInteraction);
+					if (m_tracer != null && newAlternate)
+						m_tracer.addSubelement(alternateElmnt, "prominent", enactedTopInteraction + " alternate " + intendedTopInteraction);
+				}
 			}
 			
 			// learn from the  context and the enacted interaction
@@ -289,30 +316,30 @@ public class Imos implements IImos
 		return newContextList; 
 	}
 
-	/**
-	 * Record the alternate interaction of the intended interaction.
-	 * @param contextList The list of acts that constitute the context in which the learning occurs.
-	 * @param enactedInteraction The enacted interaction.
-	 * @param intendedInteraction The intended interaction.
-	 */
-	private void recordAlternate(List<IInteraction> contextList, IInteraction enactedInteraction, IInteraction intendedInteraction)
-	{
-		
-		Object alternateElmnt = null;
-		if (m_tracer != null)
-			alternateElmnt = m_tracer.addEventElement("alternate", true);
-		
-		for (IInteraction preInteraction : contextList)
-		{
-			// retrieve the activated interaction that proposed the intended interaction 
-			IInteraction activatedInteraction = addCompositeInteraction(preInteraction, intendedInteraction);
-			
-			activatedInteraction.addAlternateInteraction(enactedInteraction);
-			System.out.println("Activated " + activatedInteraction);
-			if (m_tracer != null)
-				m_tracer.addSubelement(alternateElmnt, "activated", activatedInteraction.toString() + " alternate " + enactedInteraction);
-		}
-	}
+//	/**
+//	 * Record the alternate interaction of the intended interaction.
+//	 * @param contextList The list of acts that constitute the context in which the learning occurs.
+//	 * @param enactedInteraction The enacted interaction.
+//	 * @param intendedInteraction The intended interaction.
+//	 */
+//	private void recordAlternate(List<IInteraction> contextList, IInteraction enactedInteraction, IInteraction intendedInteraction)
+//	{
+//		
+//		Object alternateElmnt = null;
+//		if (m_tracer != null)
+//			alternateElmnt = m_tracer.addEventElement("alternate", true);
+//		
+//		for (IInteraction preInteraction : contextList)
+//		{
+//			// retrieve the activated interaction that proposed the intended interaction 
+//			IInteraction activatedInteraction = addCompositeInteraction(preInteraction, intendedInteraction);
+//			
+//			activatedInteraction.addAlternateInteraction(enactedInteraction);
+//			System.out.println("Activated " + activatedInteraction);
+//			if (m_tracer != null)
+//				m_tracer.addSubelement(alternateElmnt, "activated", activatedInteraction.toString() + " alternate " + enactedInteraction);
+//		}
+//	}
 
 	public ArrayList<IInteraction> getInteractions()
 	{
