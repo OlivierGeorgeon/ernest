@@ -1,10 +1,11 @@
 package spas;
 
 import imos.ActProposition;
-import imos.Enaction;
+import imos2.Enaction;
+import imos2.IInteraction;
 import imos.IAct;
 import imos.IActProposition;
-import imos.IEnaction;
+import imos2.IEnaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +57,14 @@ public class Spas implements ISpas
 	{
 		tick();
 		
-		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveAct() != null)
+		//if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveAct() != null)
+		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveInteraction() != null)
 		{
-			addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveAct());			
+			//addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveAct());			
+			addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
 			m_localSpaceMemory.decay();
-			constructCopresence(enaction);
-			evokePlaces(enaction);
+			//constructCopresence(enaction);
+			//evokePlaces(enaction);
 		}
 		
 		m_localSpaceMemory.transform(enaction.getEffect().getTransformation());		
@@ -73,223 +76,223 @@ public class Spas implements ISpas
 	 * TODO Use it to track actual enactions
 	 * @param enaction The enaction to simulate
 	 */
-	private void simulatePrimitiveAct(IEnaction enaction)
-	{
-		boolean affordIntention = false;
-		boolean affordMove = false;
-		boolean affordDisplacement = false;
-		
-		int simulationStatus = Place.INCONSISTENT;
-		IAct intendedAct = enaction.getIntendedPrimitiveAct();
-		Point3f concernedPosition = new Point3f(intendedAct.getPosition());
-		
-		IAct enactedAct = intendedAct;
-		
-		// Compute the expected effect depending on what is known about the place concerned by the intention ====
-		
-		for (IPlace concernedPlace : m_localSpaceMemory.getPlaceList())
-		{
-			if (concernedPlace.isInCell(concernedPosition) && (concernedPlace.getType() == Place.ENACTION_PLACE || concernedPlace.getType() == Place.EVOKED_PLACE))
-			{
-				// There is a place in the concerned position
-				if (!affordIntention)
-				{
-					// Not already an affordance at the same place
-					if (concernedPlace.getAct().equals(intendedAct))
-					{
-						// This place affords the current intention
-						affordDisplacement = true;
-						affordMove = true;
-						affordIntention = true;
-					}
-					
-					if (!affordMove)
-					{
-						// Not already the same move 
-						if (concernedPlace.getAct().getSchema().equals(intendedAct.getSchema()))
-						{
-							// This move has already been experienced concerning this place
-							affordMove = true;								
-							enactedAct = concernedPlace.getAct();
-						
-							if (concernedPlace.getAct().getTransform().epsilonEquals(intendedAct.getTransform(), .1f) &&
-								!intendedAct.getTransform().epsilonEquals(new Transform3D(), .1f))
-							{
-								// This place affords the intended displacement but not the intention
-								affordDisplacement = true;
-							}
-						}						
-					}
-				}	
-			}
-		}
+//	private void simulatePrimitiveAct(IEnaction enaction)
+//	{
+//		boolean affordIntention = false;
+//		boolean affordMove = false;
+//		boolean affordDisplacement = false;
+//		
+//		int simulationStatus = Place.INCONSISTENT;
+//		IAct intendedAct = enaction.getIntendedPrimitiveAct();
+//		Point3f concernedPosition = new Point3f(intendedAct.getPosition());
+//		
+//		IAct enactedAct = intendedAct;
+//		
+//		// Compute the expected effect depending on what is known about the place concerned by the intention ====
+//		
+//		for (IPlace concernedPlace : m_localSpaceMemory.getPlaceList())
+//		{
+//			if (concernedPlace.isInCell(concernedPosition) && (concernedPlace.getType() == Place.ENACTION_PLACE || concernedPlace.getType() == Place.EVOKED_PLACE))
+//			{
+//				// There is a place in the concerned position
+//				if (!affordIntention)
+//				{
+//					// Not already an affordance at the same place
+//					if (concernedPlace.getAct().equals(intendedAct))
+//					{
+//						// This place affords the current intention
+//						affordDisplacement = true;
+//						affordMove = true;
+//						affordIntention = true;
+//					}
+//					
+//					if (!affordMove)
+//					{
+//						// Not already the same move 
+//						if (concernedPlace.getAct().getSchema().equals(intendedAct.getSchema()))
+//						{
+//							// This move has already been experienced concerning this place
+//							affordMove = true;								
+//							enactedAct = concernedPlace.getAct();
+//						
+//							if (concernedPlace.getAct().getTransform().epsilonEquals(intendedAct.getTransform(), .1f) &&
+//								!intendedAct.getTransform().epsilonEquals(new Transform3D(), .1f))
+//							{
+//								// This place affords the intended displacement but not the intention
+//								affordDisplacement = true;
+//							}
+//						}						
+//					}
+//				}	
+//			}
+//		}
+//
+//		// Compute the status of the simulation
+//		
+//		if (affordIntention)
+//			simulationStatus = Place.AFFORD;
+//		else if (affordDisplacement)
+//			simulationStatus = Place.DISPLACEMENT;
+//		else if (affordMove)
+//			simulationStatus = Place.INCONSISTENT;			
+//		else
+//		{
+//			if (intendedAct.getColor() == 0xFFFFFF)
+//				simulationStatus = Place.UNKNOWN;
+//			else
+//				simulationStatus = Place.INCONSISTENT;			
+//		}
+//		
+//		// Update the enaction
+//		enaction.setSimulationStatus(simulationStatus);
+//		enaction.setEnactedPrimitiveAct(enactedAct);
+//		
+//		// TODO the spatial effect may involve more spatial simulation.
+//		enaction.getEffect().setLabel(enactedAct.getEffectLabel());
+//		enaction.getEffect().setLocation(concernedPosition);
+//		enaction.getEffect().setTransformation(enactedAct.getTransform());
+//		
+//		// Mark the simulated place in spatial memory
+//		if (simulationStatus != Place.INCONSISTENT)
+//			addPlace(concernedPosition, simulationStatus, enactedAct.getColor(), enactedAct);
+//
+//		// Apply this act's transformation to spatial memory
+//		m_localSpaceMemory.transform(enactedAct.getTransform());
+//		
+//		// accumulate the transformation of this act to reverse the transformation after the simulation
+//		Transform3D tf = new Transform3D(enactedAct.getTransform());
+//		m_transform.mul(tf, m_transform);
+//	}
 
-		// Compute the status of the simulation
-		
-		if (affordIntention)
-			simulationStatus = Place.AFFORD;
-		else if (affordDisplacement)
-			simulationStatus = Place.DISPLACEMENT;
-		else if (affordMove)
-			simulationStatus = Place.INCONSISTENT;			
-		else
-		{
-			if (intendedAct.getColor() == 0xFFFFFF)
-				simulationStatus = Place.UNKNOWN;
-			else
-				simulationStatus = Place.INCONSISTENT;			
-		}
-		
-		// Update the enaction
-		enaction.setSimulationStatus(simulationStatus);
-		enaction.setEnactedPrimitiveAct(enactedAct);
-		
-		// TODO the spatial effect may involve more spatial simulation.
-		enaction.getEffect().setLabel(enactedAct.getEffectLabel());
-		enaction.getEffect().setLocation(concernedPosition);
-		enaction.getEffect().setTransformation(enactedAct.getTransform());
-		
-		// Mark the simulated place in spatial memory
-		if (simulationStatus != Place.INCONSISTENT)
-			addPlace(concernedPosition, simulationStatus, enactedAct.getColor(), enactedAct);
+//	private IEnaction simulate(IAct act)
+//	{
+//		IEnaction enaction = new Enaction();
+//		
+//		if (act.getSchema().isPrimitive())
+//		{
+//			enaction.setIntendedPrimitiveAct(act);
+//			simulatePrimitiveAct(enaction);
+//		}
+//		else 
+//		{
+//			int simulationStatus = simulate(act.getSchema().getContextAct()).getSimulationStatus();
+//			if (simulationStatus != Place.INCONSISTENT)
+//			{
+//				int status2 = simulate(act.getSchema().getIntentionAct()).getSimulationStatus();
+//				if (status2 == Place.INCONSISTENT)
+//					simulationStatus = Place.INCONSISTENT;
+//				else
+//				{
+//					if (simulationStatus == Place.AFFORD && (status2 == Place.DISPLACEMENT || status2 == Place.UNKNOWN))
+//						simulationStatus = status2;
+//				}
+//			}
+//			enaction.setSimulationStatus(simulationStatus);
+//		}
+//		return enaction;
+//	}
 
-		// Apply this act's transformation to spatial memory
-		m_localSpaceMemory.transform(enactedAct.getTransform());
-		
-		// accumulate the transformation of this act to reverse the transformation after the simulation
-		Transform3D tf = new Transform3D(enactedAct.getTransform());
-		m_transform.mul(tf, m_transform);
-	}
-
-	private IEnaction simulate(IAct act)
-	{
-		IEnaction enaction = new Enaction();
-		
-		if (act.getSchema().isPrimitive())
-		{
-			enaction.setIntendedPrimitiveAct(act);
-			simulatePrimitiveAct(enaction);
-		}
-		else 
-		{
-			int simulationStatus = simulate(act.getSchema().getContextAct()).getSimulationStatus();
-			if (simulationStatus != Place.INCONSISTENT)
-			{
-				int status2 = simulate(act.getSchema().getIntentionAct()).getSimulationStatus();
-				if (status2 == Place.INCONSISTENT)
-					simulationStatus = Place.INCONSISTENT;
-				else
-				{
-					if (simulationStatus == Place.AFFORD && (status2 == Place.DISPLACEMENT || status2 == Place.UNKNOWN))
-						simulationStatus = status2;
-				}
-			}
-			enaction.setSimulationStatus(simulationStatus);
-		}
-		return enaction;
-	}
-
-	public IActProposition runSimulation(IAct act)
-	{
-		// Intialize the simulation
-		m_transform.setIdentity();
-		
-		// Run the simulation
-		int status = simulate(act).getSimulationStatus();
-		
-		// Test if the resulting situation leads to an affordance
-		
-		IAct subsequentAct = null;
-		if (status != Place.INCONSISTENT && !act.getTransform().epsilonEquals(new Transform3D(), .1f))
-		{
-			for (IPlace p : m_localSpaceMemory.getPlaceList())
-			{
-				if (p.getType() == Place.ENACTION_PLACE || p.getType() == Place.EVOKED_PLACE )
-				{
-					if (p.getAct().getPosition().epsilonEquals(p.getPosition(), .1f))
-					{
-						if (subsequentAct==null || subsequentAct.getSatisfaction() < p.getAct().getSatisfaction())
-							subsequentAct = p.getAct();
-					}					
-				}
-			}
-		}
-		
-		int subsequentSatisfaction = 0;
-		if (subsequentAct != null && subsequentAct.getSatisfaction() > 0)
-		{
-			subsequentSatisfaction = subsequentAct.getSatisfaction();
-			status = Place.REACH;
-		}		
-
-		//Revert the transformation in spatial memory 
-		m_transform.invert();
-		m_localSpaceMemory.transform(m_transform);	
-		
-		// If this act creates a new copresences then propose it
-		boolean newCopresence = false;
-		if (status != Place.INCONSISTENT)
-		{
-			for (IPlace pl : m_localSpaceMemory.getPlaceList())
-			{
-				if (pl.getType() == Place.ENACTION_PLACE)
-				{
-					if (act.getPosition().epsilonEquals(pl.getPosition(), .1f) && !act.equals(pl.getAct()) && act.getColor() == 0x73E600)
-					{
-						newCopresence = true;
-						// Test if the copresence already exists
-						for (IBundle b : evokeCompresences(act))
-						{
-							if (b.afford(pl.getAct()))
-								newCopresence = false;
-						}
-					}
-				}
-			}
-		}
-		if (newCopresence)
-			status = LocalSpaceMemory.SIMULATION_NEWCOMPRESENCE;
-
-		// Generate the proposition
-		
-		IActProposition p = new ActProposition(act, 0, 0);
-		final int SPATIAL_AFFORDANCE_WEIGHT = 10;
-		final int UNKNOWN_SATISFACTION = 1000;
-		
-		// If this act is afforded by the spatial situation then propose it.
-		if (status == Place.AFFORD)
-		{
-			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
-			p = new ActProposition(act, w, 0);
-		}
-
-		// If this act informs the spatial situation then propose it.
-		if (status == Place.UNKNOWN)
-		{
-			if (act.getSchema().getLabel().equals("-") || act.getSchema().getLabel().equals("/") || act.getSchema().getLabel().equals("\\"))
-			{
-				p = new ActProposition(act, 1, UNKNOWN_SATISFACTION);
-			}
-		}
-		
-		// If this act reaches a situation where another act is afforded then propose it.
-		if (status == Place.REACH)
-		{
-			int w = SPATIAL_AFFORDANCE_WEIGHT ;
-			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
-		}
-		
-		// If this act reaches a situation where another act is afforded then propose it.
-		if (status == LocalSpaceMemory.SIMULATION_NEWCOMPRESENCE)
-		{
-			int w = SPATIAL_AFFORDANCE_WEIGHT ;
-			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, UNKNOWN_SATISFACTION * 10);
-		}
-		
-		p.setStatus(status);
-		
-		return p;
-	}
+//	public IActProposition runSimulation(IAct act)
+//	{
+//		// Intialize the simulation
+//		m_transform.setIdentity();
+//		
+//		// Run the simulation
+//		int status = simulate(act).getSimulationStatus();
+//		
+//		// Test if the resulting situation leads to an affordance
+//		
+//		IAct subsequentAct = null;
+//		if (status != Place.INCONSISTENT && !act.getTransform().epsilonEquals(new Transform3D(), .1f))
+//		{
+//			for (IPlace p : m_localSpaceMemory.getPlaceList())
+//			{
+//				if (p.getType() == Place.ENACTION_PLACE || p.getType() == Place.EVOKED_PLACE )
+//				{
+//					if (p.getAct().getPosition().epsilonEquals(p.getPosition(), .1f))
+//					{
+//						if (subsequentAct==null || subsequentAct.getSatisfaction() < p.getAct().getSatisfaction())
+//							subsequentAct = p.getAct();
+//					}					
+//				}
+//			}
+//		}
+//		
+//		int subsequentSatisfaction = 0;
+//		if (subsequentAct != null && subsequentAct.getSatisfaction() > 0)
+//		{
+//			subsequentSatisfaction = subsequentAct.getSatisfaction();
+//			status = Place.REACH;
+//		}		
+//
+//		//Revert the transformation in spatial memory 
+//		m_transform.invert();
+//		m_localSpaceMemory.transform(m_transform);	
+//		
+//		// If this act creates a new copresences then propose it
+//		boolean newCopresence = false;
+//		if (status != Place.INCONSISTENT)
+//		{
+//			for (IPlace pl : m_localSpaceMemory.getPlaceList())
+//			{
+//				if (pl.getType() == Place.ENACTION_PLACE)
+//				{
+//					if (act.getPosition().epsilonEquals(pl.getPosition(), .1f) && !act.equals(pl.getAct()) && act.getColor() == 0x73E600)
+//					{
+//						newCopresence = true;
+//						// Test if the copresence already exists
+//						for (IBundle b : evokeCompresences(act))
+//						{
+//							if (b.afford(pl.getAct()))
+//								newCopresence = false;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		if (newCopresence)
+//			status = LocalSpaceMemory.SIMULATION_NEWCOMPRESENCE;
+//
+//		// Generate the proposition
+//		
+//		IActProposition p = new ActProposition(act, 0, 0);
+//		final int SPATIAL_AFFORDANCE_WEIGHT = 10;
+//		final int UNKNOWN_SATISFACTION = 1000;
+//		
+//		// If this act is afforded by the spatial situation then propose it.
+//		if (status == Place.AFFORD)
+//		{
+//			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
+//			p = new ActProposition(act, w, 0);
+//		}
+//
+//		// If this act informs the spatial situation then propose it.
+//		if (status == Place.UNKNOWN)
+//		{
+//			if (act.getSchema().getLabel().equals("-") || act.getSchema().getLabel().equals("/") || act.getSchema().getLabel().equals("\\"))
+//			{
+//				p = new ActProposition(act, 1, UNKNOWN_SATISFACTION);
+//			}
+//		}
+//		
+//		// If this act reaches a situation where another act is afforded then propose it.
+//		if (status == Place.REACH)
+//		{
+//			int w = SPATIAL_AFFORDANCE_WEIGHT ;
+//			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
+//		}
+//		
+//		// If this act reaches a situation where another act is afforded then propose it.
+//		if (status == LocalSpaceMemory.SIMULATION_NEWCOMPRESENCE)
+//		{
+//			int w = SPATIAL_AFFORDANCE_WEIGHT ;
+//			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, UNKNOWN_SATISFACTION * 10);
+//		}
+//		
+//		p.setStatus(status);
+//		
+//		return p;
+//	}
 	
 	public int getValue(int i, int j)
 	{
@@ -338,40 +341,42 @@ public class Spas implements ISpas
 	 * Construct new copresence bundles.
 	 * (Do not create copresences among the same interactions)
 	 */
-	private void constructCopresence(IEnaction enaction)
-	{
-		IAct enactedAct = enaction.getEnactedPrimitiveAct();
-		for (IPlace place : m_localSpaceMemory.getPlaceList())
-			if (place.getType() == Place.ENACTION_PLACE && place.getAct().concernOnePlace() && place.isInCell(enaction.getEffect().getLocation()))
-				if (!place.getAct().getSchema().equals(enactedAct.getSchema()))
-					addBundle(place.getAct(), enactedAct);						
-	}
+//	private void constructCopresence(IEnaction enaction)
+//	{
+//		IAct enactedAct = enaction.getEnactedPrimitiveAct();
+//		for (IPlace place : m_localSpaceMemory.getPlaceList())
+//			if (place.getType() == Place.ENACTION_PLACE && place.getAct().concernOnePlace() && place.isInCell(enaction.getEffect().getLocation()))
+//				if (!place.getAct().getSchema().equals(enactedAct.getSchema()))
+//					addBundle(place.getAct(), enactedAct);						
+//	}
 	
 	/**
 	 * Add evoked places in spatial memory
 	 * @param enaction The current enaction.
 	 */
-	private void evokePlaces(IEnaction enaction)
-	{
-		for (IBundle b : evokeCompresences(enaction.getEnactedPrimitiveAct()))
-		{
-			if (!b.getFirstAct().equals(enaction.getEnactedPrimitiveAct()))
-				addPlace(new Point3f(enaction.getEffect().getLocation()), Place.EVOKED_PLACE, enaction.getEffect().getColor(), b.getFirstAct());
-			if (!b.getSecondAct().equals(enaction.getEnactedPrimitiveAct()))
-				addPlace(new Point3f(enaction.getEffect().getLocation()), Place.EVOKED_PLACE, enaction.getEffect().getColor(), b.getSecondAct());
-		}
-	}
+//	private void evokePlaces(IEnaction enaction)
+//	{
+//		for (IBundle b : evokeCompresences(enaction.getEnactedPrimitiveAct()))
+//		{
+//			if (!b.getFirstAct().equals(enaction.getEnactedPrimitiveAct()))
+//				addPlace(new Point3f(enaction.getEffect().getLocation()), Place.EVOKED_PLACE, enaction.getEffect().getColor(), b.getFirstAct());
+//			if (!b.getSecondAct().equals(enaction.getEnactedPrimitiveAct()))
+//				addPlace(new Point3f(enaction.getEffect().getLocation()), Place.EVOKED_PLACE, enaction.getEffect().getColor(), b.getSecondAct());
+//		}
+//	}
 	
 	public ArrayList<IPlace> getPlaceList()
 	{
 		return m_localSpaceMemory.getPlaceList();
 	}
 
-	private IPlace addPlace(Point3f position, int type, int value, IAct act) 
+	//private IPlace addPlace(Point3f position, int type, int value, IAct act) 
+	private IPlace addPlace(Point3f position, int type, int value, IInteraction act) 
 	{
 		IPlace place = m_localSpaceMemory.addPlace(position, type);
 		place.setValue(value);
-		place.setAct(act);
+		place.setInteraction(act);
+		//place.setAct(act);
 		place.setType(type);
 		place.setClock(m_clock);
 		

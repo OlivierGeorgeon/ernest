@@ -62,4 +62,7 @@ public interface IInteraction
 	 */
 	public boolean addAlternateInteraction(IInteraction alternateInteraction);
 	public ArrayList<IInteraction> getAlternateInteractions();
+	//public int getColor();
+	//public void setColor(int color);
+
 }

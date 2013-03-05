@@ -125,233 +125,233 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 				p.transform(transform);
 	}
 	
-	public IActProposition runSimulation(IAct act, ISpas spas)
-	{
-		// Intialize the simulation
-		m_spas = spas;
-		m_transform.setIdentity();
-		
-		// Run the simulation
-		int status = simulate(act).getSimulationStatus();
-		
-		// Test if the resulting situation leads to an affordance
-		
-		Vector3f trans = new Vector3f(); 
-		act.getTransform().get(trans); // Get the translation part of this act's transformation
-		//if (status != SIMULATION_INCONSISTENT && !trans.epsilonEquals(new Vector3f(), .1f))
-		
-		IAct subsequentAct = null;
-		if (status != Place.INCONSISTENT && !act.getTransform().epsilonEquals(new Transform3D(), .1f))
-		{
-			//boolean afford = false;
-			for (IPlace p : m_places)
-			{
-				if (p.getType() == Place.ENACTION_PLACE)
-				{
-					if (p.getAct().getPosition().epsilonEquals(p.getPosition(), .1f))
-					{
-						// This place affords itself
-						if (subsequentAct==null || subsequentAct.getSatisfaction() < p.getAct().getSatisfaction())
-							subsequentAct = p.getAct();
-					}					
-					//else
-					// This place also affords its compresences
-					for (IBundle b : m_spas.evokeCompresences(p.getAct()))
-					{
-						if (b.getFirstAct().getPosition().epsilonEquals(p.getPosition(), .1f))
-							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getFirstAct().getSatisfaction())
-								subsequentAct = b.getFirstAct();
-						if (b.getSecondAct().getPosition().epsilonEquals(p.getPosition(), .1f))
-							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getSecondAct().getSatisfaction())
-								subsequentAct = b.getSecondAct();
-					}
-				}
-			}
-		}
-		
-		int subsequentSatisfaction = 0;
-//		if (subsequentAct != null && subsequentAct.getSatisfaction() > 0)
+//	public IActProposition runSimulation(IAct act, ISpas spas)
+//	{
+//		// Intialize the simulation
+//		m_spas = spas;
+//		m_transform.setIdentity();
+//		
+//		// Run the simulation
+//		int status = simulate(act).getSimulationStatus();
+//		
+//		// Test if the resulting situation leads to an affordance
+//		
+//		Vector3f trans = new Vector3f(); 
+//		act.getTransform().get(trans); // Get the translation part of this act's transformation
+//		//if (status != SIMULATION_INCONSISTENT && !trans.epsilonEquals(new Vector3f(), .1f))
+//		
+//		IAct subsequentAct = null;
+//		if (status != Place.INCONSISTENT && !act.getTransform().epsilonEquals(new Transform3D(), .1f))
 //		{
-//			subsequentSatisfaction = subsequentAct.getSatisfaction();
-//			status = SIMULATION_REACH;
-//		}		
-
-		//Revert the transformation in spatial memory 
-		m_transform.invert();
-		transform(m_transform);	
-		
-		// If this act creates a new copresences then propose it
-		boolean newCopresence = false;
-		if (status != Place.INCONSISTENT)
-		{
-			for (IPlace pl : m_places)
-			{
-				if (pl.getType() == Place.ENACTION_PLACE)
-				{
-					if (act.getPosition().epsilonEquals(pl.getPosition(), .1f) && !act.equals(pl.getAct()) && act.getColor() == 0x73E600)
-					{
-						newCopresence = true;
-						// Test if the copresence already exists
-						for (IBundle b : m_spas.evokeCompresences(act))
-						{
-							if (b.afford(pl.getAct()))
-								newCopresence = false;
-						}
-					}
-				}
-			}
-		}
-		if (newCopresence)
-			status = SIMULATION_NEWCOMPRESENCE;
-
-		// Generate the proposition
-		
-		IActProposition p = new ActProposition(act, 0, 0);
-		final int SPATIAL_AFFORDANCE_WEIGHT = 10;
-		final int UNKNOWN_SATISFACTION = 1000;
-		
-		// If this act is afforded by the spatial situation then propose it.
-		if (status == Place.AFFORD)
-		{
-			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
-			p = new ActProposition(act, w, 0);
-		}
-
-		// If this act informs the spatial situation then propose it.
-		if (status == Place.UNKNOWN)
-		{
-			if (act.getSchema().getLabel().equals("-") || act.getSchema().getLabel().equals("/") || act.getSchema().getLabel().equals("\\"))
-			{
-				p = new ActProposition(act, 1, UNKNOWN_SATISFACTION);
-			}
-		}
-		
-		// If this act reaches a situation where another act is afforded then propose it.
-//		if (status == LocalSpaceMemory.SIMULATION_REACH)
+//			//boolean afford = false;
+//			for (IPlace p : m_places)
+//			{
+//				if (p.getType() == Place.ENACTION_PLACE)
+//				{
+//					if (p.getAct().getPosition().epsilonEquals(p.getPosition(), .1f))
+//					{
+//						// This place affords itself
+//						if (subsequentAct==null || subsequentAct.getSatisfaction() < p.getAct().getSatisfaction())
+//							subsequentAct = p.getAct();
+//					}					
+//					//else
+//					// This place also affords its compresences
+//					for (IBundle b : m_spas.evokeCompresences(p.getAct()))
+//					{
+//						if (b.getFirstAct().getPosition().epsilonEquals(p.getPosition(), .1f))
+//							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getFirstAct().getSatisfaction())
+//								subsequentAct = b.getFirstAct();
+//						if (b.getSecondAct().getPosition().epsilonEquals(p.getPosition(), .1f))
+//							if (subsequentAct==null || subsequentAct.getSatisfaction() < b.getSecondAct().getSatisfaction())
+//								subsequentAct = b.getSecondAct();
+//					}
+//				}
+//			}
+//		}
+//		
+//		int subsequentSatisfaction = 0;
+////		if (subsequentAct != null && subsequentAct.getSatisfaction() > 0)
+////		{
+////			subsequentSatisfaction = subsequentAct.getSatisfaction();
+////			status = SIMULATION_REACH;
+////		}		
+//
+//		//Revert the transformation in spatial memory 
+//		m_transform.invert();
+//		transform(m_transform);	
+//		
+//		// If this act creates a new copresences then propose it
+//		boolean newCopresence = false;
+//		if (status != Place.INCONSISTENT)
+//		{
+//			for (IPlace pl : m_places)
+//			{
+//				if (pl.getType() == Place.ENACTION_PLACE)
+//				{
+//					if (act.getPosition().epsilonEquals(pl.getPosition(), .1f) && !act.equals(pl.getAct()) && act.getColor() == 0x73E600)
+//					{
+//						newCopresence = true;
+//						// Test if the copresence already exists
+//						for (IBundle b : m_spas.evokeCompresences(act))
+//						{
+//							if (b.afford(pl.getAct()))
+//								newCopresence = false;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		if (newCopresence)
+//			status = SIMULATION_NEWCOMPRESENCE;
+//
+//		// Generate the proposition
+//		
+//		IActProposition p = new ActProposition(act, 0, 0);
+//		final int SPATIAL_AFFORDANCE_WEIGHT = 10;
+//		final int UNKNOWN_SATISFACTION = 1000;
+//		
+//		// If this act is afforded by the spatial situation then propose it.
+//		if (status == Place.AFFORD)
+//		{
+//			int w = SPATIAL_AFFORDANCE_WEIGHT ;//* a.getSatisfaction();
+//			p = new ActProposition(act, w, 0);
+//		}
+//
+//		// If this act informs the spatial situation then propose it.
+//		if (status == Place.UNKNOWN)
+//		{
+//			if (act.getSchema().getLabel().equals("-") || act.getSchema().getLabel().equals("/") || act.getSchema().getLabel().equals("\\"))
+//			{
+//				p = new ActProposition(act, 1, UNKNOWN_SATISFACTION);
+//			}
+//		}
+//		
+//		// If this act reaches a situation where another act is afforded then propose it.
+////		if (status == LocalSpaceMemory.SIMULATION_REACH)
+////		{
+////			int w = SPATIAL_AFFORDANCE_WEIGHT ;
+////			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
+////		}
+//		
+//		// If this act reaches a situation where another act is afforded then propose it.
+//		if (status == LocalSpaceMemory.SIMULATION_NEWCOMPRESENCE)
 //		{
 //			int w = SPATIAL_AFFORDANCE_WEIGHT ;
-//			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, subsequentSatisfaction);
+//			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, UNKNOWN_SATISFACTION * 10);
 //		}
-		
-		// If this act reaches a situation where another act is afforded then propose it.
-		if (status == LocalSpaceMemory.SIMULATION_NEWCOMPRESENCE)
-		{
-			int w = SPATIAL_AFFORDANCE_WEIGHT ;
-			p = new ActProposition(act, SPATIAL_AFFORDANCE_WEIGHT, UNKNOWN_SATISFACTION * 10);
-		}
-		
-		p.setStatus(status);
-		
-		return p;
-	}
+//		
+//		p.setStatus(status);
+//		
+//		return p;
+//	}
 	
-	private IEnaction simulate(IAct act)
-	{
-		IEnaction enaction = new Enaction();
-		
-		boolean unknown = true;
-		boolean consistent = true;
-		boolean afford = false;
-		//String effectLabel ="";
-		IAct enactedAct = null;
-		int simulationStatus = Place.INCONSISTENT;
-		ISchema s = act.getSchema();
-		if (s.isPrimitive())
-		{
-			Point3f concernedPosition = new Point3f(act.getPosition()); 
-			
-			for (IPlace p : m_places)
-			{
-				if (p.isInCell(concernedPosition) && p.getType() == Place.ENACTION_PLACE)
-				{
-					unknown = false;
-					if (p.getAct().equals(act))
-					{
-						// This place affords itself
-						afford = true;
-						enactedAct = act;
-					}
-					else
-						// This place affords its compresences
-						for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
-						{
-							if (!bundle.isConsistent(act)) consistent = false; 
-							if (bundle.afford(act)) afford = true;
-							IAct bundleAct = bundle.resultingAct(act); 
-							if (bundleAct != null)
-								enactedAct = bundleAct; 
-							enaction.getEffect().setLabel(bundle.effectlabel(act));
-						}
-				}
-			}	
-
-			if (unknown)	
-			{
-				// No place found at this location
-				
-				if (act.getColor() == 0xFFFFFF)
-				{
-					simulationStatus = Place.UNKNOWN;
-					// Mark an unknown interaction
-					IPlace sim = addPlace(concernedPosition, Place.UNKNOWN);
-					sim.setAct(act);
-					sim.setValue(0xB0B0FF);
-				}
-				
-				// acts that involve phenomena are inconsistent with unknown places.
-				// TODO improve that.
-			}
-			else
-			{
-				if (consistent)
-				{
-					// No place that contains an incompatible act was fond at this location
-					simulationStatus = Place.DISPLACEMENT;
-					// Mark a consistent interaction
-					IPlace sim = addPlace(concernedPosition, Place.UNKNOWN);
-					sim.setAct(act);
-					sim.setValue(act.getColor());
-				}
-				if (afford)
-				{
-					// A place that contains this act is found at this location
-					simulationStatus = Place.AFFORD;
-					// Mark an afforded interaction
-					IPlace sim = addPlace(concernedPosition, Place.AFFORD);
-					sim.setAct(act);
-					sim.setValue(act.getColor());
-					// the simulated enacted act is the intended act
-					enaction.setEnactedPrimitiveAct(act);
-					enaction.getEffect().setLabel(act.getEffectLabel());
-				}
-			}
-			
-			// Apply this act's transformation to spatial memory
-			transform(act.getTransform());
-			// accumulate the transformation of this act to reverse the transformation after the simulation
-			Transform3D tf = new Transform3D(act.getTransform());
-			m_transform.mul(tf, m_transform);
-
-		}
-		else 
-		{
-			simulationStatus = simulate(act.getSchema().getContextAct()).getSimulationStatus();
-			if (simulationStatus != Place.INCONSISTENT)
-			{
-				int status2 = simulate(act.getSchema().getIntentionAct()).getSimulationStatus();
-				if (status2 == Place.INCONSISTENT)
-					simulationStatus = Place.INCONSISTENT;
-				else
-				{
-					if (simulationStatus == Place.AFFORD && (status2 == Place.DISPLACEMENT || status2 == Place.UNKNOWN))
-						simulationStatus = status2;
-				}
-			}
-		}
-		//return simulationStatus;
-		enaction.setSimulationStatus(simulationStatus);
-		return enaction;
-	}
+//	private IEnaction simulate(IAct act)
+//	{
+//		IEnaction enaction = new Enaction();
+//		
+//		boolean unknown = true;
+//		boolean consistent = true;
+//		boolean afford = false;
+//		//String effectLabel ="";
+//		IAct enactedAct = null;
+//		int simulationStatus = Place.INCONSISTENT;
+//		ISchema s = act.getSchema();
+//		if (s.isPrimitive())
+//		{
+//			Point3f concernedPosition = new Point3f(act.getPosition()); 
+//			
+//			for (IPlace p : m_places)
+//			{
+//				if (p.isInCell(concernedPosition) && p.getType() == Place.ENACTION_PLACE)
+//				{
+//					unknown = false;
+//					if (p.getAct().equals(act))
+//					{
+//						// This place affords itself
+//						afford = true;
+//						enactedAct = act;
+//					}
+//					else
+//						// This place affords its compresences
+//						for (IBundle bundle : m_spas.evokeCompresences(p.getAct()))
+//						{
+//							if (!bundle.isConsistent(act)) consistent = false; 
+//							if (bundle.afford(act)) afford = true;
+//							IAct bundleAct = bundle.resultingAct(act); 
+//							if (bundleAct != null)
+//								enactedAct = bundleAct; 
+//							enaction.getEffect().setLabel(bundle.effectlabel(act));
+//						}
+//				}
+//			}	
+//
+//			if (unknown)	
+//			{
+//				// No place found at this location
+//				
+//				if (act.getColor() == 0xFFFFFF)
+//				{
+//					simulationStatus = Place.UNKNOWN;
+//					// Mark an unknown interaction
+//					IPlace sim = addPlace(concernedPosition, Place.UNKNOWN);
+//					sim.setAct(act);
+//					sim.setValue(0xB0B0FF);
+//				}
+//				
+//				// acts that involve phenomena are inconsistent with unknown places.
+//				// TODO improve that.
+//			}
+//			else
+//			{
+//				if (consistent)
+//				{
+//					// No place that contains an incompatible act was fond at this location
+//					simulationStatus = Place.DISPLACEMENT;
+//					// Mark a consistent interaction
+//					IPlace sim = addPlace(concernedPosition, Place.UNKNOWN);
+//					sim.setAct(act);
+//					sim.setValue(act.getColor());
+//				}
+//				if (afford)
+//				{
+//					// A place that contains this act is found at this location
+//					simulationStatus = Place.AFFORD;
+//					// Mark an afforded interaction
+//					IPlace sim = addPlace(concernedPosition, Place.AFFORD);
+//					sim.setAct(act);
+//					sim.setValue(act.getColor());
+//					// the simulated enacted act is the intended act
+//					enaction.setEnactedPrimitiveAct(act);
+//					enaction.getEffect().setLabel(act.getEffectLabel());
+//				}
+//			}
+//			
+//			// Apply this act's transformation to spatial memory
+//			transform(act.getTransform());
+//			// accumulate the transformation of this act to reverse the transformation after the simulation
+//			Transform3D tf = new Transform3D(act.getTransform());
+//			m_transform.mul(tf, m_transform);
+//
+//		}
+//		else 
+//		{
+//			simulationStatus = simulate(act.getSchema().getContextAct()).getSimulationStatus();
+//			if (simulationStatus != Place.INCONSISTENT)
+//			{
+//				int status2 = simulate(act.getSchema().getIntentionAct()).getSimulationStatus();
+//				if (status2 == Place.INCONSISTENT)
+//					simulationStatus = Place.INCONSISTENT;
+//				else
+//				{
+//					if (simulationStatus == Place.AFFORD && (status2 == Place.DISPLACEMENT || status2 == Place.UNKNOWN))
+//						simulationStatus = status2;
+//				}
+//			}
+//		}
+//		//return simulationStatus;
+//		enaction.setSimulationStatus(simulationStatus);
+//		return enaction;
+//	}
 
 	/**
 	 * Get the value at a given position.

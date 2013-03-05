@@ -28,7 +28,7 @@ public interface ISpatialMemory
 	 * @param spas A reference to spas in order to access the bundles.
 	 * @return The proposition resulting from the simulation of this act.
 	 */
-	public IActProposition runSimulation(IAct act, ISpas spas);	
+	//public IActProposition runSimulation(IAct act, ISpas spas);	
 	
 	/**
 	 * Tick this spatial memory's clock (to compute decay)

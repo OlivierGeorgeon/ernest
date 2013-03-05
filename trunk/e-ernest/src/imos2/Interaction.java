@@ -25,6 +25,7 @@ public class Interaction implements IInteraction
 	private int m_length = 1;
 	private IInteraction m_prescriber = null;
 	private int m_step = 0;
+	//private int m_color =0;
 	
 	// The list of prominent interactions of which the post interaction is an alternate in the context of the pre interaction.
 	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
@@ -235,5 +236,14 @@ public class Interaction implements IInteraction
 	{
 		return m_alternateInteractions;
 	}
+	
+//	public int getColor()
+//	{
+//		return m_color;
+//	}
+//	public void setColor(int color)
+//	{
+//		m_color = color;
+//	}
 
 }

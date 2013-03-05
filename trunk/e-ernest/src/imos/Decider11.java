@@ -102,7 +102,7 @@ public class Decider11 implements IDecider
                     int e = 0;
 					
 					// If the intention is consistent with spatial memory 
-					if (checkConsistency(proposedAct))
+					//if (checkConsistency(proposedAct))
 					{
 					
 						// If the intention is reliable then a proposition is constructed
@@ -142,7 +142,7 @@ public class Decider11 implements IDecider
 							}
 						}
 					}//
-					else
+					//else
 					{
 						if (m_tracer != null)
 							m_tracer.addSubelement(inconsistences, "inconsistence", proposedAct.getLabel() );
@@ -298,10 +298,10 @@ public class Decider11 implements IDecider
 		{
 			if (a.getConfidence() == Imos.RELIABLE && a.getSchema().getLength() <= 4)
 			{
-				IActProposition p = m_spas.runSimulation(a);
-				propositionList.add(p);				
-				if (m_tracer != null)
-					m_tracer.addSubelement(activations, "proposition", p.toString());
+				//IActProposition p = m_spas.runSimulation(a);
+				//propositionList.add(p);				
+				//if (m_tracer != null)
+				//	m_tracer.addSubelement(activations, "proposition", p.toString());
 			}
 						
 //			if (m_frame != null) 
@@ -386,16 +386,16 @@ public class Decider11 implements IDecider
 		return a;
 	}
 	
-	private boolean checkConsistency(IAct act) 
-	{
-		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
-		int status = simulationMemory.runSimulation(act, m_spas).getStatus();
-		
-		//return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
-		return (status == Place.UNKNOWN || status == Place.DISPLACEMENT || status == Place.AFFORD);
-
-		//return true;
-	}
+//	private boolean checkConsistency(IAct act) 
+//	{
+//		ISpatialMemory simulationMemory = m_spas.getSpatialMemory().clone();
+//		int status = simulationMemory.runSimulation(act, m_spas).getStatus();
+//		
+//		//return (status == LocalSpaceMemory.SIMULATION_UNKNOWN || status == LocalSpaceMemory.SIMULATION_CONSISTENT || status == LocalSpaceMemory.SIMULATION_AFFORD);
+//		return (status == Place.UNKNOWN || status == Place.DISPLACEMENT || status == Place.AFFORD);
+//
+//		//return true;
+//	}
 	
 
 }
