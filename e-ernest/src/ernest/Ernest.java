@@ -216,7 +216,7 @@ public class Ernest implements IErnest
 		// track the enaction 
 		
 		m_imos.track(m_enaction);
-		//m_spas.track(m_enaction);			
+		m_spas.track(m_enaction);			
 		
 		// Decision cycle
 		if (m_enaction.isOver())

@@ -1,7 +1,7 @@
 package spas;
 
 import imos.IAct;
-
+import imos2.IInteraction;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -60,7 +60,17 @@ public interface IPlace extends Cloneable
 	/**
 	 * @return This place's act.
 	 */
-	public IAct getAct(); 
+	//public IAct getAct(); 
+	
+	/**
+	 * @param act This place's act.
+	 */
+	public void setInteraction(IInteraction interaction); 
+	
+	/**
+	 * @return This place's act.
+	 */
+	public IInteraction getInteraction(); 
 	
 	/**
 	 * Test if this place is at this position.

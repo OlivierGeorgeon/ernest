@@ -1,11 +1,9 @@
 package spas;
 
 import imos.IAct;
-import imos.IActProposition;
-import imos.IEnaction;
+import imos2.IEnaction;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
@@ -92,7 +90,7 @@ public interface ISpas
 	public ISpatialMemory getSpatialMemory();
 	
 	//public void simulatePrimitiveAct(IEnaction enaction);
-	public IActProposition runSimulation(IAct act);
+	//public IActProposition runSimulation(IAct act);
 
 
 }

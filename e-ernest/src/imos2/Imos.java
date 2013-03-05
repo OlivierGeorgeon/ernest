@@ -301,7 +301,8 @@ public class Imos implements IImos
 				IInteraction newInteraction = addCompositeInteraction(preInteraction, enactedInteraction);
 				newInteraction.setEnactionWeight(newInteraction.getEnactionWeight() + 1);
 				System.out.println("learned " + newInteraction);
-				m_tracer.addSubelement(learnElmnt, "interaction", newInteraction.toString());
+				if (m_tracer != null)	
+					m_tracer.addSubelement(learnElmnt, "interaction", newInteraction.toString());
 			
 				// The new interaction belongs to the context 
 				// if its pre-interaction and post-interaction have passed the regularity threshold
