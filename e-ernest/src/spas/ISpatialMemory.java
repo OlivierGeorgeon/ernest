@@ -1,7 +1,7 @@
 package spas;
 
-import imos.IAct;
-import imos.IActProposition;
+//import imos.IAct;
+//import imos.IActProposition;
 
 import java.util.ArrayList;
 
