@@ -1,6 +1,6 @@
 package spas;
 
-import imos.IAct;
+//import imos.IAct;
 import imos2.IEnaction;
 
 import java.util.ArrayList;
@@ -80,8 +80,8 @@ public interface ISpas
 	
 	//public boolean checkAct(IAct act);
 	
-	public IBundle addBundle(IAct firstAct, IAct secondAct); 
-	public ArrayList<IBundle> evokeCompresences(IAct act);
+	//public IBundle addBundle(IAct firstAct, IAct secondAct); 
+	//public ArrayList<IBundle> evokeCompresences(IAct act);
 
 	//public IBundle aggregateBundle(IBundle bundle, IAct act); 
 

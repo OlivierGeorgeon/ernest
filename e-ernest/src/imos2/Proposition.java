@@ -21,7 +21,6 @@ public class Proposition implements IProposition
 	 * Constructor. 
 	 * @param i The proposed interaction.
 	 * @param w The proposal's weight.
-	 * @param e The proposal's expectation.
 	 */
 	public Proposition(IInteraction i, int w)
 	{

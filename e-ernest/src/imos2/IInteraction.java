@@ -8,14 +8,49 @@ import java.util.ArrayList;
  */
 public interface IInteraction 
 {
+	/**
+	 * @return The label of the move of this interaction
+	 */
 	public String getMoveLabel();
+	
+	/**
+	 * @return The label of this interaction (unique identifier)
+	 */
 	public String getLabel();
+	
+	/**
+	 * @return true if primitive, false if composite
+	 */
 	public boolean getPrimitive();
+	
+	/**
+	 * @return The value of enacting this interaction
+	 */
 	public int getEnactionValue();
+	
+	/**
+	 * @param enactionWeight The weight of this interaction.
+	 */
 	public void setEnactionWeight(int enactionWeight);
+	
+	/**
+	 * @return The weight of this interaction.
+	 */
 	public int getEnactionWeight();
+	
+	/**
+	 * @return This interaction's pre-interaction (null if primitive).
+	 */
 	public IInteraction getPreInteraction();
+	
+	/**
+	 * @return This interaction's post-interaction (null if primitive).
+	 */
 	public IInteraction getPostInteraction();
+	
+	/**
+	 * @return The number of primitive interactions that compose this interaction
+	 */
 	public int getLength();
 	
 	/**
@@ -57,11 +92,16 @@ public interface IInteraction
 	public void terminate();
 	
 	/**
-	 * @param interaction The actually enacted interaction
+	 * @param alternateInteraction The actually enacted interaction
 	 * @return true if the alternate interaction is new 
 	 */
 	public boolean addAlternateInteraction(IInteraction alternateInteraction);
+	
+	/**
+	 * @return This list of this interaction's alternative interactions
+	 */
 	public ArrayList<IInteraction> getAlternateInteractions();
+	
 	//public int getColor();
 	//public void setColor(int color);
 

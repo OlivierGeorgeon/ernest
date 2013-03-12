@@ -1,6 +1,5 @@
 package imos2;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import ernest.ITracer;
@@ -36,6 +35,9 @@ public class Imos implements IImos
 	/** Counter of cognitive cycles. */
 	private int m_imosCycle = 0;
 	
+	/**
+	 * Constructor
+	 */
 	public Imos()
 	{
 	}

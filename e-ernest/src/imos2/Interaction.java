@@ -1,7 +1,6 @@
 package imos2;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -9,11 +8,12 @@ import java.util.Hashtable;
  */
 public class Interaction implements IInteraction 
 {
+	/** Default weight of primitive interactions */
 	private static int PRIMITIVE_WEIGHT = 100;
 	
-	public static int CORRECT_CONTINUE = 0;
-	public static int INCORRECT_INTERRUPTED = 1;
-	public static int CORRECT_COMPLETED = 2;
+	//public static int CORRECT_CONTINUE = 0;
+	//public static int INCORRECT_INTERRUPTED = 1;
+	//public static int CORRECT_COMPLETED = 2;
 	
 	private String m_moveLabel ="";
 	private String m_effectLabel = "";
@@ -27,7 +27,7 @@ public class Interaction implements IInteraction
 	private int m_step = 0;
 	//private int m_color =0;
 	
-	// The list of prominent interactions of which the post interaction is an alternate in the context of the pre interaction.
+	/** The list of alternative interactions */
 	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
 
 	/**
