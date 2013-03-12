@@ -1,9 +1,5 @@
 package imos2;
 
-import imos.ActProposition;
-import imos.IActProposition;
-import imos.Imos;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import ernest.ITracer;
@@ -18,6 +14,7 @@ public class Decider implements IDecider
 	IImos m_imos;
 	ISpas m_spas;
 	ITracer m_tracer;
+	//TODO pass max schema length as a parameter
 	int m_maxSchemaLength = 10;
 
 	/**

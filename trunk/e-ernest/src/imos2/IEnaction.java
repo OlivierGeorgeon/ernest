@@ -1,7 +1,6 @@
 package imos2;
 
 import java.util.ArrayList;
-
 import ernest.IEffect;
 import ernest.ITracer;
 
@@ -14,62 +13,62 @@ import ernest.ITracer;
 public interface IEnaction 
 {
 	/**
-	 * @param effect The effect produced by the last move.
+	 * @param effect The effect resulting from the last enacted interaction.
 	 */
 	public void setEffect(IEffect effect);
 	
 	/**
-	 * @return The effect produced by the last move.
+	 * @return The effect resulting from the last enacted interaction.
 	 */
 	public IEffect getEffect();
 	
 	/**
-	 * @param act The last primitive act enacted
+	 * @param interaction The last primitive intended interaction
 	 */
 	public void setIntendedPrimitiveInteraction(IInteraction interaction);
 	
 	/**
-	 * @return The last primitive act enacted
+	 * @return The last primitive intended interaction
 	 */
 	public IInteraction getIntendedPrimitiveInteraction();	
 
 	/**
-	 * @param act The last primitive act enacted
+	 * @param interaction The last primitive enacted interaction
 	 */
 	public void setEnactedPrimitiveInteraction(IInteraction interaction);
 	
 	/**
-	 * @return The last primitive act enacted
+	 * @return The last primitive enacted interaction
 	 */
 	public IInteraction getEnactedPrimitiveInteraction();	
 
 	/**
-	 * @param act The last highest-level act enacted
+	 * @param interaction The composite interaction to be enacted
 	 */
 	public void setTopInteraction(IInteraction interaction);
 	
 	/**
-	 * @return The last highest-level act enacted
+	 * @return The composite interaction to be enacted
 	 */
 	public IInteraction getTopInteraction();	
 
 	/**
-	 * @param act The last highest-level act enacted
+	 * @param interaction The highest-level composite interaction enacted thus far.
 	 */
 	public void setTopEnactedInteraction(IInteraction interaction);
 	
 	/**
-	 * @return The last highest-level act enacted
+	 * @return The highest-level composite interaction enacted thus far.
 	 */
 	public IInteraction getTopEnactedInteraction();	
 
 	/**
-	 * @param act The last highest-level act enacted
+	 * @param interaction The remaining highest-level composite interaction to enact.
 	 */
 	public void setTopRemainingInteraction(IInteraction interaction);
 	
 	/**
-	 * @return The last highest-level act enacted
+	 * @return The remaining highest-level composite interaction to enact.
 	 */
 	public IInteraction getTopRemainingInteraction();	
 
@@ -91,12 +90,12 @@ public interface IEnaction
 	/**
 	 * @return The status of simulating this enaction in spatial memory.
 	 */
-	public int getSimulationStatus();
+	//public int getSimulationStatus();
 
 	/**
 	 * @param simulationStatus The status of simulating this enaction in spatial memory.
 	 */
-	public void setSimulationStatus(int simulationStatus);
+	//public void setSimulationStatus(int simulationStatus);
 	
 	/**
 	 * @return True if this enaction is terminated.
@@ -114,14 +113,25 @@ public interface IEnaction
 	
 
 	/**
+	 * Trace the tracking of the enaction (just after a primitive interaction being enacted)
 	 * @param tracer The tracer
 	 */
 	public void traceTrack(ITracer tracer);
-	public void traceCarry(ITracer tracer);
-	public void traceTerminate(ITracer tracer);
-	public void trace(ITracer tracer);
 	
-	public void addOngoingInteraction(IInteraction intraction);
-	public ArrayList<IInteraction> getOngoingInteractions();
+	/**
+	 * Trace the carrying out of an enaction (just before the next intended primitive interaction)
+	 * @param tracer The tracer
+	 */
+	public void traceCarry(ITracer tracer);
+
+	/**
+	 * Trace the termination of an enaction
+	 * @param tracer The tracer
+	 */
+	public void traceTerminate(ITracer tracer);
+	//public void trace(ITracer tracer);
+	
+	//public void addOngoingInteraction(IInteraction intraction);
+	//public ArrayList<IInteraction> getOngoingInteractions();
 	
 }

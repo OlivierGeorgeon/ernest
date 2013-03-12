@@ -143,7 +143,6 @@ public class XMLTracer implements ITracer<Element>
 	/**
 	 * Add a new element to the current event
 	 * @param name The element's name
-	 * @param textContent The element's textual content
 	 * @return a pointer to the element that can be used to add sub elements.
 	 */
 	public Element addEventElement(String name)

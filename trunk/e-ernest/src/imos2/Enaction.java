@@ -2,34 +2,46 @@ package imos2;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import ernest.Effect;
 import ernest.IEffect;
 import ernest.ITracer;
 
 /**
- * A structure used to manage the enaction of a scheme in the real world
- * or the simulation of the enaction of a scheme in spatial memory.
+ * A structure used to handle the enaction of an interaction
+ * or the simulation of the enaction of an interaction in memory.
  * @author ogeorgeon
  */
 public class Enaction implements IEnaction 
 {
-	private IEffect m_effect = new Effect();
+	/** The intended primitive interaction */
 	private IInteraction m_intendedPrimitiveInteraction = null;
+	/** The enacted primitive interaction */
 	private IInteraction m_enactedPrimitiveInteraction = null;
-	private IInteraction m_topAct = null;
+	/** The effect obtained from the enaction of the enacted primitive interaction */
+	private IEffect m_effect = new Effect();
+	/** The composite interaction being enacted */
+	private IInteraction m_topInteraction = null;
+	/** The highest level composite interaction enacted thus far */
 	private IInteraction m_topEnactedInteraction = null;
-	private IInteraction m_topRemainingAct = null;
-	private int m_simulationStatus = 0;
+	/** The highest remaining composite interaction */ 
+	private IInteraction m_topRemainingInteraction = null;
+	/** The current step of this enaction*/
 	private int m_step = 0;
+	/** The previous learning context (the context of the stream enaction) */
 	private ArrayList<IInteraction> m_previousLearningContext   = new ArrayList<IInteraction>();
+	/** The learning context at the beginning of this enaction*/
 	private ArrayList<IInteraction> m_initialLearningContext   = new ArrayList<IInteraction>();
+	/** The learning context at the end of this enaction*/
 	private ArrayList<IInteraction> m_finalLearningContext   = new ArrayList<IInteraction>();
+	/** The activation context at the end of this enaction*/
 	private ArrayList<IInteraction> m_finalActivationContext = new ArrayList<IInteraction>();
+	/** Number of schema learned after this enaction*/
 	private int m_nbSchemaLearned = 0;
+	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
 	
-	private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();
+	//private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();	
+	//private int m_simulationStatus = 0;
 	
 	public void setEffect(IEffect effect) 
 	{
@@ -53,12 +65,12 @@ public class Enaction implements IEnaction
 
 	public void setTopInteraction(IInteraction act) 
 	{
-		m_topAct = act;
+		m_topInteraction = act;
 	}
 
 	public IInteraction getTopInteraction() 
 	{
-		return m_topAct;
+		return m_topInteraction;
 	}
 	
 	public void setTopEnactedInteraction(IInteraction interaction) 
@@ -73,12 +85,12 @@ public class Enaction implements IEnaction
 	
 	public void setTopRemainingInteraction(IInteraction act) 
 	{
-		m_topRemainingAct = act;
+		m_topRemainingInteraction = act;
 	}
 
 	public IInteraction getTopRemainingInteraction() 
 	{
-		return m_topRemainingAct;
+		return m_topRemainingInteraction;
 	}
 	
 	public void setStep(int step)
@@ -91,15 +103,15 @@ public class Enaction implements IEnaction
 		return m_step;
 	}
 
-	public void setSimulationStatus(int simulationStatus) 
-	{
-		m_simulationStatus = simulationStatus;
-	}
+//	public void setSimulationStatus(int simulationStatus) 
+//	{
+//		m_simulationStatus = simulationStatus;
+//	}
 
-	public int getSimulationStatus() 
-	{
-		return m_simulationStatus;
-	}
+//	public int getSimulationStatus() 
+//	{
+//		return m_simulationStatus;
+//	}
 
 	public void setEnactedPrimitiveInteraction(IInteraction act) 
 	{
@@ -113,7 +125,7 @@ public class Enaction implements IEnaction
 	
 	public boolean isOver()
 	{
-		return (m_topRemainingAct == null);
+		return (m_topRemainingInteraction == null);
 	}
 	
 	public void setCorrect(boolean correct) 
@@ -216,7 +228,7 @@ public class Enaction implements IEnaction
 		if (tracer != null && m_intendedPrimitiveInteraction != null)
 		{
 			//tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
-			tracer.addEventElement("top_level", m_topAct.getLength() + "");
+			tracer.addEventElement("top_level", m_topInteraction.getLength() + "");
 			tracer.addEventElement("satisfaction", m_enactedPrimitiveInteraction.getEnactionValue()/10 + "");
 			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getMoveLabel());
 
@@ -224,7 +236,7 @@ public class Enaction implements IEnaction
 			
 			Object e = tracer.addEventElement("track_enaction");
 		
-			tracer.addSubelement(e, "top_intention", m_topAct.getLabel());
+			tracer.addSubelement(e, "top_intention", m_topInteraction.getLabel());
 			tracer.addSubelement(e, "top_enacted_interaction", m_topEnactedInteraction.getLabel());
 			tracer.addSubelement(e, "step", m_step + "");
 			tracer.addSubelement(e, "primitive_intended_interaction", m_intendedPrimitiveInteraction.getLabel());
@@ -239,11 +251,11 @@ public class Enaction implements IEnaction
 		{
 			Object e = tracer.addEventElement("carry_enaction");
 
-			tracer.addSubelement(e, "top_intention", m_topAct.toString());
-			tracer.addSubelement(e, "top_level", m_topAct.getLength() + "");
+			tracer.addSubelement(e, "top_intention", m_topInteraction.toString());
+			tracer.addSubelement(e, "top_level", m_topInteraction.getLength() + "");
 			if (m_topEnactedInteraction != null)
 				tracer.addSubelement(e, "top_enacted", m_topEnactedInteraction.toString());
-			tracer.addSubelement(e, "top_remaining", m_topRemainingAct.toString());
+			tracer.addSubelement(e, "top_remaining", m_topRemainingInteraction.toString());
 			tracer.addSubelement(e, "next_step", m_step + "");
 			tracer.addSubelement(e, "next_primitive_intended_act", m_intendedPrimitiveInteraction.toString());
 		}
@@ -271,35 +283,35 @@ public class Enaction implements IEnaction
 		}
 	}
 	
-	public void trace(ITracer tracer) 
-	{
-		if (tracer != null) 
-		{
-			if (m_topAct != null)
-			{
-				tracer.addEventElement("top_intention", m_topAct.getLabel());
-				tracer.addEventElement("top_level", m_topAct.getLength() + "");
-			}
-			tracer.addEventElement("new_intention", m_step == 0 ? "true" : "false");
-			if (m_intendedPrimitiveInteraction != null)
-				tracer.addEventElement("primitive_intended_act", m_intendedPrimitiveInteraction.getLabel());
-			if (m_enactedPrimitiveInteraction !=  null)
-			{
-				tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
-				tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getMoveLabel());
-				tracer.addEventElement("satisfaction", m_enactedPrimitiveInteraction.getEnactionValue()/10 + "");
-			}
-		}
-	}
+//	public void trace(ITracer tracer) 
+//	{
+//		if (tracer != null) 
+//		{
+//			if (m_topInteraction != null)
+//			{
+//				tracer.addEventElement("top_intention", m_topInteraction.getLabel());
+//				tracer.addEventElement("top_level", m_topInteraction.getLength() + "");
+//			}
+//			tracer.addEventElement("new_intention", m_step == 0 ? "true" : "false");
+//			if (m_intendedPrimitiveInteraction != null)
+//				tracer.addEventElement("primitive_intended_act", m_intendedPrimitiveInteraction.getLabel());
+//			if (m_enactedPrimitiveInteraction !=  null)
+//			{
+//				tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
+//				tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getMoveLabel());
+//				tracer.addEventElement("satisfaction", m_enactedPrimitiveInteraction.getEnactionValue()/10 + "");
+//			}
+//		}
+//	}
 
-	public void addOngoingInteraction(IInteraction interaction) 
-	{
-		m_ongoingInteractions.add(interaction);
-	}
-
-	public ArrayList<IInteraction> getOngoingInteractions() 
-	{
-		return m_ongoingInteractions;
-	}
+//	public void addOngoingInteraction(IInteraction interaction) 
+//	{
+//		m_ongoingInteractions.add(interaction);
+//	}
+//
+//	public ArrayList<IInteraction> getOngoingInteractions() 
+//	{
+//		return m_ongoingInteractions;
+//	}
 
 }

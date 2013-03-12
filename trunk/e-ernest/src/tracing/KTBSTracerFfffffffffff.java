@@ -69,7 +69,8 @@ public class KTBSTracerFfffffffffff implements ITracer<BlankNode> //TODO
 	
 	/**
 	 * Initialize the tracer.
-	 * @param fileName The name of the trace file
+	 * @param traceModel trace model
+	 * @param baseURL The name of the trace file
 	 */
 	public KTBSTracerFfffffffffff(String baseURL, String traceModel)
 	{

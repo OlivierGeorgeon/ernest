@@ -1,6 +1,5 @@
 package imos2;
 
-import java.util.ArrayList;
 
 /**
  * A proposition to enact an interaction. 
