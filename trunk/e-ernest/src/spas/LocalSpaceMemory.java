@@ -1,11 +1,11 @@
 package spas;
 
-import imos.ActProposition;
-import imos.Enaction;
-import imos.IAct;
-import imos.IActProposition;
-import imos.IEnaction;
-import imos.ISchema;
+//import imos.ActProposition;
+//import imos.Enaction;
+//import imos.IAct;
+//import imos.IActProposition;
+//import imos.IEnaction;
+//import imos.ISchema;
 
 import java.util.ArrayList;
 import java.util.Iterator;
