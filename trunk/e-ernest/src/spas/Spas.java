@@ -53,6 +53,8 @@ public class Spas implements ISpas
 	{
 		tick();
 		
+		m_localSpaceMemory.transform(enaction.getEffect().getTransformation());		
+		
 		//if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveAct() != null)
 		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveInteraction() != null)
 		{
@@ -63,8 +65,6 @@ public class Spas implements ISpas
 			//evokePlaces(enaction);
 		}
 		
-		m_localSpaceMemory.transform(enaction.getEffect().getTransformation());		
-	
 		if (m_tracer != null) m_localSpaceMemory.trace(m_tracer);
 	}
 
