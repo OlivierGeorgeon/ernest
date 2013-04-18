@@ -54,13 +54,11 @@ public class Spas implements ISpas
 		tick();
 		
 		m_localSpaceMemory.transform(enaction.getEffect().getTransformation());		
+		m_localSpaceMemory.decay();
 		
-		//if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveAct() != null)
 		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveInteraction() != null)
 		{
-			//addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveAct());			
 			addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
-			m_localSpaceMemory.decay();
 			//constructCopresence(enaction);
 			//evokePlaces(enaction);
 		}
@@ -372,7 +370,8 @@ public class Spas implements ISpas
 		place.setInteraction(act);
 		//place.setAct(act);
 		place.setType(type);
-		place.setClock(m_clock);
+		//place.setClock(m_clock);
+		place.setClock(0);
 		
 		return place;
 	}

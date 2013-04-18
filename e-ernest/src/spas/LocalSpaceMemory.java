@@ -50,12 +50,12 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static int SIMULATION_NEWCOMPRESENCE = 11;
 	
 	/** The duration of persistence in local space memory. */
-	public static int PERSISTENCE_DURATION = 10;//50;
+	public static int PERSISTENCE_DURATION = 5;//50;
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
 	
-	private int m_clock = 0;
+	//private int m_clock = 0;
 	
 	private ISpas m_spas;
 	
@@ -91,7 +91,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 
 	public void tick()
 	{
-		m_clock++;
+		for (IPlace p : m_places)
+			p.incClock();
 	}
 
 	public void trace(ITracer tracer)
@@ -424,14 +425,14 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			IPlace p = (IPlace)it.next();
 			if (p.getType() == Place.ENACTION_PLACE || p.getType() == Place.EVOKED_PLACE )
 			{
-				//if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION +1) // -1
-				if (p.getClock() < m_clock - PERSISTENCE_DURATION +1) // -1
+				//if (p.getClock() < m_clock - PERSISTENCE_DURATION +1) // -1
+				if (p.getClock() > PERSISTENCE_DURATION ) // -1
 					it.remove();
 			}
 			else
 			{
-				//if (p.getUpdateCount() < m_spas.getClock() - PERSISTENCE_DURATION)
-				if (p.getClock() < m_clock - PERSISTENCE_DURATION)
+				//if (p.getClock() < m_clock - PERSISTENCE_DURATION)
+				if (p.getClock() > PERSISTENCE_DURATION)
 					it.remove();
 				else if (p.getType() == Place.AFFORD || p.getType() == Place.UNKNOWN)// || p.getType() == Place.SIMULATION_PLACE)
 					it.remove();

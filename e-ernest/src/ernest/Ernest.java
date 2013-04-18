@@ -49,58 +49,58 @@ public class Ernest implements IErnest
 	public static int PERSISTENCE = 300;//Ernest 12 (in SPAS clock)
 	
 	/** 200 Base attractiveness of bundles that are not edible  */
-	public static int ATTRACTIVENESS_OF_UNKNOWN =  200;
+	//public static int ATTRACTIVENESS_OF_UNKNOWN =  200;
 
 	/** 400 Top attractiveness of bundles that are edible  */
-	public static int ATTRACTIVENESS_OF_FISH  =  400;
+	//public static int ATTRACTIVENESS_OF_FISH  =  400;
 	
 	/** 300 Top attractiveness of cuddling another fish  */
-	public static int ATTRACTIVENESS_OF_CUDDLE  =  300;
+	//public static int ATTRACTIVENESS_OF_CUDDLE  =  300;
 	
 	/** -350 Attractiveness of bumping in a wall  */
-	public static int ATTRACTIVENESS_OF_BUMP  =  -300;//-350;//-500;
+	//public static int ATTRACTIVENESS_OF_BUMP  =  -300;//-350;//-500;
 	
 	/** -200 Attractiveness of hard  */
-	public static int ATTRACTIVENESS_OF_HARD  =  -200;
+	//public static int ATTRACTIVENESS_OF_HARD  =  -200;
 	
 	/** 0 Attractiveness of background in the extrapersonal space  */
-	public static int ATTRACTIVENESS_OF_BACKGROUND  =  0;
+	//public static int ATTRACTIVENESS_OF_BACKGROUND  =  0;
 	
 	/** A threshold for maturity that reduces exploration after a certain age to make demos nicer */
-	public static int MATURITY = 1500; // not used currently.
+	//public static int MATURITY = 1500; // not used currently.
 	
 	/** The radius of tactile sensors */
-	public static float TACTILE_RADIUS = 1;
+	//public static float TACTILE_RADIUS = 1;
 	
 	/** Ernest physical diameter (for eat and bump) */
-	public static float BOUNDING_RADIUS = .4f;
+	//public static float BOUNDING_RADIUS = .4f;
 	
 	/** A gustatory stimulation */
-	public static int STIMULATION_GUSTATORY = 0;
+	//public static int STIMULATION_GUSTATORY = 0;
 	
 	/** A kinematic stimulation */
-	public static int STIMULATION_KINEMATIC = 1;
+	//public static int STIMULATION_KINEMATIC = 1;
 	
 	/** A spatial stimulation */
-	public static int MODALITY_SPATIAL = 1;
+	//public static int MODALITY_SPATIAL = 1;
 	
 	/** A visual stimulation */
-	public static int MODALITY_VISUAL = 2;
+	//public static int MODALITY_VISUAL = 2;
 
 	/** A tactile stimulation */
-	public static int MODALITY_TACTILE = 3;
+	//public static int MODALITY_TACTILE = 3;
 	
 	/** A circadian stimulation */
-	public static int STIMULATION_CIRCADIAN = 4;
+	//public static int STIMULATION_CIRCADIAN = 4;
 	
 	/** The taste of food */
-	public static int STIMULATION_FOOD = 2;
+	//public static int STIMULATION_FOOD = 2;
 	
 	/** Visual stimulation of seeing nothing */
-	public static int STIMULATION_VISUAL_UNSEEN = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
+	//public static int STIMULATION_VISUAL_UNSEEN = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
 
 	/** Color of empty places for desplay */	
-	public static int PHENOMENON_EMPTY = 0xFFFFFF;	
+//	public static int PHENOMENON_EMPTY = 0xFFFFFF;	
 //	public static int PHENOMENON_FISH  = 0x9680FF;//255 * 65536 + 255 * 256 + 255;	
 //	public static int PHENOMENON_WALL  = 0x008000;//255 * 65536 + 255 * 256 + 255;
 //	public static int PHENOMENON_ALGA  = 0x73E600;
