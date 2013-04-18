@@ -119,6 +119,8 @@ public interface IPlace extends Cloneable
 	 */
 	public float getDistance();
 	
+	public void incClock();
+	
 	public void setOrientation(float orientation);
 	public float getOrientationAngle();
 	

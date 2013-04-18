@@ -271,4 +271,9 @@ public class Place implements IPlace //, Cloneable
 		return m_interaction;
 	}
 
+	public void incClock() 
+	{
+		m_clock++;
+	}
+
 }
