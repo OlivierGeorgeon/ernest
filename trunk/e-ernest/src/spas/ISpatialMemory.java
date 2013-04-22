@@ -9,6 +9,8 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import ernest.ITracer;
+import imos2.IInteraction;
+
 
 /**
  * A Spatial Memory is a memory of a spatial configuration
@@ -47,7 +49,8 @@ public interface ISpatialMemory
 	 * @param type This place's type
 	 * @return The created place
 	 */
-	public IPlace addPlace(Point3f position, int type);
+	//public IPlace addPlace(Point3f position, int type);
+	public IPlace addPlace(IInteraction interaction, Point3f position);
 
 	/**
 	 * @param transform The transformation
@@ -91,10 +94,10 @@ public interface ISpatialMemory
 	/**
 	 * @param transform The transformation of spatial memory relatively to the agent.
 	 */
-	public void setTransform(Transform3D transform);
+	//public void setTransform(Transform3D transform);
 	
 	/**
 	 * @return The transformation of spatial memory relatively to the agent.
 	 */
-	public Transform3D getTransform();
+	//public Transform3D getTransform();
 }

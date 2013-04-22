@@ -363,15 +363,14 @@ public class Spas implements ISpas
 	}
 
 	//private IPlace addPlace(Point3f position, int type, int value, IAct act) 
-	private IPlace addPlace(Point3f position, int type, int value, IInteraction act) 
+	private IPlace addPlace(Point3f position, int type, int value, IInteraction interaction) 
 	{
-		IPlace place = m_localSpaceMemory.addPlace(position, type);
+		IPlace place = m_localSpaceMemory.addPlace(interaction, position);
 		place.setValue(value);
-		place.setInteraction(act);
 		//place.setAct(act);
-		place.setType(type);
+//		place.setType(type);
 		//place.setClock(m_clock);
-		place.setClock(0);
+//		place.setClock(0);
 		
 		return place;
 	}

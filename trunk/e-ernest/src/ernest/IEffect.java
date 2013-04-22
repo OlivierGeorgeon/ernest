@@ -1,5 +1,7 @@
 package ernest;
 
+import imos2.IInteraction;
+
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
@@ -11,6 +13,8 @@ import javax.vecmath.Point3f;
 public interface IEffect 
 {
 	
+	public void setInteraction(IInteraction interaction); 
+	public IInteraction getInteraction(); 
 	/**
 	 * @param label The elementary effect of the enacted primitive scheme.
 	 */
