@@ -1,5 +1,7 @@
 package ernest;
 
+import imos2.IInteraction;
+
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
@@ -14,6 +16,7 @@ public class Effect implements IEffect
 	private Transform3D m_transformation = new Transform3D();
 	private int m_color = 0xFFFFFF;
 	private float m_angle =0;
+	private IInteraction interaction;
 	
 	public void setLabel(String label) 
 	{
@@ -23,6 +26,16 @@ public class Effect implements IEffect
 	public String getLabel() 
 	{
 		return m_label;
+	}
+
+	public void setInteraction(IInteraction interaction) 
+	{
+		this.interaction = interaction;
+	}
+
+	public IInteraction getInteraction() 
+	{
+		return this.interaction;
 	}
 
 	public void setLocation(Point3f location) 

@@ -110,49 +110,49 @@ public class Ernest implements IErnest
 	public static int UNANIMATED_COLOR = 0x808080;
 
 	/** Touch empty */
-	public static int STIMULATION_TOUCH_EMPTY = 0xB4B4B4;//11842740;
+	//public static int STIMULATION_TOUCH_EMPTY = 0xB4B4B4;//11842740;
 	
 	/** Touch soft */
-	public static int STIMULATION_TOUCH_SOFT = 0x646464;//100 * 65536 + 100 * 256 + 100 = 6579300
+	//public static int STIMULATION_TOUCH_SOFT = 0x646464;//100 * 65536 + 100 * 256 + 100 = 6579300
 	
 	/** Touch hard */
-	public static int STIMULATION_TOUCH_WALL = 0x000000;
+	//public static int STIMULATION_TOUCH_WALL = 0x000000;
 	
 	/** Touch fish */
-	public static int STIMULATION_TOUCH_FISH = 0x646465;//100 * 65536 + 100 * 256 + 101 = 6579301
+	//public static int STIMULATION_TOUCH_FISH = 0x646465;//100 * 65536 + 100 * 256 + 101 = 6579301
 	
 	/** Touch other agent */
-	public static int STIMULATION_TOUCH_AGENT = 0x646466;
+	//public static int STIMULATION_TOUCH_AGENT = 0x646466;
 	
 	/** Kinematic Stimulation move forward */	
-	public static int STIMULATION_KINEMATIC_FORWARD = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255 = 16777215
+	//public static int STIMULATION_KINEMATIC_FORWARD = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255 = 16777215
 
 	/** Kinematic Stimulations bump */
-	public static int STIMULATION_KINEMATIC_BUMP = 0xFF0000;//255 * 65536 = 16711680
+	//public static int STIMULATION_KINEMATIC_BUMP = 0xFF0000;//255 * 65536 = 16711680
 		
 	/** Kinematic Stimulations turn left toward empty square */
-	public static int STIMULATION_KINEMATIC_LEFT_EMPTY = 2;
+	//public static int STIMULATION_KINEMATIC_LEFT_EMPTY = 2;
 		
 	/** Kinematic Stimulations turn left toward wall */
-	public static int STIMULATION_KINEMATIC_LEFT_WALL = 3;
+	//public static int STIMULATION_KINEMATIC_LEFT_WALL = 3;
 		
 	/** Kinematic Stimulations turn right toward empty square */
-	public static int STIMULATION_KINEMATIC_RIGHT_EMPTY = 4;
+	//public static int STIMULATION_KINEMATIC_RIGHT_EMPTY = 4;
 		
 	/** Kinematic Stimulations turn right toward wall */
-	public static int STIMULATION_KINEMATIC_RIGHT_WALL = 5;
+	//public static int STIMULATION_KINEMATIC_RIGHT_WALL = 5;
 		
 	/** Gustatory Stimulation nothing */	
-	public static int STIMULATION_GUSTATORY_NOTHING = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
+	//public static int STIMULATION_GUSTATORY_NOTHING = 0xFFFFFF;//255 * 65536 + 255 * 256 + 255;
 
 	/** Gustatory Stimulation fish */	
-	public static int STIMULATION_GUSTATORY_FISH = 0xFFFF00;//255 * 65536 + 255 * 256;
+	//public static int STIMULATION_GUSTATORY_FISH = 0xFFFF00;//255 * 65536 + 255 * 256;
 	
 	/** Social Stimulation cuddle */	
-	public static int STIMULATION_GUSTATORY_CUDDLE = 0xFF8080;
+	//public static int STIMULATION_GUSTATORY_CUDDLE = 0xFF8080;
 	
 	/** Social Stimulation nothing */	
-	public static int STIMULATION_SOCIAL_NOTHING = 0x000000;
+	//public static int STIMULATION_SOCIAL_NOTHING = 0x000000;
 	
 	/** Ernest's current enaction */
 	private IEnaction m_enaction = new Enaction();
@@ -230,7 +230,7 @@ public class Ernest implements IErnest
 		m_decider.carry(m_enaction);
 		
 		//return m_enaction.getIntendedPrimitiveInteraction().getMoveLabel();
-		return m_enaction.getIntendedPrimitiveInteraction().getLabel().substring(0, 1);		
+		return m_enaction.getIntendedPrimitiveInteraction().getLabel();		
 
 	}
 

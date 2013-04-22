@@ -149,7 +149,6 @@ public class Imos implements IImos
 		m_imosCycle++;		
 		
 		IInteraction intendedPrimitiveInteraction = enaction.getIntendedPrimitiveInteraction();
-		IInteraction topIntendedInteraction       = enaction.getTopInteraction();
 		IInteraction enactedPrimitiveInteraction  = null;
 		IInteraction topEnactedInteraction        = null;
 		IInteraction topRemainingInteraction      = null;
@@ -161,7 +160,7 @@ public class Imos implements IImos
 			// Compute the enaction value of interactions that were not yet recorded
 			enactedPrimitiveInteraction = addInteraction(intendedPrimitiveInteraction.getLabel().substring(0, 1)+ enaction.getEffect().getLabel(), 0);
 
-			// Compute the top actually enacted act
+			// Compute the top actually enacted interaction
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
 			// TODO compute the actually enacted top interaction.
 			topEnactedInteraction = topEnactedInteraction(enactedPrimitiveInteraction, intendedPrimitiveInteraction);
@@ -173,9 +172,6 @@ public class Imos implements IImos
 			{
 				intendedPrimitiveInteraction.terminate();
 			}
-			
-			// Compute the next intention, null if we have reached the end of the intended act.
-			//topRemainingInteraction = nextInteraction(intendedPrimitiveInteraction, enactedPrimitiveInteraction);	
 			
 			System.out.println("Enacted primitive interaction " + enactedPrimitiveInteraction );
 			System.out.println("Top remaining interaction " + topRemainingInteraction );
