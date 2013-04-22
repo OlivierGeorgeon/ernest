@@ -230,7 +230,7 @@ public class Enaction implements IEnaction
 			//tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addEventElement("top_level", m_topInteraction.getLength() + "");
 			tracer.addEventElement("satisfaction", m_enactedPrimitiveInteraction.getEnactionValue()/10 + "");
-			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getMoveLabel());
+			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getLabel().substring(0, 1));
 
 			m_effect.trace(tracer);
 			

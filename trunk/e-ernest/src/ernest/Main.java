@@ -38,18 +38,18 @@ public class Main
 
 		// Set Ernest's primitive interactions and motivations.
 		
-		ernest.addInteraction("-", "t", -2); // Touch wall
-		ernest.addInteraction("-", "f", -1); // Touch empty
-		ernest.addInteraction("\\", "t", -2);// Touch right wall
-		ernest.addInteraction("\\", "f", -1);// Touch right empty
-		ernest.addInteraction("/", "t", -2); // Touch left wall
-		ernest.addInteraction("/", "f", -1); // Touch left empty
-		ernest.addInteraction(">", "t",  5); // Move
-		ernest.addInteraction(">", "f", -10);// Bump		
-		ernest.addInteraction("v", "t", -3); // Right toward empty
-		ernest.addInteraction("v", "f", -3); // Right toward wall		
-		ernest.addInteraction("^", "t", -3); // Left toward empty
-		ernest.addInteraction("^", "f", -3); // Left toward wall		
+		ernest.addInteraction("-t", -2); // Touch wall
+		ernest.addInteraction("-f", -1); // Touch empty
+		ernest.addInteraction("\\t", -2);// Touch right wall
+		ernest.addInteraction("\\f", -1);// Touch right empty
+		ernest.addInteraction("/t", -2); // Touch left wall
+		ernest.addInteraction("/f", -1); // Touch left empty
+		ernest.addInteraction(">t",  5); // Move
+		ernest.addInteraction(">f", -10);// Bump		
+		ernest.addInteraction("vt", -3); // Right toward empty
+		ernest.addInteraction("vf", -3); // Right toward wall		
+		ernest.addInteraction("^t", -3); // Left toward empty
+		ernest.addInteraction("^f", -3); // Left toward wall		
 		
 //		Settings for a nice demo in the Simple Maze Environment
 //		sms.addInteraction(">", "t",  5); // Move

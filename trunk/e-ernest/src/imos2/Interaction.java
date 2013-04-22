@@ -11,12 +11,9 @@ public class Interaction implements IInteraction
 	/** Default weight of primitive interactions */
 	private static int PRIMITIVE_WEIGHT = 100;
 	
-	//public static int CORRECT_CONTINUE = 0;
-	//public static int INCORRECT_INTERRUPTED = 1;
-	//public static int CORRECT_COMPLETED = 2;
-	
-	private String m_moveLabel ="";
-	private String m_effectLabel = "";
+	private String label = "";
+	//private String m_moveLabel ="";
+	//private String m_effectLabel = "";
 	private boolean m_primitive = true;
 	private IInteraction m_preInteraction = null;
 	private IInteraction m_postInteraction = null;
@@ -25,7 +22,9 @@ public class Interaction implements IInteraction
 	private int m_length = 1;
 	private IInteraction m_prescriber = null;
 	private int m_step = 0;
-	//private int m_color =0;
+	
+	private IAct preAct;
+	private IAct postAct;
 	
 	/** The list of alternative interactions */
 	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
@@ -36,9 +35,9 @@ public class Interaction implements IInteraction
 	 * @param enactionValue The value of enacting this interaction.
 	 * @return The created primitive interaction.
 	 */
-	public static IInteraction createPrimitiveInteraction(String moveLabel, String effectLabel, int enactionValue)
+	public static IInteraction createPrimitiveInteraction(String label, int enactionValue)
 	{
-		return new Interaction(moveLabel, effectLabel, true, null, null, enactionValue);
+		return new Interaction(label, true, null, null, enactionValue);
 	}
 	
 	/**
@@ -49,14 +48,15 @@ public class Interaction implements IInteraction
 	public static IInteraction createCompositeInteraction(IInteraction preInteraction, IInteraction postInteraction)
 	{
 		int enactionValue = preInteraction.getEnactionValue() + postInteraction.getEnactionValue();
-		String moveLabel = preInteraction.getLabel() + postInteraction.getLabel();
-		return new Interaction(moveLabel, "", false, preInteraction, postInteraction, enactionValue);
+		String label = preInteraction.getLabel() + postInteraction.getLabel();
+		return new Interaction(label, false, preInteraction, postInteraction, enactionValue);
 	}
 	
-	protected Interaction(String moveLabel, String effectLabel, boolean primitive, IInteraction preInteraction, IInteraction postInteraction, int enactionValue)
+	protected Interaction(String label, boolean primitive, IInteraction preInteraction, IInteraction postInteraction, int enactionValue)
 	{
-		m_moveLabel = moveLabel;
-		m_effectLabel = effectLabel;
+		this.label = label;
+		//m_moveLabel = moveLabel;
+		//m_effectLabel = effectLabel;
 		m_primitive = primitive;
 		m_preInteraction = preInteraction;
 		m_postInteraction = postInteraction;
@@ -82,10 +82,10 @@ public class Interaction implements IInteraction
 		return m_enactionValue;
 	}
 
-	public String getMoveLabel() 
-	{
-		return m_moveLabel;
-	}
+//	public String getMoveLabel() 
+//	{
+//		return m_moveLabel;
+//	}
 
 	public boolean getPrimitive() 
 	{
@@ -116,12 +116,13 @@ public class Interaction implements IInteraction
 
 	public String getLabel() 
 	{
-		String label = "";
+		String l = "";
 		if (m_primitive)
-			label = m_moveLabel + m_effectLabel;
+			l = this.label;
+			//label = m_moveLabel + m_effectLabel;
 		else
-			label = "(" + m_preInteraction.getLabel() + m_postInteraction.getLabel() + ")";
-		return label; 
+			l = "(" + m_preInteraction.getLabel() + m_postInteraction.getLabel() + ")";
+		return l; 
 	}
 
 	public void setEnactionWeight(int enactionWeight) 
@@ -236,14 +237,25 @@ public class Interaction implements IInteraction
 	{
 		return m_alternateInteractions;
 	}
-	
-//	public int getColor()
-//	{
-//		return m_color;
-//	}
-//	public void setColor(int color)
-//	{
-//		m_color = color;
-//	}
 
+	public void setPreAct(IAct act) 
+	{
+		this.preAct = act;
+	}
+
+	public void setPostAct(IAct act) 
+	{
+		this.postAct = act;
+	}
+
+	public IAct getPreAct() 
+	{
+		return this.preAct;
+	}
+
+	public IAct getPostAct() 
+	{
+		return this.postAct;
+	}
+	
 }
