@@ -60,8 +60,7 @@ public interface IErnest
 	 * @param satisfaction The satisfaction.
 	 * @return The created or already existing act.
 	 */
-	//public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
-	public IInteraction addInteraction(String schemaLabel, String stimuliLabel, int satisfaction);
+	public IInteraction addInteraction(String label, int satisfaction);
 
 	/**
 	 * @return The list of places in Ernest's local space memory.

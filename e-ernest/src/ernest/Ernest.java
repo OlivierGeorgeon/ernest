@@ -229,8 +229,9 @@ public class Ernest implements IErnest
 		
 		m_decider.carry(m_enaction);
 		
-		//return m_enaction.getIntendedPrimitiveAct().getSchema().getLabel();		
-		return m_enaction.getIntendedPrimitiveInteraction().getMoveLabel();		
+		//return m_enaction.getIntendedPrimitiveInteraction().getMoveLabel();
+		return m_enaction.getIntendedPrimitiveInteraction().getLabel().substring(0, 1);		
+
 	}
 
 	public int getValue(int i, int j)
@@ -238,10 +239,9 @@ public class Ernest implements IErnest
 		return m_spas.getValue(i,j);
 	}
 	
-	//public IAct addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
-	public IInteraction addInteraction(String schemaLabel, String stimuliLabel, int satisfaction)
+	public IInteraction addInteraction(String label, int satisfaction)
 	{
-		return m_imos.addInteraction(schemaLabel, stimuliLabel, satisfaction);
+		return m_imos.addInteraction(label, satisfaction);
 	}
 
 	public ArrayList<IPlace> getPlaceList()
@@ -266,9 +266,4 @@ public class Ernest implements IErnest
 	{
 		return m_spas.getSpatialMemory();
 	}
-
-//	public void setFrame(JFrame frame) 
-//	{
-//		m_sensorymotorSystem.setFrame(frame);
-//	}
 }

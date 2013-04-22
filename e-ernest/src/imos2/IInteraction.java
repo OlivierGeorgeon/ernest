@@ -11,7 +11,7 @@ public interface IInteraction
 	/**
 	 * @return The label of the move of this interaction
 	 */
-	public String getMoveLabel();
+	//public String getMoveLabel();
 	
 	/**
 	 * @return The label of this interaction (unique identifier)
@@ -102,7 +102,10 @@ public interface IInteraction
 	 */
 	public ArrayList<IInteraction> getAlternateInteractions();
 	
-	//public int getColor();
-	//public void setColor(int color);
-
+	public void setPreAct(IAct act);
+	public void setPostAct(IAct act);
+	public IAct getPreAct();
+	public IAct getPostAct();
+	
+	
 }
