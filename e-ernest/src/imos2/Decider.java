@@ -14,8 +14,7 @@ public class Decider implements IDecider
 	IImos m_imos;
 	ISpas m_spas;
 	ITracer m_tracer;
-	//TODO pass max schema length as a parameter
-	int m_maxSchemaLength = 10;
+	int maxSchemaLength = 10;
 
 	/**
 	 * @param imos The sequential system
@@ -34,7 +33,7 @@ public class Decider implements IDecider
 	
 	public void setMaxSchemaLength(int maxSchemaLength)
 	{
-		m_maxSchemaLength = maxSchemaLength;
+		this.maxSchemaLength = maxSchemaLength;
 	}
 
 	public IEnaction decide(IEnaction enaction) 
@@ -116,7 +115,7 @@ public class Decider implements IDecider
 				IProposition p = null;
 				
 				if ((proposedInteraction.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
-						(proposedInteraction.getLength() <= m_maxSchemaLength ))
+						(proposedInteraction.getLength() <= this.maxSchemaLength ))
 				{
 					p= new Proposition(proposedInteraction, w);
 				}
