@@ -18,6 +18,8 @@ public interface IEnaction
 	public void setEffect(IEffect effect);
 	
 	public void setSlice(String slice);
+	public String getSlice();
+
 	
 	/**
 	 * @return The effect resulting from the last enacted interaction.

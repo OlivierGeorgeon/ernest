@@ -67,9 +67,10 @@ public class SimpleMaze implements IEnvironment
 	 * @return The boolean feedback resulting from the schema enaction.
 	 */
 
-	public IEffect enact(String s) 
+	public IEffect enact(String intendedInteraction) 
 	{
 		IEffect effect = null;
+		String s = intendedInteraction.substring(0,1);
 		
 		if (s.equals(">"))
 			effect = move();

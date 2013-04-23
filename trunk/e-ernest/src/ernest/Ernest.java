@@ -2,24 +2,19 @@ package ernest;
 
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-import javax.vecmath.Vector3f;
-
+import javax.vecmath.Point3f;
 import spas.IPlace;
-import spas.ISegment;
 import spas.ISpas;
 import spas.ISpatialMemory;
-//import spas.IStimulation;
 import spas.Spas;
-//import spas.Stimulation;
 import imos2.Enaction;
-//import imos.IAct;
 import imos2.IEnaction;
 import imos2.IImos;
 import imos2.IInteraction;
 import imos2.Imos;
 import imos2.Decider;
 import imos2.IDecider;
+import imos2.Interaction;
 
 
 /**
@@ -164,11 +159,13 @@ public class Ernest implements IErnest
 	private IImos m_imos = new Imos();
 	
 	/** Ernest's decisional Mechanism. */
-	//private IDecider m_decider = new Decider12(m_imos, m_spas);
 	private IDecider m_decider = new Decider(m_imos, m_spas); // Regular decider for Ernest 7.
 	
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
+	
+	/** The list of primitive interactions available to Ernest */
+	private ArrayList<IPrimitive> interactions = new ArrayList<IPrimitive>();
 	
 	/**
 	 * Set Ernest's fundamental learning parameters.
@@ -242,7 +239,31 @@ public class Ernest implements IErnest
 	
 	public IInteraction addInteraction(String label, int satisfaction)
 	{
-		return m_imos.addInteraction(label, satisfaction);
+		addPrimitiveInteraction(label, satisfaction);
+		//m_imos.addInteraction(label + "A", satisfaction);
+		m_imos.addInteraction(label + m_spas.slice(new Point3f()), satisfaction);
+		//m_imos.addInteraction(label + "C", satisfaction);
+		return null;
+	}
+
+	private IPrimitive addPrimitiveInteraction(String label, int satisfaction)
+	{
+		// Primitive satisfactions are multiplied by 10 internally for rounding issues.   
+		// (this value does not impact the agent's behavior)
+		IPrimitive primitive = new Primitive(label, satisfaction * 10);
+		
+		int i = this.interactions.indexOf(primitive);
+		if (i == -1)
+		{
+			// The interaction does not exist
+			this.interactions.add(primitive);
+			System.out.println("Define primitive interaction " + primitive);
+		}
+		else 
+			// The interaction already exists: return a pointer to it.
+			primitive =  this.interactions.get(i);
+		
+		return primitive;		
 	}
 
 	public ArrayList<IPlace> getPlaceList()
