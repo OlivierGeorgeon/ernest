@@ -3,6 +3,7 @@ package utils;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
+import javax.vecmath.Point3f;
 
 /**
  * Miscellaneous utilities for Ernest.
@@ -18,6 +19,16 @@ public final class ErnestUtils
 	public static float polarAngle(Vector3f vector) 
 	{
 		return (float)Math.atan2((double)vector.y, (double)vector.x);
+	}
+	
+	/**
+	 * Returns the polar angle of this vector.
+	 * @param point A vector.
+	 * @return The polar angle of this vector.
+	 */
+	public static float polarAngle(Point3f point) 
+	{
+		return (float)Math.atan2((double)point.y, (double)point.x);
 	}
 	
 	/**

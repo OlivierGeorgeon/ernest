@@ -23,15 +23,11 @@ public class Interaction implements IInteraction
 	private IInteraction m_prescriber = null;
 	private int m_step = 0;
 	
-	private IAct preAct;
-	private IAct postAct;
-	
 	/** The list of alternative interactions */
 	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
 
 	/**
-	 * @param moveLabel The move label.
-	 * @param effectLabel The effect label.
+	 * @param label The interaction's label.
 	 * @param enactionValue The value of enacting this interaction.
 	 * @return The created primitive interaction.
 	 */
@@ -237,25 +233,4 @@ public class Interaction implements IInteraction
 	{
 		return m_alternateInteractions;
 	}
-
-	public void setPreAct(IAct act) 
-	{
-		this.preAct = act;
-	}
-
-	public void setPostAct(IAct act) 
-	{
-		this.postAct = act;
-	}
-
-	public IAct getPreAct() 
-	{
-		return this.preAct;
-	}
-
-	public IAct getPostAct() 
-	{
-		return this.postAct;
-	}
-	
 }
