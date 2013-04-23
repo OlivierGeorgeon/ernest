@@ -212,12 +212,6 @@ public class Place implements IPlace //, Cloneable
 		return ErnestUtils.polarAngle(m_orientation);
 	}
 	
-//	public float getFrontDistance()
-//	{
-//		return m_firstPosition.x - m_firstPosition.y * (m_firstPosition.x - m_secondPosition.x)/(m_firstPosition.y - m_secondPosition.y);
-//		
-//	}
-
 	public void setValue(int value) 
 	{
 		m_value = value;

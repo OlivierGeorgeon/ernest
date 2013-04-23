@@ -29,7 +29,7 @@ import imos2.IDecider;
 public class Ernest implements IErnest 
 {
 	/** A multiplication factor when we need decimal precision but still use integers. */		
-	public static final int INT_FACTOR = 1000;
+	public static final int INT_FACTOR = 100;
 	
 	/** A big value that can represent infinite for diverse purpose. */	
 	public static final int INFINITE = 1000 * INT_FACTOR;
