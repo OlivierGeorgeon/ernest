@@ -102,10 +102,5 @@ public interface IInteraction
 	 */
 	public ArrayList<IInteraction> getAlternateInteractions();
 	
-	public void setPreAct(IAct act);
-	public void setPostAct(IAct act);
-	public IAct getPreAct();
-	public IAct getPostAct();
-	
 	
 }

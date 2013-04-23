@@ -39,6 +39,8 @@ public class Enaction implements IEnaction
 	private int m_nbSchemaLearned = 0;
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
+	/** The area slice of the primitive enacted interaction */
+	private String slice;
 	
 	//private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();	
 	//private int m_simulationStatus = 0;
@@ -48,6 +50,12 @@ public class Enaction implements IEnaction
 		m_effect = effect;
 	}
 
+	public void setSlice(String slice)
+	{
+		this.slice = slice;
+	}
+
+	
 	public IEffect getEffect() 
 	{
 		return m_effect;

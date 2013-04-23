@@ -1,14 +1,10 @@
 package spas;
 
-//import imos.IAct;
 import imos2.IEnaction;
-
 import java.util.ArrayList;
-
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-
 import ernest.ITracer;
 
 /**
@@ -37,6 +33,13 @@ public interface ISpas
 	 * @return The value of the bundle in this place in local space memory.
 	 */
 	public int getValue(int i, int j);
+	
+	/**
+	 * Return the identifier of an area to which a point belongs.
+	 * @param point The point.
+	 * @return The code of the area.
+	 */
+	public String slice(Point3f point);
 
 	/**
 	 * Provide a rgb code to display the object of Ernest's attention in the environment.

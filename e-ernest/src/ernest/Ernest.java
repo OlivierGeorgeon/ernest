@@ -215,6 +215,7 @@ public class Ernest implements IErnest
 		
 		// track the enaction 
 		
+		m_enaction.setSlice(m_spas.slice(effect.getLocation()));
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
 		
