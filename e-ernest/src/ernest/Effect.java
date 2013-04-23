@@ -16,7 +16,7 @@ public class Effect implements IEffect
 	private Transform3D m_transformation = new Transform3D();
 	private int m_color = 0xFFFFFF;
 	private float m_angle =0;
-	private IInteraction interaction;
+	private String enactedInteractionLabel;
 	
 	public void setLabel(String label) 
 	{
@@ -28,14 +28,14 @@ public class Effect implements IEffect
 		return m_label;
 	}
 
-	public void setInteraction(IInteraction interaction) 
+	public void setEnactedInteractionLabel(String label) 
 	{
-		this.interaction = interaction;
+		this.enactedInteractionLabel = label;
 	}
 
-	public IInteraction getInteraction() 
+	public String getEnactedInteractionLabel() 
 	{
-		return this.interaction;
+		return this.enactedInteractionLabel;
 	}
 
 	public void setLocation(Point3f location) 

@@ -19,4 +19,5 @@ public class Slicer implements ISlicer {
 		else 
 			return "C"; // Area C: right
 	}
+	
 }

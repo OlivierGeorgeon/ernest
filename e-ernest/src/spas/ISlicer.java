@@ -14,4 +14,5 @@ public interface ISlicer
 	 * @return The identifier of the area of interest
 	 */
 	public String slice(Point3f point);
+	
 }

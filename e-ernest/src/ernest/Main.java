@@ -68,7 +68,7 @@ public class Main
 		// Run in an infinite loop
 		
 		int iCycle = 1;
-		String schema = "";
+		String intendedInteracton ;
 		IEffect effect = new Effect();
 		
 		while (true)
@@ -77,8 +77,11 @@ public class Main
 			System.out.println("Step #" + iCycle++);
 			//////////////////////////////////////////////////////////////////////////////////////////
 			
-			schema = ernest.step(effect);
-			effect = environment.enact(schema);
+			intendedInteracton = ernest.step(effect);
+			effect = environment.enact(intendedInteracton);
+						
+			effect.setEnactedInteractionLabel(intendedInteracton.substring(0, 1) + effect.getLabel());
+			System.out.println("Enacted " + effect.getEnactedInteractionLabel());
 			
 			//tracer.close(); // Needed with the XMLTracer to save the xml file on each interaction cycle.
 		}

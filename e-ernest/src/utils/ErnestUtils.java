@@ -18,7 +18,10 @@ public final class ErnestUtils
 	 */
 	public static float polarAngle(Vector3f vector) 
 	{
-		return (float)Math.atan2((double)vector.y, (double)vector.x);
+		if (vector.y == 0)
+			return 0;
+		else
+			return (float)Math.atan2((double)vector.y, (double)vector.x);
 	}
 	
 	/**
@@ -28,7 +31,10 @@ public final class ErnestUtils
 	 */
 	public static float polarAngle(Point3f point) 
 	{
-		return (float)Math.atan2((double)point.y, (double)point.x);
+		if (point.y == 0)
+			return 0;
+		else
+			return (float)Math.atan2((double)point.y, (double)point.x);
 	}
 	
 	/**

@@ -55,6 +55,10 @@ public class Enaction implements IEnaction
 		this.slice = slice;
 	}
 
+	public String getSlice()
+	{
+		return this.slice;
+	}
 	
 	public IEffect getEffect() 
 	{

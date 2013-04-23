@@ -13,8 +13,8 @@ import javax.vecmath.Point3f;
 public interface IEffect 
 {
 	
-	public void setInteraction(IInteraction interaction); 
-	public IInteraction getInteraction(); 
+	public void setEnactedInteractionLabel(String label); 
+	public String getEnactedInteractionLabel(); 
 	/**
 	 * @param label The elementary effect of the enacted primitive scheme.
 	 */

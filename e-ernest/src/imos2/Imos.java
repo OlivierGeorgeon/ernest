@@ -92,7 +92,7 @@ public class Imos implements IImos
 		{
 			// The interaction does not exist
 			m_interactions.add(i);
-			System.out.println("Define primitive interaction " + i);
+			System.out.println("Define primitive act " + i);
 		}
 		else 
 			// The interaction already exists: return a pointer to it.
@@ -157,7 +157,8 @@ public class Imos implements IImos
 		{
 			// Compute the enacted primitive interaction from the move and the effect.
 			// Compute the enaction value of interactions that were not yet recorded
-			enactedPrimitiveInteraction = addInteraction(intendedPrimitiveInteraction.getLabel().substring(0, 1)+ enaction.getEffect().getLabel(), 0);
+			//enactedPrimitiveInteraction = addInteraction(intendedPrimitiveInteraction.getLabel().substring(0, 1)+ enaction.getEffect().getLabel(), 0);
+			enactedPrimitiveInteraction = addInteraction(enaction.getEffect().getEnactedInteractionLabel() + enaction.getSlice(), 0);
 
 			// Compute the top actually enacted interaction
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
