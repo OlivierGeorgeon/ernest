@@ -4,6 +4,7 @@ package ernest;
 import imos2.IAct;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
 import spas.IPlace;
@@ -82,6 +83,6 @@ public interface IErnest
 	 */
 	public ISpatialMemory getSpatialSimulation();
 	
-	public ArrayList<IPrimitive> getPrimitives();
+	public HashMap<String , IPrimitive> getPrimitives();
 	
 }

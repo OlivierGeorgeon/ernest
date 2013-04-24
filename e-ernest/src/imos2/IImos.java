@@ -43,7 +43,7 @@ public interface IImos
 	 * @param satisfaction The interaction's satisfaction.
 	 * @return The act that was created or that already existed.
 	 */
-	public IAct addInteraction(String label, int satisfaction); 
+	public IAct addAct(String label, int satisfaction); 
 
 	/**
 	 * @param tracer The tracer used to generate the activity traces

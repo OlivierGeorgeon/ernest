@@ -1,6 +1,8 @@
 package ernest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.vecmath.Point3f;
 import spas.IPlace;
@@ -37,14 +39,15 @@ public class Ernest implements IErnest
 	/** Ernest's Intrinsically motivated Schema Mechanism. */
 	private IImos m_imos = new Imos();
 	
-	/** Ernest's decisional Mechanism. */
-	private IDecider m_decider = new Decider(m_imos, m_spas); // Regular decider for Ernest 7.
-	
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
 	
 	/** The list of primitive interactions available to Ernest */
-	private ArrayList<IPrimitive> interactions = new ArrayList<IPrimitive>();
+	//private ArrayList<IPrimitive> interactions = new ArrayList<IPrimitive>();
+	private final HashMap<String , IPrimitive> interactions = new HashMap<String , IPrimitive>() ;
+	
+	/** Ernest's decisional Mechanism. */
+	private IDecider m_decider = new Decider(m_imos, m_spas, this.interactions); // Regular decider for Ernest 7.
 	
 	/**
 	 * Set Ernest's fundamental learning parameters.
@@ -72,6 +75,7 @@ public class Ernest implements IErnest
 	public String step(IEffect effect) 
 	{
 		m_enaction.setEffect(effect);
+		m_enaction.setEnactedPrimitive(this.interactions.get(effect.getEnactedInteractionLabel()));
 		
 		// Start a new interaction cycle.
 		if (m_tracer != null)
@@ -118,22 +122,12 @@ public class Ernest implements IErnest
 
 	private IPrimitive addPrimitiveInteraction(String label, int satisfaction)
 	{
-		// Primitive satisfactions are multiplied by 10 internally for rounding issues.   
-		// (this value does not impact the agent's behavior)
 		IPrimitive primitive = new Primitive(label, satisfaction * 10);
+		this.interactions.put(label, primitive);
+				
+		System.out.println("Define primitive interaction " + primitive.toString());
 		
-		int i = this.interactions.indexOf(primitive);
-		if (i == -1)
-		{
-			// The interaction does not exist
-			this.interactions.add(primitive);
-			System.out.println("Define primitive interaction " + primitive.toString());
-		}
-		else 
-			// The interaction already exists: return a pointer to it.
-			primitive =  this.interactions.get(i);
-		
-		return primitive;		
+		return this.interactions.get(label);		
 	}
 
 	public ArrayList<IPlace> getPlaceList()
@@ -159,7 +153,7 @@ public class Ernest implements IErnest
 		return m_spas.getSpatialMemory();
 	}
 
-	public ArrayList<IPrimitive> getPrimitives() 
+	public HashMap<String , IPrimitive> getPrimitives() 
 	{
 		return this.interactions;
 	}

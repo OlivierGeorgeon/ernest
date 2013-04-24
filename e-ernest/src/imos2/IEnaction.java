@@ -2,6 +2,7 @@ package imos2;
 
 import java.util.ArrayList;
 import ernest.IEffect;
+import ernest.IPrimitive;
 import ernest.ITracer;
 
 
@@ -138,4 +139,7 @@ public interface IEnaction
 	//public void addOngoingInteraction(IInteraction intraction);
 	//public ArrayList<IInteraction> getOngoingInteractions();
 	
+	public IPrimitive getEnactedPrimitive(); 
+	public void setEnactedPrimitive(IPrimitive enactedPrimitive); 
+
 }

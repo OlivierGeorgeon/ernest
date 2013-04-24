@@ -2,6 +2,9 @@ package imos2;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+
+import ernest.IPrimitive;
 import ernest.ITracer;
 import spas.ISpas;
 
@@ -13,6 +16,7 @@ public class Decider implements IDecider
 {
 	IImos m_imos;
 	ISpas m_spas;
+	HashMap<String , IPrimitive> interactions;
 	ITracer m_tracer;
 	int maxSchemaLength = 10;
 
@@ -20,10 +24,11 @@ public class Decider implements IDecider
 	 * @param imos The sequential system
 	 * @param spas The spatial system
 	 */
-	public Decider(IImos imos, ISpas spas)
+	public Decider(IImos imos, ISpas spas, HashMap<String , IPrimitive> interactions)
 	{
 		m_imos = imos;
 		m_spas = spas;
+		this.interactions = interactions;
 	}
 
 	public void setTracer(ITracer tracer)
@@ -76,15 +81,24 @@ public class Decider implements IDecider
 			consolidationElmt = m_tracer.addSubelement(decisionElmt, "consolidation");
 		}
 
-		// Construct a default proposition for primitive interactions
-		for(IAct a : m_imos.getInteractions())
+//		// Construct a default proposition for primitive interactions
+//		for(IAct a : m_imos.getInteractions())
+//		{
+//			if (a.getPrimitive())
+//			{
+//				IProposition p = new Proposition(a, 0);
+//				if (!propositions.contains(p))
+//					propositions.add(p);
+//			}       
+//		}
+		
+		// Construct a default proposition to enact primitive interactions in area B
+		for (IPrimitive i : this.interactions.values())
 		{
-			if (a.getPrimitive())
-			{
-				IProposition p = new Proposition(a, 0);
-				if (!propositions.contains(p))
-					propositions.add(p);
-			}       
+			IAct a = this.m_imos.addAct(i.getLabel() + "B", i.getValue());
+			IProposition p = new Proposition(a, 0);
+			if (!propositions.contains(p))
+				propositions.add(p);
 		}
 		
 		// Construct the list of activated interactions 
