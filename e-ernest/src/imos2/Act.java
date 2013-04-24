@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * A sensorimotor pattern of interaction of Ernest with its environment 
  * @author Olivier
  */
-public class Interaction implements IInteraction 
+public class Act implements IAct 
 {
 	/** Default weight of primitive interactions */
 	private static int PRIMITIVE_WEIGHT = 100;
@@ -15,25 +15,25 @@ public class Interaction implements IInteraction
 	//private String m_moveLabel ="";
 	//private String m_effectLabel = "";
 	private boolean m_primitive = true;
-	private IInteraction m_preInteraction = null;
-	private IInteraction m_postInteraction = null;
+	private IAct m_preInteraction = null;
+	private IAct m_postInteraction = null;
 	private int m_enactionValue = 0;
 	private int m_enactionWeight = 0;
 	private int m_length = 1;
-	private IInteraction m_prescriber = null;
+	private IAct m_prescriber = null;
 	private int m_step = 0;
 	
 	/** The list of alternative interactions */
-	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
+	private ArrayList<IAct> m_alternateInteractions = new ArrayList<IAct>();
 
 	/**
 	 * @param label The interaction's label.
 	 * @param enactionValue The value of enacting this interaction.
 	 * @return The created primitive interaction.
 	 */
-	public static IInteraction createPrimitiveInteraction(String label, int enactionValue)
+	public static IAct createPrimitiveInteraction(String label, int enactionValue)
 	{
-		return new Interaction(label, true, null, null, enactionValue);
+		return new Act(label, true, null, null, enactionValue);
 	}
 	
 	/**
@@ -41,14 +41,14 @@ public class Interaction implements IInteraction
 	 * @param postInteraction The post-interaction.
 	 * @return The created composite interaction.
 	 */
-	public static IInteraction createCompositeInteraction(IInteraction preInteraction, IInteraction postInteraction)
+	public static IAct createCompositeInteraction(IAct preInteraction, IAct postInteraction)
 	{
 		int enactionValue = preInteraction.getEnactionValue() + postInteraction.getEnactionValue();
 		String label = preInteraction.getLabel() + postInteraction.getLabel();
-		return new Interaction(label, false, preInteraction, postInteraction, enactionValue);
+		return new Act(label, false, preInteraction, postInteraction, enactionValue);
 	}
 	
-	protected Interaction(String label, boolean primitive, IInteraction preInteraction, IInteraction postInteraction, int enactionValue)
+	protected Act(String label, boolean primitive, IAct preInteraction, IAct postInteraction, int enactionValue)
 	{
 		this.label = label;
 		//m_moveLabel = moveLabel;
@@ -63,12 +63,12 @@ public class Interaction implements IInteraction
 			m_length = preInteraction.getLength() + postInteraction.getLength();
 	}
 	
-	public IInteraction getPreInteraction() 
+	public IAct getPreInteraction() 
 	{
 		return m_preInteraction;
 	}
 
-	public IInteraction getPostInteraction() 
+	public IAct getPostInteraction() 
 	{
 		return m_postInteraction;
 	}
@@ -103,7 +103,7 @@ public class Interaction implements IInteraction
 			ret = false;
 		else
 		{
-			IInteraction other = (IInteraction)o;
+			IAct other = (IAct)o;
 			ret = (other.getLabel().equals(getLabel()));
 		}
 		
@@ -146,12 +146,12 @@ public class Interaction implements IInteraction
 		return m_step;
 	}
 
-	public void setPrescriber(IInteraction prescriber) 
+	public void setPrescriber(IAct prescriber) 
 	{
 		m_prescriber = prescriber;
 	}
 
-	public IInteraction getPrescriber() 
+	public IAct getPrescriber() 
 	{
 		return m_prescriber;
 	}
@@ -159,11 +159,11 @@ public class Interaction implements IInteraction
 	/**
 	 * Update the prescriber if this interaction was enacted
 	 */
-	public IInteraction updatePrescriber()
+	public IAct updatePrescriber()
 	{
-		IInteraction prescriber = m_prescriber;
+		IAct prescriber = m_prescriber;
 		m_prescriber = null;
-		IInteraction nextInteraction = null;
+		IAct nextInteraction = null;
 		if (prescriber != null)
 		{
 			int step = prescriber.getStep();
@@ -195,9 +195,9 @@ public class Interaction implements IInteraction
 		m_step = 0;
 	}
 
-	public IInteraction prescribe() 
+	public IAct prescribe() 
 	{
-		IInteraction prescribedInteraction = null;
+		IAct prescribedInteraction = null;
 		if (m_primitive)
 			prescribedInteraction = this;
 		else
@@ -214,7 +214,7 @@ public class Interaction implements IInteraction
 		return getLabel() + "(" + m_enactionValue/10 + "," + m_enactionWeight + ")";
 	}
 
-	public boolean addAlternateInteraction(IInteraction alternateInteraction) 
+	public boolean addAlternateInteraction(IAct alternateInteraction) 
 	{
 		boolean newAlternate = false;
 		int i = m_alternateInteractions.indexOf(alternateInteraction);
@@ -229,7 +229,7 @@ public class Interaction implements IInteraction
 		return newAlternate;
 	}
 
-	public ArrayList<IInteraction> getAlternateInteractions() 
+	public ArrayList<IAct> getAlternateInteractions() 
 	{
 		return m_alternateInteractions;
 	}

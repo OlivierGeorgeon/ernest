@@ -49,6 +49,6 @@ public class Primitive implements IPrimitive {
 
 	public String toString()
 	{
-		return this.label;
+		return this.label + "(" + this.value / 10 + ")";
 	}
 }

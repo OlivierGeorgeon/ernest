@@ -21,7 +21,7 @@ public class Imos implements IImos
 	private int m_regularitySensibilityThreshold = 6;
 
 	/** A list of all the acts ever created. Aimed to replace schemas and acts*/
-	private ArrayList<IInteraction> m_interactions = new ArrayList<IInteraction>(2000);
+	private ArrayList<IAct> m_interactions = new ArrayList<IAct>(2000);
 	
 	/** Counter of learned schemas for tracing */
 	private int m_nbSchemaLearned = 0;
@@ -81,11 +81,11 @@ public class Imos implements IImos
 	 * yet declared in imos).
 	 * @return The interaction that was created or that already existed.
 	 */
-	public IInteraction addInteraction(String label, int satisfaction)
+	public IAct addInteraction(String label, int satisfaction)
 	{
 		// Primitive satisfactions are multiplied by 10 internally for rounding issues.   
 		// (this value does not impact the agent's behavior)
-		IInteraction i = Interaction.createPrimitiveInteraction(label, satisfaction * 10);
+		IAct i = Act.createPrimitiveInteraction(label, satisfaction * 10);
 		
 		int j = m_interactions.indexOf(i);
 		if (j == -1)
@@ -108,9 +108,9 @@ public class Imos implements IImos
 	 * @param postInteraction The intention Act.
 	 * @return The schema made of the two specified acts, whether it has been created or it already existed. 
 	 */
-    private IInteraction addCompositeInteraction(IInteraction preInteraction, IInteraction postInteraction)
+    private IAct addCompositeInteraction(IAct preInteraction, IAct postInteraction)
     {
-    	IInteraction i = Interaction.createCompositeInteraction(preInteraction, postInteraction);
+    	IAct i = Act.createCompositeInteraction(preInteraction, postInteraction);
     	
 		int j = m_interactions.indexOf(i);
 		if (j == -1)
@@ -127,7 +127,7 @@ public class Imos implements IImos
 		Object alternateElmnt = null;
 		if (m_tracer != null)
 			alternateElmnt = m_tracer.addEventElement("alternate", true);
-    	for (IInteraction a: preInteraction.getAlternateInteractions())
+    	for (IAct a: preInteraction.getAlternateInteractions())
     	{
     		boolean newAlternate = i.addAlternateInteraction(a);
 			if (m_tracer != null && newAlternate)
@@ -147,10 +147,10 @@ public class Imos implements IImos
 	{
 		m_imosCycle++;		
 		
-		IInteraction intendedPrimitiveInteraction = enaction.getIntendedPrimitiveInteraction();
-		IInteraction enactedPrimitiveInteraction  = null;
-		IInteraction topEnactedInteraction        = null;
-		IInteraction topRemainingInteraction      = null;
+		IAct intendedPrimitiveInteraction = enaction.getIntendedPrimitiveInteraction();
+		IAct enactedPrimitiveInteraction  = null;
+		IAct topEnactedInteraction        = null;
+		IAct topRemainingInteraction      = null;
 
 		// If we are not on startup
 		if (intendedPrimitiveInteraction != null)
@@ -198,10 +198,10 @@ public class Imos implements IImos
 	public void terminate(IEnaction enaction)
 	{
 
-		IInteraction intendedTopInteraction = enaction.getTopInteraction();
-		IInteraction enactedTopInteraction  = enaction.getTopEnactedInteraction();
-		ArrayList<IInteraction> previousLearningContext = enaction.getPreviousLearningContext();
-		ArrayList<IInteraction> initialLearningContext = enaction.getInitialLearningContext();
+		IAct intendedTopInteraction = enaction.getTopInteraction();
+		IAct enactedTopInteraction  = enaction.getTopEnactedInteraction();
+		ArrayList<IAct> previousLearningContext = enaction.getPreviousLearningContext();
+		ArrayList<IAct> initialLearningContext = enaction.getInitialLearningContext();
 
 		Object alternateElmnt = null;
 		if (m_tracer != null)
@@ -232,12 +232,12 @@ public class Imos implements IImos
 			// learn from the  context and the enacted interaction
 			m_nbSchemaLearned = 0;
 			System.out.println("Learn from enacted top interaction");
-			ArrayList<IInteraction> streamContextList = record(initialLearningContext, enactedTopInteraction);
+			ArrayList<IAct> streamContextList = record(initialLearningContext, enactedTopInteraction);
 						
 			// learn from the base context and the stream interaction	
 			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of the list
 			 {
-				 IInteraction streamInteraction = streamContextList.get(0); // The stream act is the first learned 
+				 IAct streamInteraction = streamContextList.get(0); // The stream act is the first learned 
 				 System.out.println("Streaming " + streamInteraction);
 				 if (streamInteraction.getEnactionWeight() > ACTIVATION_THRESH)
 				 {
@@ -279,7 +279,7 @@ public class Imos implements IImos
 	 * @param enactedInteraction The intention.
 	 * @return A list of the acts created from the learning. The first act of the list is the stream act if the first act of the contextList was the performed act.
 	 */
-	private ArrayList<IInteraction> record(List<IInteraction> contextList, IInteraction enactedInteraction)
+	private ArrayList<IAct> record(List<IAct> contextList, IAct enactedInteraction)
 	{
 		
 		Object learnElmnt = null;
@@ -289,14 +289,14 @@ public class Imos implements IImos
 			learnElmnt = m_tracer.addEventElement("learned", true);
 		}
 		
-		ArrayList<IInteraction> newContextList= new ArrayList<IInteraction>(20);
+		ArrayList<IAct> newContextList= new ArrayList<IAct>(20);
 		
 		if (enactedInteraction != null)
 		{
-			for (IInteraction preInteraction : contextList)
+			for (IAct preInteraction : contextList)
 			{
 				// Build a new interaction with the context pre-interaction and the enacted post-interaction 
-				IInteraction newInteraction = addCompositeInteraction(preInteraction, enactedInteraction);
+				IAct newInteraction = addCompositeInteraction(preInteraction, enactedInteraction);
 				newInteraction.setEnactionWeight(newInteraction.getEnactionWeight() + 1);
 				System.out.println("learned " + newInteraction);
 				if (m_tracer != null)	
@@ -340,7 +340,7 @@ public class Imos implements IImos
 //		}
 //	}
 
-	public ArrayList<IInteraction> getInteractions()
+	public ArrayList<IAct> getInteractions()
 	{
 		return m_interactions;
 	}
@@ -362,10 +362,10 @@ public class Imos implements IImos
 	 * @param intendedInteraction The intended interaction.
 	 * @return the actually enacted interaction
 	 */
-	private IInteraction topEnactedInteraction(IInteraction enactedInteraction, IInteraction intendedInteraction)
+	private IAct topEnactedInteraction(IAct enactedInteraction, IAct intendedInteraction)
 	{
-		IInteraction topEnactedInteraction = null;
-		IInteraction prescriberInteraction = intendedInteraction.getPrescriber();
+		IAct topEnactedInteraction = null;
+		IAct prescriberInteraction = intendedInteraction.getPrescriber();
 		
 		if (prescriberInteraction == null)
 			// top interaction
@@ -382,8 +382,8 @@ public class Imos implements IImos
 			else
 			{
 				// enacted the prescriber's post-interaction
-				IInteraction interaction = addCompositeInteraction(prescriberInteraction.getPreInteraction(), enactedInteraction);
-				topEnactedInteraction = topEnactedInteraction(interaction, prescriberInteraction);
+				IAct act = addCompositeInteraction(prescriberInteraction.getPreInteraction(), enactedInteraction);
+				topEnactedInteraction = topEnactedInteraction(act, prescriberInteraction);
 				//topEnactedInteraction = enactedAct(prescriberSchema, enactedSchema.getSucceedingAct());
 			}
 		}

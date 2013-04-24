@@ -8,21 +8,21 @@ import java.util.ArrayList;
  */
 public class Proposition implements IProposition 
 {
-	private IInteraction m_interaction;
+	private IAct m_interaction;
 	private int m_weight = 0; 
 	private boolean m_transferred = false;
 	private int m_pros = 0;
 	private int m_cons = 0;
 	
 	// The list of alternate interactions of the proposed interaction.
-	private ArrayList<IInteraction> m_alternateInteractions = new ArrayList<IInteraction>();
+	private ArrayList<IAct> m_alternateInteractions = new ArrayList<IAct>();
 
 	/**
 	 * Constructor. 
 	 * @param i The proposed interaction.
 	 * @param w The proposal's weight.
 	 */
-	public Proposition(IInteraction i, int w)
+	public Proposition(IAct i, int w)
 	{
 		m_interaction = i;
 		m_weight = w;
@@ -38,7 +38,7 @@ public class Proposition implements IProposition
 		return c; 
 	}
 
-	public IInteraction getInteraction() 
+	public IAct getInteraction() 
 	{
 		return m_interaction;
 	}

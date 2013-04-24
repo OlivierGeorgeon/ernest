@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.IInteraction;
+import imos2.IAct;
 import java.util.ArrayList;
 import ernest.Ernest;
 import ernest.ITracer;
@@ -12,16 +12,19 @@ import ernest.ITracer;
  */
 public class Bundle implements IBundle 
 {
+	/** The duration during which checked landmarks remain not motivating  */
+	public static int PERSISTENCE = 300;//Ernest 12 (in SPAS clock)
+	
 	int m_value;
-	int m_lastTimeBundled = - Ernest.PERSISTENCE;
+	int m_lastTimeBundled = - PERSISTENCE;
 
 	/** The acts attached to this bundle. */
-	private ArrayList<IInteraction> m_acts = new ArrayList<IInteraction>();
+	private ArrayList<IAct> m_acts = new ArrayList<IAct>();
 	
-	private IInteraction m_firstAct;
-	private IInteraction m_secondAct;
+	private IAct m_firstAct;
+	private IAct m_secondAct;
 	
-	Bundle(IInteraction firstAct, IInteraction secondAct)
+	Bundle(IAct firstAct, IAct secondAct)
 	{
 		m_firstAct = firstAct;
 		m_secondAct = secondAct;
@@ -29,7 +32,7 @@ public class Bundle implements IBundle
 		m_acts.add(secondAct);
 	}
 	
-	public IInteraction getOtherAct(IInteraction act)
+	public IAct getOtherAct(IAct act)
 	{
 		if (act.equals(m_firstAct))
 			return m_secondAct;
@@ -174,7 +177,7 @@ public class Bundle implements IBundle
 	{
 		Object element = tracer.addEventElement(label);
 		
-		for (IInteraction a : m_acts)
+		for (IAct a : m_acts)
 			tracer.addSubelement(element, "act", a.getLabel());		
 		
 		tracer.addSubelement(element, "id", toString());
@@ -187,10 +190,10 @@ public class Bundle implements IBundle
 	 * The act is inconsistent with the bundle if 
 	 * The schema belongs to the bundle with a different status. 
 	 */
-	public boolean isConsistent(IInteraction act) 
+	public boolean isConsistent(IAct act) 
 	{
 		boolean isConsistent = true;
-		for (IInteraction a : m_acts)
+		for (IAct a : m_acts)
 		{
 			//if (a.getSchema().equals(act.getSchema()))
 			if (!a.getLabel().equals(act.getLabel()))
@@ -204,10 +207,10 @@ public class Bundle implements IBundle
 	 * @param act The act.
 	 * @return The expected effect when enacting this act concerning this bundle.
 	 */
-	public String effectlabel(IInteraction act) 
+	public String effectlabel(IAct act) 
 	{
 		String effectLabel = "";
-		for (IInteraction a : m_acts)
+		for (IAct a : m_acts)
 		{
 //			if (a.getSchema().equals(act.getSchema()))
 //				effectLabel = a.getEffectLabel();
@@ -218,10 +221,10 @@ public class Bundle implements IBundle
 		return effectLabel;
 	}
 	
-	public IInteraction resultingAct(IInteraction act)
+	public IAct resultingAct(IAct act)
 	{
-		IInteraction resultingAct = null;
-		for (IInteraction a : m_acts)
+		IAct resultingAct = null;
+		for (IAct a : m_acts)
 		{
 			//if (a.getSchema().equals(act.getSchema()))
 			if (a.equals(act))
@@ -238,10 +241,10 @@ public class Bundle implements IBundle
 	 * This bundle affords this act
 	 * if this act is in this bundle 
 	 */
-	public boolean afford(IInteraction act) 
+	public boolean afford(IAct act) 
 	{
 		boolean afford = false;
-		for (IInteraction a : m_acts)
+		for (IAct a : m_acts)
 		{
 			if (a.equals(act))
 				afford = true;
@@ -256,12 +259,12 @@ public class Bundle implements IBundle
 //		return m_acts;
 //	}
 
-	public IInteraction getFirstAct() 
+	public IAct getFirstAct() 
 	{
 		return m_firstAct;
 	}
 
-	public IInteraction getSecondAct() 
+	public IAct getSecondAct() 
 	{
 		return m_secondAct;
 	}

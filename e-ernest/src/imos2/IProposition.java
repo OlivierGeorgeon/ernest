@@ -10,7 +10,7 @@ public interface IProposition extends Comparable<IProposition>
 	/**
 	 * @return The interaction proposed by this proposition.
 	 */
-	public IInteraction getInteraction();
+	public IAct getInteraction();
 	
 	/**
 	 * @return The proposition's weight.

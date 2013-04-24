@@ -43,7 +43,7 @@ public class Decider implements IDecider
 		System.out.println("New decision ================ ");
 
 		ArrayList<IProposition> actPropositions = proposeInteractions(enaction.getFinalActivationContext());
-		IInteraction nextTopIntention = selectInteraction(actPropositions);
+		IAct nextTopIntention = selectInteraction(actPropositions);
 		
 		newEnaction.setTopInteraction(nextTopIntention);
 		newEnaction.setTopRemainingInteraction(nextTopIntention);
@@ -58,10 +58,10 @@ public class Decider implements IDecider
 	 * @param activationList The list of interactions that form the current context.
 	 * @return The list of propositions.
 	 */
-	protected ArrayList<IProposition> proposeInteractions(ArrayList<IInteraction> activationList)
+	protected ArrayList<IProposition> proposeInteractions(ArrayList<IAct> activationList)
 	{
 		// The list of activated interactions
-		ArrayList<IInteraction> activatedInteractions = new ArrayList<IInteraction>();	
+		ArrayList<IAct> activatedInteractions = new ArrayList<IAct>();	
 		// The list of propositions
 		ArrayList<IProposition> propositions = new ArrayList<IProposition>();	
 		
@@ -77,7 +77,7 @@ public class Decider implements IDecider
 		}
 
 		// Construct a default proposition for primitive interactions
-		for(IInteraction a : m_imos.getInteractions())
+		for(IAct a : m_imos.getInteractions())
 		{
 			if (a.getPrimitive())
 			{
@@ -88,12 +88,12 @@ public class Decider implements IDecider
 		}
 		
 		// Construct the list of activated interactions 
-		for (IInteraction i : m_imos.getInteractions())
+		for (IAct i : m_imos.getInteractions())
 		{
 			if (!i.getPrimitive())
 			{
 				// If this interaction's pre-interaction belongs to the context then this interaction is activated 
-				for (IInteraction contextAct : activationList)
+				for (IAct contextAct : activationList)
 				{
 					if (i.getPreInteraction().equals(contextAct))
 					{
@@ -106,11 +106,11 @@ public class Decider implements IDecider
 		}
 			
 		// Activated interactions propose their post interactions 
-		for (IInteraction i : activatedInteractions)
+		for (IAct i : activatedInteractions)
 		{
 			if (!i.getPrimitive())
 			{
-				IInteraction proposedInteraction = i.getPostInteraction();
+				IAct proposedInteraction = i.getPostInteraction();
 				int w = i.getEnactionWeight() * proposedInteraction.getEnactionValue();
 				IProposition p = null;
 				
@@ -149,9 +149,9 @@ public class Decider implements IDecider
 		for (IProposition p : propositions)
 		{
 			//for (IInteraction alt : p.getAlternateInteractions())
-			for (IInteraction alt : p.getInteraction().getAlternateInteractions())
+			for (IAct alt : p.getInteraction().getAlternateInteractions())
 			{
-				for (IInteraction act : activatedInteractions)
+				for (IAct act : activatedInteractions)
 				{
 					if (act.getPostInteraction().equals(alt))
 					{
@@ -189,13 +189,13 @@ public class Decider implements IDecider
 	 * @param propositions The list of propositions.
 	 * @return The selected interaction.
 	 */
-	protected IInteraction selectInteraction(ArrayList<IProposition> propositions)
+	protected IAct selectInteraction(ArrayList<IProposition> propositions)
 	{
 		// Sort the propositions by weight.
 		Collections.sort(propositions);
 		
 		// Pick the most weighted proposition
-		IInteraction selectedInteraction = propositions.get(0).getInteraction();
+		IAct selectedInteraction = propositions.get(0).getInteraction();
 		
 		System.out.println("Select:" + selectedInteraction);
 
@@ -212,7 +212,7 @@ public class Decider implements IDecider
 
 	public void carry(IEnaction enaction)
 	{
-		IInteraction intendedPrimitiveInteraction = enaction.getTopRemainingInteraction().prescribe();
+		IAct intendedPrimitiveInteraction = enaction.getTopRemainingInteraction().prescribe();
 		enaction.setIntendedPrimitiveInteraction(intendedPrimitiveInteraction);
 		enaction.setStep(enaction.getStep() + 1);
 		enaction.traceCarry(m_tracer);

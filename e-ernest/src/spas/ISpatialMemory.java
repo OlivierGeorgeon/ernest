@@ -9,7 +9,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import ernest.ITracer;
-import imos2.IInteraction;
+import imos2.IAct;
 
 
 /**
@@ -50,7 +50,7 @@ public interface ISpatialMemory
 	 * @return The created place
 	 */
 	//public IPlace addPlace(Point3f position, int type);
-	public IPlace addPlace(IInteraction interaction, Point3f position);
+	public IPlace addPlace(IAct act, Point3f position);
 
 	/**
 	 * @param transform The transformation

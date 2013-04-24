@@ -1,7 +1,7 @@
 package ernest;
 
 //import imos.IAct;
-import imos2.IInteraction;
+import imos2.IAct;
 
 import java.util.ArrayList;
 
@@ -60,7 +60,7 @@ public interface IErnest
 	 * @param satisfaction The satisfaction.
 	 * @return The created or already existing act.
 	 */
-	public IInteraction addInteraction(String label, int satisfaction);
+	public IAct addInteraction(String label, int satisfaction);
 
 	/**
 	 * @return The list of places in Ernest's local space memory.
@@ -81,4 +81,7 @@ public interface IErnest
 	 * @return Ernest's spatial memory for display.
 	 */
 	public ISpatialMemory getSpatialSimulation();
+	
+	public ArrayList<IPrimitive> getPrimitives();
+	
 }
