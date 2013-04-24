@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * A sensorimotor pattern of interaction of Ernest with its environment 
  * @author Olivier
  */
-public interface IInteraction 
+public interface IAct 
 {
 	/**
 	 * @return The label of the move of this interaction
@@ -41,12 +41,12 @@ public interface IInteraction
 	/**
 	 * @return This interaction's pre-interaction (null if primitive).
 	 */
-	public IInteraction getPreInteraction();
+	public IAct getPreInteraction();
 	
 	/**
 	 * @return This interaction's post-interaction (null if primitive).
 	 */
-	public IInteraction getPostInteraction();
+	public IAct getPostInteraction();
 	
 	/**
 	 * @return The number of primitive interactions that compose this interaction
@@ -66,25 +66,25 @@ public interface IInteraction
 	/**
 	 * @param prescriber The interaction that prescribes the enaction of this interaction.
 	 */
-	public void setPrescriber(IInteraction prescriber);
+	public void setPrescriber(IAct prescriber);
 	
 	/**
 	 * @return The interaction that prescribes the enaction of this interaction.
 	 */
-	public IInteraction getPrescriber();
+	public IAct getPrescriber();
 	
 	/**
 	 * Prescribe this interaction's preInteraction
 	 * This method applies recursively to all this interaction's sub interactions.
 	 * @return The primitive interaction at the bottom of the hierarchy
 	 */
-	public IInteraction prescribe();
+	public IAct prescribe();
 
 	/**
 	 * Update the prescriber if this interaction was enacted
 	 * @return The next top level interaction to enact or null if the current enaction is over.
 	 */
-	public IInteraction updatePrescriber();
+	public IAct updatePrescriber();
 	
 	/**
 	 * Clear the prescriber hierarchy
@@ -95,12 +95,12 @@ public interface IInteraction
 	 * @param alternateInteraction The actually enacted interaction
 	 * @return true if the alternate interaction is new 
 	 */
-	public boolean addAlternateInteraction(IInteraction alternateInteraction);
+	public boolean addAlternateInteraction(IAct alternateInteraction);
 	
 	/**
 	 * @return This list of this interaction's alternative interactions
 	 */
-	public ArrayList<IInteraction> getAlternateInteractions();
+	public ArrayList<IAct> getAlternateInteractions();
 	
 	
 }

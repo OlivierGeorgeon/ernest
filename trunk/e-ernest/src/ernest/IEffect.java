@@ -1,6 +1,6 @@
 package ernest;
 
-import imos2.IInteraction;
+import imos2.IAct;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;

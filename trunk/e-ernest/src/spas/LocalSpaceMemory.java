@@ -8,7 +8,7 @@ import javax.vecmath.Point3f;
 import utils.ErnestUtils;
 import ernest.Ernest;
 import ernest.ITracer;
-import imos2.IInteraction;
+import imos2.IAct;
 
 
 /**
@@ -103,9 +103,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}
 	}
 	
-	public IPlace addPlace(IInteraction interaction, Point3f position)
+	public IPlace addPlace(IAct act, Point3f position)
 	{
-		IPlace place = new Place(interaction, position);	
+		IPlace place = new Place(act, position);	
 		m_places.add(place);
 		return place;
 	}

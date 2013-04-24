@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.IInteraction;
+import imos2.IAct;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3f;
@@ -36,17 +36,17 @@ public class Place implements IPlace //, Cloneable
 	private Vector3f m_orientation = new Vector3f(1,0,0);	
 	private int m_clock = 0;
 	private int m_value;
-	private IInteraction interaction;
+	private IAct act;
 
 	/**
 	 * Create a new place 
 	 * (The provided position is cloned so the place can be moved without changing the provided position).
-	 * @param interaction The interaction at this place.
+	 * @param act The interaction at this place.
 	 * @param position This place's position.
 	 */
-	public Place(IInteraction interaction, Point3f position)
+	public Place(IAct act, Point3f position)
 	{
-		this.interaction = interaction;
+		this.act = act;
 		this.position.set(position);
 	}
 	
@@ -232,13 +232,13 @@ public class Place implements IPlace //, Cloneable
 		return m_orientation;
 	}
 
-	public void setInteraction(IInteraction interaction) 
+	public void setInteraction(IAct act) 
 	{
-		this.interaction = interaction;
+		this.act = act;
 	}
 
-	public IInteraction getInteraction() {
-		return this.interaction;
+	public IAct getInteraction() {
+		return this.act;
 	}
 
 	public void incClock() 

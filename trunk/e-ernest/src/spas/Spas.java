@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.IInteraction;
+import imos2.IAct;
 import imos2.IEnaction;
 
 import java.util.ArrayList;
@@ -371,9 +371,9 @@ public class Spas implements ISpas
 	}
 
 	//private IPlace addPlace(Point3f position, int type, int value, IAct act) 
-	private IPlace addPlace(Point3f position, int type, int value, IInteraction interaction) 
+	private IPlace addPlace(Point3f position, int type, int value, IAct act) 
 	{
-		IPlace place = m_localSpaceMemory.addPlace(interaction, position);
+		IPlace place = m_localSpaceMemory.addPlace(act, position);
 		place.setValue(value);
 		//place.setAct(act);
 //		place.setType(type);

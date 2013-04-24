@@ -27,54 +27,54 @@ public interface IEnaction
 	public IEffect getEffect();
 	
 	/**
-	 * @param interaction The last primitive intended interaction
+	 * @param act The last primitive intended interaction
 	 */
-	public void setIntendedPrimitiveInteraction(IInteraction interaction);
+	public void setIntendedPrimitiveInteraction(IAct act);
 	
 	/**
 	 * @return The last primitive intended interaction
 	 */
-	public IInteraction getIntendedPrimitiveInteraction();	
+	public IAct getIntendedPrimitiveInteraction();	
 
 	/**
-	 * @param interaction The last primitive enacted interaction
+	 * @param act The last primitive enacted interaction
 	 */
-	public void setEnactedPrimitiveInteraction(IInteraction interaction);
+	public void setEnactedPrimitiveInteraction(IAct act);
 	
 	/**
 	 * @return The last primitive enacted interaction
 	 */
-	public IInteraction getEnactedPrimitiveInteraction();	
+	public IAct getEnactedPrimitiveInteraction();	
 
 	/**
-	 * @param interaction The composite interaction to be enacted
+	 * @param act The composite interaction to be enacted
 	 */
-	public void setTopInteraction(IInteraction interaction);
+	public void setTopInteraction(IAct act);
 	
 	/**
 	 * @return The composite interaction to be enacted
 	 */
-	public IInteraction getTopInteraction();	
+	public IAct getTopInteraction();	
 
 	/**
-	 * @param interaction The highest-level composite interaction enacted thus far.
+	 * @param act The highest-level composite interaction enacted thus far.
 	 */
-	public void setTopEnactedInteraction(IInteraction interaction);
+	public void setTopEnactedInteraction(IAct act);
 	
 	/**
 	 * @return The highest-level composite interaction enacted thus far.
 	 */
-	public IInteraction getTopEnactedInteraction();	
+	public IAct getTopEnactedInteraction();	
 
 	/**
-	 * @param interaction The remaining highest-level composite interaction to enact.
+	 * @param act The remaining highest-level composite interaction to enact.
 	 */
-	public void setTopRemainingInteraction(IInteraction interaction);
+	public void setTopRemainingInteraction(IAct act);
 	
 	/**
 	 * @return The remaining highest-level composite interaction to enact.
 	 */
-	public IInteraction getTopRemainingInteraction();	
+	public IAct getTopRemainingInteraction();	
 
 	/**
 	 * @param step The rank of the primitive act in the current enaction 
@@ -106,13 +106,13 @@ public interface IEnaction
 	 */
 	public boolean isOver();
 	
-	public void setFinalContext(IInteraction enactedInteraction, IInteraction performedInteraction, ArrayList<IInteraction> contextList);
-	public ArrayList<IInteraction> getFinalLearningContext();
-	public ArrayList<IInteraction> getFinalActivationContext();
-	public void setInitialLearningContext(ArrayList<IInteraction> learningContext);
-	public ArrayList<IInteraction>  getInitialLearningContext();
-	public void setPreviousLearningContext(ArrayList<IInteraction> learningContext);
-	public ArrayList<IInteraction>  getPreviousLearningContext();
+	public void setFinalContext(IAct enactedInteraction, IAct performedInteraction, ArrayList<IAct> contextList);
+	public ArrayList<IAct> getFinalLearningContext();
+	public ArrayList<IAct> getFinalActivationContext();
+	public void setInitialLearningContext(ArrayList<IAct> learningContext);
+	public ArrayList<IAct>  getInitialLearningContext();
+	public void setPreviousLearningContext(ArrayList<IAct> learningContext);
+	public ArrayList<IAct>  getPreviousLearningContext();
 	public void setNbActLearned(int nbActLearned);
 	
 
