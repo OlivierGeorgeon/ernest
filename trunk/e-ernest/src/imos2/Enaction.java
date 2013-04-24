@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ernest.Effect;
 import ernest.IEffect;
+import ernest.IPrimitive;
 import ernest.ITracer;
 
 /**
@@ -13,6 +14,9 @@ import ernest.ITracer;
  */
 public class Enaction implements IEnaction 
 {
+	
+	private IPrimitive enactedPrimitive = null;
+	
 	/** The intended primitive interaction */
 	private IAct m_intendedPrimitiveInteraction = null;
 	/** The enacted primitive interaction */
@@ -63,6 +67,16 @@ public class Enaction implements IEnaction
 	public IEffect getEffect() 
 	{
 		return m_effect;
+	}
+
+	public IPrimitive getEnactedPrimitive() 
+	{
+		return this.enactedPrimitive;
+	}
+
+	public void setEnactedPrimitive(IPrimitive enactedPrimitive) 
+	{
+		this.enactedPrimitive = enactedPrimitive;
 	}
 
 	public void setIntendedPrimitiveInteraction(IAct act) 

@@ -81,18 +81,16 @@ public class Imos implements IImos
 	 * yet declared in imos).
 	 * @return The interaction that was created or that already existed.
 	 */
-	public IAct addInteraction(String label, int satisfaction)
+	public IAct addAct(String label, int satisfaction)
 	{
-		// Primitive satisfactions are multiplied by 10 internally for rounding issues.   
-		// (this value does not impact the agent's behavior)
-		IAct i = Act.createPrimitiveInteraction(label, satisfaction * 10);
+		IAct i = Act.createPrimitiveInteraction(label, satisfaction);
 		
 		int j = m_interactions.indexOf(i);
 		if (j == -1)
 		{
 			// The interaction does not exist
 			m_interactions.add(i);
-			System.out.println("Define primitive act " + i);
+			System.out.println("Define primitive act " + i.toString());
 		}
 		else 
 			// The interaction already exists: return a pointer to it.
@@ -158,7 +156,7 @@ public class Imos implements IImos
 			// Compute the enacted primitive interaction from the move and the effect.
 			// Compute the enaction value of interactions that were not yet recorded
 			//enactedPrimitiveInteraction = addInteraction(intendedPrimitiveInteraction.getLabel().substring(0, 1)+ enaction.getEffect().getLabel(), 0);
-			enactedPrimitiveInteraction = addInteraction(enaction.getEffect().getEnactedInteractionLabel() + enaction.getSlice(), 0);
+			enactedPrimitiveInteraction = addAct(enaction.getEnactedPrimitive().getLabel() + enaction.getSlice(), enaction.getEnactedPrimitive().getValue());
 
 			// Compute the top actually enacted interaction
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
