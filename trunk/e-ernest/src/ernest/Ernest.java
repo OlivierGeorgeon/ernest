@@ -57,7 +57,7 @@ public class Ernest implements IErnest
 	public void setParameters(int regularityThreshold, int maxSchemaLength) 
 	{
 		m_imos.setRegularityThreshold(regularityThreshold);
-		m_decider.setMaxSchemaLength(maxSchemaLength);
+		m_imos.setMaxSchemaLength(maxSchemaLength);
 	}
 
 	/**
