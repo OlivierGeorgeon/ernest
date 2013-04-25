@@ -211,7 +211,7 @@ public class Enaction implements IEnaction
 
 		// if the actually enacted act is not primitive, its intention also belongs to the context
 		if (!enactedAct.getPrimitive())
-			addActivationAct(enactedAct.getPostInteraction());	
+			addActivationAct(enactedAct.getPostAct());	
 		
 		// add the streamcontext list to the context list
 		addContextList(contextList);

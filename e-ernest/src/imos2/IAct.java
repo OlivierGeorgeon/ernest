@@ -41,12 +41,12 @@ public interface IAct
 	/**
 	 * @return This interaction's pre-interaction (null if primitive).
 	 */
-	public IAct getPreInteraction();
+	public IAct getPreAct();
 	
 	/**
 	 * @return This interaction's post-interaction (null if primitive).
 	 */
-	public IAct getPostInteraction();
+	public IAct getPostAct();
 	
 	/**
 	 * @return The number of primitive interactions that compose this interaction
