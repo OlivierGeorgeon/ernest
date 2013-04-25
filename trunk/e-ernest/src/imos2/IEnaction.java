@@ -1,6 +1,8 @@
 package imos2;
 
 import java.util.ArrayList;
+
+import spas.IArea;
 import ernest.IEffect;
 import ernest.IPrimitive;
 import ernest.ITracer;
@@ -18,8 +20,8 @@ public interface IEnaction
 	 */
 	public void setEffect(IEffect effect);
 	
-	public void setSlice(String slice);
-	public String getSlice();
+	public void setSlice(IArea area);
+	public IArea getArea();
 
 	
 	/**

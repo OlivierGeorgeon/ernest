@@ -147,7 +147,7 @@ public class Imos implements IImos
 			// Compute the enacted primitive interaction from the move and the effect.
 			// Compute the enaction value of interactions that were not yet recorded
 			//enactedPrimitiveInteraction = addInteraction(intendedPrimitiveInteraction.getLabel().substring(0, 1)+ enaction.getEffect().getLabel(), 0);
-			enactedPrimitiveInteraction = addAct(enaction.getEnactedPrimitive().getLabel() + enaction.getSlice(), enaction.getEnactedPrimitive().getValue());
+			enactedPrimitiveInteraction = addAct(enaction.getEnactedPrimitive().getLabel() + enaction.getArea(), enaction.getEnactedPrimitive().getValue());
 
 			// Compute the top actually enacted interaction
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);

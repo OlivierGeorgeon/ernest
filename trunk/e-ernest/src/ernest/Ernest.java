@@ -3,6 +3,7 @@ package ernest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.vecmath.Point3f;
 import spas.IPlace;
@@ -43,8 +44,8 @@ public class Ernest implements IErnest
 	private ITracer m_tracer = null;
 	
 	/** The list of primitive interactions available to Ernest */
-	//private ArrayList<IPrimitive> interactions = new ArrayList<IPrimitive>();
-	private final HashMap<String , IPrimitive> interactions = new HashMap<String , IPrimitive>() ;
+	//private final Map<String , IPrimitive> interactions = new TreeMap<String , IPrimitive>() ;
+	private final Map<String , IPrimitive> interactions = new HashMap<String , IPrimitive>() ;
 	
 	/** Ernest's decisional Mechanism. */
 	private IDecider m_decider = new Decider(m_imos, m_spas, this.interactions); // Regular decider for Ernest 7.
@@ -75,7 +76,9 @@ public class Ernest implements IErnest
 	public String step(IEffect effect) 
 	{
 		m_enaction.setEffect(effect);
-		m_enaction.setEnactedPrimitive(this.interactions.get(effect.getEnactedInteractionLabel()));
+		String enactedInteractionLabel = effect.getEnactedInteractionLabel();
+		IPrimitive enactedPrimitive = this.interactions.get(enactedInteractionLabel);
+		m_enaction.setEnactedPrimitive(enactedPrimitive);
 		
 		// Start a new interaction cycle.
 		if (m_tracer != null)
@@ -86,7 +89,7 @@ public class Ernest implements IErnest
 		
 		// track the enaction 
 		
-		m_enaction.setSlice(m_spas.slice(effect.getLocation()));
+		m_enaction.setSlice(m_spas.categorizePosition(effect.getLocation()));
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
 		
@@ -118,11 +121,11 @@ public class Ernest implements IErnest
 
 	private IPrimitive addPrimitiveInteraction(String label, int satisfaction)
 	{
-		IPrimitive primitive = new Primitive(label, satisfaction * 10);
-		this.interactions.put(label, primitive);
-				
-		System.out.println("Define primitive interaction " + primitive.toString());
-		
+		if (!this.interactions.containsKey(label)){
+			IPrimitive primitive = new Primitive(label, satisfaction * 10);
+			this.interactions.put(label, primitive);			
+			System.out.println("Define primitive interaction " + primitive.toString());
+		}
 		return this.interactions.get(label);		
 	}
 
@@ -149,7 +152,7 @@ public class Ernest implements IErnest
 		return m_spas.getSpatialMemory();
 	}
 
-	public HashMap<String , IPrimitive> getPrimitives() 
+	public Map<String , IPrimitive> getPrimitives() 
 	{
 		return this.interactions;
 	}

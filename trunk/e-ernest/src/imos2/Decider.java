@@ -3,6 +3,9 @@ package imos2;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+
+import javax.vecmath.Point3f;
 
 import ernest.IPrimitive;
 import ernest.ITracer;
@@ -16,19 +19,19 @@ public class Decider implements IDecider
 {
 	IImos imos;
 	ISpas spas;
-	HashMap<String , IPrimitive> interactions;
+	Map<String , IPrimitive> interactions;
 	ITracer tracer;
 
 	/**
 	 * @param imos The sequential system
 	 * @param spas The spatial system
-	 * @param interactions The list of primitive interactions
+	 * @param interactions2 The list of primitive interactions
 	 */
-	public Decider(IImos imos, ISpas spas, HashMap<String , IPrimitive> interactions)
+	public Decider(IImos imos, ISpas spas, Map<String, IPrimitive> interactions2)
 	{
 		this.imos = imos;
 		this.spas = spas;
-		this.interactions = interactions;
+		this.interactions = interactions2;
 	}
 
 	public void setTracer(ITracer tracer)
@@ -63,10 +66,10 @@ public class Decider implements IDecider
 		// The list of propositions proposed by the sequential system
 		ArrayList<IProposition> propositions = this.imos.propose(enaction);	
 
-		// Add the propositions to enact primitive interactions in area B
+		// Add the propositions to enact primitive interactions in area of point (0,0,0).
 		for (IPrimitive i : this.interactions.values())
 		{
-			IAct a = this.imos.addAct(i.getLabel() + "B", i.getValue());
+			IAct a = this.imos.addAct(i.getLabel() + this.spas.categorizePosition(new Point3f()).getLabel(), i.getValue());
 			IProposition p = new Proposition(a, 0);
 			if (!propositions.contains(p))
 				propositions.add(p);
@@ -81,6 +84,8 @@ public class Decider implements IDecider
 			decisionElmt = this.tracer.addEventElement("activation", true);
 			consolidationElmt = this.tracer.addSubelement(decisionElmt, "consolidation");
 		}
+		
+		// TODO Compute propositions for each modality rather than each interactions.
 
 		// Transfer the weight of alternate acts to the proposition of their prominant acts
 		for (IProposition proposition : propositions)
