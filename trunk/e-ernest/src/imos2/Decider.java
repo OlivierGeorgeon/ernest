@@ -60,13 +60,13 @@ public class Decider implements IDecider
 	
 	/**
 	 * Construct a list of propositions based on the current context
-	 * @param activationList The list of interactions that form the current context.
+	 * @param activationContext The list of interactions that form the current context.
 	 * @return The list of propositions.
 	 */
-	protected ArrayList<IProposition> proposeInteractions(ArrayList<IAct> activationList)
+	protected ArrayList<IProposition> proposeInteractions(ArrayList<IAct> activationContext)
 	{
 		// The list of activated interactions
-		ArrayList<IAct> activatedInteractions = new ArrayList<IAct>();	
+		ArrayList<IAct> activatedActs = new ArrayList<IAct>();	
 		// The list of propositions
 		ArrayList<IProposition> propositions = new ArrayList<IProposition>();	
 		
@@ -80,17 +80,6 @@ public class Decider implements IDecider
 			activationElmt = m_tracer.addSubelement(decisionElmt, "activated_interactions");
 			consolidationElmt = m_tracer.addSubelement(decisionElmt, "consolidation");
 		}
-
-//		// Construct a default proposition for primitive interactions
-//		for(IAct a : m_imos.getInteractions())
-//		{
-//			if (a.getPrimitive())
-//			{
-//				IProposition p = new Proposition(a, 0);
-//				if (!propositions.contains(p))
-//					propositions.add(p);
-//			}       
-//		}
 		
 		// Construct a default proposition to enact primitive interactions in area B
 		for (IPrimitive i : this.interactions.values())
@@ -101,80 +90,80 @@ public class Decider implements IDecider
 				propositions.add(p);
 		}
 		
-		// Construct the list of activated interactions 
-		for (IAct i : m_imos.getInteractions())
+		// Construct the list of activated composite acts 
+		for (IAct activatedAct : m_imos.getActs())
 		{
-			if (!i.getPrimitive())
+			if (!activatedAct.getPrimitive())
 			{
 				// If this interaction's pre-interaction belongs to the context then this interaction is activated 
-				for (IAct contextAct : activationList)
+				for (IAct contextAct : activationContext)
 				{
-					if (i.getPreInteraction().equals(contextAct))
+					if (activatedAct.getPreAct().equals(contextAct))
 					{
-						activatedInteractions.add(i);
+						activatedActs.add(activatedAct);
 						if (m_tracer != null)
-							m_tracer.addSubelement(activationElmt, "interaction", i + " intention " + i.getPostInteraction());
+							m_tracer.addSubelement(activationElmt, "ActivatedAct", activatedAct + "intention" + activatedAct.getPostAct());
 					}
 				}
 			}
 		}
 			
-		// Activated interactions propose their post interactions 
-		for (IAct i : activatedInteractions)
+		// Activated acts propose their post interactions 
+		for (IAct i : activatedActs)
 		{
-			if (!i.getPrimitive())
-			{
-				IAct proposedInteraction = i.getPostInteraction();
-				int w = i.getEnactionWeight() * proposedInteraction.getEnactionValue();
-				IProposition p = null;
+			//if (!i.getPrimitive())
+			//{
+				IAct proposedAct = i.getPostAct();
+				int w = i.getEnactionWeight() * proposedAct.getEnactionValue();
+				IProposition proposition = null;
 				
-				if ((proposedInteraction.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
-						(proposedInteraction.getLength() <= this.maxSchemaLength ))
+				if ((proposedAct.getEnactionWeight() > m_imos.getRegularityThreshold() ) &&						 
+						(proposedAct.getLength() <= this.maxSchemaLength ))
 				{
-					p= new Proposition(proposedInteraction, w);
+					proposition = new Proposition(proposedAct, w);
 				}
-				// if the intended interaction has not passed the threshold then  
+				// if the intended act has not passed the threshold then  
 				// the activation is propagated to the intended interaction's pre interaction
 				else
 				{
-					if (!proposedInteraction.getPrimitive())
+					if (!proposedAct.getPrimitive())
 					{
 						// only if the intention's intention is positive (this is some form of positive anticipation)
-						if (proposedInteraction.getPostInteraction().getEnactionValue() > 0)
-							p = new Proposition(proposedInteraction.getPreInteraction(), w);
+						if (proposedAct.getPostAct().getEnactionValue() > 0)
+							proposition = new Proposition(proposedAct.getPreAct(), w);
 					}
 				}
 				
-				if (p!=null)
+				if (proposition!=null)
 				{
-					int j = propositions.indexOf(p);
+					int j = propositions.indexOf(proposition);
 					if (j == -1)
-						propositions.add(p);
+						propositions.add(proposition);
 					else
 					{
-						p = propositions.get(j);
-						p.addWeight(w);
+						proposition = propositions.get(j);
+						proposition.addWeight(w);
 					}
 				}
-			}
+			//}
 		}
 		
 		// Transfer the weight of alternate interactions to the proposition of their prominant interaction
-		for (IProposition p : propositions)
+		for (IProposition proposition : propositions)
 		{
 			//for (IInteraction alt : p.getAlternateInteractions())
-			for (IAct alt : p.getInteraction().getAlternateInteractions())
+			for (IAct alt : proposition.getAct().getAlternateInteractions())
 			{
-				for (IAct act : activatedInteractions)
+				for (IAct act : activatedActs)
 				{
-					if (act.getPostInteraction().equals(alt))
+					if (act.getPostAct().equals(alt))
 					{
 						int w = act.getEnactionWeight() * alt.getEnactionValue();
 						if (m_tracer != null)
 						{
-							m_tracer.addSubelement(consolidationElmt, "proposition", p + " alternate " + alt.getLabel() +  " of weight  " + w/10);						
+							m_tracer.addSubelement(consolidationElmt, "proposition", proposition + " alternate " + alt.getLabel() +  " of weight  " + w/10);						
 						}
-						p.addWeight(w);
+						proposition.addWeight(w);
 					}
 				}
 			}
@@ -209,7 +198,7 @@ public class Decider implements IDecider
 		Collections.sort(propositions);
 		
 		// Pick the most weighted proposition
-		IAct selectedInteraction = propositions.get(0).getInteraction();
+		IAct selectedInteraction = propositions.get(0).getAct();
 		
 		System.out.println("Select:" + selectedInteraction);
 

@@ -63,12 +63,12 @@ public class Act implements IAct
 			m_length = preInteraction.getLength() + postInteraction.getLength();
 	}
 	
-	public IAct getPreInteraction() 
+	public IAct getPreAct() 
 	{
 		return m_preInteraction;
 	}
 
-	public IAct getPostInteraction() 
+	public IAct getPostAct() 
 	{
 		return m_postInteraction;
 	}
@@ -171,7 +171,7 @@ public class Act implements IAct
 			{
 				// The prescriber's pre-interaction was enacted
 				prescriber.setStep(step + 1);
-				nextInteraction = prescriber.getPostInteraction();
+				nextInteraction = prescriber.getPostAct();
 				nextInteraction.setPrescriber(prescriber);
 			}
 			else

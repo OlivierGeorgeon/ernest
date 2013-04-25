@@ -244,23 +244,6 @@ public class Imos implements IImos
 				 }
 			 }
 
-//			// learn from the current context and the actually enacted act			
-//			//if (topEnactedAct != performedAct)
-//			{
-//				System.out.println("Learn from enacted");
-//				//List<IAct> streamContextList2 = m_episodicMemory.record(initialLearningContext, topEnactedAct);
-//				List<IInteraction> streamContextList2 = record(initialLearningContext, enactedTopInteraction);
-//				// learn from the base context and the streamAct2
-//				if (streamContextList2.size() > 0)
-//				{
-//					IInteraction streamAct2 = streamContextList2.get(0);
-//					System.out.println("Streaming2 " + streamAct2 );
-//					if (streamAct2.getEnactionWeight() > ACTIVATION_THRESH)
-//						//m_episodicMemory.record(previousLearningContext, streamAct2);
-//						record(previousLearningContext, streamAct2);
-//				}
-//			}	
-			
 			//enaction.setFinalContext(topEnactedAct, performedAct, streamContextList);			
 			enaction.setFinalContext(enactedTopInteraction, enactedTopInteraction, streamContextList);			
 		}
@@ -338,7 +321,7 @@ public class Imos implements IImos
 //		}
 //	}
 
-	public ArrayList<IAct> getInteractions()
+	public ArrayList<IAct> getActs()
 	{
 		return m_interactions;
 	}
@@ -380,7 +363,7 @@ public class Imos implements IImos
 			else
 			{
 				// enacted the prescriber's post-interaction
-				IAct act = addCompositeInteraction(prescriberInteraction.getPreInteraction(), enactedInteraction);
+				IAct act = addCompositeInteraction(prescriberInteraction.getPreAct(), enactedInteraction);
 				topEnactedInteraction = topEnactedInteraction(act, prescriberInteraction);
 				//topEnactedInteraction = enactedAct(prescriberSchema, enactedSchema.getSucceedingAct());
 			}

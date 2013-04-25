@@ -38,7 +38,7 @@ public class Proposition implements IProposition
 		return c; 
 	}
 
-	public IAct getInteraction() 
+	public IAct getAct() 
 	{
 		return m_interaction;
 	}

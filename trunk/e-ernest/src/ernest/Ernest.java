@@ -111,13 +111,9 @@ public class Ernest implements IErnest
 		return m_spas.getValue(i,j);
 	}
 	
-	public IAct addInteraction(String label, int satisfaction)
+	public IPrimitive addInteraction(String label, int satisfaction)
 	{
-		addPrimitiveInteraction(label, satisfaction);
-		//m_imos.addInteraction(label + "A", satisfaction);
-		//m_imos.addInteraction(label + m_spas.slice(new Point3f()), satisfaction);
-		//m_imos.addInteraction(label + "C", satisfaction);
-		return null;
+		return addPrimitiveInteraction(label, satisfaction);
 	}
 
 	private IPrimitive addPrimitiveInteraction(String label, int satisfaction)
