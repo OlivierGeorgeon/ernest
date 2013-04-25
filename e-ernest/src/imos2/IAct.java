@@ -9,11 +9,6 @@ import java.util.ArrayList;
 public interface IAct 
 {
 	/**
-	 * @return The label of the move of this interaction
-	 */
-	//public String getMoveLabel();
-	
-	/**
 	 * @return The label of this interaction (unique identifier)
 	 */
 	public String getLabel();

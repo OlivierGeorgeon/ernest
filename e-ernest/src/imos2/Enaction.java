@@ -2,6 +2,8 @@ package imos2;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import spas.IArea;
 import ernest.Effect;
 import ernest.IEffect;
 import ernest.IPrimitive;
@@ -44,7 +46,7 @@ public class Enaction implements IEnaction
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
 	/** The area slice of the primitive enacted interaction */
-	private String slice;
+	private IArea area;
 	
 	//private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();	
 	//private int m_simulationStatus = 0;
@@ -54,14 +56,14 @@ public class Enaction implements IEnaction
 		m_effect = effect;
 	}
 
-	public void setSlice(String slice)
+	public void setSlice(IArea area)
 	{
-		this.slice = slice;
+		this.area = area;
 	}
 
-	public String getSlice()
+	public IArea getArea()
 	{
-		return this.slice;
+		return this.area;
 	}
 	
 	public IEffect getEffect() 
@@ -267,7 +269,7 @@ public class Enaction implements IEnaction
 			tracer.addSubelement(e, "step", m_step + "");
 			tracer.addSubelement(e, "primitive_intended_interaction", m_intendedPrimitiveInteraction.getLabel());
 			tracer.addSubelement(e, "primitive_enacted_interaction", m_enactedPrimitiveInteraction.getLabel());
-			//tracer.addSubelement(e, "satisfaction", m_enactedPrimitiveAct.getSatisfaction()/10 + "");
+			tracer.addSubelement(e, "area", this.area.getLabel());
 		}
 	}
 
@@ -307,37 +309,5 @@ public class Enaction implements IEnaction
 
 			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
 		}
-	}
-	
-//	public void trace(ITracer tracer) 
-//	{
-//		if (tracer != null) 
-//		{
-//			if (m_topInteraction != null)
-//			{
-//				tracer.addEventElement("top_intention", m_topInteraction.getLabel());
-//				tracer.addEventElement("top_level", m_topInteraction.getLength() + "");
-//			}
-//			tracer.addEventElement("new_intention", m_step == 0 ? "true" : "false");
-//			if (m_intendedPrimitiveInteraction != null)
-//				tracer.addEventElement("primitive_intended_act", m_intendedPrimitiveInteraction.getLabel());
-//			if (m_enactedPrimitiveInteraction !=  null)
-//			{
-//				tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
-//				tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getMoveLabel());
-//				tracer.addEventElement("satisfaction", m_enactedPrimitiveInteraction.getEnactionValue()/10 + "");
-//			}
-//		}
-//	}
-
-//	public void addOngoingInteraction(IInteraction interaction) 
-//	{
-//		m_ongoingInteractions.add(interaction);
-//	}
-//
-//	public ArrayList<IInteraction> getOngoingInteractions() 
-//	{
-//		return m_ongoingInteractions;
-//	}
-
+	}	
 }
