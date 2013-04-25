@@ -229,7 +229,7 @@ public class Act implements IAct
 		return newAlternate;
 	}
 
-	public ArrayList<IAct> getAlternateInteractions() 
+	public ArrayList<IAct> getAlternateActs() 
 	{
 		return m_alternateInteractions;
 	}

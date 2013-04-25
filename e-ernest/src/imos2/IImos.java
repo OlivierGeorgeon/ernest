@@ -13,7 +13,7 @@ public interface IImos
 	 * @param regularityThreshold The regularity sensibility threshold.
 	 */
 	public void setRegularityThreshold(int regularityThreshold);
-	public int getRegularityThreshold();
+	public void setMaxSchemaLength(int maxSchemaLength);
 
 	/**
 	 * Track the enaction at hand. 
@@ -55,5 +55,11 @@ public interface IImos
 	 * @return The current interaction cycle number.
 	 */
 	public int getCounter();
+	
+	/**
+	 * @param enaction The previous enaction
+	 * @return The next list of propositions
+	 */
+	public ArrayList<IProposition> propose(IEnaction enaction);
 	
 }

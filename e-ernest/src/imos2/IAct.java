@@ -100,7 +100,7 @@ public interface IAct
 	/**
 	 * @return This list of this interaction's alternative interactions
 	 */
-	public ArrayList<IAct> getAlternateInteractions();
+	public ArrayList<IAct> getAlternateActs();
 	
 	
 }
