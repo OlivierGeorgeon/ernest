@@ -9,9 +9,9 @@ import javax.vecmath.Point3f;
 public interface IPositionCategorizer 
 {
 	/**
-	 * Gives the identifier of the area of interest to which a point belongs.
+	 * Gives the area to which a point belongs.
 	 * @param point The point
-	 * @return The identifier of the area of interest
+	 * @return The area of interest
 	 */
 	public IArea categorize(Point3f point);
 	
