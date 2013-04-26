@@ -2,6 +2,9 @@ package imos2;
 
 import java.util.ArrayList;
 
+import spas.IArea;
+import ernest.IPrimitive;
+
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
  * @author Olivier
@@ -97,5 +100,7 @@ public interface IAct
 	 */
 	public ArrayList<IAct> getAlternateActs();
 	
-	
+	public IPrimitive getInteraction();
+	public IArea getArea();
+
 }

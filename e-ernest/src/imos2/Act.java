@@ -2,6 +2,10 @@ package imos2;
 
 import java.util.ArrayList;
 
+import spas.IArea;
+
+import ernest.IPrimitive;
+
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
  * @author Olivier
@@ -12,8 +16,6 @@ public class Act implements IAct
 	private static int PRIMITIVE_WEIGHT = 100;
 	
 	private String label = "";
-	//private String m_moveLabel ="";
-	//private String m_effectLabel = "";
 	private boolean m_primitive = true;
 	private IAct m_preInteraction = null;
 	private IAct m_postInteraction = null;
@@ -22,6 +24,8 @@ public class Act implements IAct
 	private int m_length = 1;
 	private IAct m_prescriber = null;
 	private int m_step = 0;
+	private IPrimitive interaction;
+	private IArea area;
 	
 	/** The list of alternative interactions */
 	private ArrayList<IAct> m_alternateInteractions = new ArrayList<IAct>();
@@ -31,9 +35,9 @@ public class Act implements IAct
 	 * @param enactionValue The value of enacting this interaction.
 	 * @return The created primitive interaction.
 	 */
-	public static IAct createPrimitiveInteraction(String label, int enactionValue)
+	public static IAct createPrimitiveAct(IPrimitive interaction, IArea area)
 	{
-		return new Act(label, true, null, null, enactionValue);
+		return new Act(interaction.getLabel() + area.getLabel(), true, null, null, interaction.getValue(), interaction, area);
 	}
 	
 	/**
@@ -45,14 +49,12 @@ public class Act implements IAct
 	{
 		int enactionValue = preInteraction.getEnactionValue() + postInteraction.getEnactionValue();
 		String label = preInteraction.getLabel() + postInteraction.getLabel();
-		return new Act(label, false, preInteraction, postInteraction, enactionValue);
+		return new Act(label, false, preInteraction, postInteraction, enactionValue, null, null);
 	}
 	
-	protected Act(String label, boolean primitive, IAct preInteraction, IAct postInteraction, int enactionValue)
+	protected Act(String label, boolean primitive, IAct preInteraction, IAct postInteraction, int enactionValue, IPrimitive interaction, IArea area)
 	{
 		this.label = label;
-		//m_moveLabel = moveLabel;
-		//m_effectLabel = effectLabel;
 		m_primitive = primitive;
 		m_preInteraction = preInteraction;
 		m_postInteraction = postInteraction;
@@ -61,8 +63,18 @@ public class Act implements IAct
 			m_enactionWeight = PRIMITIVE_WEIGHT;
 		else
 			m_length = preInteraction.getLength() + postInteraction.getLength();
+		this.interaction = interaction;
+		this.area = area;
 	}
 	
+	public IPrimitive getInteraction() {
+		return interaction;
+	}
+
+	public IArea getArea() {
+		return area;
+	}
+
 	public IAct getPreAct() 
 	{
 		return m_preInteraction;

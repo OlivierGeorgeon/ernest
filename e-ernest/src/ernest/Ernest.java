@@ -76,8 +76,7 @@ public class Ernest implements IErnest
 	public String step(IEffect effect) 
 	{
 		m_enaction.setEffect(effect);
-		String enactedInteractionLabel = effect.getEnactedInteractionLabel();
-		IPrimitive enactedPrimitive = this.interactions.get(enactedInteractionLabel);
+		IPrimitive enactedPrimitive = this.interactions.get(effect.getEnactedInteractionLabel());
 		m_enaction.setEnactedPrimitive(enactedPrimitive);
 		
 		// Start a new interaction cycle.

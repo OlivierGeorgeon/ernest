@@ -71,7 +71,8 @@ public class Spas implements ISpas
 			//evokePlaces(enaction);
 		}
 		
-		if (m_tracer != null) m_localSpaceMemory.trace(m_tracer);
+		//if (m_tracer != null) m_localSpaceMemory.trace(m_tracer);
+		if (m_tracer != null) enaction.traceSpace(m_tracer);
 	}
 
 	/**

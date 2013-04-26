@@ -2,13 +2,14 @@ package imos2;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import javax.vecmath.Point3f;
-
+import ernest.IInteractionCategorizer;
+import ernest.IModality;
 import ernest.IPrimitive;
 import ernest.ITracer;
+import ernest.InteractionCategorizer;
 import spas.ISpas;
 
 /**
@@ -17,21 +18,22 @@ import spas.ISpas;
  */
 public class Decider implements IDecider 
 {
-	IImos imos;
-	ISpas spas;
-	Map<String , IPrimitive> interactions;
-	ITracer tracer;
+	private IImos imos;
+	private ISpas spas;
+	private Map<String , IPrimitive> interactions;
+	private ITracer tracer;
+	private IInteractionCategorizer interactionCategorizer = new InteractionCategorizer();
 
 	/**
 	 * @param imos The sequential system
 	 * @param spas The spatial system
 	 * @param interactions2 The list of primitive interactions
 	 */
-	public Decider(IImos imos, ISpas spas, Map<String, IPrimitive> interactions2)
+	public Decider(IImos imos, ISpas spas, Map<String, IPrimitive> interactions)
 	{
 		this.imos = imos;
 		this.spas = spas;
-		this.interactions = interactions2;
+		this.interactions = interactions;
 	}
 
 	public void setTracer(ITracer tracer)
@@ -45,8 +47,10 @@ public class Decider implements IDecider
 		
 		System.out.println("New decision ================ ");
 
-		ArrayList<IProposition> propositions = proposeActs(enaction);
-		IAct nextTopIntention = selectAct(propositions);
+		List<IModality> modalities = proposeModalities(enaction);
+		IPrimitive nextPrimitive = selectInteraction(modalities);
+		
+		IAct nextTopIntention = this.imos.addAct(nextPrimitive, this.spas.categorizePosition(new Point3f()));
 		
 		newEnaction.setTopInteraction(nextTopIntention);
 		newEnaction.setTopRemainingInteraction(nextTopIntention);
@@ -61,68 +65,45 @@ public class Decider implements IDecider
 	 * @param activationContext The list of interactions that form the current context.
 	 * @return The list of propositions.
 	 */
-	protected ArrayList<IProposition> proposeActs(IEnaction enaction)
+	protected List<IModality> proposeModalities(IEnaction enaction)
 	{
 		// The list of propositions proposed by the sequential system
 		ArrayList<IProposition> propositions = this.imos.propose(enaction);	
 
-		// Add the propositions to enact primitive interactions in area of point (0,0,0).
+		// Add the propositions to enact primitive interactions in the area of point (0,0,0).
 		for (IPrimitive i : this.interactions.values())
 		{
-			IAct a = this.imos.addAct(i.getLabel() + this.spas.categorizePosition(new Point3f()).getLabel(), i.getValue());
+			IAct a = this.imos.addAct(i, this.spas.categorizePosition(new Point3f()));
 			IProposition p = new Proposition(a, 0);
 			if (!propositions.contains(p))
 				propositions.add(p);
 		}
 				
+		// Compute the weight of each modality.
+		for (IModality m : this.interactionCategorizer.getModalities().values()){
+			m.setPropositionWeight(0);
+		}
+		for (IProposition p: propositions){
+			// TODO also propose modalities made of composite interactions
+			if (p.getAct().getPrimitive()){
+				this.interactionCategorizer.categorize(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());	
+			}
+		}
 		
-		// Prepare the tracer.
+		// Return the list of weighted modalities 
 		Object decisionElmt = null;
-		Object consolidationElmt = null;
-		if (this.tracer != null)
-		{
-			decisionElmt = this.tracer.addEventElement("activation", true);
-			consolidationElmt = this.tracer.addSubelement(decisionElmt, "consolidation");
+		if (this.tracer != null){
+			decisionElmt = this.tracer.addEventElement("modalities", true);
+		}
+		List<IModality> modalityList = new ArrayList<IModality>();
+		for (IModality m : this.interactionCategorizer.getModalities().values()){
+			System.out.println("Propose modality " + m.getLabel() + " with weight " + m.getPropositionWeight());
+			modalityList.add(m);
+			if (this.tracer != null)
+				this.tracer.addSubelement(decisionElmt, "Modality", m.getLabel() + " proposition weight " + m.getPropositionWeight());
 		}
 		
-		// TODO Compute propositions for each modality rather than each interactions.
-
-		// Transfer the weight of alternate acts to the proposition of their prominant acts
-		for (IProposition proposition : propositions)
-		{
-			for (IAct alt : proposition.getAct().getAlternateActs())
-			{
-				for (IProposition alternateProposition : propositions)
-				{
-					if (alternateProposition.getAct().equals(alt))
-					{
-						int w = alternateProposition.getWeight();
-						if (this.tracer != null)
-						{
-							this.tracer.addSubelement(consolidationElmt, "proposition", proposition + " alternate " + alt.getLabel() +  " of weight  " + w/10);						
-						}
-						proposition.addWeight(w);
-					}
-				}
-			}
-		}
-
-		// Trace the final propositions
-		
-		//System.out.println("Propose: ");
-		Object proposalElmt = null;
-		if (this.tracer != null)
-		{
-			proposalElmt = this.tracer.addSubelement(decisionElmt, "propositions");
-		
-			for (IProposition p : propositions)
-			{
-				System.out.println("proposition " + p);
-				this.tracer.addSubelement(proposalElmt, "proposition", p.toString());
-			}
-		}
-		
-		return propositions;
+		return modalityList;		
 	}
 	
 	/**
@@ -130,22 +111,20 @@ public class Decider implements IDecider
 	 * @param propositions The list of propositions.
 	 * @return The selected interaction.
 	 */
-	protected IAct selectAct(ArrayList<IProposition> propositions)
+	protected IPrimitive selectInteraction(List<IModality> modalities)
 	{
 		// Sort the propositions by weight.
-		Collections.sort(propositions);
-		
-		// Pick the most weighted proposition
-		IAct selectedInteraction = propositions.get(0).getAct();
+		Collections.sort(modalities);
+
+		// Pick the most weighted modality
+		IPrimitive selectedInteraction = modalities.get(0).getPrototypeInteraction();
 		
 		System.out.println("Select:" + selectedInteraction);
 
-		// Trace the propositions
-		if (this.tracer != null)
-		{			
+		// Trace the selected interaction
+		if (this.tracer != null){			
 			Object selectionElmt = this.tracer.addEventElement("selection", true);
 			this.tracer.addSubelement(selectionElmt, "selected_interaction", selectedInteraction.toString());
-			//m_tracer.addSubelement(selectionElmt, "angst", "" + propositions.get(0).getAngst());
 		}
 		
 		return selectedInteraction;

@@ -2,6 +2,9 @@ package imos2;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import spas.IArea;
+import ernest.IPrimitive;
 import ernest.ITracer;
 
 /**
@@ -65,6 +68,31 @@ public class Imos implements IImos
 		return m_internalState;
 	}
 
+//	/**
+//	 * Construct a new interaction or retrieve the interaction if it already exists.
+//	 * @param label The label of the interaction.
+//	 * @param satisfaction The interaction's satisfaction (only needed in case this interaction was not 
+//	 * yet declared in imos).
+//	 * @return The interaction that was created or that already existed.
+//	 */
+//	private IAct addAct(String label, int satisfaction)
+//	{
+//		IAct i = Act.createPrimitiveInteraction(label, satisfaction);
+//		
+//		int j = this.acts.indexOf(i);
+//		if (j == -1)
+//		{
+//			// The interaction does not exist
+//			this.acts.add(i);
+//			System.out.println("Define primitive act " + i.toString());
+//		}
+//		else 
+//			// The interaction already exists: return a pointer to it.
+//			i =  this.acts.get(j);
+//		
+//		return i;		
+//	}
+
 	/**
 	 * Construct a new interaction or retrieve the interaction if it already exists.
 	 * @param label The label of the interaction.
@@ -72,9 +100,9 @@ public class Imos implements IImos
 	 * yet declared in imos).
 	 * @return The interaction that was created or that already existed.
 	 */
-	public IAct addAct(String label, int satisfaction)
+	public IAct addAct(IPrimitive interaction, IArea area)
 	{
-		IAct i = Act.createPrimitiveInteraction(label, satisfaction);
+		IAct i = Act.createPrimitiveAct(interaction, area);
 		
 		int j = this.acts.indexOf(i);
 		if (j == -1)
@@ -146,8 +174,8 @@ public class Imos implements IImos
 		{
 			// Compute the enacted primitive interaction from the move and the effect.
 			// Compute the enaction value of interactions that were not yet recorded
-			//enactedPrimitiveInteraction = addInteraction(intendedPrimitiveInteraction.getLabel().substring(0, 1)+ enaction.getEffect().getLabel(), 0);
-			enactedPrimitiveInteraction = addAct(enaction.getEnactedPrimitive().getLabel() + enaction.getArea(), enaction.getEnactedPrimitive().getValue());
+			//enactedPrimitiveInteraction = addAct(enaction.getEnactedPrimitive().getLabel() + enaction.getArea(), enaction.getEnactedPrimitive().getValue());
+			enactedPrimitiveInteraction = addAct(enaction.getEnactedPrimitive(), enaction.getArea());
 
 			// Compute the top actually enacted interaction
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
@@ -352,7 +380,7 @@ public class Imos implements IImos
 					{
 						addProposition(propositions, activatedAct);
 						if (m_tracer != null)
-							m_tracer.addSubelement(activationElmt, "ActivatedAct", activatedAct + "intention" + activatedAct.getPostAct());
+							m_tracer.addSubelement(activationElmt, "ActivatedAct", activatedAct + " intention " + activatedAct.getPostAct());
 					}
 				}
 			}
