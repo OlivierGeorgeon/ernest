@@ -94,6 +94,9 @@ public interface ISpas
 	
 	//public void simulatePrimitiveAct(IEnaction enaction);
 	//public IActProposition runSimulation(IAct act);
-
-
+	
+	public String simulateShiftLeft();
+	public String simulateShiftRight();
+	public String simulateShiftForward();
+	public IArea getArea(String areaLabel);
 }

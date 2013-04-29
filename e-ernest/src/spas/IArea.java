@@ -7,4 +7,7 @@ package spas;
 public interface IArea 
 {
 	public String getLabel();
+	public boolean isOccupied();
+	public void setOccupied(boolean occupied);
+
 }

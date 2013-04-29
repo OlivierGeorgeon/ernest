@@ -7,9 +7,9 @@ package spas;
 public class Area implements IArea {
 
 	private String label;
+	private boolean occupied;
 	
-	Area(String label)
-	{
+	Area(String label){
 		this.label = label;
 	}
 	
@@ -17,11 +17,18 @@ public class Area implements IArea {
 		return this.label;
 	}
 	
+	public boolean isOccupied() {
+		return occupied;
+	}
+
+	public void setOccupied(boolean occupied) {
+		this.occupied = occupied;
+	}
+
 	/**
 	 * areas are equal if they have the same label. 
 	 */
-	public boolean equals(Object o)
-	{
+	public boolean equals(Object o){
 		boolean ret = false;
 		
 		if (o == this)
@@ -38,6 +45,4 @@ public class Area implements IArea {
 		
 		return ret;
 	}
-
-
 }
