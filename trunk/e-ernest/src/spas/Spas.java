@@ -69,10 +69,10 @@ public class Spas implements ISpas
 		}
 		
 		this.areaManager.clearAll();
-		if (enaction.getEffect().equals("*") || 
-			enaction.getEffect().equals("+") ||
-			enaction.getEffect().equals("=") || 
-			enaction.getEffect().equals("-")){
+		if (enaction.getEffect().getLabel().equals("*") || 
+			enaction.getEffect().getLabel().equals("+") ||
+			enaction.getEffect().getLabel().equals("=") || 
+			enaction.getEffect().getLabel().equals("-")){
 			enaction.getArea().setOccupied(true);
 		}				
 		

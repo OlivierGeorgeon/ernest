@@ -51,6 +51,7 @@ public class Decider implements IDecider
 		String nextModality = selectInteraction(modalities);
 		
 		IAct nextTopIntention = predictAct(nextModality);
+		System.out.println("Act " + nextTopIntention.getLabel());
 		
 		//IAct nextTopIntention = this.imos.addAct(nextPrimitive, this.spas.categorizePosition(new Point3f()));
 		
@@ -63,15 +64,15 @@ public class Decider implements IDecider
 	}
 	
 	private IAct predictAct(String nextModality){
-		String actLabel ="";
+		String actLabel ="  ";
 		if (nextModality.equals(">")){
 			actLabel = this.spas.simulateShiftForward();
 		}
 		if (nextModality.equals("^")){
-			actLabel = this.spas.simulateShiftLeft();
+			actLabel = this.spas.simulateShiftRight();
 		}
 		if (nextModality.equals("v")){
-			actLabel = this.spas.simulateShiftRight();
+			actLabel = this.spas.simulateShiftLeft();
 		}
 		
 		IPrimitive nextPrimitive = this.interactions.get(nextModality + actLabel.substring(0, 1));
