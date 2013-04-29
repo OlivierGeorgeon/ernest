@@ -269,7 +269,8 @@ public class Enaction implements IEnaction
 			tracer.addSubelement(e, "top_enacted_interaction", m_topEnactedInteraction.getLabel());
 			tracer.addSubelement(e, "step", m_step + "");
 			tracer.addSubelement(e, "primitive_intended_interaction", m_intendedPrimitiveInteraction.getLabel());
-			tracer.addSubelement(e, "primitive_enacted_interaction", m_enactedPrimitiveInteraction.getLabel());
+			tracer.addSubelement(e, "primitive_enacted_interaction", this.enactedPrimitive.getLabel());
+			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
 			tracer.addSubelement(e, "area", this.area.getLabel());
 		}
 	}

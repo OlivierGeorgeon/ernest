@@ -8,7 +8,6 @@ public class Primitive implements IPrimitive {
 
 	private String label = "";
 	private int value = 0;
-	
 	Primitive(String label, int value)
 	{
 		this.label = label;

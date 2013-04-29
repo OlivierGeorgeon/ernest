@@ -14,4 +14,5 @@ public interface IPrimitive
 	 * @return The primitive interaction's value
 	 */
 	public int getValue();
+	
 }
