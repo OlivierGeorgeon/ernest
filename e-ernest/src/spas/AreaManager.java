@@ -13,35 +13,26 @@ import utils.ErnestUtils;
  */
 public class AreaManager implements IAreaManager {
 	
-	public final String A = "A";
-	public final String B = "B";
-	public final String C = "C";
+	public final String A = "A"; // Left
+	public final String B = "B"; // Front
+	public final String C = "C"; // Right
 	
 	private Map<String , IArea> areas = new HashMap<String , IArea>() ;
+	
+	AreaManager(){
+		this.areas.put(A, new Area(A));
+		this.areas.put(B, new Area(B));
+		this.areas.put(C, new Area(C));
+	}
 	
 	public IArea categorize(Point3f point) 
 	{
 		if (ErnestUtils.polarAngle(point) > .1f)
-		{
-			// Area A: left
-			if (!this.areas.containsKey(A))
-				this.areas.put(A, new Area(A));
 			return areas.get(A); 
-		}
 		else if (ErnestUtils.polarAngle(point) >= -.1f)
-		{
-			// Area B: front
-			if (!this.areas.containsKey(B))
-				this.areas.put(B, new Area(B));
 			return areas.get(B); 
-		}
 		else
-		{
-			// Area C: right
-			if (!this.areas.containsKey(C))
-				this.areas.put(C, new Area(C));
 			return areas.get(C); 
-		}
 	}
 	
 	public void clearAll(){
@@ -50,7 +41,7 @@ public class AreaManager implements IAreaManager {
 	}
 
 	public String simulateShiftLef() {
-		String stimulusLabel = "_";
+		String stimulusLabel = "+";
 		String areaLabel ="";
 		if (areas.get(A).isOccupied()){
 			stimulusLabel = "o";
@@ -72,7 +63,7 @@ public class AreaManager implements IAreaManager {
 	}
 
 	public String simulateShiftRight() {
-		String stimulusLabel = "_";
+		String stimulusLabel = "+";
 		String areaLabel ="";
 		if (areas.get(C).isOccupied()){
 			stimulusLabel = "o";
@@ -95,7 +86,7 @@ public class AreaManager implements IAreaManager {
 
 	public String simulateShiftForward() {
 		String stimulusLabel = "_";
-		String areaLabel ="";
+		String areaLabel = B;
 		if (areas.get(A).isOccupied()){
 			stimulusLabel = "+";
 			areaLabel = A;
