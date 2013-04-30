@@ -76,7 +76,7 @@ public class Spas implements ISpas
 			enaction.getArea().setOccupied(true);
 		}				
 		
-		if (m_tracer != null) enaction.traceSpace(m_tracer);
+		if (m_tracer != null) this.areaManager.trace(m_tracer);// enaction.traceSpace(m_tracer);
 	}
 
 	public int getValue(int i, int j)
@@ -139,6 +139,5 @@ public class Spas implements ISpas
 	public IArea getArea(String areaLabel) {
 		return this.areaManager.getArea(areaLabel);
 	}
-
 
 }

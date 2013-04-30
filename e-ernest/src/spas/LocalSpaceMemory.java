@@ -35,23 +35,12 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public final static Point3f DIRECTION_BEHIND_RIGHT = new Point3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
 	public final static float    SOMATO_RADIUS = 1f;
 	
-	//public final static int SIMULATION_INCONSISTENT = -1;
-	//public final static int SIMULATION_UNKNOWN = 0;
-	//public final static int SIMULATION_CONSISTENT = 1;
-	//public final static int SIMULATION_AFFORD = 2;
-	//public final static int SIMULATION_REACH = 10;
-	//public final static int SIMULATION_REACH2 = 4;
-	public final static int SIMULATION_NEWCOMPRESENCE = 11;
-	
 	/** The duration of persistence in local space memory. */
 	public static int PERSISTENCE_DURATION = 5;//50;
 	
 	/** The Local space structure. */
 	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
 	
-	//private ISpas m_spas;
-	//private Transform3D m_transform = new Transform3D();
-		
 	/**
 	 * Clone spatial memory to perform simulations
 	 * TODO clone the places 
@@ -86,23 +75,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			p.incClock();
 	}
 
-	public void trace(ITracer tracer)
-	{
-		if (tracer != null && !m_places.isEmpty())
-		{
-			Object localSpace = tracer.addEventElement("local_space");
-			tracer.addSubelement(localSpace, "position_8", ErnestUtils.hexColor(getValue(DIRECTION_HERE)));
-			tracer.addSubelement(localSpace, "position_7", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND)));
-			tracer.addSubelement(localSpace, "position_6", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND_LEFT)));
-			tracer.addSubelement(localSpace, "position_5", ErnestUtils.hexColor(getValue(DIRECTION_LEFT)));
-			tracer.addSubelement(localSpace, "position_4", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD_LEFT)));
-			tracer.addSubelement(localSpace, "position_3", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD)));
-			tracer.addSubelement(localSpace, "position_2", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD_RIGHT)));
-			tracer.addSubelement(localSpace, "position_1", ErnestUtils.hexColor(getValue(DIRECTION_RIGHT)));
-			tracer.addSubelement(localSpace, "position_0", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND_RIGHT)));
-		}
-	}
-	
 	public IPlace addPlace(IAct act, Point3f position)
 	{
 		IPlace place = new Place(act, position);	
@@ -171,20 +143,8 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-//			if (p.getType() == Place.ENACTION_PLACE || p.getType() == Place.EVOKED_PLACE )
-			{
-				//if (p.getClock() < m_clock - PERSISTENCE_DURATION +1) // -1
-				if (p.getClock() > PERSISTENCE_DURATION ) // -1
-					it.remove();
-			}
-//			else
-//			{
-//				//if (p.getClock() < m_clock - PERSISTENCE_DURATION)
-//				if (p.getClock() > PERSISTENCE_DURATION)
-//					it.remove();
-//				else if (p.getType() == Place.AFFORD || p.getType() == Place.UNKNOWN)// || p.getType() == Place.SIMULATION_PLACE)
-//					it.remove();
-//			}
+			if (p.getClock() > PERSISTENCE_DURATION ) 
+				it.remove();
 		}
 	}
 	
@@ -200,14 +160,23 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	{
 		m_places = places;
 	}
-		
-//	public void setTransform(Transform3D transform) 
-//	{
-//		m_transform = transform;
-//	}
-//
-//	public Transform3D getTransform() 
-//	{
-//		return m_transform;
-//	}
+	
+	public void trace(ITracer tracer)
+	{
+		if (tracer != null && !m_places.isEmpty())
+		{
+			Object localSpace = tracer.addEventElement("local_space");
+			tracer.addSubelement(localSpace, "position_8", ErnestUtils.hexColor(getValue(DIRECTION_HERE)));
+			tracer.addSubelement(localSpace, "position_7", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND)));
+			tracer.addSubelement(localSpace, "position_6", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND_LEFT)));
+			tracer.addSubelement(localSpace, "position_5", ErnestUtils.hexColor(getValue(DIRECTION_LEFT)));
+			tracer.addSubelement(localSpace, "position_4", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD_LEFT)));
+			tracer.addSubelement(localSpace, "position_3", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD)));
+			tracer.addSubelement(localSpace, "position_2", ErnestUtils.hexColor(getValue(DIRECTION_AHEAD_RIGHT)));
+			tracer.addSubelement(localSpace, "position_1", ErnestUtils.hexColor(getValue(DIRECTION_RIGHT)));
+			tracer.addSubelement(localSpace, "position_0", ErnestUtils.hexColor(getValue(DIRECTION_BEHIND_RIGHT)));
+		}
+	}
+	
+
 }

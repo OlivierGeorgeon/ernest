@@ -48,7 +48,7 @@ public class Decider implements IDecider
 		System.out.println("New decision ================ ");
 
 		List<IModality> modalities = proposeModalities(enaction);
-		String nextModality = selectInteraction(modalities);
+		String nextModality = selectModality(modalities);
 		
 		IAct nextTopIntention = predictAct(nextModality);
 		System.out.println("Act " + nextTopIntention.getLabel());
@@ -132,7 +132,7 @@ public class Decider implements IDecider
 	 * @param propositions The list of propositions.
 	 * @return The selected interaction.
 	 */
-	protected String selectInteraction(List<IModality> modalities)
+	protected String selectModality(List<IModality> modalities)
 	{
 		// Sort the propositions by weight.
 		Collections.sort(modalities);

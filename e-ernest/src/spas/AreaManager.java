@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import ernest.ITracer;
+
 import utils.ErnestUtils;
 
 /**
@@ -116,5 +118,40 @@ public class AreaManager implements IAreaManager {
 
 	public IArea getArea(String areaLabel) {
 		return areas.get(areaLabel);
+	}
+	
+	public void trace(ITracer tracer)
+	{
+		if (tracer != null)
+		{
+			Object localSpace = tracer.addEventElement("local_space");
+			tracer.addSubelement(localSpace, "position_8", "FFFFFF");
+			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
+			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
+			
+			if (areas.get(A).isOccupied()){
+				tracer.addSubelement(localSpace, "position_5", "9680FF");
+				tracer.addSubelement(localSpace, "position_4", "9680FF");
+			}
+			else {
+				tracer.addSubelement(localSpace, "position_5", "FFFFFF");
+				tracer.addSubelement(localSpace, "position_4", "FFFFFF");
+			}
+			if (areas.get(B).isOccupied()){
+				tracer.addSubelement(localSpace, "position_3", "9680FF");
+			}
+			else {
+				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
+			}
+			if (areas.get(C).isOccupied()){
+				tracer.addSubelement(localSpace, "position_2", "9680FF");
+				tracer.addSubelement(localSpace, "position_1", "9680FF");
+			}
+			else {
+				tracer.addSubelement(localSpace, "position_2", "FFFFFF");
+				tracer.addSubelement(localSpace, "position_1", "FFFFFF");
+			}
+			tracer.addSubelement(localSpace, "position_0", "FFFFFF");
+		}
 	}
 }
