@@ -143,7 +143,5 @@ public interface IEnaction
 	
 	public IPrimitive getEnactedPrimitive(); 
 	public void setEnactedPrimitive(IPrimitive enactedPrimitive); 
-	public void traceSpace(ITracer tracer);
-
 
 }

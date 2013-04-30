@@ -2,6 +2,8 @@ package spas;
 
 import javax.vecmath.Point3f;
 
+import ernest.ITracer;
+
 /**
  * A slicer slices the surrounding space into areas of interest.
  * @author Olivier
@@ -21,6 +23,8 @@ public interface IAreaManager
 	public String simulateShiftLef();
 	public String simulateShiftRight();
 	public String simulateShiftForward();
+	
+	public void trace(ITracer tracer);
 
 	public void shiftLef();
 	public void shiftRight();

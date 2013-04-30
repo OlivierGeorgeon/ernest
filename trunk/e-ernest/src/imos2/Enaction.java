@@ -275,49 +275,6 @@ public class Enaction implements IEnaction
 		}
 	}
 
-	public void traceSpace(ITracer tracer)
-	{
-		if (tracer != null)
-		{
-			Object localSpace = tracer.addEventElement("local_space");
-			tracer.addSubelement(localSpace, "position_8", "FFFFFF");
-			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
-			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
-			tracer.addSubelement(localSpace, "position_0", "FFFFFF");
-			
-			if (this.area.getLabel().equals("A")){
-				tracer.addSubelement(localSpace, "position_5", "9680FF");
-				tracer.addSubelement(localSpace, "position_4", "9680FF");
-				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
-				tracer.addSubelement(localSpace, "position_2", "FFFFFF");
-				tracer.addSubelement(localSpace, "position_1", "FFFFFF");
-			}
-			else if (this.area.getLabel().equals("B")){
-				if (this.m_effect.getLabel().equals("_")){
-					tracer.addSubelement(localSpace, "position_5", "FFFFFF");
-					tracer.addSubelement(localSpace, "position_4", "FFFFFF");
-					tracer.addSubelement(localSpace, "position_3", "FFFFFF");
-					tracer.addSubelement(localSpace, "position_2", "FFFFFF");
-					tracer.addSubelement(localSpace, "position_1", "FFFFFF");
-				}else{
-					tracer.addSubelement(localSpace, "position_5", "FFFFFF");
-					tracer.addSubelement(localSpace, "position_4", "FFFFFF");
-					tracer.addSubelement(localSpace, "position_3", "9680FF");
-					tracer.addSubelement(localSpace, "position_2", "FFFFFF");
-					tracer.addSubelement(localSpace, "position_1", "FFFFFF");
-				}
-			}
-			else{
-				tracer.addSubelement(localSpace, "position_5", "FFFFFF");
-				tracer.addSubelement(localSpace, "position_4", "FFFFFF");
-				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
-				tracer.addSubelement(localSpace, "position_2", "9680FF");
-				tracer.addSubelement(localSpace, "position_1", "9680FF");			
-			}
-		}
-	}
-	
-
 	public void traceCarry(ITracer tracer)
 	{
 		if (tracer != null)
