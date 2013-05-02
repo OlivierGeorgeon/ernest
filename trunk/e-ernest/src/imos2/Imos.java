@@ -3,7 +3,7 @@ package imos2;
 import java.util.ArrayList;
 import java.util.List;
 
-import spas.IArea;
+import spas.Area;
 import ernest.IPrimitive;
 import ernest.ITracer;
 
@@ -100,7 +100,7 @@ public class Imos implements IImos
 	 * yet declared in imos).
 	 * @return The interaction that was created or that already existed.
 	 */
-	public IAct addAct(IPrimitive interaction, IArea area)
+	public IAct addAct(IPrimitive interaction, Area area)
 	{
 		IAct i = Act.createPrimitiveAct(interaction, area);
 		

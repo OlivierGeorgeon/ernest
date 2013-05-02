@@ -60,7 +60,7 @@ public class Spas implements ISpas
 		m_tracer = tracer;
 	}
 	
-	public IArea categorizePosition(Point3f point)
+	public Area categorizePosition(Point3f point)
 	{
 		return this.areaManager.categorize(point);
 	}

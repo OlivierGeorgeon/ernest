@@ -2,7 +2,7 @@ package imos2;
 
 import java.util.ArrayList;
 
-import spas.IArea;
+import spas.Area;
 
 import ernest.IPrimitive;
 
@@ -25,7 +25,7 @@ public class Act implements IAct
 	private IAct m_prescriber = null;
 	private int m_step = 0;
 	private IPrimitive interaction;
-	private IArea area;
+	private Area area;
 	
 	/** The list of alternative interactions */
 	private ArrayList<IAct> m_alternateInteractions = new ArrayList<IAct>();
@@ -35,7 +35,7 @@ public class Act implements IAct
 	 * @param enactionValue The value of enacting this interaction.
 	 * @return The created primitive interaction.
 	 */
-	public static IAct createPrimitiveAct(IPrimitive interaction, IArea area)
+	public static IAct createPrimitiveAct(IPrimitive interaction, Area area)
 	{
 		return new Act(interaction.getLabel() + area.getLabel(), true, null, null, interaction.getValue(), interaction, area);
 	}
@@ -52,7 +52,7 @@ public class Act implements IAct
 		return new Act(label, false, preInteraction, postInteraction, enactionValue, null, null);
 	}
 	
-	protected Act(String label, boolean primitive, IAct preInteraction, IAct postInteraction, int enactionValue, IPrimitive interaction, IArea area)
+	protected Act(String label, boolean primitive, IAct preInteraction, IAct postInteraction, int enactionValue, IPrimitive interaction, Area area)
 	{
 		this.label = label;
 		m_primitive = primitive;
@@ -71,7 +71,7 @@ public class Act implements IAct
 		return interaction;
 	}
 
-	public IArea getArea() {
+	public Area getArea() {
 		return area;
 	}
 
