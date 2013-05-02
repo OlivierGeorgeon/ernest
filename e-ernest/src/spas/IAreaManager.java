@@ -17,7 +17,7 @@ public interface IAreaManager
 	 * @param point The point
 	 * @return The area of interest
 	 */
-	public IArea categorize(Point3f point);
+	public Area categorize(Point3f point);
 	
 	public void clearAll();
 	

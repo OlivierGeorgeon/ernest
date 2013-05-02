@@ -42,7 +42,7 @@ public interface ISpas
 	 * @param point The point.
 	 * @return The code of the area.
 	 */
-	public IArea categorizePosition(Point3f point);
+	public Area categorizePosition(Point3f point);
 
 	/**
 	 * Provide a rgb code to display the object of Ernest's attention in the environment.

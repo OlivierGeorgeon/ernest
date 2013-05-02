@@ -3,7 +3,7 @@ package imos2;
 import java.util.ArrayList;
 import java.util.List;
 
-import spas.IArea;
+import spas.Area;
 import utils.ErnestUtils;
 import ernest.Effect;
 import ernest.IEffect;
@@ -47,7 +47,7 @@ public class Enaction implements IEnaction
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
 	/** The area slice of the primitive enacted interaction */
-	private IArea area;
+	private Area area;
 	
 	//private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();	
 	//private int m_simulationStatus = 0;
@@ -57,12 +57,12 @@ public class Enaction implements IEnaction
 		m_effect = effect;
 	}
 
-	public void setSlice(IArea area)
+	public void setSlice(Area area)
 	{
 		this.area = area;
 	}
 
-	public IArea getArea()
+	public Area getArea()
 	{
 		return this.area;
 	}

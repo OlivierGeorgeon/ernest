@@ -2,7 +2,7 @@ package imos2;
 
 import java.util.ArrayList;
 
-import spas.IArea;
+import spas.Area;
 import ernest.IPrimitive;
 
 /**
@@ -101,6 +101,6 @@ public interface IAct
 	public ArrayList<IAct> getAlternateActs();
 	
 	public IPrimitive getInteraction();
-	public IArea getArea();
+	public Area getArea();
 
 }

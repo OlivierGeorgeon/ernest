@@ -3,35 +3,35 @@ package ernest;
 import java.util.HashMap;
 import java.util.Map;
 
+import spas.AreaImpl;
 import spas.Area;
-import spas.IArea;
 
 public class ObservationImpl implements Observation {
 	
 	Aspect aspect;
-	IArea area;
+	Area area;
 	
 	private static Map<String , Observation> OBSERVATIONS = new HashMap<String , Observation>() ;
 
 	static{
 		for(Aspect a : AspectImpl.getAspects())
-			for(IArea area : Area.getAREAS())
+			for(Area area : AreaImpl.getAREAS())
 				OBSERVATIONS.put(createKey(a,area), new ObservationImpl(a,area));
 	}
 	
-	private ObservationImpl(Aspect aspect, IArea area){
+	private ObservationImpl(Aspect aspect, Area area){
 		this.aspect = aspect;
 		this.area = area;
 	}
 
-	public static Observation createOrGet(Aspect aspect, IArea area){
+	public static Observation createOrGet(Aspect aspect, Area area){
 		String key = createKey(aspect, area);
 		if (!OBSERVATIONS.containsKey(key))
 			OBSERVATIONS.put(key, new ObservationImpl(aspect, area));			
 		return OBSERVATIONS.get(key);
 	}
 
-	private static String createKey(Aspect aspect, IArea area) {
+	private static String createKey(Aspect aspect, Area area) {
 		String key = aspect.getLabel() + area.getLabel();
 		return key;
 	}
@@ -46,7 +46,7 @@ public class ObservationImpl implements Observation {
 		return this.aspect;
 	}
 	
-	public IArea getArea(){
+	public Area getArea(){
 		return this.area;
 	}
 	
