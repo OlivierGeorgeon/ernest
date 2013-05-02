@@ -2,7 +2,9 @@ package spas;
 
 import javax.vecmath.Point3f;
 
+import ernest.Action;
 import ernest.ITracer;
+import ernest.Observation;
 
 /**
  * A slicer slices the surrounding space into areas of interest.
@@ -17,12 +19,12 @@ public interface IAreaManager
 	 */
 	public IArea categorize(Point3f point);
 	
-	public IArea getArea(String areaLabel);
-	
 	public void clearAll();
-	public String simulateShiftLef();
-	public String simulateShiftRight();
-	public String simulateShiftForward();
+	
+	public Observation predict(Action action);
+	public Observation simulateShiftLef();
+	public Observation simulateShiftRight();
+	public Observation simulateShiftForward();
 	
 	public void trace(ITracer tracer);
 
