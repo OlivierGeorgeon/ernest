@@ -3,17 +3,15 @@ package ernest;
 import imos2.IProposition;
 
 /**
- * An modality is a set if interactions that are alternate to each other.
+ * An action represents the active part of an interaction.
  * @author Olivier
  */
-public class Modality implements IModality {
+public class ActionImpl implements Action {
 
 	private String label;
-	private IPrimitive prototypeInteraction;
 	private int propositionWeight;
 	
-	Modality(String label)
-	{
+	ActionImpl(String label){
 		this.label = label;
 	}
 	
@@ -21,14 +19,6 @@ public class Modality implements IModality {
 		return this.label;
 	}
 	
-	public void setPrototypeInteraction(IPrimitive interaction){
-		this.prototypeInteraction = interaction;
-	}
-	
-	public IPrimitive getPrototypeInteraction(){
-		return this.prototypeInteraction;
-	}
-		
 	public int getPropositionWeight() {
 		return this.propositionWeight;
 	}
@@ -42,18 +32,18 @@ public class Modality implements IModality {
 	}
 
 	/**
-	 * Modalities are compared according to their proposition weight. 
+	 * Actions are compared according to their proposition weight. 
 	 */
 	public int compareTo(Object modality) 
 	{
-		IModality m = (IModality)modality;
+		Action m = (Action)modality;
 		//Transferred propositions are smaller 
 		int c = - new Integer(this.propositionWeight).compareTo(new Integer(m.getPropositionWeight()));
 		return c; 
 	}
 
 	/**
-	 * Modalities are equal if they have the same label. 
+	 * Actions are equal if they have the same label. 
 	 */
 	public boolean equals(Object o)
 	{
@@ -67,7 +57,7 @@ public class Modality implements IModality {
 			ret = false;
 		else
 		{
-			IModality other = (IModality)o;
+			Action other = (Action)o;
 			ret = (other.getLabel().equals(this.label));
 		}
 		

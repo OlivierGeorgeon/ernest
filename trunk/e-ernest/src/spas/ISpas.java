@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+
+import ernest.Action;
 import ernest.ITracer;
+import ernest.Observation;
 
 /**
  * The spatial system.
@@ -95,8 +98,6 @@ public interface ISpas
 	//public void simulatePrimitiveAct(IEnaction enaction);
 	//public IActProposition runSimulation(IAct act);
 	
-	public String simulateShiftLeft();
-	public String simulateShiftRight();
-	public String simulateShiftForward();
-	public IArea getArea(String areaLabel);
+	public Observation predict(Action action);
+	
 }

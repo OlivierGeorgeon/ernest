@@ -12,8 +12,10 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import ernest.Action;
 import ernest.IPrimitive;
 import ernest.ITracer;
+import ernest.Observation;
 
 /**
  * The spatial system.
@@ -40,6 +42,18 @@ public class Spas implements ISpas
 
 	/** The area manager. */
 	IAreaManager areaManager = new AreaManager();
+	
+//	private static Spas INSTANCE = null; 
+//	
+//	private Spas() {
+//		// TODO Auto-generated constructor stub
+//	}
+//	
+//	public static Spas instance(){
+//		if (INSTANCE == null)
+//			INSTANCE = new Spas();
+//		return INSTANCE;
+//	}
 
 	public void setTracer(ITracer tracer) 
 	{
@@ -126,18 +140,8 @@ public class Spas implements ISpas
 		return m_localSpaceMemory;
 	}
 
-	public String simulateShiftLeft() {
-		return this.areaManager.simulateShiftLef();
-	}
-
-	public String simulateShiftRight() {
-		return this.areaManager.simulateShiftRight();
-	}
-	public String simulateShiftForward(){
-		return this.areaManager.simulateShiftForward();
-	}
-	public IArea getArea(String areaLabel) {
-		return this.areaManager.getArea(areaLabel);
+	public Observation predict(Action action){
+		return this.areaManager.predict(action);
 	}
 
 }

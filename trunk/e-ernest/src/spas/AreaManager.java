@@ -5,7 +5,12 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import ernest.Action;
+import ernest.ActionMemoryImpl;
+import ernest.Aspect;
 import ernest.ITracer;
+import ernest.Observation;
+import ernest.ObservationImpl;
 
 import utils.ErnestUtils;
 
@@ -15,111 +20,94 @@ import utils.ErnestUtils;
  */
 public class AreaManager implements IAreaManager {
 	
-	public final String A = "A"; // Left
-	public final String B = "B"; // Front
-	public final String C = "C"; // Right
-	
-	private Map<String , IArea> areas = new HashMap<String , IArea>() ;
-	
-	AreaManager(){
-		this.areas.put(A, new Area(A));
-		this.areas.put(B, new Area(B));
-		this.areas.put(C, new Area(C));
-	}
-	
 	public IArea categorize(Point3f point) 
 	{
 		if (ErnestUtils.polarAngle(point) > .1f)
-			return areas.get(A); 
+			return Area.A; 
 		else if (ErnestUtils.polarAngle(point) >= -.1f)
-			return areas.get(B); 
+			return Area.B; 
 		else
-			return areas.get(C); 
+			return Area.C; 
 	}
 	
 	public void clearAll(){
-		for (IArea a : areas.values())
+		for (IArea a : Area.getAREAS())
 			a.setOccupied(false);
+			//a.clear();
 	}
-
-	public String simulateShiftLef() {
-		String stimulusLabel = "+";
-		String areaLabel ="";
-		if (areas.get(A).isOccupied()){
-			stimulusLabel = "o";
-			areaLabel = A;
+	
+	public Observation predict(Action action){
+		if (action.equals(Action.STEP)){
+			return simulateShiftForward();
 		}
-		else if (areas.get(B).isOccupied()){
-			stimulusLabel = "-";
-			areaLabel = A;
-		}
-		else if (areas.get(C).isOccupied()){
-			stimulusLabel = "=";
-			areaLabel = A;			
+		else if (action.equals(Action.TURN_LEFT)){
+			return simulateShiftRight();
 		}
 		else{
-			stimulusLabel = "_";
-			areaLabel = B;
+			return simulateShiftLef();
 		}
-		return stimulusLabel + areaLabel;
 	}
 
-	public String simulateShiftRight() {
-		String stimulusLabel = "+";
-		String areaLabel ="";
-		if (areas.get(C).isOccupied()){
-			stimulusLabel = "o";
-			areaLabel = C;
+	public Observation simulateShiftLef() {
+		Observation observation = null;
+		if (IArea.A.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.DISAPPEAR, IArea.A); 
 		}
-		else if (areas.get(B).isOccupied()){
-			stimulusLabel = "-";
-			areaLabel = C;
+		else if (IArea.B.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.FARTHER, IArea.A); 
 		}
-		else if (areas.get(A).isOccupied()){
-			stimulusLabel = "=";
-			areaLabel = C;			
+		else if (IArea.C.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.MOVE, IArea.A); 
 		}
 		else{
-			stimulusLabel = "_";
-			areaLabel = B;
+			observation = ObservationImpl.createOrGet(Aspect.UNCHANGED, IArea.B); 
 		}
-		return stimulusLabel + areaLabel;
+		return observation;
 	}
 
-	public String simulateShiftForward() {
-		String stimulusLabel = "_";
-		String areaLabel = B;
-		if (areas.get(A).isOccupied()){
-			stimulusLabel = "+";
-			areaLabel = A;
+	public Observation simulateShiftRight() {
+		Observation observation = null;
+		if (IArea.C.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.DISAPPEAR, IArea.C); 
 		}
-		else if (areas.get(B).isOccupied()){
-			stimulusLabel = "+";
-			areaLabel = B;
+		else if (IArea.B.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.FARTHER, IArea.C); 
 		}
-		else if (areas.get(C).isOccupied()){
-			stimulusLabel = "+";
-			areaLabel = C;
+		else if (IArea.A.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.MOVE, IArea.C); 
 		}
-		return stimulusLabel + areaLabel;
+		else{
+			observation = ObservationImpl.createOrGet(Aspect.UNCHANGED, IArea.B); 
+		}
+		return observation;
+	}
+
+	public Observation simulateShiftForward() {
+		Observation observation = null;
+		if (IArea.A.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.CLOSER, IArea.A); 
+		}
+		else if (IArea.B.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.CLOSER, IArea.B); 
+		}
+		else if (IArea.C.isOccupied()){
+			observation = ObservationImpl.createOrGet(Aspect.UNCHANGED, IArea.C); 
+		}
+		return observation;
 	}
 
 	public void shiftLef() {
-		areas.get(A).setOccupied(areas.get(B).isOccupied());
-		areas.get(B).setOccupied(areas.get(C).isOccupied());
-		areas.get(C).setOccupied(false);
+		IArea.A.setOccupied(IArea.B.isOccupied());
+		IArea.B.setOccupied(IArea.C.isOccupied());
+		IArea.C.setOccupied(false);
 	}
 
 	public void shiftRight() {
-		areas.get(C).setOccupied(areas.get(B).isOccupied());
-		areas.get(B).setOccupied(areas.get(A).isOccupied());
-		areas.get(A).setOccupied(false);
+		IArea.C.setOccupied(IArea.B.isOccupied());
+		IArea.B.setOccupied(IArea.A.isOccupied());
+		IArea.A.setOccupied(false);
 	}
 
-	public IArea getArea(String areaLabel) {
-		return areas.get(areaLabel);
-	}
-	
 	public void trace(ITracer tracer)
 	{
 		if (tracer != null)
@@ -129,7 +117,53 @@ public class AreaManager implements IAreaManager {
 			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
 			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
 			
-			if (areas.get(A).isOccupied()){
+			if (IArea.A.getEvent().equals("*")){
+				tracer.addSubelement(localSpace, "position_5", "A0E000");
+				tracer.addSubelement(localSpace, "position_4", "A0E000");
+			}
+			else if (IArea.A.getEvent().equals("o")){
+				tracer.addSubelement(localSpace, "position_5", "808080");
+				tracer.addSubelement(localSpace, "position_4", "808080");
+			}
+			else {
+				tracer.addSubelement(localSpace, "position_5", "FFFFFF");
+				tracer.addSubelement(localSpace, "position_4", "FFFFFF");
+			}
+			if (IArea.B.getEvent().equals("*")){
+				tracer.addSubelement(localSpace, "position_3", "A0E000");
+			}
+			else if (IArea.B.getEvent().equals("o")){
+				tracer.addSubelement(localSpace, "position_3", "808080");
+			}
+			else {
+				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
+			}
+			if (IArea.C.getEvent().equals("*")){
+				tracer.addSubelement(localSpace, "position_2", "A0E000");
+				tracer.addSubelement(localSpace, "position_1", "A0E000");
+			}
+			else if (IArea.C.getEvent().equals("o")){
+				tracer.addSubelement(localSpace, "position_2", "808080");
+				tracer.addSubelement(localSpace, "position_1", "808080");
+			}
+			else {
+				tracer.addSubelement(localSpace, "position_2", "FFFFFF");
+				tracer.addSubelement(localSpace, "position_1", "FFFFFF");
+			}
+			tracer.addSubelement(localSpace, "position_0", "FFFFFF");
+		}
+	}
+
+	public void traceObject(ITracer tracer)
+	{
+		if (tracer != null)
+		{
+			Object localSpace = tracer.addEventElement("local_space");
+			tracer.addSubelement(localSpace, "position_8", "FFFFFF");
+			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
+			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
+			
+			if (IArea.A.isOccupied()){
 				tracer.addSubelement(localSpace, "position_5", "9680FF");
 				tracer.addSubelement(localSpace, "position_4", "9680FF");
 			}
@@ -137,13 +171,13 @@ public class AreaManager implements IAreaManager {
 				tracer.addSubelement(localSpace, "position_5", "FFFFFF");
 				tracer.addSubelement(localSpace, "position_4", "FFFFFF");
 			}
-			if (areas.get(B).isOccupied()){
+			if (IArea.B.isOccupied()){
 				tracer.addSubelement(localSpace, "position_3", "9680FF");
 			}
 			else {
 				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
 			}
-			if (areas.get(C).isOccupied()){
+			if (IArea.C.isOccupied()){
 				tracer.addSubelement(localSpace, "position_2", "9680FF");
 				tracer.addSubelement(localSpace, "position_1", "9680FF");
 			}
