@@ -1,16 +1,16 @@
 package imos2;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import javax.vecmath.Point3f;
-import ernest.ActionMemory;
+import ernest.ActionImpl;
 import ernest.Action;
-import ernest.IPrimitive;
+import ernest.Primitive;
 import ernest.ITracer;
-import ernest.ActionMemoryImpl;
 import ernest.Observation;
+import ernest.PrimitiveImpl;
 import spas.ISpas;
 
 /**
@@ -21,20 +21,17 @@ public class Decider implements IDecider
 {
 	private IImos imos;
 	private ISpas spas;
-	private Map<String , IPrimitive> interactions;
 	private ITracer tracer;
-	private ActionMemory actionManager = new ActionMemoryImpl();
 
 	/**
 	 * @param imos The sequential system
 	 * @param spas The spatial system
 	 * @param interactions2 The list of primitive interactions
 	 */
-	public Decider(IImos imos, ISpas spas, Map<String, IPrimitive> interactions)
+	public Decider(IImos imos, ISpas spas)
 	{
 		this.imos = imos;
 		this.spas = spas;
-		this.interactions = interactions;
 	}
 
 	public void setTracer(ITracer tracer)
@@ -48,15 +45,13 @@ public class Decider implements IDecider
 		
 		System.out.println("New decision ================ ");
 
-		List<Action> proposedActions = proposeAction(enaction);
-		Action action = selectAction(proposedActions);
+		weightActions(enaction);
+		Action action = selectAction();
 		Observation  observation = this.spas.predict(action);
-		IPrimitive nextPrimitive = this.interactions.get(action.getLabel() + observation.getLabel().substring(0, 1));
+		Primitive nextPrimitive = PrimitiveImpl.get(action, observation.getAspect());
 		IAct nextTopIntention = this.imos.addAct(nextPrimitive, observation.getArea());
 				
 		System.out.println("Act " + nextTopIntention.getLabel());
-		
-		//IAct nextTopIntention = this.imos.addAct(nextPrimitive, this.spas.categorizePosition(new Point3f()));
 		
 		newEnaction.setTopInteraction(nextTopIntention);
 		newEnaction.setTopRemainingInteraction(nextTopIntention);
@@ -71,13 +66,13 @@ public class Decider implements IDecider
 	 * @param activationContext The list of interactions that form the current context.
 	 * @return The list of propositions.
 	 */
-	protected List<Action> proposeAction(IEnaction enaction)
+	private void weightActions(IEnaction enaction)
 	{
 		// The list of propositions proposed by the sequential system
 		ArrayList<IProposition> propositions = this.imos.propose(enaction);	
 
 		// Add the propositions to enact primitive interactions in the area of point (0,0,0).
-		for (IPrimitive i : this.interactions.values())
+		for (Primitive i : PrimitiveImpl.getINTERACTIONS())
 		{
 			IAct a = this.imos.addAct(i, this.spas.categorizePosition(new Point3f()));
 			IProposition p = new Proposition(a, 0);
@@ -86,13 +81,13 @@ public class Decider implements IDecider
 		}
 				
 		// Compute the weight of each modality.
-		for (Action m : this.actionManager.getActions().values()){
+		for (Action m : ActionImpl.getACTIONS()){
 			m.setPropositionWeight(0);
 		}
 		for (IProposition p: propositions){
-			// TODO also propose modalities made of composite interactions
+			// TODO also propose actions made of composite interactions
 			if (p.getAct().getPrimitive()){
-				this.actionManager.categorize(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());	
+				ActionImpl.categorize(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());	
 			}
 		}
 		
@@ -101,15 +96,11 @@ public class Decider implements IDecider
 		if (this.tracer != null){
 			decisionElmt = this.tracer.addEventElement("modalities", true);
 		}
-		List<Action> actions = new ArrayList<Action>();
-		for (Action m : this.actionManager.getActions().values()){
-			System.out.println("Propose modality " + m.getLabel() + " with weight " + m.getPropositionWeight());
-			actions.add(m);
+		for (Action a : ActionImpl.getACTIONS()){
+			System.out.println("Propose modality " + a.getLabel() + " with weight " + a.getPropositionWeight());
 			if (this.tracer != null)
-				this.tracer.addSubelement(decisionElmt, "Modality", m.getLabel() + " proposition weight " + m.getPropositionWeight());
+				this.tracer.addSubelement(decisionElmt, "Modality", a.getLabel() + " proposition weight " + a.getPropositionWeight());
 		}
-		
-		return actions;		
 	}
 	
 	/**
@@ -117,9 +108,13 @@ public class Decider implements IDecider
 	 * @param propositions The list of propositions.
 	 * @return The selected interaction.
 	 */
-	protected Action selectAction(List<Action> actions)
+	protected Action selectAction()
 	{
 		// Sort the propositions by weight.
+		List<Action> actions = new ArrayList<Action>();
+		// Oddly, i could not directly cast ACTIONS.values() to List<Action>
+		for (Action a : ActionImpl.getACTIONS())
+			actions.add(a);
 		Collections.sort(actions);
 
 		// Pick the most weighted modality

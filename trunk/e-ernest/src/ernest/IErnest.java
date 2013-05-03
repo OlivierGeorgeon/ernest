@@ -4,6 +4,7 @@ package ernest;
 import imos2.IAct;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public interface IErnest
 	 * @param satisfaction The satisfaction.
 	 * @return The created or already existing act.
 	 */
-	public IPrimitive addInteraction(String label, int satisfaction);
+	public Primitive addInteraction(String label, int satisfaction);
 
 	/**
 	 * @return The list of places in Ernest's local space memory.
@@ -84,6 +85,6 @@ public interface IErnest
 	 */
 	public ISpatialMemory getSpatialSimulation();
 	
-	public Map<String, IPrimitive> getPrimitives();
+	public Collection<Primitive> getPrimitives();
 	
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import spas.Area;
 import ernest.IEffect;
-import ernest.IPrimitive;
+import ernest.Primitive;
 import ernest.ITracer;
 
 
@@ -141,7 +141,7 @@ public interface IEnaction
 	//public void addOngoingInteraction(IInteraction intraction);
 	//public ArrayList<IInteraction> getOngoingInteractions();
 	
-	public IPrimitive getEnactedPrimitive(); 
-	public void setEnactedPrimitive(IPrimitive enactedPrimitive); 
+	public Primitive getEnactedPrimitive(); 
+	public void setEnactedPrimitive(Primitive enactedPrimitive); 
 
 }

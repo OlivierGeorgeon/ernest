@@ -6,13 +6,27 @@ package ernest;
  */
 public interface Action extends Comparable
 {
-	public static final Action STEP = new ActionImpl(">");
-	public static final Action TURN_LEFT = new ActionImpl("^");
-	public static final Action TURN_RIGHT = new ActionImpl("v");
-
+	/**
+	 * @return This action's label
+	 */
 	public String getLabel();
+	
+	/**
+	 * Provide the weight of this action for the decider to choose the most weighted action
+	 * @return The weight of this action. 
+	 */
 	public int getPropositionWeight();
+	
+	/**
+	 * Let the decider set the weight of this action on each decision cycle
+	 * @param propositionWeight The weight of this action
+	 */
 	public void setPropositionWeight(int propositionWeight);
+	
+	/**
+	 * Add additionnal weight to this action during the decision process.
+	 * @param weight The additionnal weight to add to this action
+	 */
 	public void addPropositionWeight(int weight);
 
 }

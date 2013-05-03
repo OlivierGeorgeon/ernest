@@ -1,6 +1,7 @@
 package ernest;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,10 +46,10 @@ public class Ernest implements IErnest
 	
 	/** The list of primitive interactions available to Ernest */
 	//private final Map<String , IPrimitive> interactions = new TreeMap<String , IPrimitive>() ;
-	private final Map<String , IPrimitive> interactions = new HashMap<String , IPrimitive>() ;
+//	private final Map<String , Primitive> interactions = new HashMap<String , Primitive>() ;
 	
 	/** Ernest's decisional Mechanism. */
-	private IDecider m_decider = new Decider(m_imos, m_spas, this.interactions); // Regular decider for Ernest 7.
+	private IDecider m_decider = new Decider(m_imos, m_spas); // Regular decider for Ernest 7.
 	
 	/**
 	 * Set Ernest's fundamental learning parameters.
@@ -76,7 +77,7 @@ public class Ernest implements IErnest
 	public String step(IEffect effect) 
 	{
 		m_enaction.setEffect(effect);
-		IPrimitive enactedPrimitive = this.interactions.get(effect.getEnactedInteractionLabel());
+		Primitive enactedPrimitive = PrimitiveImpl.get(effect.getEnactedInteractionLabel());
 		m_enaction.setEnactedPrimitive(enactedPrimitive);
 		
 		// Start a new interaction cycle.
@@ -113,19 +114,9 @@ public class Ernest implements IErnest
 		return m_spas.getValue(i,j);
 	}
 	
-	public IPrimitive addInteraction(String label, int satisfaction)
+	public Primitive addInteraction(String label, int value)
 	{
-		return addPrimitiveInteraction(label, satisfaction);
-	}
-
-	private IPrimitive addPrimitiveInteraction(String label, int satisfaction)
-	{
-		if (!this.interactions.containsKey(label)){
-			IPrimitive primitive = new Primitive(label, satisfaction * 10);
-			this.interactions.put(label, primitive);			
-			System.out.println("Define primitive interaction " + primitive.toString());
-		}
-		return this.interactions.get(label);		
+		return PrimitiveImpl.createOrGet(label, value);
 	}
 
 	public ArrayList<IPlace> getPlaceList()
@@ -151,9 +142,9 @@ public class Ernest implements IErnest
 		return m_spas.getSpatialMemory();
 	}
 
-	public Map<String , IPrimitive> getPrimitives() 
+	public Collection<Primitive> getPrimitives() 
 	{
-		return this.interactions;
+		return PrimitiveImpl.getINTERACTIONS();
 	}
 	
 	/**
