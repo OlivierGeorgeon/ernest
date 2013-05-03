@@ -12,6 +12,7 @@ import ernest.ITracer;
 import ernest.Observation;
 import ernest.PrimitiveImpl;
 import spas.ISpas;
+import spas.SimuImpl;
 
 /**
  * This is the regular decider for Ernest 7 that does not use spatial memory.
@@ -26,7 +27,6 @@ public class Decider implements IDecider
 	/**
 	 * @param imos The sequential system
 	 * @param spas The spatial system
-	 * @param interactions2 The list of primitive interactions
 	 */
 	public Decider(IImos imos, ISpas spas)
 	{
@@ -48,7 +48,7 @@ public class Decider implements IDecider
 		weightActions(enaction);
 		Action action = selectAction();
 		Observation  observation = this.spas.predict(action);
-		Primitive nextPrimitive = PrimitiveImpl.get(action, observation.getAspect());
+		Primitive nextPrimitive = PrimitiveImpl.getInteraction(action, observation.getAspect());
 		IAct nextTopIntention = this.imos.addAct(nextPrimitive, observation.getArea());
 				
 		System.out.println("Act " + nextTopIntention.getLabel());
@@ -87,7 +87,8 @@ public class Decider implements IDecider
 		for (IProposition p: propositions){
 			// TODO also propose actions made of composite interactions
 			if (p.getAct().getPrimitive()){
-				ActionImpl.categorize(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());	
+				//this.spas.getAction(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());	
+				SimuImpl.getAction(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());	
 			}
 		}
 		

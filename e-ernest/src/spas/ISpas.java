@@ -9,6 +9,7 @@ import javax.vecmath.Vector3f;
 import ernest.Action;
 import ernest.ITracer;
 import ernest.Observation;
+import ernest.Primitive;
 
 /**
  * The spatial system.
@@ -99,5 +100,6 @@ public interface ISpas
 	//public IActProposition runSimulation(IAct act);
 	
 	public Observation predict(Action action);
+	//public Action getAction(Primitive interaction);
 	
 }

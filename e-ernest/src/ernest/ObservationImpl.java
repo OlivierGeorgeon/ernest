@@ -13,17 +13,11 @@ public class ObservationImpl implements Observation {
 	
 	private static Map<String , Observation> OBSERVATIONS = new HashMap<String , Observation>() ;
 
-	static{
-		for(Aspect a : AspectImpl.getAspects())
-			for(Area area : AreaImpl.getAREAS())
-				OBSERVATIONS.put(createKey(a,area), new ObservationImpl(a,area));
-	}
-	
-	private ObservationImpl(Aspect aspect, Area area){
-		this.aspect = aspect;
-		this.area = area;
-	}
-
+	/**
+	 * @param aspect The observation's aspect
+	 * @param area The observation's area
+	 * @return The new or old observation
+	 */
 	public static Observation createOrGet(Aspect aspect, Area area){
 		String key = createKey(aspect, area);
 		if (!OBSERVATIONS.containsKey(key))
@@ -36,7 +30,10 @@ public class ObservationImpl implements Observation {
 		return key;
 	}
 	
-	
+	private ObservationImpl(Aspect aspect, Area area){
+		this.aspect = aspect;
+		this.area = area;
+	}	
 	
 	public String getLabel() {
 		return this.aspect.getLabel() + this.area.getLabel();

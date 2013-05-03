@@ -4,34 +4,48 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.vecmath.Point3f;
+
+import ernest.Aspect;
+import ernest.AspectImpl;
+
+import utils.ErnestUtils;
+
 /**
  * An area of the agent's surrounding space.
  * @author Olivier
  */
 public class AreaImpl implements Area {
 
-	public static final Area A = new AreaImpl("A");
-	public static final Area B = new AreaImpl("B");
-	public static final Area C = new AreaImpl("C");
-	
 	private String label;
 	private boolean occupied;
 	private boolean previousOccupied;
 	
 	private static Map<String , Area> AREAS = new HashMap<String , Area>() ;
 	
-	static{
-		AREAS.put(A.getLabel(), A);
-		AREAS.put(B.getLabel(), B);
-		AREAS.put(C.getLabel(), C);
+	public static Area createOrGet(String label){
+		if (!AREAS.containsKey(label))
+			AREAS.put(label, new AreaImpl(label));			
+		return AREAS.get(label);
 	}
 	
-	public AreaImpl(String label){
-		this.label = label;
-	}
-	
+	/**
+	 * @return A collection of the existing areas.
+	 */
 	public static Collection<Area> getAREAS() {
 		return AREAS.values();
+	}
+	
+	public static void clearAll(){
+		for (Area a : AREAS.values())
+			a.setOccupied(false);
+			//a.clear();
+	}
+	/**
+	 * @param label The area's label.
+	 */
+	public AreaImpl(String label){
+		this.label = label;
 	}
 	
 	public String getLabel() {

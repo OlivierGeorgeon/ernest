@@ -7,24 +7,14 @@ import java.util.Map;
 
 public class AspectImpl implements Aspect {
 	
-	public static final Aspect APPEAR = new AspectImpl("*");
-	public static final Aspect CLOSER = new AspectImpl("+");
-	public static final Aspect DISAPPEAR = new AspectImpl("o");
-	public static final Aspect FARTHER = new AspectImpl("-");
-	public static final Aspect MOVE = new AspectImpl("=");
-	public static final Aspect UNCHANGED = new AspectImpl("_");
-
 	private static Map<String , Aspect> ASPECTS = new HashMap<String , Aspect>() ;
 	
 	private String label;
 
-	static{
-		ASPECTS.put(APPEAR.getLabel(), APPEAR);
-		ASPECTS.put(CLOSER.getLabel(), CLOSER);
-		ASPECTS.put(DISAPPEAR.getLabel(), DISAPPEAR);
-		ASPECTS.put(FARTHER.getLabel(), FARTHER);
-		ASPECTS.put(MOVE.getLabel(), MOVE);
-		ASPECTS.put(UNCHANGED.getLabel(), UNCHANGED);
+	public static Aspect createOrGet(String label){
+		if (!ASPECTS.containsKey(label))
+			ASPECTS.put(label, new AspectImpl(label));			
+		return ASPECTS.get(label);
 	}
 	
 	public static Aspect getAspect(String label){
@@ -35,23 +25,23 @@ public class AspectImpl implements Aspect {
 		ASPECTS.put(aspect.getLabel(), aspect);
 	}
 	
-	public AspectImpl(String label){
+	private AspectImpl(String label){
 		this.label = label;
 	}
 
-	public String getLabel() {
+	public String getLabel(){
 		return this.label;
 	}
 	
-	public static Aspect categorize(Primitive interaction) {
-		// The action of a primitive interaction is given by the first character of its label
-		// TODO learn actions without using assumption about the interaction's label.
-		String aspectLabel = interaction.getLabel().substring(1, 2);
-
-		if (!ASPECTS.containsKey(aspectLabel))
-			ASPECTS.put(aspectLabel, new AspectImpl(aspectLabel));
-		return ASPECTS.get(aspectLabel); 
-	}
+//	public static Aspect categorize(Primitive interaction) {
+//		// The action of a primitive interaction is given by the first character of its label
+//		// TODO learn actions without using assumption about the interaction's label.
+//		String aspectLabel = interaction.getLabel().substring(1, 2);
+//
+//		if (!ASPECTS.containsKey(aspectLabel))
+//			ASPECTS.put(aspectLabel, new AspectImpl(aspectLabel));
+//		return ASPECTS.get(aspectLabel); 
+//	}
 	/**
 	 * Features are equal if they have the same label. 
 	 */
