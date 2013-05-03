@@ -40,8 +40,11 @@ public class Spas implements ISpas
 	/** The transformation used to keep track of simulation. */
 	Transform3D m_transform = new Transform3D();
 
+	/** The simulator. */
+	Simu simu = new SimuImpl();
+	
 	/** The area manager. */
-	IAreaManager areaManager = new AreaManager();
+	//AreaManager areaManager = new AreaManager();
 	
 //	private static Spas INSTANCE = null; 
 //	
@@ -55,15 +58,18 @@ public class Spas implements ISpas
 //		return INSTANCE;
 //	}
 
-	public void setTracer(ITracer tracer) 
-	{
+	public void setTracer(ITracer tracer) {
 		m_tracer = tracer;
 	}
 	
-	public Area categorizePosition(Point3f point)
-	{
-		return this.areaManager.categorize(point);
+	public Area categorizePosition(Point3f point){
+		return SimuImpl.getArea(point);
 	}
+	
+//	public Action getAction(Primitive interaction){
+//		return this.simu.getAction(interaction);
+//	}
+
 
 	/**
 	 * The main method of the Spatial System that is called on each interaction cycle.
@@ -82,7 +88,7 @@ public class Spas implements ISpas
 			addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
 		}
 		
-		this.areaManager.clearAll();
+		AreaImpl.clearAll();
 		if (enaction.getEffect().getLabel().equals("*") || 
 			enaction.getEffect().getLabel().equals("+") ||
 			enaction.getEffect().getLabel().equals("=") || 
@@ -90,7 +96,7 @@ public class Spas implements ISpas
 			enaction.getArea().setOccupied(true);
 		}				
 		
-		if (m_tracer != null) this.areaManager.trace(m_tracer);// enaction.traceSpace(m_tracer);
+		if (m_tracer != null) this.simu.trace(m_tracer);// enaction.traceSpace(m_tracer);
 	}
 
 	public int getValue(int i, int j)
@@ -141,7 +147,7 @@ public class Spas implements ISpas
 	}
 
 	public Observation predict(Action action){
-		return this.areaManager.predict(action);
+		return this.simu.predict(action);
 	}
 
 }

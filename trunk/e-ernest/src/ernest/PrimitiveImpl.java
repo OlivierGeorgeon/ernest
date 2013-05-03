@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import spas.Area;
+import spas.SimuImpl;
 
 /**
  * A primitive interaction.
@@ -29,7 +30,7 @@ public class PrimitiveImpl implements Primitive {
 		return INTERACTIONS.get(label);
 	}
 	
-	public static Primitive get(Action action, Aspect aspect){
+	public static Primitive getInteraction(Action action, Aspect aspect){
 		for (Primitive i : INTERACTIONS.values()){
 			if (i.getAction().equals(action) && i.getAspect().equals(aspect))
 				return i;
@@ -55,7 +56,8 @@ public class PrimitiveImpl implements Primitive {
 	}
 	
 	public Action getAction() {
-		return ActionImpl.categorize(this);
+		return SimuImpl.getAction(this);
+		//return ActionImpl.categorize(this);
 		//return action;
 	}
 
@@ -64,7 +66,8 @@ public class PrimitiveImpl implements Primitive {
 	}
 
 	public Aspect getAspect() {
-		return AspectImpl.categorize(this);
+		//return AspectImpl.categorize(this);
+		return SimuImpl.getAspect(this);
 		//return aspect;
 	}
 
