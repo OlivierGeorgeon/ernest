@@ -6,8 +6,9 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import ernest.Action;
-import ernest.ActionMemoryImpl;
+import ernest.ActionImpl;
 import ernest.Aspect;
+import ernest.AspectImpl;
 import ernest.ITracer;
 import ernest.Observation;
 import ernest.ObservationImpl;
@@ -37,10 +38,10 @@ public class AreaManager implements IAreaManager {
 	}
 	
 	public Observation predict(Action action){
-		if (action.equals(Action.STEP)){
+		if (action.equals(ActionImpl.STEP)){
 			return simulateShiftForward();
 		}
-		else if (action.equals(Action.TURN_LEFT)){
+		else if (action.equals(ActionImpl.TURN_LEFT)){
 			return simulateShiftRight();
 		}
 		else{
@@ -50,62 +51,62 @@ public class AreaManager implements IAreaManager {
 
 	public Observation simulateShiftLef() {
 		Observation observation = null;
-		if (Area.A.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.DISAPPEAR, Area.A); 
+		if (AreaImpl.A.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.DISAPPEAR, AreaImpl.A); 
 		}
-		else if (Area.B.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.FARTHER, Area.A); 
+		else if (AreaImpl.B.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.FARTHER, AreaImpl.A); 
 		}
-		else if (Area.C.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.MOVE, Area.A); 
+		else if (AreaImpl.C.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.MOVE, AreaImpl.A); 
 		}
 		else{
-			observation = ObservationImpl.createOrGet(Aspect.UNCHANGED, Area.B); 
+			observation = ObservationImpl.createOrGet(AspectImpl.UNCHANGED, AreaImpl.B); 
 		}
 		return observation;
 	}
 
 	public Observation simulateShiftRight() {
 		Observation observation = null;
-		if (Area.C.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.DISAPPEAR, Area.C); 
+		if (AreaImpl.C.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.DISAPPEAR, AreaImpl.C); 
 		}
-		else if (Area.B.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.FARTHER, Area.C); 
+		else if (AreaImpl.B.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.FARTHER, AreaImpl.C); 
 		}
-		else if (Area.A.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.MOVE, Area.C); 
+		else if (AreaImpl.A.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.MOVE, AreaImpl.C); 
 		}
 		else{
-			observation = ObservationImpl.createOrGet(Aspect.UNCHANGED, Area.B); 
+			observation = ObservationImpl.createOrGet(AspectImpl.UNCHANGED, AreaImpl.B); 
 		}
 		return observation;
 	}
 
 	public Observation simulateShiftForward() {
 		Observation observation = null;
-		if (Area.A.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.CLOSER, Area.A); 
+		if (AreaImpl.A.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.CLOSER, AreaImpl.A); 
 		}
-		else if (Area.B.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.CLOSER, Area.B); 
+		else if (AreaImpl.B.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.CLOSER, AreaImpl.B); 
 		}
-		else if (Area.C.isOccupied()){
-			observation = ObservationImpl.createOrGet(Aspect.UNCHANGED, Area.C); 
+		else if (AreaImpl.C.isOccupied()){
+			observation = ObservationImpl.createOrGet(AspectImpl.UNCHANGED, AreaImpl.C); 
 		}
 		return observation;
 	}
 
 	public void shiftLef() {
-		Area.A.setOccupied(Area.B.isOccupied());
-		Area.B.setOccupied(Area.C.isOccupied());
-		Area.C.setOccupied(false);
+		AreaImpl.A.setOccupied(AreaImpl.B.isOccupied());
+		AreaImpl.B.setOccupied(AreaImpl.C.isOccupied());
+		AreaImpl.C.setOccupied(false);
 	}
 
 	public void shiftRight() {
-		Area.C.setOccupied(Area.B.isOccupied());
-		Area.B.setOccupied(Area.A.isOccupied());
-		Area.A.setOccupied(false);
+		AreaImpl.C.setOccupied(AreaImpl.B.isOccupied());
+		AreaImpl.B.setOccupied(AreaImpl.A.isOccupied());
+		AreaImpl.A.setOccupied(false);
 	}
 
 	public void trace(ITracer tracer)
@@ -117,11 +118,11 @@ public class AreaManager implements IAreaManager {
 			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
 			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
 			
-			if (Area.A.getEvent().equals("*")){
+			if (AreaImpl.A.getEvent().equals("*")){
 				tracer.addSubelement(localSpace, "position_5", "A0E000");
 				tracer.addSubelement(localSpace, "position_4", "A0E000");
 			}
-			else if (Area.A.getEvent().equals("o")){
+			else if (AreaImpl.A.getEvent().equals("o")){
 				tracer.addSubelement(localSpace, "position_5", "808080");
 				tracer.addSubelement(localSpace, "position_4", "808080");
 			}
@@ -129,20 +130,20 @@ public class AreaManager implements IAreaManager {
 				tracer.addSubelement(localSpace, "position_5", "FFFFFF");
 				tracer.addSubelement(localSpace, "position_4", "FFFFFF");
 			}
-			if (Area.B.getEvent().equals("*")){
+			if (AreaImpl.B.getEvent().equals("*")){
 				tracer.addSubelement(localSpace, "position_3", "A0E000");
 			}
-			else if (Area.B.getEvent().equals("o")){
+			else if (AreaImpl.B.getEvent().equals("o")){
 				tracer.addSubelement(localSpace, "position_3", "808080");
 			}
 			else {
 				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
 			}
-			if (Area.C.getEvent().equals("*")){
+			if (AreaImpl.C.getEvent().equals("*")){
 				tracer.addSubelement(localSpace, "position_2", "A0E000");
 				tracer.addSubelement(localSpace, "position_1", "A0E000");
 			}
-			else if (Area.C.getEvent().equals("o")){
+			else if (AreaImpl.C.getEvent().equals("o")){
 				tracer.addSubelement(localSpace, "position_2", "808080");
 				tracer.addSubelement(localSpace, "position_1", "808080");
 			}
@@ -163,7 +164,7 @@ public class AreaManager implements IAreaManager {
 			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
 			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
 			
-			if (Area.A.isOccupied()){
+			if (AreaImpl.A.isOccupied()){
 				tracer.addSubelement(localSpace, "position_5", "9680FF");
 				tracer.addSubelement(localSpace, "position_4", "9680FF");
 			}
@@ -171,13 +172,13 @@ public class AreaManager implements IAreaManager {
 				tracer.addSubelement(localSpace, "position_5", "FFFFFF");
 				tracer.addSubelement(localSpace, "position_4", "FFFFFF");
 			}
-			if (Area.B.isOccupied()){
+			if (AreaImpl.B.isOccupied()){
 				tracer.addSubelement(localSpace, "position_3", "9680FF");
 			}
 			else {
 				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
 			}
-			if (Area.C.isOccupied()){
+			if (AreaImpl.C.isOccupied()){
 				tracer.addSubelement(localSpace, "position_2", "9680FF");
 				tracer.addSubelement(localSpace, "position_1", "9680FF");
 			}

@@ -13,7 +13,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import ernest.Action;
-import ernest.IPrimitive;
+import ernest.Primitive;
 import ernest.ITracer;
 import ernest.Observation;
 

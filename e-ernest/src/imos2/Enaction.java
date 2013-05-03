@@ -7,7 +7,7 @@ import spas.Area;
 import utils.ErnestUtils;
 import ernest.Effect;
 import ernest.IEffect;
-import ernest.IPrimitive;
+import ernest.Primitive;
 import ernest.ITracer;
 
 /**
@@ -18,7 +18,7 @@ import ernest.ITracer;
 public class Enaction implements IEnaction 
 {
 	
-	private IPrimitive enactedPrimitive = null;
+	private Primitive enactedPrimitive = null;
 	
 	/** The intended primitive interaction */
 	private IAct m_intendedPrimitiveInteraction = null;
@@ -72,12 +72,12 @@ public class Enaction implements IEnaction
 		return m_effect;
 	}
 
-	public IPrimitive getEnactedPrimitive() 
+	public Primitive getEnactedPrimitive() 
 	{
 		return this.enactedPrimitive;
 	}
 
-	public void setEnactedPrimitive(IPrimitive enactedPrimitive) 
+	public void setEnactedPrimitive(Primitive enactedPrimitive) 
 	{
 		this.enactedPrimitive = enactedPrimitive;
 	}

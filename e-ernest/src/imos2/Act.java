@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import spas.Area;
 
-import ernest.IPrimitive;
+import ernest.Primitive;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -24,7 +24,7 @@ public class Act implements IAct
 	private int m_length = 1;
 	private IAct m_prescriber = null;
 	private int m_step = 0;
-	private IPrimitive interaction;
+	private Primitive interaction;
 	private Area area;
 	
 	/** The list of alternative interactions */
@@ -35,7 +35,7 @@ public class Act implements IAct
 	 * @param enactionValue The value of enacting this interaction.
 	 * @return The created primitive interaction.
 	 */
-	public static IAct createPrimitiveAct(IPrimitive interaction, Area area)
+	public static IAct createPrimitiveAct(Primitive interaction, Area area)
 	{
 		return new Act(interaction.getLabel() + area.getLabel(), true, null, null, interaction.getValue(), interaction, area);
 	}
@@ -52,7 +52,7 @@ public class Act implements IAct
 		return new Act(label, false, preInteraction, postInteraction, enactionValue, null, null);
 	}
 	
-	protected Act(String label, boolean primitive, IAct preInteraction, IAct postInteraction, int enactionValue, IPrimitive interaction, Area area)
+	protected Act(String label, boolean primitive, IAct preInteraction, IAct postInteraction, int enactionValue, Primitive interaction, Area area)
 	{
 		this.label = label;
 		m_primitive = primitive;
@@ -67,7 +67,7 @@ public class Act implements IAct
 		this.area = area;
 	}
 	
-	public IPrimitive getInteraction() {
+	public Primitive getInteraction() {
 		return interaction;
 	}
 

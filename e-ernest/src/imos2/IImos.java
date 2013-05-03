@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import spas.Area;
 
-import ernest.IPrimitive;
+import ernest.Primitive;
 import ernest.ITracer;
 
 /**
@@ -47,7 +47,7 @@ public interface IImos
 	 * @param satisfaction The interaction's satisfaction.
 	 * @return The act that was created or that already existed.
 	 */
-	public IAct addAct(IPrimitive interaction, Area are); 
+	public IAct addAct(Primitive interaction, Area are); 
 
 	/**
 	 * @param tracer The tracer used to generate the activity traces

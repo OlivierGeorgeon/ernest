@@ -7,16 +7,24 @@ import java.util.Map;
 
 public class AspectImpl implements Aspect {
 	
-	String label;
+	public static final Aspect APPEAR = new AspectImpl("*");
+	public static final Aspect CLOSER = new AspectImpl("+");
+	public static final Aspect DISAPPEAR = new AspectImpl("o");
+	public static final Aspect FARTHER = new AspectImpl("-");
+	public static final Aspect MOVE = new AspectImpl("=");
+	public static final Aspect UNCHANGED = new AspectImpl("_");
+
 	private static Map<String , Aspect> ASPECTS = new HashMap<String , Aspect>() ;
 	
+	private String label;
+
 	static{
-		ASPECTS.put(Aspect.APPEAR.getLabel(), Aspect.APPEAR);
-		ASPECTS.put(Aspect.CLOSER.getLabel(), Aspect.CLOSER);
-		ASPECTS.put(Aspect.DISAPPEAR.getLabel(), Aspect.DISAPPEAR);
-		ASPECTS.put(Aspect.FARTHER.getLabel(), Aspect.FARTHER);
-		ASPECTS.put(Aspect.MOVE.getLabel(), Aspect.MOVE);
-		ASPECTS.put(Aspect.UNCHANGED.getLabel(), Aspect.UNCHANGED);
+		ASPECTS.put(APPEAR.getLabel(), APPEAR);
+		ASPECTS.put(CLOSER.getLabel(), CLOSER);
+		ASPECTS.put(DISAPPEAR.getLabel(), DISAPPEAR);
+		ASPECTS.put(FARTHER.getLabel(), FARTHER);
+		ASPECTS.put(MOVE.getLabel(), MOVE);
+		ASPECTS.put(UNCHANGED.getLabel(), UNCHANGED);
 	}
 	
 	public static Aspect getAspect(String label){
@@ -35,6 +43,15 @@ public class AspectImpl implements Aspect {
 		return this.label;
 	}
 	
+	public static Aspect categorize(Primitive interaction) {
+		// The action of a primitive interaction is given by the first character of its label
+		// TODO learn actions without using assumption about the interaction's label.
+		String aspectLabel = interaction.getLabel().substring(1, 2);
+
+		if (!ASPECTS.containsKey(aspectLabel))
+			ASPECTS.put(aspectLabel, new AspectImpl(aspectLabel));
+		return ASPECTS.get(aspectLabel); 
+	}
 	/**
 	 * Features are equal if they have the same label. 
 	 */

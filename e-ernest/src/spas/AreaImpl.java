@@ -10,6 +10,10 @@ import java.util.Map;
  */
 public class AreaImpl implements Area {
 
+	public static final Area A = new AreaImpl("A");
+	public static final Area B = new AreaImpl("B");
+	public static final Area C = new AreaImpl("C");
+	
 	private String label;
 	private boolean occupied;
 	private boolean previousOccupied;
@@ -22,7 +26,7 @@ public class AreaImpl implements Area {
 		AREAS.put(C.getLabel(), C);
 	}
 	
-	AreaImpl(String label){
+	public AreaImpl(String label){
 		this.label = label;
 	}
 	
