@@ -8,7 +8,7 @@ import javax.vecmath.Point3f;
 import utils.ErnestUtils;
 import ernest.Ernest;
 import ernest.ITracer;
-import imos2.IAct;
+import imos2.Act;
 
 
 /**
@@ -75,7 +75,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			p.incClock();
 	}
 
-	public IPlace addPlace(IAct act, Point3f position)
+	public IPlace addPlace(Act act, Point3f position)
 	{
 		IPlace place = new Place(act, position);	
 		m_places.add(place);

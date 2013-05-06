@@ -21,27 +21,27 @@ public class Enaction implements IEnaction
 	private Primitive enactedPrimitive = null;
 	
 	/** The intended primitive interaction */
-	private IAct m_intendedPrimitiveInteraction = null;
+	private Act m_intendedPrimitiveInteraction = null;
 	/** The enacted primitive interaction */
-	private IAct m_enactedPrimitiveInteraction = null;
+	private Act m_enactedPrimitiveInteraction = null;
 	/** The effect obtained from the enaction of the enacted primitive interaction */
 	private IEffect m_effect = new Effect();
 	/** The composite interaction being enacted */
-	private IAct m_topInteraction = null;
+	private Act m_topInteraction = null;
 	/** The highest level composite interaction enacted thus far */
-	private IAct m_topEnactedInteraction = null;
+	private Act m_topEnactedInteraction = null;
 	/** The highest remaining composite interaction */ 
-	private IAct m_topRemainingInteraction = null;
+	private Act m_topRemainingInteraction = null;
 	/** The current step of this enaction*/
 	private int m_step = 0;
 	/** The previous learning context (the context of the stream enaction) */
-	private ArrayList<IAct> m_previousLearningContext   = new ArrayList<IAct>();
+	private ArrayList<Act> m_previousLearningContext   = new ArrayList<Act>();
 	/** The learning context at the beginning of this enaction*/
-	private ArrayList<IAct> m_initialLearningContext   = new ArrayList<IAct>();
+	private ArrayList<Act> m_initialLearningContext   = new ArrayList<Act>();
 	/** The learning context at the end of this enaction*/
-	private ArrayList<IAct> m_finalLearningContext   = new ArrayList<IAct>();
+	private ArrayList<Act> m_finalLearningContext   = new ArrayList<Act>();
 	/** The activation context at the end of this enaction*/
-	private ArrayList<IAct> m_finalActivationContext = new ArrayList<IAct>();
+	private ArrayList<Act> m_finalActivationContext = new ArrayList<Act>();
 	/** Number of schema learned after this enaction*/
 	private int m_nbSchemaLearned = 0;
 	/** final status of this enaction (true correct, false incorrect) */
@@ -82,42 +82,42 @@ public class Enaction implements IEnaction
 		this.enactedPrimitive = enactedPrimitive;
 	}
 
-	public void setIntendedPrimitiveInteraction(IAct act) 
+	public void setIntendedPrimitiveInteraction(Act act) 
 	{
 		m_intendedPrimitiveInteraction = act;
 	}
 
-	public IAct getIntendedPrimitiveInteraction() 
+	public Act getIntendedPrimitiveInteraction() 
 	{
 		return m_intendedPrimitiveInteraction;
 	}
 
-	public void setTopInteraction(IAct act) 
+	public void setTopInteraction(Act act) 
 	{
 		m_topInteraction = act;
 	}
 
-	public IAct getTopInteraction() 
+	public Act getTopInteraction() 
 	{
 		return m_topInteraction;
 	}
 	
-	public void setTopEnactedInteraction(IAct act) 
+	public void setTopEnactedInteraction(Act act) 
 	{
 		m_topEnactedInteraction = act;
 	}
 
-	public IAct getTopEnactedInteraction() 
+	public Act getTopEnactedInteraction() 
 	{
 		return m_topEnactedInteraction;
 	}
 	
-	public void setTopRemainingInteraction(IAct act) 
+	public void setTopRemainingInteraction(Act act) 
 	{
 		m_topRemainingInteraction = act;
 	}
 
-	public IAct getTopRemainingInteraction() 
+	public Act getTopRemainingInteraction() 
 	{
 		return m_topRemainingInteraction;
 	}
@@ -142,12 +142,12 @@ public class Enaction implements IEnaction
 //		return m_simulationStatus;
 //	}
 
-	public void setEnactedPrimitiveInteraction(IAct act) 
+	public void setEnactedPrimitiveInteraction(Act act) 
 	{
 		m_enactedPrimitiveInteraction = act;
 	}
 
-	public IAct getEnactedPrimitiveInteraction() 
+	public Act getEnactedPrimitiveInteraction() 
 	{
 		return m_enactedPrimitiveInteraction;
 	}
@@ -166,9 +166,9 @@ public class Enaction implements IEnaction
 	 * This list is used to learn new schemas in the next decision cycle.
 	 * @param actList The list of acts to append in the context list.
 	 */
-	private void addContextList(List<IAct> actList) 
+	private void addContextList(List<Act> actList) 
 	{
-		for (IAct act : actList)
+		for (Act act : actList)
 		{
 			if (!m_finalLearningContext.contains(act))
 				m_finalLearningContext.add(act);
@@ -180,7 +180,7 @@ public class Enaction implements IEnaction
 	 * The focus list is used for learning new schemas in the next decision cycle.
 	 * @param act The act that will be added to the context list and to the focus list.
 	 */
-	private void addActivationAct(IAct act) 
+	private void addActivationAct(Act act) 
 	{
 		if (act != null)
 		{
@@ -200,7 +200,7 @@ public class Enaction implements IEnaction
 	 * @param performedAct The act that was performed during the terminating decision cycle.
 	 * @param contextList The additional acts to add to the new context list
 	 */
-	public void setFinalContext(IAct enactedAct, IAct performedAct, ArrayList<IAct> contextList)
+	public void setFinalContext(Act enactedAct, Act performedAct, ArrayList<Act> contextList)
 	{
 		// The current context list becomes the base context list
 		//m_baseContextList = new ArrayList<IAct>(m_contextList);
@@ -220,29 +220,29 @@ public class Enaction implements IEnaction
 		addContextList(contextList);
 	}
 	
-	public ArrayList<IAct> getFinalLearningContext()
+	public ArrayList<Act> getFinalLearningContext()
 	{
 		return m_finalLearningContext;
 	}
-	public ArrayList<IAct> getFinalActivationContext()
+	public ArrayList<Act> getFinalActivationContext()
 	{
 		return m_finalActivationContext;
 	}
-	public void setInitialLearningContext(ArrayList<IAct> learningContext) 
+	public void setInitialLearningContext(ArrayList<Act> learningContext) 
 	{
 		m_initialLearningContext = learningContext;
 	}
 
-	public ArrayList<IAct> getInitialLearningContext() 
+	public ArrayList<Act> getInitialLearningContext() 
 	{
 		return m_initialLearningContext;
 	}
-	public void setPreviousLearningContext(ArrayList<IAct> learningContext) 
+	public void setPreviousLearningContext(ArrayList<Act> learningContext) 
 	{
 		m_previousLearningContext = learningContext;
 	}
 
-	public ArrayList<IAct> getPreviousLearningContext() 
+	public ArrayList<Act> getPreviousLearningContext() 
 	{
 		return m_previousLearningContext;
 	}
@@ -300,13 +300,13 @@ public class Enaction implements IEnaction
 			if (!m_correct) tracer.addSubelement(e, "incorrect");
 			
 			Object activation = tracer.addSubelement(e, "activation_context");
-			for (IAct i : m_finalActivationContext)	
+			for (Act i : m_finalActivationContext)	
 			{
 				System.out.println("Activation context " + i);
 				tracer.addSubelement(activation, "interaction", i.getLabel());
 			}
 			Object learning = tracer.addSubelement(e, "learning_context");
-			for (IAct i : m_finalLearningContext)	
+			for (Act i : m_finalLearningContext)	
 				tracer.addSubelement(learning, "interaction", i.getLabel());
 
 			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");

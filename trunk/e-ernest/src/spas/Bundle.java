@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.IAct;
+import imos2.Act;
 import java.util.ArrayList;
 import ernest.Ernest;
 import ernest.ITracer;
@@ -19,12 +19,12 @@ public class Bundle implements IBundle
 	int m_lastTimeBundled = - PERSISTENCE;
 
 	/** The acts attached to this bundle. */
-	private ArrayList<IAct> m_acts = new ArrayList<IAct>();
+	private ArrayList<Act> m_acts = new ArrayList<Act>();
 	
-	private IAct m_firstAct;
-	private IAct m_secondAct;
+	private Act m_firstAct;
+	private Act m_secondAct;
 	
-	Bundle(IAct firstAct, IAct secondAct)
+	Bundle(Act firstAct, Act secondAct)
 	{
 		m_firstAct = firstAct;
 		m_secondAct = secondAct;
@@ -32,7 +32,7 @@ public class Bundle implements IBundle
 		m_acts.add(secondAct);
 	}
 	
-	public IAct getOtherAct(IAct act)
+	public Act getOtherAct(Act act)
 	{
 		if (act.equals(m_firstAct))
 			return m_secondAct;
@@ -177,7 +177,7 @@ public class Bundle implements IBundle
 	{
 		Object element = tracer.addEventElement(label);
 		
-		for (IAct a : m_acts)
+		for (Act a : m_acts)
 			tracer.addSubelement(element, "act", a.getLabel());		
 		
 		tracer.addSubelement(element, "id", toString());
@@ -190,10 +190,10 @@ public class Bundle implements IBundle
 	 * The act is inconsistent with the bundle if 
 	 * The schema belongs to the bundle with a different status. 
 	 */
-	public boolean isConsistent(IAct act) 
+	public boolean isConsistent(Act act) 
 	{
 		boolean isConsistent = true;
-		for (IAct a : m_acts)
+		for (Act a : m_acts)
 		{
 			//if (a.getSchema().equals(act.getSchema()))
 			if (!a.getLabel().equals(act.getLabel()))
@@ -207,10 +207,10 @@ public class Bundle implements IBundle
 	 * @param act The act.
 	 * @return The expected effect when enacting this act concerning this bundle.
 	 */
-	public String effectlabel(IAct act) 
+	public String effectlabel(Act act) 
 	{
 		String effectLabel = "";
-		for (IAct a : m_acts)
+		for (Act a : m_acts)
 		{
 //			if (a.getSchema().equals(act.getSchema()))
 //				effectLabel = a.getEffectLabel();
@@ -221,10 +221,10 @@ public class Bundle implements IBundle
 		return effectLabel;
 	}
 	
-	public IAct resultingAct(IAct act)
+	public Act resultingAct(Act act)
 	{
-		IAct resultingAct = null;
-		for (IAct a : m_acts)
+		Act resultingAct = null;
+		for (Act a : m_acts)
 		{
 			//if (a.getSchema().equals(act.getSchema()))
 			if (a.equals(act))
@@ -241,10 +241,10 @@ public class Bundle implements IBundle
 	 * This bundle affords this act
 	 * if this act is in this bundle 
 	 */
-	public boolean afford(IAct act) 
+	public boolean afford(Act act) 
 	{
 		boolean afford = false;
-		for (IAct a : m_acts)
+		for (Act a : m_acts)
 		{
 			if (a.equals(act))
 				afford = true;
@@ -259,12 +259,12 @@ public class Bundle implements IBundle
 //		return m_acts;
 //	}
 
-	public IAct getFirstAct() 
+	public Act getFirstAct() 
 	{
 		return m_firstAct;
 	}
 
-	public IAct getSecondAct() 
+	public Act getSecondAct() 
 	{
 		return m_secondAct;
 	}

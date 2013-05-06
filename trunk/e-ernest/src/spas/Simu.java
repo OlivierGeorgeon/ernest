@@ -1,10 +1,9 @@
 package spas;
 
-import javax.vecmath.Point3f;
+import imos2.IEnaction;
 import ernest.Action;
 import ernest.ITracer;
 import ernest.Observation;
-import ernest.Primitive;
 
 /**
  * 
@@ -12,10 +11,21 @@ import ernest.Primitive;
  */
 public interface Simu {
 	
+	/**
+	 * @param act The last enacted act
+	 */
+	public void track(IEnaction enaction);
+	
+	/**
+	 * @param action The action to simulate
+	 * @return the predicted observation
+	 */
 	public Observation predict(Action action);
 	
-	//public Action getAction(Primitive interaction);
-
+	/**
+	 * Trace the current state of the simulator
+	 * @param tracer
+	 */
 	public void trace(ITracer tracer);
 
 

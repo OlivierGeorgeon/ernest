@@ -26,10 +26,6 @@ public class ActionImpl implements Action {
 	}
 	
 	public static Collection<Action> getACTIONS(){
-		// Oddly, i could not directly cast ACTIONS.values() to List<Action>
-//		List<Action> listActions = new ArrayList<Action>();
-//		for (Action a : ACTIONS.values())
-//			listActions.add(a);
 		return ACTIONS.values();
 	}
 	
@@ -82,7 +78,6 @@ public class ActionImpl implements Action {
 			Action other = (Action)o;
 			ret = (other.getLabel().equals(this.label));
 		}
-		
 		return ret;
 	}
 }
