@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.IAct;
+import imos2.Act;
 
 import java.util.ArrayList;
 
@@ -44,21 +44,21 @@ public interface IBundle
 	/**
 	 * @return true if there is no act that have a different observation in this bundle.
 	 */
-	public boolean isConsistent(IAct act);
-	public String effectlabel(IAct act); 
-	public IAct resultingAct(IAct act);
+	public boolean isConsistent(Act act);
+	public String effectlabel(Act act); 
+	public Act resultingAct(Act act);
 
 	/**
 	 * @return true if there is no act that have a different observation in this bundle.
 	 */
-	public boolean afford(IAct act);
+	public boolean afford(Act act);
 
 	
 	//public ArrayList<IAct> getActList();
 
-	public IAct getFirstAct();
-	public IAct getSecondAct();
-	public IAct getOtherAct(IAct act);
+	public Act getFirstAct();
+	public Act getSecondAct();
+	public Act getOtherAct(Act act);
 
 	/**
 	 * ATTRACTIVENESS_OF_FISH (400) if this bundle's gustatory stimulation is STIMULATION_TASTE_FISH.

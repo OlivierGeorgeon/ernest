@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.IAct;
+import imos2.Act;
 import imos2.IEnaction;
 
 import java.util.ArrayList;
@@ -73,8 +73,7 @@ public class Spas implements ISpas
 
 	/**
 	 * The main method of the Spatial System that is called on each interaction cycle.
-	 * Maintain the local space memory.
-	 * Construct compresences.
+	 * Track the spatial consequences of the current enaction.
 	 * @param enaction The current enaction.
 	 */
 	public void track(IEnaction enaction) 
@@ -88,15 +87,8 @@ public class Spas implements ISpas
 			addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
 		}
 		
-		AreaImpl.clearAll();
-		if (enaction.getEffect().getLabel().equals("*") || 
-			enaction.getEffect().getLabel().equals("+") ||
-			enaction.getEffect().getLabel().equals("=") || 
-			enaction.getEffect().getLabel().equals("-")){
-			enaction.getArea().setOccupied(true);
-		}				
-		
-		if (m_tracer != null) this.simu.trace(m_tracer);// enaction.traceSpace(m_tracer);
+		this.simu.track(enaction);
+		if (m_tracer != null) this.simu.trace(m_tracer);
 	}
 
 	public int getValue(int i, int j)
@@ -113,7 +105,7 @@ public class Spas implements ISpas
 		return m_localSpaceMemory.getPlaceList();
 	}
 
-	private IPlace addPlace(Point3f position, int type, int value, IAct act) 
+	private IPlace addPlace(Point3f position, int type, int value, Act act) 
 	{
 		IPlace place = m_localSpaceMemory.addPlace(act, position);
 		place.setValue(value);

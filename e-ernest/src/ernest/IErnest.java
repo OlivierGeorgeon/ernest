@@ -1,7 +1,7 @@
 package ernest;
 
 //import imos.IAct;
-import imos2.IAct;
+import imos2.Act;
 
 import java.util.ArrayList;
 import java.util.Collection;

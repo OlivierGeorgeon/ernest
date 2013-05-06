@@ -1,7 +1,7 @@
 package spas;
 
+import imos2.IEnaction;
 import javax.vecmath.Point3f;
-
 import utils.ErnestUtils;
 import ernest.Action;
 import ernest.ActionImpl;
@@ -62,8 +62,8 @@ public class SimuImpl implements Simu {
 	}
 	
 	public static Aspect getAspect(Primitive interaction) {
-		// The action of a primitive interaction is given by the first character of its label
-		// TODO learn actions without using assumption about the interaction's label.
+		// The aspect of a primitive interaction is given by the first character of its label
+		// TODO learn aspect without using assumption about the interaction's label.
 		String aspectLabel = interaction.getLabel().substring(1, 2);
 		
 		return AspectImpl.createOrGet(aspectLabel);
@@ -73,6 +73,17 @@ public class SimuImpl implements Simu {
 //		return ASPECTS.get(aspectLabel); 
 	}
 
+	public void track(IEnaction enaction){
+		AreaImpl.clearAll();
+		if (enaction.getEffect().getLabel().equals("*") || 
+			enaction.getEffect().getLabel().equals("+") ||
+			enaction.getEffect().getLabel().equals("=") || 
+			enaction.getEffect().getLabel().equals("-")){
+			enaction.getArea().setOccupied(true);
+		}				
+
+	}
+	
 	public Observation predict(Action action){
 		if (action.equals(STEP)){
 			return simulateShiftForward();
@@ -86,7 +97,7 @@ public class SimuImpl implements Simu {
 	}
 
 	private Observation simulateShiftLef() {
-		Observation observation = null;
+		Observation observation = ObservationImpl.createOrGet(UNCHANGED, B); 
 		if (A.isOccupied()){
 			observation = ObservationImpl.createOrGet(DISAPPEAR, A); 
 		}
@@ -96,14 +107,12 @@ public class SimuImpl implements Simu {
 		else if (C.isOccupied()){
 			observation = ObservationImpl.createOrGet(MOVE, A); 
 		}
-		else{
-			observation = ObservationImpl.createOrGet(UNCHANGED, B); 
-		}
+
 		return observation;
 	}
 
 	private Observation simulateShiftRight() {
-		Observation observation = null;
+		Observation observation = ObservationImpl.createOrGet(UNCHANGED, B); 
 		if (C.isOccupied()){
 			observation = ObservationImpl.createOrGet(DISAPPEAR, C); 
 		}
@@ -113,14 +122,12 @@ public class SimuImpl implements Simu {
 		else if (A.isOccupied()){
 			observation = ObservationImpl.createOrGet(MOVE, C); 
 		}
-		else{
-			observation = ObservationImpl.createOrGet(UNCHANGED, B); 
-		}
+
 		return observation;
 	}
 
 	private Observation simulateShiftForward() {
-		Observation observation = null;
+		Observation observation = ObservationImpl.createOrGet(UNCHANGED, B); 
 		if (A.isOccupied()){
 			observation = ObservationImpl.createOrGet(CLOSER, A); 
 		}

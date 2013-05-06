@@ -32,52 +32,52 @@ public interface IEnaction
 	/**
 	 * @param act The last primitive intended interaction
 	 */
-	public void setIntendedPrimitiveInteraction(IAct act);
+	public void setIntendedPrimitiveInteraction(Act act);
 	
 	/**
 	 * @return The last primitive intended interaction
 	 */
-	public IAct getIntendedPrimitiveInteraction();	
+	public Act getIntendedPrimitiveInteraction();	
 
 	/**
 	 * @param act The last primitive enacted interaction
 	 */
-	public void setEnactedPrimitiveInteraction(IAct act);
+	public void setEnactedPrimitiveInteraction(Act act);
 	
 	/**
 	 * @return The last primitive enacted interaction
 	 */
-	public IAct getEnactedPrimitiveInteraction();	
+	public Act getEnactedPrimitiveInteraction();	
 
 	/**
 	 * @param act The composite interaction to be enacted
 	 */
-	public void setTopInteraction(IAct act);
+	public void setTopInteraction(Act act);
 	
 	/**
 	 * @return The composite interaction to be enacted
 	 */
-	public IAct getTopInteraction();	
+	public Act getTopInteraction();	
 
 	/**
 	 * @param act The highest-level composite interaction enacted thus far.
 	 */
-	public void setTopEnactedInteraction(IAct act);
+	public void setTopEnactedInteraction(Act act);
 	
 	/**
 	 * @return The highest-level composite interaction enacted thus far.
 	 */
-	public IAct getTopEnactedInteraction();	
+	public Act getTopEnactedInteraction();	
 
 	/**
 	 * @param act The remaining highest-level composite interaction to enact.
 	 */
-	public void setTopRemainingInteraction(IAct act);
+	public void setTopRemainingInteraction(Act act);
 	
 	/**
 	 * @return The remaining highest-level composite interaction to enact.
 	 */
-	public IAct getTopRemainingInteraction();	
+	public Act getTopRemainingInteraction();	
 
 	/**
 	 * @param step The rank of the primitive act in the current enaction 
@@ -109,13 +109,13 @@ public interface IEnaction
 	 */
 	public boolean isOver();
 	
-	public void setFinalContext(IAct enactedInteraction, IAct performedInteraction, ArrayList<IAct> contextList);
-	public ArrayList<IAct> getFinalLearningContext();
-	public ArrayList<IAct> getFinalActivationContext();
-	public void setInitialLearningContext(ArrayList<IAct> learningContext);
-	public ArrayList<IAct>  getInitialLearningContext();
-	public void setPreviousLearningContext(ArrayList<IAct> learningContext);
-	public ArrayList<IAct>  getPreviousLearningContext();
+	public void setFinalContext(Act enactedInteraction, Act performedInteraction, ArrayList<Act> contextList);
+	public ArrayList<Act> getFinalLearningContext();
+	public ArrayList<Act> getFinalActivationContext();
+	public void setInitialLearningContext(ArrayList<Act> learningContext);
+	public ArrayList<Act>  getInitialLearningContext();
+	public void setPreviousLearningContext(ArrayList<Act> learningContext);
+	public ArrayList<Act>  getPreviousLearningContext();
 	public void setNbActLearned(int nbActLearned);
 	
 

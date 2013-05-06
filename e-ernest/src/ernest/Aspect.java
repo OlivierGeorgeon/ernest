@@ -1,7 +1,7 @@
 package ernest;
 
 /**
- * A feature of a phenomenon observed in an area.
+ * An aspect of a phenomenon observed in an area.
  * @author Olivier
  */
 public interface Aspect {

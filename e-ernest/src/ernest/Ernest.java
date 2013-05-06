@@ -14,11 +14,11 @@ import spas.Spas;
 import imos2.Enaction;
 import imos2.IEnaction;
 import imos2.IImos;
-import imos2.IAct;
+import imos2.Act;
 import imos2.Imos;
 import imos2.Decider;
 import imos2.IDecider;
-import imos2.Act;
+import imos2.ActImpl;
 
 /**
  * The main Ernest class used to create an Ernest agent in the environment.

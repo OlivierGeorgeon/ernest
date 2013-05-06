@@ -49,7 +49,7 @@ public class Decider implements IDecider
 		Action action = selectAction();
 		Observation  observation = this.spas.predict(action);
 		Primitive nextPrimitive = PrimitiveImpl.getInteraction(action, observation.getAspect());
-		IAct nextTopIntention = this.imos.addAct(nextPrimitive, observation.getArea());
+		Act nextTopIntention = this.imos.addAct(nextPrimitive, observation.getArea());
 				
 		System.out.println("Act " + nextTopIntention.getLabel());
 		
@@ -74,7 +74,7 @@ public class Decider implements IDecider
 		// Add the propositions to enact primitive interactions in the area of point (0,0,0).
 		for (Primitive i : PrimitiveImpl.getINTERACTIONS())
 		{
-			IAct a = this.imos.addAct(i, this.spas.categorizePosition(new Point3f()));
+			Act a = this.imos.addAct(i, this.spas.categorizePosition(new Point3f()));
 			IProposition p = new Proposition(a, 0);
 			if (!propositions.contains(p))
 				propositions.add(p);
@@ -134,7 +134,7 @@ public class Decider implements IDecider
 
 	public void carry(IEnaction enaction)
 	{
-		IAct intendedPrimitiveInteraction = enaction.getTopRemainingInteraction().prescribe();
+		Act intendedPrimitiveInteraction = enaction.getTopRemainingInteraction().prescribe();
 		enaction.setIntendedPrimitiveInteraction(intendedPrimitiveInteraction);
 		enaction.setStep(enaction.getStep() + 1);
 		enaction.traceCarry(this.tracer);
