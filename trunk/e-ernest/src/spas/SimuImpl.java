@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.IEnaction;
+import imos2.Act;
 import javax.vecmath.Point3f;
 import utils.ErnestUtils;
 import ernest.Action;
@@ -19,6 +19,7 @@ public class SimuImpl implements Simu {
 	public static Action TURN_LEFT = ActionImpl.createOrGet("^");
 	public static Action TURN_RIGHT = ActionImpl.createOrGet("v");
 
+	/** Predefined aspects */
 	public static Aspect APPEAR = AspectImpl.createOrGet("*");
 	public static Aspect CLOSER = AspectImpl.createOrGet("+");
 	public static Aspect DISAPPEAR = AspectImpl.createOrGet("o");
@@ -67,21 +68,16 @@ public class SimuImpl implements Simu {
 		String aspectLabel = interaction.getLabel().substring(1, 2);
 		
 		return AspectImpl.createOrGet(aspectLabel);
-
-//		if (!ASPECTS.containsKey(aspectLabel))
-//			ASPECTS.put(aspectLabel, new AspectImpl(aspectLabel));
-//		return ASPECTS.get(aspectLabel); 
 	}
 
-	public void track(IEnaction enaction){
+	public void track(Act act){
 		AreaImpl.clearAll();
-		if (enaction.getEffect().getLabel().equals("*") || 
-			enaction.getEffect().getLabel().equals("+") ||
-			enaction.getEffect().getLabel().equals("=") || 
-			enaction.getEffect().getLabel().equals("-")){
-			enaction.getArea().setOccupied(true);
-		}				
-
+		if (act.getAspect().equals(APPEAR) ||
+			act.getAspect().equals(CLOSER) ||
+			act.getAspect().equals(MOVE) ||
+			act.getAspect().equals(FARTHER)){
+			act.getArea().setOccupied(true);
+		}
 	}
 	
 	public Observation predict(Action action){

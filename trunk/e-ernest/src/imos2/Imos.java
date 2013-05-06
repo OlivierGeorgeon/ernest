@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import spas.Area;
+import spas.SimuImpl;
 import ernest.Primitive;
 import ernest.ITracer;
 
@@ -27,7 +28,7 @@ public class Imos implements IImos
 	private int maxSchemaLength = 10;
 
 	/** A list of all the acts ever created. */
-	private ArrayList<Act> acts = new ArrayList<Act>(2000);
+	//private ArrayList<Act> acts = new ArrayList<Act>(2000);
 	
 	/** Counter of learned schemas for tracing */
 	private int m_nbSchemaLearned = 0;
@@ -68,54 +69,18 @@ public class Imos implements IImos
 		return m_internalState;
 	}
 
-//	/**
-//	 * Construct a new interaction or retrieve the interaction if it already exists.
-//	 * @param label The label of the interaction.
-//	 * @param satisfaction The interaction's satisfaction (only needed in case this interaction was not 
-//	 * yet declared in imos).
-//	 * @return The interaction that was created or that already existed.
-//	 */
-//	private IAct addAct(String label, int satisfaction)
-//	{
-//		IAct i = Act.createPrimitiveInteraction(label, satisfaction);
-//		
-//		int j = this.acts.indexOf(i);
-//		if (j == -1)
-//		{
-//			// The interaction does not exist
-//			this.acts.add(i);
-//			System.out.println("Define primitive act " + i.toString());
-//		}
-//		else 
-//			// The interaction already exists: return a pointer to it.
-//			i =  this.acts.get(j);
-//		
-//		return i;		
-//	}
-
 	/**
-	 * Construct a new interaction or retrieve the interaction if it already exists.
-	 * @param label The label of the interaction.
-	 * @param satisfaction The interaction's satisfaction (only needed in case this interaction was not 
-	 * yet declared in imos).
-	 * @return The interaction that was created or that already existed.
+	 * Construct a new act or retrieve the act if it already exists.
+	 * @param interaction The interaction of this act.
+	 * @param area The area of this act.
+	 * @return The act that was created or that already existed.
 	 */
 	public Act addAct(Primitive interaction, Area area)
 	{
-		Act i = ActImpl.createPrimitiveAct(interaction, area);
-		
-		int j = this.acts.indexOf(i);
-		if (j == -1)
-		{
-			// The interaction does not exist
-			this.acts.add(i);
-			System.out.println("Define primitive act " + i.toString());
-		}
-		else 
-			// The interaction already exists: return a pointer to it.
-			i =  this.acts.get(j);
-		
-		return i;		
+		Act act = ActImpl.createOrGetPrimitiveAct(interaction, area);
+		act.setAction(SimuImpl.getAction(interaction));
+		act.setAspect(SimuImpl.getAspect(interaction));
+		return act;	
 	}
 
 	/**
@@ -127,18 +92,18 @@ public class Imos implements IImos
 	 */
     private Act addCompositeInteraction(Act preInteraction, Act postInteraction)
     {
-    	Act i = ActImpl.createCompositeInteraction(preInteraction, postInteraction);
+    	Act i = ActImpl.createOrGetCompositeAct(preInteraction, postInteraction);
     	
-		int j = this.acts.indexOf(i);
-		if (j == -1)
-		{
-			// The schema does not exist: create its succeeding act and add it to Ernest's memory
-			this.acts.add(i);
-			m_nbSchemaLearned++;
-		}
-		else
-			// The schema already exists: return a pointer to it.
-			i =  this.acts.get(j);
+//		int j = this.acts.indexOf(i);
+//		if (j == -1)
+//		{
+//			// The schema does not exist: create its succeeding act and add it to Ernest's memory
+//			this.acts.add(i);
+//			m_nbSchemaLearned++;
+//		}
+//		else
+//			// The schema already exists: return a pointer to it.
+//			i =  this.acts.get(j);
     	
     	// Any alternate interactions of the preInteraction is an alternate interaction of the composite interaction
 		Object alternateElmnt = null;
@@ -238,7 +203,7 @@ public class Imos implements IImos
 				if (m_tracer != null && newAlternate)
 					m_tracer.addSubelement(alternateElmnt, "prominent", intendedTopInteraction + " alternate " + enactedTopInteraction);
 
-				if (enactedTopInteraction.getPrimitive() && enactedTopInteraction.getPrimitive())
+				if (enactedTopInteraction.isPrimitive() && enactedTopInteraction.isPrimitive())
 				{
 					newAlternate = enactedTopInteraction.addAlternateInteraction(intendedTopInteraction);
 					if (m_tracer != null && newAlternate)
@@ -256,7 +221,7 @@ public class Imos implements IImos
 			 {
 				 Act streamInteraction = streamContextList.get(0); // The stream act is the first learned 
 				 System.out.println("Streaming " + streamInteraction);
-				 if (streamInteraction.getEnactionWeight() > ACTIVATION_THRESH)
+				 if (streamInteraction.getWeight() > ACTIVATION_THRESH)
 				 {
 					System.out.println("Learn from stream interaction");
 					record(previousLearningContext, streamInteraction);
@@ -297,15 +262,15 @@ public class Imos implements IImos
 			{
 				// Build a new interaction with the context pre-interaction and the enacted post-interaction 
 				Act newInteraction = addCompositeInteraction(preInteraction, enactedInteraction);
-				newInteraction.setEnactionWeight(newInteraction.getEnactionWeight() + 1);
+				newInteraction.setWeight(newInteraction.getWeight() + 1);
 				System.out.println("learned " + newInteraction);
 				if (m_tracer != null)	
 					m_tracer.addSubelement(learnElmnt, "interaction", newInteraction.toString());
 			
 				// The new interaction belongs to the context 
 				// if its pre-interaction and post-interaction have passed the regularity threshold
-				if ((preInteraction.getEnactionWeight()     > regularityThreshold) &&
-  				    (enactedInteraction.getEnactionWeight() > regularityThreshold))
+				if ((preInteraction.getWeight()     > regularityThreshold) &&
+  				    (enactedInteraction.getWeight() > regularityThreshold))
 				{
 					newContextList.add(newInteraction);
 					// System.out.println("Reliable schema " + newSchema);
@@ -315,10 +280,10 @@ public class Imos implements IImos
 		return newContextList; 
 	}
 
-	public ArrayList<Act> getActs()
-	{
-		return this.acts;
-	}
+//	public ArrayList<Act> getActs()
+//	{
+//		return this.acts;
+//	}
 
 	public int getCounter() 
 	{
@@ -369,9 +334,10 @@ public class Imos implements IImos
 		if (m_tracer != null)
 			activationElmt = m_tracer.addEventElement("activation", true);
 		
-		for (Act activatedAct : this.acts)
+		//for (Act activatedAct : this.acts)
+		for (Act activatedAct : ActImpl.getACTS())
 		{
-			if (!activatedAct.getPrimitive())
+			if (!activatedAct.isPrimitive())
 			{
 				// If this act's pre-act belongs to the context then this act is activated 
 				for (Act contextAct : enaction.getFinalActivationContext())
@@ -409,9 +375,9 @@ public class Imos implements IImos
 	{
 		IProposition proposition = null;
 		Act proposedAct = activatedAct.getPostAct();
-		int w = activatedAct.getEnactionWeight() * proposedAct.getEnactionValue();
+		int w = activatedAct.getWeight() * proposedAct.getEnactionValue();
 		
-		if ((proposedAct.getEnactionWeight() > this.regularityThreshold ) &&						 
+		if ((proposedAct.getWeight() > this.regularityThreshold ) &&						 
 				(proposedAct.getLength() <= this.maxSchemaLength ))
 		{
 			proposition = new Proposition(proposedAct, w);
@@ -420,7 +386,7 @@ public class Imos implements IImos
 		// the activation is propagated to the intended interaction's pre interaction
 		else
 		{
-			if (!proposedAct.getPrimitive())
+			if (!proposedAct.isPrimitive())
 			{
 				// only if the intention's intention is positive (this is some form of positive anticipation)
 				if (proposedAct.getPostAct().getEnactionValue() > 0)

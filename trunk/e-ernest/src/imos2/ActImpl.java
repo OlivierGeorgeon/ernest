@@ -1,12 +1,16 @@
 package imos2;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import spas.Area;
+import spas.SimuImpl;
 
 import ernest.Action;
+import ernest.ActionImpl;
+import ernest.Aspect;
 import ernest.Primitive;
 
 /**
@@ -32,34 +36,60 @@ public class ActImpl implements Act
 	private Act m_prescriber = null;
 	private int m_step = 0;
 	private Primitive interaction;
+	private Action action;
+	private Aspect aspect;
 	private Area area;
 	
 	/** The list of alternative interactions */
 	private ArrayList<Act> m_alternateInteractions = new ArrayList<Act>();
+	
+	public static Collection<Act> getACTS(){
+		return ACTS.values();
+	}
 
 	/**
-	 * @param label The interaction's label.
-	 * @param enactionValue The value of enacting this interaction.
+	 * @param interaction The primitive interaction from which this act is made.
+	 * @param area The area.
 	 * @return The created primitive interaction.
 	 */
-	public static Act createPrimitiveAct(Primitive interaction, Area area)
+	public static Act createOrGetPrimitiveAct(Primitive interaction, Area area)
 	{
-		return new ActImpl(interaction.getLabel() + area.getLabel(), true, null, null, interaction.getValue(), interaction, area);
+		String key = createPrimitiveKey(interaction, area);
+		if (!ACTS.containsKey(key)){
+			ACTS.put(key, new ActImpl(key, true, null, null, interaction.getValue(), interaction, area));
+			System.out.println("Define primitive act " + key);
+		}
+		return ACTS.get(key);
+		//return new ActImpl(key, true, null, null, interaction.getValue(), interaction, area);
+	}
+	
+	private static String createPrimitiveKey(Primitive interaction, Area area) {
+		String key = interaction.getLabel() + area.getLabel();
+		return key;
 	}
 	
 	/**
-	 * @param preInteraction The pre-interaction.
-	 * @param postInteraction The post-interaction.
+	 * @param preAct The pre-act.
+	 * @param postAct The post-act.
 	 * @return The created composite interaction.
 	 */
-	public static Act createCompositeInteraction(Act preInteraction, Act postInteraction)
+	public static Act createOrGetCompositeAct(Act preAct, Act postAct)
 	{
-		int enactionValue = preInteraction.getEnactionValue() + postInteraction.getEnactionValue();
-		String label = preInteraction.getLabel() + postInteraction.getLabel();
-		return new ActImpl(label, false, preInteraction, postInteraction, enactionValue, null, null);
+		String key = createCompositeKey(preAct, postAct);
+		int enactionValue = preAct.getEnactionValue() + postAct.getEnactionValue();
+		if (!ACTS.containsKey(key))
+			ACTS.put(key, new ActImpl(key, false, preAct, postAct, enactionValue, null, null));			
+		return ACTS.get(key);
+		//String label = preInteraction.getLabel() + postInteraction.getLabel();
+		//return new ActImpl(label, false, preInteraction, postInteraction, enactionValue, null, null);
 	}
 	
-	protected ActImpl(String label, boolean primitive, Act preInteraction, Act postInteraction, int enactionValue, Primitive interaction, Area area)
+	private static String createCompositeKey(Act preAct, Act postAct) {
+		String key = preAct.getLabel() + postAct.getLabel();
+		return key;
+	}
+	
+	private ActImpl(String label, boolean primitive, Act preInteraction, Act postInteraction, int enactionValue, Primitive interaction, Area area)
 	{
 		this.label = label;
 		m_primitive = primitive;
@@ -74,8 +104,26 @@ public class ActImpl implements Act
 		this.area = area;
 	}
 	
-	public Primitive getInteraction() {
-		return interaction;
+//	public Primitive getInteraction() {
+//		return interaction;
+//	}
+
+	public Action getAction() {
+		return this.action;
+		//return SimuImpl.getAction(this.interaction);
+	}
+	
+	public void setAction(Action action){
+		this.action = action;
+	}
+
+	public Aspect getAspect() {
+		return this.aspect;
+		//return SimuImpl.getAspect(this.interaction);
+	}
+	
+	public void setAspect(Aspect aspect){
+		this.aspect = aspect;
 	}
 
 	public Area getArea() {
@@ -102,7 +150,7 @@ public class ActImpl implements Act
 //		return m_moveLabel;
 //	}
 
-	public boolean getPrimitive() 
+	public boolean isPrimitive() 
 	{
 		return m_primitive;
 	}
@@ -140,12 +188,12 @@ public class ActImpl implements Act
 		return l; 
 	}
 
-	public void setEnactionWeight(int enactionWeight) 
+	public void setWeight(int enactionWeight) 
 	{
 		m_enactionWeight = enactionWeight;
 	}
 
-	public int getEnactionWeight() 
+	public int getWeight() 
 	{
 		return m_enactionWeight;
 	}

@@ -1,5 +1,6 @@
 package spas;
 
+import imos2.Act;
 import imos2.IEnaction;
 import ernest.Action;
 import ernest.ITracer;
@@ -14,7 +15,7 @@ public interface Simu {
 	/**
 	 * @param act The last enacted act
 	 */
-	public void track(IEnaction enaction);
+	public void track(Act act);
 	
 	/**
 	 * @param action The action to simulate
