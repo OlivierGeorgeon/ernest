@@ -86,8 +86,9 @@ public class Spas implements ISpas
 		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveInteraction() != null){
 			addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
 		}
-		
-		this.simu.track(enaction);
+		if (enaction.getEnactedPrimitiveInteraction() != null)
+			this.simu.track(enaction.getEnactedPrimitiveInteraction());
+		//this.simu.track(enaction);
 		if (m_tracer != null) this.simu.trace(m_tracer);
 	}
 

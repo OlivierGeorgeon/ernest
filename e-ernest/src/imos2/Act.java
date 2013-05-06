@@ -3,6 +3,8 @@ package imos2;
 import java.util.ArrayList;
 
 import spas.Area;
+import ernest.Action;
+import ernest.Aspect;
 import ernest.Primitive;
 
 /**
@@ -19,7 +21,7 @@ public interface Act
 	/**
 	 * @return true if primitive, false if composite
 	 */
-	public boolean getPrimitive();
+	public boolean isPrimitive();
 	
 	/**
 	 * @return The value of enacting this interaction
@@ -29,12 +31,12 @@ public interface Act
 	/**
 	 * @param enactionWeight The weight of this interaction.
 	 */
-	public void setEnactionWeight(int enactionWeight);
+	public void setWeight(int enactionWeight);
 	
 	/**
 	 * @return The weight of this interaction.
 	 */
-	public int getEnactionWeight();
+	public int getWeight();
 	
 	/**
 	 * @return This interaction's pre-interaction (null if primitive).
@@ -100,7 +102,21 @@ public interface Act
 	 */
 	public ArrayList<Act> getAlternateActs();
 	
-	public Primitive getInteraction();
+	/**
+	 * @return The action corresponding to this act
+	 */
+	public Action getAction();
+	public void setAction(Action action);
+	
+	/**
+	 * @return The aspect of the phenomenon observed through this act.
+	 */
+	public Aspect getAspect();
+	public void setAspect(Aspect aspect);
+	
+	/**
+	 * @return The area of this act
+	 */
 	public Area getArea();
 
 }

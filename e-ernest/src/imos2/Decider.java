@@ -80,15 +80,15 @@ public class Decider implements IDecider
 				propositions.add(p);
 		}
 				
-		// Compute the weight of each modality.
+		// Compute the weight of each action.
 		for (Action m : ActionImpl.getACTIONS()){
 			m.setPropositionWeight(0);
 		}
 		for (IProposition p: propositions){
 			// TODO also propose actions made of composite interactions
-			if (p.getAct().getPrimitive()){
-				//this.spas.getAction(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());	
-				SimuImpl.getAction(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());	
+			if (p.getAct().isPrimitive()){
+				//SimuImpl.getAction(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());
+				p.getAct().getAction().addPropositionWeight(p.getWeight());	
 			}
 		}
 		
