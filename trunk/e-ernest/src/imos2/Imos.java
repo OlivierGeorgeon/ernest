@@ -5,6 +5,7 @@ import java.util.List;
 
 import spas.Area;
 import spas.SimuImpl;
+import ernest.ActionImpl;
 import ernest.Primitive;
 import ernest.ITracer;
 
@@ -199,8 +200,11 @@ public class Imos implements IImos
 				m_internalState= "!";
 				enaction.setCorrect(false);	
 				
-				// The enacted and intended interactions correspond to the same action. 
+				// The enacted and intended interactions correspond to the same action.
+				// Under construction /// not tested
+				ActionImpl.remove(enactedTopInteraction.getAction().getLabel());
 				enactedTopInteraction.setAction(intendedTopInteraction.getAction());
+				
 				
 				boolean newAlternate = intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
 				if (m_tracer != null && newAlternate)
