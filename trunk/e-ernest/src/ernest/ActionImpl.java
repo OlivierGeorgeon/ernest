@@ -15,6 +15,7 @@ import imos2.IProposition;
 public class ActionImpl implements Action {
 
 	private static Map<String , Action> ACTIONS = new HashMap<String , Action>() ;
+	private static int index = 0;
 
 	private String label;
 	private int propositionWeight;
@@ -23,6 +24,16 @@ public class ActionImpl implements Action {
 		if (!ACTIONS.containsKey(label))
 			ACTIONS.put(label, new ActionImpl(label));			
 		return ACTIONS.get(label);
+	}
+	
+	public static Action createNew(){
+		index++;
+		ACTIONS.put(index + "", new ActionImpl(index +""));			
+		return ACTIONS.get(index + "");
+	}
+	
+	public static void remove(String label){
+		ACTIONS.remove(label);
 	}
 	
 	public static Collection<Action> getACTIONS(){

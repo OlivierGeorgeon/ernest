@@ -81,15 +81,17 @@ public class SimuImpl implements Simu {
 	}
 	
 	public Observation predict(Action action){
+		Observation observation = ObservationImpl.createOrGet(UNCHANGED, B);
 		if (action.equals(STEP)){
-			return simulateShiftForward();
+			observation = simulateShiftForward();
 		}
 		else if (action.equals(TURN_LEFT)){
-			return simulateShiftRight();
+			observation = simulateShiftRight();
 		}
-		else{
-			return simulateShiftLef();
+		else if (action.equals(TURN_RIGHT)){
+			observation = simulateShiftLef();
 		}
+		return observation;
 	}
 
 	private Observation simulateShiftLef() {

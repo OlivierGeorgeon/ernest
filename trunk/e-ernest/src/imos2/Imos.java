@@ -198,8 +198,11 @@ public class Imos implements IImos
 			{
 				m_internalState= "!";
 				enaction.setCorrect(false);	
+				
+				// The enacted and intended interactions correspond to the same action. 
+				enactedTopInteraction.setAction(intendedTopInteraction.getAction());
+				
 				boolean newAlternate = intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
-				//recordAlternate(initialLearningContext, enactedTopInteraction, intendedTopInteraction);
 				if (m_tracer != null && newAlternate)
 					m_tracer.addSubelement(alternateElmnt, "prominent", intendedTopInteraction + " alternate " + enactedTopInteraction);
 
