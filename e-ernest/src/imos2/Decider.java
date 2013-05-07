@@ -1,10 +1,8 @@
 package imos2;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javax.vecmath.Point3f;
 import ernest.ActionImpl;
 import ernest.Action;
 import ernest.Primitive;
@@ -12,7 +10,6 @@ import ernest.ITracer;
 import ernest.Observation;
 import ernest.PrimitiveImpl;
 import spas.ISpas;
-import spas.SimuImpl;
 
 /**
  * This is the regular decider for Ernest 7 that does not use spatial memory.
@@ -45,14 +42,18 @@ public class Decider implements IDecider
 		
 		System.out.println("New decision ================ ");
 
-		weightActions(enaction);
+		// Choose the next action
+		ArrayList<IProposition> propositions = this.imos.propose(enaction);	
+		weightActions(propositions);
 		Action action = selectAction();
+
+		// Predict the next observation
 		Observation  observation = this.spas.predict(action);
+		
+		// Construct the intended interaction
 		Primitive nextPrimitive = PrimitiveImpl.getInteraction(action, observation.getAspect());
 		Act nextTopIntention = this.imos.addAct(nextPrimitive, observation.getArea());
-				
 		System.out.println("Act " + nextTopIntention.getLabel());
-		
 		newEnaction.setTopInteraction(nextTopIntention);
 		newEnaction.setTopRemainingInteraction(nextTopIntention);
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
@@ -62,63 +63,44 @@ public class Decider implements IDecider
 	}
 	
 	/**
-	 * Construct a list of propositions based on the current context
-	 * @param activationContext The list of interactions that form the current context.
-	 * @return The list of propositions.
+	 * Weight the actions according to the proposed interactions
 	 */
-	private void weightActions(IEnaction enaction)
-	{
-		// The list of propositions proposed by the sequential system
-		ArrayList<IProposition> propositions = this.imos.propose(enaction);	
-
-		// Add the propositions to enact primitive interactions in the area of point (0,0,0).
-		for (Primitive i : PrimitiveImpl.getINTERACTIONS())
-		{
-			Act a = this.imos.addAct(i, this.spas.categorizePosition(new Point3f()));
-			IProposition p = new Proposition(a, 0);
-			if (!propositions.contains(p))
-				propositions.add(p);
-		}
-				
-		// Compute the weight of each action.
-		for (Action m : ActionImpl.getACTIONS()){
-			m.setPropositionWeight(0);
-		}
-		for (IProposition p: propositions){
-			// TODO also propose actions made of composite interactions
-			if (p.getAct().isPrimitive()){
-				//SimuImpl.getAction(p.getAct().getInteraction()).addPropositionWeight(p.getWeight());
-				p.getAct().getAction().addPropositionWeight(p.getWeight());	
-			}
-		}
+	private void weightActions(ArrayList<IProposition> propositions){
 		
-		// Return the list of weighted modalities 
+		// Reset the weight of actions.
+		for (Action m : ActionImpl.getACTIONS())
+			m.setPropositionWeight(0);
+		
+		// Proposed interactions that correspond to an identified action support this action.
+		for (IProposition p: propositions)
+			if (p.getAct().getAction() != null)
+				p.getAct().getAction().addPropositionWeight(p.getWeight());	
+		
+		// trace weighted actions 
 		Object decisionElmt = null;
 		if (this.tracer != null){
-			decisionElmt = this.tracer.addEventElement("modalities", true);
-		}
-		for (Action a : ActionImpl.getACTIONS()){
-			System.out.println("Propose modality " + a.getLabel() + " with weight " + a.getPropositionWeight());
-			if (this.tracer != null)
-				this.tracer.addSubelement(decisionElmt, "Modality", a.getLabel() + " proposition weight " + a.getPropositionWeight());
+			decisionElmt = this.tracer.addEventElement("Actions", true);
+			for (Action a : ActionImpl.getACTIONS()){
+				System.out.println("Propose action " + a.getLabel() + " with weight " + a.getPropositionWeight());
+				this.tracer.addSubelement(decisionElmt, "Action", a.getLabel() + " proposition weight " + a.getPropositionWeight());
+			}
 		}
 	}
 	
 	/**
 	 * Select an interaction from the list of proposed interactions
-	 * @param propositions The list of propositions.
-	 * @return The selected interaction.
+	 * @return The selected action.
 	 */
 	protected Action selectAction()
 	{
 		// Sort the propositions by weight.
-		List<Action> actions = new ArrayList<Action>();
 		// Oddly, i could not directly cast ACTIONS.values() to List<Action>
+		List<Action> actions = new ArrayList<Action>();
 		for (Action a : ActionImpl.getACTIONS())
 			actions.add(a);
 		Collections.sort(actions);
 
-		// Pick the most weighted modality
+		// Pick the most weighted action
 		Action selectedAction = actions.get(0);
 		
 		System.out.println("Select:" + selectedAction.getLabel());
