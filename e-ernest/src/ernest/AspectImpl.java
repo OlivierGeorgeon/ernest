@@ -1,30 +1,67 @@
 package ernest;
 
+import imos2.Act;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An Aspect is the element of an observation that can be situated in space
+ * @author Olivier
+ */
 public class AspectImpl implements Aspect {
 	
 	private static Map<String , Aspect> ASPECTS = new HashMap<String , Aspect>() ;
+	private static int index = 0;
 	
 	private String label;
+	private List<Act> acts = new ArrayList<Act>();
 
+	/**
+	 * @param label The aspect's label
+	 * @return The aspect
+	 */
 	public static Aspect createOrGet(String label){
 		if (!ASPECTS.containsKey(label))
 			ASPECTS.put(label, new AspectImpl(label));			
 		return ASPECTS.get(label);
 	}
 	
-	public static Aspect getAspect(String label){
-		return ASPECTS.get(label);
+	/**
+	 * Creates a new aspect using an incremental label
+	 * @return The new created aspect
+	 */
+	public static Aspect createNew(){
+		index++;
+		ASPECTS.put(index + "", new AspectImpl(index +""));			
+		return ASPECTS.get(index + "");
 	}
 	
-	public static void addAspect(Aspect aspect){
-		ASPECTS.put(aspect.getLabel(), aspect);
+	/**
+	 * Merge the enacted aspect into the intended aspect.
+	 * The interactions attached to the enactedAction are transferred to the intendedAction and the enactedAction is removed
+	 * @param enactedAspect The first action from which to merge (removed). 
+	 * @param intendedAspect The second action to which to merge (kept).
+	 */
+	public static void merge(Aspect enactedAspect, Aspect intendedAspect){
+		if (!enactedAspect.equals(intendedAspect)){
+			for (Act act : enactedAspect.getActs())
+				act.setAspect(intendedAspect);
+			ASPECTS.remove(enactedAspect.getLabel());
+		}
 	}
 	
+//	public static Aspect getAspect(String label){
+//		return ASPECTS.get(label);
+//	}
+//	
+//	public static void addAspect(Aspect aspect){
+//		ASPECTS.put(aspect.getLabel(), aspect);
+//	}
+//	
 	private AspectImpl(String label){
 		this.label = label;
 	}
@@ -33,15 +70,15 @@ public class AspectImpl implements Aspect {
 		return this.label;
 	}
 	
-//	public static Aspect categorize(Primitive interaction) {
-//		// The action of a primitive interaction is given by the first character of its label
-//		// TODO learn actions without using assumption about the interaction's label.
-//		String aspectLabel = interaction.getLabel().substring(1, 2);
-//
-//		if (!ASPECTS.containsKey(aspectLabel))
-//			ASPECTS.put(aspectLabel, new AspectImpl(aspectLabel));
-//		return ASPECTS.get(aspectLabel); 
-//	}
+	public void addAct(Act act){
+		if (!this.acts.contains(act))
+				this.acts.add(act);
+	}
+	
+	public List<Act> getActs(){
+		return this.acts;
+	}
+	
 	/**
 	 * Features are equal if they have the same label. 
 	 */

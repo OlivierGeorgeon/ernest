@@ -90,9 +90,11 @@ public class Ernest implements IErnest
 		
 		// track the enaction 
 		
-		m_enaction.setSlice(m_spas.categorizePosition(effect.getLocation()));
+		m_enaction.setArea(m_spas.categorizePosition(effect.getLocation()));
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
+		m_enaction.traceTrack(m_tracer);
+
 		
 		// Decision cycle
 		if (m_enaction.isOver())

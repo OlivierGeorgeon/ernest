@@ -1,16 +1,13 @@
 package imos2;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import spas.Area;
-import spas.SimuImpl;
-
 import ernest.Action;
 import ernest.ActionImpl;
 import ernest.Aspect;
+import ernest.AspectImpl;
 import ernest.Observation;
 import ernest.ObservationImpl;
 import ernest.Primitive;
@@ -39,8 +36,9 @@ public class ActImpl implements Act
 	private int m_step = 0;
 //	private Primitive interaction;
 	private Action action;
-	private Observation observation;
+	//private Observation observation;
 	private Area area;
+	private Aspect aspect;
 	
 	/**
 	 * @return The list of all acts known by the agent.
@@ -58,14 +56,16 @@ public class ActImpl implements Act
 	{
 		String key = createPrimitiveKey(interaction, area);
 		if (!ACTS.containsKey(key)){
-			ACTS.put(key, new ActImpl(key, true, null, null, interaction.getValue(), interaction, area));
+			ActImpl newAct = new ActImpl(key, true, null, null, interaction.getValue(), interaction, area);
+			newAct.setAction(ActionImpl.createNew());
+			//ACTS.get(key).setObservation(ObservationImpl.createNew());
+			newAct.setAspect(AspectImpl.createNew());
+			ACTS.put(key, newAct);
+			
 			System.out.println("Define primitive act " + key);
-			ACTS.get(key).setAction(ActionImpl.createNew());
-			ACTS.get(key).setObservation(ObservationImpl.createNew());
-			System.out.println("With action " + ACTS.get(key).getAction().getLabel() + " and observation " + ACTS.get(key).getObservation().getLabel());
+			System.out.println("With action " + newAct.getAction().getLabel() + " and aspect " + newAct.getAspect().getLabel());
 		}
 		return ACTS.get(key);
-		//return new ActImpl(key, true, null, null, interaction.getValue(), interaction, area);
 	}
 	
 	private static String createPrimitiveKey(Primitive interaction, Area area) {
@@ -91,7 +91,8 @@ public class ActImpl implements Act
 	
 	public static Act getAct(Action action, Observation observation){
 		for (Act a : ACTS.values()){
-			if (action.equals(a.getAction()) && observation.equals(a.getObservation()))
+			//if (action.equals(a.getAction()) && observation.equals(a.getObservation()))
+			if (action.equals(a.getAction()) && a.getAspect().equals(observation.getAspect()) && a.getArea().equals(observation.getArea()))			
 				return a;
 		}
 		return action.getActs().get(0);
@@ -126,14 +127,14 @@ public class ActImpl implements Act
 		action.addAct(this);
 	}
 
-	public Observation getObservation() {
-		return this.observation;
-	}
-	
-	public void setObservation(Observation observation){
-		this.observation = observation;
-		observation.addAct(this);
-	}
+//	public Observation getObservation() {
+//		return this.observation;
+//	}
+//	
+//	public void setObservation(Observation observation){
+//		this.observation = observation;
+//		observation.addAct(this);
+//	}
 
 	public Act getPreAct() 
 	{
@@ -182,7 +183,6 @@ public class ActImpl implements Act
 		String l = "";
 		if (m_primitive)
 			l = this.label;
-			//label = m_moveLabel + m_effectLabel;
 		else
 			l = "(" + m_preInteraction.getLabel() + m_postInteraction.getLabel() + ")";
 		return l; 
@@ -279,5 +279,22 @@ public class ActImpl implements Act
 	public String toString()
 	{
 		return getLabel() + "(" + value/10 + "," + m_enactionWeight + ")";
+	}
+
+	public Aspect getAspect() {
+		return this.aspect;
+	}
+
+	public void setAspect(Aspect aspect) {
+		this.aspect = aspect;
+		aspect.addAct(this);
+	}
+
+	public Area getArea() {
+		return this.area;
+	}
+
+	public void setArea(Area area) {
+		this.area = area;
 	}
 }

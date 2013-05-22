@@ -42,6 +42,13 @@ public class ActionImpl implements Action {
 	}
 	
 	/**
+	 * @return The collection of all actions known by the agent.
+	 */
+	public static Collection<Action> getACTIONS(){
+		return ACTIONS.values();
+	}
+	
+	/**
 	 * Merge the enacted action into the intended action.
 	 * The interactions attached to the enactedAction are transferred to the intendedAction and the enactedAction is removed
 	 * @param enactedAction The first action from which to merge (removed). 
@@ -53,13 +60,6 @@ public class ActionImpl implements Action {
 				act.setAction(intendedAction);
 			ACTIONS.remove(enactedAction.getLabel());
 		}
-	}
-	
-	/**
-	 * @return The collection of all actions known by the agent.
-	 */
-	public static Collection<Action> getACTIONS(){
-		return ACTIONS.values();
 	}
 	
 	private ActionImpl(String label){

@@ -17,11 +17,9 @@ import utils.ErnestUtils;
  */
 public class AreaImpl implements Area {
 
-	private String label;
-	private boolean occupied;
-	private boolean previousOccupied;
-	
 	private static Map<String , Area> AREAS = new HashMap<String , Area>() ;
+
+	private String label;
 	
 	public static Area createOrGet(String label){
 		if (!AREAS.containsKey(label))
@@ -36,11 +34,6 @@ public class AreaImpl implements Area {
 		return AREAS.values();
 	}
 	
-	public static void clearAll(){
-		for (Area a : AREAS.values())
-			a.setOccupied(false);
-			//a.clear();
-	}
 	/**
 	 * @param label The area's label.
 	 */
@@ -50,28 +43,6 @@ public class AreaImpl implements Area {
 	
 	public String getLabel() {
 		return this.label;
-	}
-	
-	public boolean isOccupied() {
-		return occupied;
-	}
-
-	public void clear(){
-		this.occupied = false;
-	}
-	
-	public void setOccupied(boolean occupied) {
-		this.previousOccupied = this.occupied;
-		this.occupied = occupied;
-	}
-
-	public String getEvent(){
-		if (this.previousOccupied == this.occupied)
-			return "_"; // unchanged
-		else if (this.previousOccupied)
-			return "o"; // disappear
-		else 
-			return "*"; // appear
 	}
 	
 	/**

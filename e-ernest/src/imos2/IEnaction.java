@@ -3,6 +3,7 @@ package imos2;
 import java.util.ArrayList;
 
 import spas.Area;
+import spas.Transformation;
 import ernest.IEffect;
 import ernest.Primitive;
 import ernest.ITracer;
@@ -20,10 +21,11 @@ public interface IEnaction
 	 */
 	public void setEffect(IEffect effect);
 	
-	public void setSlice(Area area);
+	public void setArea(Area area);
 	public Area getArea();
 
-	
+	public void setTransformation(Transformation transformation);
+	public Transformation getTransformation();
 	/**
 	 * @return The effect resulting from the last enacted interaction.
 	 */

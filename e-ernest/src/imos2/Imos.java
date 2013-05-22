@@ -160,7 +160,7 @@ public class Imos implements IImos
 		enaction.setTopRemainingInteraction(topRemainingInteraction);
 
 		// Trace
-		enaction.traceTrack(m_tracer);
+		//enaction.traceTrack(m_tracer);
 	}
 	
 	/**

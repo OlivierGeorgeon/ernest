@@ -1,5 +1,7 @@
 package ernest;
 
+import spas.Area;
+
 /**
  * A spatial configuration of the surroundings of the agent.
  * @author Olivier
@@ -12,9 +14,15 @@ public interface Layout {
 	public String getLabel();
 	
 	/**
-	 * @param action
-	 * @return The observation resulting from this action in this layout.
+	 * @param area the area
+	 * @return The aspect present in this area.
 	 */
-	public Observation observe(Action action); 
+	public Aspect getAspect(Area area);
+	
+	/**
+	 * @param area The area
+	 * @return true if this area is empty
+	 */
+	public boolean isEmpty(Area area);
 
 }
