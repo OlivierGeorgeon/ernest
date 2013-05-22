@@ -39,6 +39,7 @@ public class Decider implements IDecider
 	public IEnaction decide(IEnaction enaction) 
 	{
 		IEnaction newEnaction = new Enaction();
+		//Act nextTopIntention = null;
 		
 		System.out.println("New decision ================ ");
 
@@ -50,9 +51,14 @@ public class Decider implements IDecider
 		// Predict the next observation
 		Observation  observation = this.spas.predict(action);
 		
-		// Construct the intended interaction
-		Primitive nextPrimitive = PrimitiveImpl.getInteraction(action, observation.getAspect());
-		Act nextTopIntention = this.imos.addAct(nextPrimitive, observation.getArea());
+		// Construct the intended act
+//		Primitive nextPrimitive = PrimitiveImpl.getInteraction(action, observation.getAspect());
+//		if (nextPrimitive== null)
+//			nextTopIntention = action.getActs().get(0);
+//		else
+//			nextTopIntention = this.imos.addAct(nextPrimitive, observation.getArea());
+		Act nextTopIntention = ActImpl.getAct(action, observation);
+
 		System.out.println("Act " + nextTopIntention.getLabel());
 		newEnaction.setTopInteraction(nextTopIntention);
 		newEnaction.setTopRemainingInteraction(nextTopIntention);
@@ -81,8 +87,11 @@ public class Decider implements IDecider
 		if (this.tracer != null){
 			decisionElmt = this.tracer.addEventElement("Actions", true);
 			for (Action a : ActionImpl.getACTIONS()){
+				String actslabel = "";
+					for (Act act : a.getActs())
+						actslabel += (" " + act.getLabel());
 				System.out.println("Propose action " + a.getLabel() + " with weight " + a.getPropositionWeight());
-				this.tracer.addSubelement(decisionElmt, "Action", a.getLabel() + " proposition weight " + a.getPropositionWeight());
+				this.tracer.addSubelement(decisionElmt, "Action", a.getLabel() + " proposition weight " + a.getPropositionWeight() + actslabel);
 			}
 		}
 	}

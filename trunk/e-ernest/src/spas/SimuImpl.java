@@ -4,7 +4,6 @@ import imos2.Act;
 import javax.vecmath.Point3f;
 import utils.ErnestUtils;
 import ernest.Action;
-import ernest.ActionImpl;
 import ernest.Aspect;
 import ernest.AspectImpl;
 import ernest.ITracer;
@@ -15,9 +14,9 @@ import ernest.Primitive;
 public class SimuImpl implements Simu {
 
 	/** Predefined actions */
-	public static Action STEP = ActionImpl.createOrGet(">");
-	public static Action TURN_LEFT = ActionImpl.createOrGet("^");
-	public static Action TURN_RIGHT = ActionImpl.createOrGet("v");
+//	public static Action STEP = ActionImpl.createOrGet(">");
+//	public static Action TURN_LEFT = ActionImpl.createOrGet("^");
+//	public static Action TURN_RIGHT = ActionImpl.createOrGet("v");
 
 	/** Predefined aspects */
 	public static Aspect APPEAR = AspectImpl.createOrGet("*");
@@ -54,13 +53,13 @@ public class SimuImpl implements Simu {
 			return C; 
 	}
 	
-	public static Action getAction(Primitive interaction) {
-		// The action of a primitive interaction is given by the first character of its label
-		// TODO learn actions without using assumption about the interaction's label.
-		String actionLabel = interaction.getLabel().substring(0, 1);
-		
-		return ActionImpl.createOrGet(actionLabel);
-	}
+//	public static Action getAction(Primitive interaction) {
+//		// The action of a primitive interaction is given by the first character of its label
+//		// TODO learn actions without using assumption about the interaction's label.
+//		String actionLabel = interaction.getLabel().substring(0, 1);
+//		
+//		return ActionImpl.createOrGet(actionLabel);
+//	}
 	
 	public static Aspect getAspect(Primitive interaction) {
 		// The aspect of a primitive interaction is given by the first character of its label
@@ -72,25 +71,25 @@ public class SimuImpl implements Simu {
 
 	public void track(Act act){
 		AreaImpl.clearAll();
-		if (act.getAspect().equals(APPEAR) ||
-			act.getAspect().equals(CLOSER) ||
-			act.getAspect().equals(MOVE) ||
-			act.getAspect().equals(FARTHER)){
-			act.getArea().setOccupied(true);
-		}
+//		if (act.getAspect().equals(APPEAR) ||
+//			act.getAspect().equals(CLOSER) ||
+//			act.getAspect().equals(MOVE) ||
+//			act.getAspect().equals(FARTHER)){
+//			act.getArea().setOccupied(true);
+//		}
 	}
 	
 	public Observation predict(Action action){
 		Observation observation = ObservationImpl.createOrGet(UNCHANGED, B);
-		if (action.equals(STEP)){
-			observation = simulateShiftForward();
-		}
-		else if (action.equals(TURN_LEFT)){
-			observation = simulateShiftRight();
-		}
-		else if (action.equals(TURN_RIGHT)){
-			observation = simulateShiftLef();
-		}
+//		if (action.equals(STEP)){
+//			observation = simulateShiftForward();
+//		}
+//		else if (action.equals(TURN_LEFT)){
+//			observation = simulateShiftRight();
+//		}
+//		else if (action.equals(TURN_RIGHT)){
+//			observation = simulateShiftLef();
+//		}
 		return observation;
 	}
 

@@ -77,6 +77,7 @@ public class Ernest implements IErnest
 	public String step(IEffect effect) 
 	{
 		m_enaction.setEffect(effect);
+		
 		Primitive enactedPrimitive = PrimitiveImpl.get(effect.getEnactedInteractionLabel());
 		m_enaction.setEnactedPrimitive(enactedPrimitive);
 		
@@ -116,7 +117,7 @@ public class Ernest implements IErnest
 	
 	public Primitive addInteraction(String label, int value)
 	{
-		return PrimitiveImpl.createOrGet(label, value);
+		return PrimitiveImpl.createOrGet(label, value * 10);
 	}
 
 	public ArrayList<IPlace> getPlaceList()

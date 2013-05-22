@@ -1,6 +1,10 @@
 package ernest;
 
+import imos2.Act;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import spas.AreaImpl;
@@ -8,11 +12,14 @@ import spas.Area;
 
 public class ObservationImpl implements Observation {
 	
-	Aspect aspect;
-	Area area;
-	
 	private static Map<String , Observation> OBSERVATIONS = new HashMap<String , Observation>() ;
+	private static int index = 0;
 
+	private String label;
+	private Aspect aspect;
+	private Area area;
+	private List<Act> acts = new ArrayList<Act>();
+	
 	/**
 	 * @param aspect The observation's aspect
 	 * @param area The observation's area
@@ -25,18 +32,36 @@ public class ObservationImpl implements Observation {
 		return OBSERVATIONS.get(key);
 	}
 
+	public static Observation createOrGet(String label){
+		if (!OBSERVATIONS.containsKey(label))
+			OBSERVATIONS.put(label, new ObservationImpl(label));			
+		return OBSERVATIONS.get(label);
+	}
+
 	private static String createKey(Aspect aspect, Area area) {
 		String key = aspect.getLabel() + area.getLabel();
 		return key;
 	}
 	
+	public static Observation createNew(){
+		index++;
+		OBSERVATIONS.put(index + "", new ObservationImpl(index +""));			
+		return OBSERVATIONS.get(index + "");
+	}
+	
+	private ObservationImpl(String label){
+		this.label = label;
+	}	
+	
 	private ObservationImpl(Aspect aspect, Area area){
+		this.label = aspect.getLabel() + area.getLabel();
 		this.aspect = aspect;
 		this.area = area;
 	}	
 	
 	public String getLabel() {
-		return this.aspect.getLabel() + this.area.getLabel();
+		return this.label;
+		//return this.aspect.getLabel() + this.area.getLabel();
 	}
 	
 	public Aspect getAspect(){
@@ -66,6 +91,15 @@ public class ObservationImpl implements Observation {
 			ret = (other.getLabel().equals(this.getLabel()));
 		}
 		return ret;
+	}
+	
+	public void addAct(Act act){
+		if (!this.acts.contains(act))
+				this.acts.add(act);
+	}
+	
+	public List<Act> getActs(){
+		return this.acts;
 	}
 
 }

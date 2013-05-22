@@ -11,6 +11,8 @@ import spas.SimuImpl;
 import ernest.Action;
 import ernest.ActionImpl;
 import ernest.Aspect;
+import ernest.Observation;
+import ernest.ObservationImpl;
 import ernest.Primitive;
 
 /**
@@ -30,19 +32,19 @@ public class ActImpl implements Act
 	private boolean m_primitive = true;
 	private Act m_preInteraction = null;
 	private Act m_postInteraction = null;
-	private int m_enactionValue = 0;
+	private int value = 0;
 	private int m_enactionWeight = 0;
 	private int m_length = 1;
 	private Act m_prescriber = null;
 	private int m_step = 0;
-	private Primitive interaction;
+//	private Primitive interaction;
 	private Action action;
-	private Aspect aspect;
+	private Observation observation;
 	private Area area;
 	
-	/** The list of alternative interactions */
-	private ArrayList<Act> m_alternateInteractions = new ArrayList<Act>();
-	
+	/**
+	 * @return The list of all acts known by the agent.
+	 */
 	public static Collection<Act> getACTS(){
 		return ACTS.values();
 	}
@@ -58,6 +60,9 @@ public class ActImpl implements Act
 		if (!ACTS.containsKey(key)){
 			ACTS.put(key, new ActImpl(key, true, null, null, interaction.getValue(), interaction, area));
 			System.out.println("Define primitive act " + key);
+			ACTS.get(key).setAction(ActionImpl.createNew());
+			ACTS.get(key).setObservation(ObservationImpl.createNew());
+			System.out.println("With action " + ACTS.get(key).getAction().getLabel() + " and observation " + ACTS.get(key).getObservation().getLabel());
 		}
 		return ACTS.get(key);
 		//return new ActImpl(key, true, null, null, interaction.getValue(), interaction, area);
@@ -84,50 +89,50 @@ public class ActImpl implements Act
 		//return new ActImpl(label, false, preInteraction, postInteraction, enactionValue, null, null);
 	}
 	
+	public static Act getAct(Action action, Observation observation){
+		for (Act a : ACTS.values()){
+			if (action.equals(a.getAction()) && observation.equals(a.getObservation()))
+				return a;
+		}
+		return action.getActs().get(0);
+	}
+	
 	private static String createCompositeKey(Act preAct, Act postAct) {
 		String key = preAct.getLabel() + postAct.getLabel();
 		return key;
 	}
 	
-	private ActImpl(String label, boolean primitive, Act preInteraction, Act postInteraction, int enactionValue, Primitive interaction, Area area)
+	private ActImpl(String label, boolean primitive, Act preInteraction, Act postInteraction, int value, Primitive interaction, Area area)
 	{
 		this.label = label;
 		m_primitive = primitive;
 		m_preInteraction = preInteraction;
 		m_postInteraction = postInteraction;
-		m_enactionValue = enactionValue;
+		this.value = value;
 		if (primitive)
 			m_enactionWeight = PRIMITIVE_WEIGHT;
 		else
 			m_length = preInteraction.getLength() + postInteraction.getLength();
-		this.interaction = interaction;
+		//this.interaction = interaction;
 		this.area = area;
 	}
 	
-//	public Primitive getInteraction() {
-//		return interaction;
-//	}
-
 	public Action getAction() {
 		return this.action;
-		//return SimuImpl.getAction(this.interaction);
 	}
 	
 	public void setAction(Action action){
 		this.action = action;
+		action.addAct(this);
 	}
 
-	public Aspect getAspect() {
-		return this.aspect;
-		//return SimuImpl.getAspect(this.interaction);
+	public Observation getObservation() {
+		return this.observation;
 	}
 	
-	public void setAspect(Aspect aspect){
-		this.aspect = aspect;
-	}
-
-	public Area getArea() {
-		return area;
+	public void setObservation(Observation observation){
+		this.observation = observation;
+		observation.addAct(this);
 	}
 
 	public Act getPreAct() 
@@ -142,13 +147,8 @@ public class ActImpl implements Act
 
 	public int getEnactionValue() 
 	{
-		return m_enactionValue;
+		return this.value;
 	}
-
-//	public String getMoveLabel() 
-//	{
-//		return m_moveLabel;
-//	}
 
 	public boolean isPrimitive() 
 	{
@@ -278,26 +278,6 @@ public class ActImpl implements Act
 	
 	public String toString()
 	{
-		return getLabel() + "(" + m_enactionValue/10 + "," + m_enactionWeight + ")";
-	}
-
-	public boolean addAlternateInteraction(Act alternateInteraction) 
-	{
-		boolean newAlternate = false;
-		int i = m_alternateInteractions.indexOf(alternateInteraction);
-		if (i == -1)
-		{
-			m_alternateInteractions.add(alternateInteraction);
-			newAlternate = true;
-		}
-		else
-			alternateInteraction = m_alternateInteractions.get(i);
-		
-		return newAlternate;
-	}
-
-	public ArrayList<Act> getAlternateActs() 
-	{
-		return m_alternateInteractions;
+		return getLabel() + "(" + value/10 + "," + m_enactionWeight + ")";
 	}
 }

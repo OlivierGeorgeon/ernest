@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import spas.Area;
 import ernest.Action;
 import ernest.Aspect;
+import ernest.Observation;
 import ernest.Primitive;
 
 /**
@@ -92,17 +93,6 @@ public interface Act
 	public void terminate();
 	
 	/**
-	 * @param alternateInteraction The actually enacted interaction
-	 * @return true if the alternate interaction is new 
-	 */
-	public boolean addAlternateInteraction(Act alternateInteraction);
-	
-	/**
-	 * @return This list of this interaction's alternative interactions
-	 */
-	public ArrayList<Act> getAlternateActs();
-	
-	/**
 	 * @return The action corresponding to this act
 	 */
 	public Action getAction();
@@ -111,12 +101,7 @@ public interface Act
 	/**
 	 * @return The aspect of the phenomenon observed through this act.
 	 */
-	public Aspect getAspect();
-	public void setAspect(Aspect aspect);
+	public Observation getObservation();
+	public void setObservation(Observation observation);
 	
-	/**
-	 * @return The area of this act
-	 */
-	public Area getArea();
-
 }

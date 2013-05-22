@@ -1,5 +1,9 @@
 package ernest;
 
+import java.util.List;
+
+import imos2.Act;
+
 /**
  * An modality is a set if interactions that are alternate to each other.
  * @author Olivier
@@ -28,5 +32,10 @@ public interface Action extends Comparable
 	 * @param weight The additionnal weight to add to this action
 	 */
 	public void addPropositionWeight(int weight);
+	
+	public void addAct(Act act);
+	public List<Act> getActs();
+
+
 
 }
