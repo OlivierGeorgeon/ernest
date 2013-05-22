@@ -1,11 +1,11 @@
 package ernest;
 
+import imos2.ActImpl;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import spas.Area;
-import spas.SimuImpl;
+import spas.AreaImpl;
 
 /**
  * A primitive interaction.
@@ -17,27 +17,29 @@ public class PrimitiveImpl implements Primitive {
 
 	private String label = "";
 	private int value = 0;
-	private Action action;
-	private Aspect aspect;
-	
+
+	/**
+	 * @param label The primitive interaction's label
+	 * @param value The primitive interaction's value
+	 * @return The primitive interaction created or retrieved
+	 */
 	public static Primitive createOrGet(String label, int value){
 		if (!INTERACTIONS.containsKey(label))
 			INTERACTIONS.put(label, new PrimitiveImpl(label, value));			
 		return INTERACTIONS.get(label);
 	}
 	
+	/**
+	 * @param label The primitive interaction's label
+	 * @return The primitive interaction
+	 */
 	public static Primitive get(String label){
 		return INTERACTIONS.get(label);
 	}
 	
-	public static Primitive getInteraction(Action action, Aspect aspect){
-		for (Primitive i : INTERACTIONS.values()){
-			if (i.getAction().equals(action) && i.getAspect().equals(aspect))
-				return i;
-		}
-		return null;
-	}
-	
+	/**
+	 * @return The collection of all primitive interactions
+	 */
 	public static Collection<Primitive> getINTERACTIONS() {
 		return INTERACTIONS.values();
 	}
@@ -45,6 +47,7 @@ public class PrimitiveImpl implements Primitive {
 	private PrimitiveImpl(String label, int value){
 		this.label = label;
 		this.value = value;
+		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet("B"));
 	}
 	
 	public String getLabel(){
@@ -55,26 +58,6 @@ public class PrimitiveImpl implements Primitive {
 		return this.value;
 	}
 	
-	public Action getAction() {
-		return SimuImpl.getAction(this);
-		//return ActionImpl.categorize(this);
-		//return action;
-	}
-
-	public void setAction(Action action) {
-		this.action = action;
-	}
-
-	public Aspect getAspect() {
-		//return AspectImpl.categorize(this);
-		return SimuImpl.getAspect(this);
-		//return aspect;
-	}
-
-	public void setAspect(Aspect aspect) {
-		this.aspect = aspect;
-	}
-
 	/**
 	 * Interactions are equal if they have the same label. 
 	 */
