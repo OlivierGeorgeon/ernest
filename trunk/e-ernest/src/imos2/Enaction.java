@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import spas.Area;
+import spas.SimuImpl;
+import spas.Transformation;
 import utils.ErnestUtils;
 import ernest.Effect;
 import ernest.IEffect;
@@ -48,6 +50,7 @@ public class Enaction implements IEnaction
 	private boolean m_correct = true;
 	/** The area slice of the primitive enacted interaction */
 	private Area area;
+	private Transformation transformation = SimuImpl.UNKNOWN;
 	
 	//private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();	
 	//private int m_simulationStatus = 0;
@@ -57,7 +60,7 @@ public class Enaction implements IEnaction
 		m_effect = effect;
 	}
 
-	public void setSlice(Area area)
+	public void setArea(Area area)
 	{
 		this.area = area;
 	}
@@ -272,6 +275,7 @@ public class Enaction implements IEnaction
 			tracer.addSubelement(e, "primitive_enacted_interaction", this.enactedPrimitive.getLabel());
 			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
 			tracer.addSubelement(e, "area", this.area.getLabel());
+			tracer.addSubelement(e, "transformation", this.transformation.getLabel());
 		}
 	}
 
@@ -311,5 +315,13 @@ public class Enaction implements IEnaction
 
 			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
 		}
+	}
+
+	public void setTransformation(Transformation transformation) {
+		this.transformation = transformation;
+	}
+
+	public Transformation getTransformation() {
+		return this.transformation;
 	}	
 }

@@ -5,10 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import ernest.ActionImpl;
 import ernest.Action;
-import ernest.Primitive;
 import ernest.ITracer;
 import ernest.Observation;
-import ernest.PrimitiveImpl;
 import spas.ISpas;
 
 /**
@@ -39,7 +37,6 @@ public class Decider implements IDecider
 	public IEnaction decide(IEnaction enaction) 
 	{
 		IEnaction newEnaction = new Enaction();
-		//Act nextTopIntention = null;
 		
 		System.out.println("New decision ================ ");
 
@@ -52,11 +49,6 @@ public class Decider implements IDecider
 		Observation  observation = this.spas.predict(action);
 		
 		// Construct the intended act
-//		Primitive nextPrimitive = PrimitiveImpl.getInteraction(action, observation.getAspect());
-//		if (nextPrimitive== null)
-//			nextTopIntention = action.getActs().get(0);
-//		else
-//			nextTopIntention = this.imos.addAct(nextPrimitive, observation.getArea());
 		Act nextTopIntention = ActImpl.getAct(action, observation);
 
 		System.out.println("Act " + nextTopIntention.getLabel());

@@ -98,10 +98,16 @@ public interface Act
 	public Action getAction();
 	public void setAction(Action action);
 	
+	public Aspect getAspect();
+	public void setAspect(Aspect aspect);
+
+	public Area getArea();
+	public void setArea(Area area);
+	
 	/**
 	 * @return The aspect of the phenomenon observed through this act.
 	 */
-	public Observation getObservation();
-	public void setObservation(Observation observation);
+//	public Observation getObservation();
+//	public void setObservation(Observation observation);
 	
 }

@@ -1,7 +1,8 @@
 package spas;
 
-import imos2.Act;
+import imos2.IEnaction;
 import ernest.Action;
+import ernest.Aspect;
 import ernest.ITracer;
 import ernest.Observation;
 
@@ -15,7 +16,7 @@ public interface Simu {
 	 * Updates the simulator according to the last enacted act
 	 * @param act The last enacted act
 	 */
-	public void track(Act act);
+	public void track(IEnaction enaction);
 	
 	/**
 	 * Predict the observation resulting from an action.
@@ -23,6 +24,8 @@ public interface Simu {
 	 * @return the predicted observation
 	 */
 	public Observation predict(Action action);
+	
+	public void setLayout(Aspect aspectA, Aspect aspectB, Aspect aspectC);
 	
 	/**
 	 * Trace the current state of the simulator
