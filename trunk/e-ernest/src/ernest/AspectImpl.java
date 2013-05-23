@@ -54,14 +54,6 @@ public class AspectImpl implements Aspect {
 		}
 	}
 	
-//	public static Aspect getAspect(String label){
-//		return ASPECTS.get(label);
-//	}
-//	
-//	public static void addAspect(Aspect aspect){
-//		ASPECTS.put(aspect.getLabel(), aspect);
-//	}
-//	
 	private AspectImpl(String label){
 		this.label = label;
 	}

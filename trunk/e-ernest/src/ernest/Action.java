@@ -2,6 +2,8 @@ package ernest;
 
 import java.util.List;
 
+import spas.Transformation;
+
 import imos2.Act;
 
 /**
@@ -36,6 +38,7 @@ public interface Action extends Comparable
 	public void addAct(Act act);
 	public List<Act> getActs();
 
-
+	public void setTransformation(Transformation transformation);
+	public Transformation getTransformation();
 
 }

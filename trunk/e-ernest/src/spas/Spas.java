@@ -37,14 +37,11 @@ public class Spas implements ISpas
 	/** Ernest's local space memory  */
 	private ISpatialMemory m_localSpaceMemory = new LocalSpaceMemory();
 	
-	/** The transformation used to keep track of simulation. */
-	Transform3D m_transform = new Transform3D();
-
 	/** The simulator. */
 	Simu simu = new SimuImpl();
 	
-	/** The area manager. */
-	//AreaManager areaManager = new AreaManager();
+	/** The transformation to apply to spatial memory */
+	Transform3D transform = new Transform3D();
 	
 //	private static Spas INSTANCE = null; 
 //	
@@ -66,11 +63,6 @@ public class Spas implements ISpas
 		return SimuImpl.getArea(point);
 	}
 	
-//	public Action getAction(Primitive interaction){
-//		return this.simu.getAction(interaction);
-//	}
-
-
 	/**
 	 * The main method of the Spatial System that is called on each interaction cycle.
 	 * Track the spatial consequences of the current enaction.
@@ -79,16 +71,19 @@ public class Spas implements ISpas
 	public void track(IEnaction enaction) 
 	{
 		tick();
-		
-		m_localSpaceMemory.transform(enaction.getEffect().getTransformation());		
+		if (enaction.getIntendedPrimitiveInteraction() != null)
+			this.transform = SimuImpl.spasTransform(enaction.getIntendedPrimitiveInteraction().getAction().getTransformation());
+		m_localSpaceMemory.transform(this.transform);		
+		//m_localSpaceMemory.transform(enaction.getEffect().getTransformation());		
 		m_localSpaceMemory.decay();
 		
 		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveInteraction() != null){
-			addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
+		//	addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
+			addPlace(SimuImpl.spasPoint(enaction.getArea()), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
 		}
 
 		this.simu.track(enaction);
-		//this.simu.track(enaction);
+
 		if (m_tracer != null) this.simu.trace(m_tracer);
 	}
 
@@ -141,6 +136,10 @@ public class Spas implements ISpas
 
 	public Observation predict(Action action){
 		return this.simu.predict(action);
+	}
+
+	public Transform3D getTransformToAnim() {
+		return this.transform;
 	}
 
 }

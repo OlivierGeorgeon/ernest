@@ -1,6 +1,7 @@
 package utils;
 
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Matrix3d;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Point3f;
@@ -22,6 +23,21 @@ public final class ErnestUtils
 			return 0;
 		else
 			return (float)Math.atan2((double)vector.y, (double)vector.x);
+	}
+	
+	/**
+	 * Returns the angle of rotation of a transformation.
+	 * @param transform The transformation.
+	 * @return The angle of rotation.
+	 */
+	public static float angle(Transform3D transform) 
+	{
+		Matrix3d mat = new Matrix3d();
+		transform.get(mat);
+		if (mat.m10 == 0)
+			return 0;
+		else
+			return (float)Math.atan2(mat.m10, mat.m00);
 	}
 	
 	/**

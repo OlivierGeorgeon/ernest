@@ -79,11 +79,11 @@ public class Decider implements IDecider
 		if (this.tracer != null){
 			decisionElmt = this.tracer.addEventElement("Actions", true);
 			for (Action a : ActionImpl.getACTIONS()){
-				String actslabel = "";
-					for (Act act : a.getActs())
-						actslabel += (" " + act.getLabel());
+				String details = a.getTransformation().getLabel() + " ";
+				for (Act act : a.getActs())
+					details += (" " + act.getLabel());
 				System.out.println("Propose action " + a.getLabel() + " with weight " + a.getPropositionWeight());
-				this.tracer.addSubelement(decisionElmt, "Action", a.getLabel() + " proposition weight " + a.getPropositionWeight() + actslabel);
+				this.tracer.addSubelement(decisionElmt, "Action", a.getLabel() + " proposition weight " + a.getPropositionWeight() + " " + details);
 			}
 		}
 	}

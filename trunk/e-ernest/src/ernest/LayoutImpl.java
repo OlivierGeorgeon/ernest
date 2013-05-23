@@ -3,7 +3,9 @@ package ernest;
 import java.util.HashMap;
 import java.util.Map;
 import spas.Area;
+import spas.AreaImpl;
 import spas.SimuImpl;
+import spas.Transformation;
 
 public class LayoutImpl implements Layout {
 	
@@ -30,6 +32,20 @@ public class LayoutImpl implements Layout {
 		return key;
 	}
 	
+	/**
+	 * @param layout The origin layout
+	 * @param transformation The transformation
+	 * @return The transformed layout
+	 */
+	public static Layout transform(Layout layout, Transformation transformation){
+		Layout transformedLayout = layout;
+		if (transformation.equals(SimuImpl.SHIFT_LEFT))
+			transformedLayout = createOrGet(layout.getAspect(SimuImpl.B),layout.getAspect(SimuImpl.C), SimuImpl.EMPTY);
+		if (transformation.equals(SimuImpl.SHIFT_RIGHT))
+			transformedLayout = createOrGet(SimuImpl.EMPTY, layout.getAspect(SimuImpl.A),layout.getAspect(SimuImpl.B));
+		return transformedLayout;
+	}
+	
 	private LayoutImpl(Aspect aspectA, Aspect aspectB, Aspect aspectC){
 		this.label = createPrimitiveKey(aspectA, aspectB, aspectC);
 		aspects.put(SimuImpl.A, aspectA);
@@ -47,6 +63,15 @@ public class LayoutImpl implements Layout {
 
 	public String getLabel() {
 		return this.label;
+	}
+	
+	public Observation observe(){
+		Area area = SimuImpl.B;
+		for (Area a : AreaImpl.getAREAS())
+			if (!this.aspects.get(a).equals(SimuImpl.EMPTY))
+				area = a;
+		Aspect aspect = getAspect(area);
+		return ObservationImpl.createOrGet(aspect, area);
 	}
 	
 	/**
@@ -68,6 +93,10 @@ public class LayoutImpl implements Layout {
 			ret = (other.getLabel().equals(this.label));
 		}
 		return ret;
+	}
+
+	public boolean isEmpty() {
+		return isEmpty(SimuImpl.A) && isEmpty(SimuImpl.B) && isEmpty(SimuImpl.C);
 	}
 
 }

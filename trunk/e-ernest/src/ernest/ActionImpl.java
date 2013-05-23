@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import spas.SimuImpl;
+import spas.Transformation;
 import imos2.Act;
 
 /**
@@ -18,6 +21,7 @@ public class ActionImpl implements Action {
 
 	private String label;
 	private int propositionWeight;
+	private Transformation transformation = SimuImpl.UNKNOWN;
 	private List<Act> acts = new ArrayList<Act>();
 	
 	/**
@@ -58,6 +62,8 @@ public class ActionImpl implements Action {
 		if (!enactedAction.equals(intendedAction)){
 			for (Act act : enactedAction.getActs())
 				act.setAction(intendedAction);
+			if (!enactedAction.getTransformation().equals(SimuImpl.UNKNOWN))
+				intendedAction.setTransformation(enactedAction.getTransformation());
 			ACTIONS.remove(enactedAction.getLabel());
 		}
 	}
@@ -120,5 +126,13 @@ public class ActionImpl implements Action {
 			ret = (other.getLabel().equals(this.label));
 		}
 		return ret;
+	}
+
+	public void setTransformation(Transformation transformation) {
+		this.transformation = transformation;
+	}
+
+	public Transformation getTransformation() {
+		return this.transformation;
 	}
 }
