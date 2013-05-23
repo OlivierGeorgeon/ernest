@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import spas.Area;
+import spas.SimuImpl;
 import ernest.Action;
 import ernest.ActionImpl;
 import ernest.Aspect;
@@ -58,8 +59,8 @@ public class ActImpl implements Act
 		if (!ACTS.containsKey(key)){
 			ActImpl newAct = new ActImpl(key, true, null, null, interaction.getValue(), interaction, area);
 			newAct.setAction(ActionImpl.createNew());
-			//ACTS.get(key).setObservation(ObservationImpl.createNew());
-			newAct.setAspect(AspectImpl.createNew());
+			newAct.setAspect(SimuImpl.PHENOMENON); // Currently, all the acts concern the same phenomenon.
+			//newAct.setAspect(AspectImpl.createNew());
 			ACTS.put(key, newAct);
 			
 			System.out.println("Define primitive act " + key);

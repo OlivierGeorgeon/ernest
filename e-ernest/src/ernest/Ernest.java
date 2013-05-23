@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import spas.IPlace;
 import spas.ISpas;
@@ -157,6 +158,10 @@ public class Ernest implements IErnest
 	public String internalState() 
 	{
 		return ""; //m_imos.getInternalState();
+	}
+
+	public Transform3D getTransformToAnim() {
+		return m_spas.getTransformToAnim();
 	}
 		
 }

@@ -24,5 +24,12 @@ public interface Layout {
 	 * @return true if this area is empty
 	 */
 	public boolean isEmpty(Area area);
+	
+	/**
+	 * @return true if this layout is empty
+	 */
+	public boolean isEmpty();
+
+	public Observation observe();
 
 }

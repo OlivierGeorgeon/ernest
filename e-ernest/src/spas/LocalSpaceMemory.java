@@ -2,7 +2,6 @@ package spas;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import utils.ErnestUtils;

@@ -38,7 +38,7 @@ public interface IEffect
 	/**
 	 * @param transformation The agent's movement during the scheme enaction.
 	 */
-	public void setTransformation(Transform3D transformation);
+	//public void setTransformation(Transform3D transformation);
 	
 	/**
 	 * Set the transformation caused by the scheme enaction

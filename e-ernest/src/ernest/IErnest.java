@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.media.j3d.Transform3D;
 import javax.swing.JFrame;
 import spas.IPlace;
 import spas.ISegment;
@@ -86,5 +87,7 @@ public interface IErnest
 	public ISpatialMemory getSpatialSimulation();
 	
 	public Collection<Primitive> getPrimitives();
+	
+	public Transform3D getTransformToAnim();
 	
 }

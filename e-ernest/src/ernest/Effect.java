@@ -48,10 +48,10 @@ public class Effect implements IEffect
 		return m_location;
 	}
 
-	public void setTransformation(Transform3D transformation) 
-	{
-		m_transformation.set(transformation);
-	}
+//	public void setTransformation(Transform3D transformation) 
+//	{
+//		m_transformation.set(transformation);
+//	}
 
 	public void setTransformation(float angle, float x) 
 	{

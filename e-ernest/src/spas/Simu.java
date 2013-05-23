@@ -25,8 +25,6 @@ public interface Simu {
 	 */
 	public Observation predict(Action action);
 	
-	public void setLayout(Aspect aspectA, Aspect aspectB, Aspect aspectC);
-	
 	/**
 	 * Trace the current state of the simulator
 	 * @param tracer The tracer

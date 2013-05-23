@@ -100,6 +100,6 @@ public interface ISpas
 	//public IActProposition runSimulation(IAct act);
 	
 	public Observation predict(Action action);
-	//public Action getAction(Primitive interaction);
 	
+	public Transform3D getTransformToAnim();
 }
