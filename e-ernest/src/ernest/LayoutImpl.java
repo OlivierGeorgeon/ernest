@@ -40,9 +40,9 @@ public class LayoutImpl implements Layout {
 	public static Layout transform(Layout layout, Transformation transformation){
 		Layout transformedLayout = layout;
 		if (transformation.equals(SimuImpl.SHIFT_LEFT))
-			transformedLayout = createOrGet(layout.getAspect(SimuImpl.B),layout.getAspect(SimuImpl.C), SimuImpl.EMPTY);
+			transformedLayout = createOrGet(layout.getAspect(SimuImpl.B),layout.getAspect(SimuImpl.C), SimuImpl.NONE);
 		if (transformation.equals(SimuImpl.SHIFT_RIGHT))
-			transformedLayout = createOrGet(SimuImpl.EMPTY, layout.getAspect(SimuImpl.A),layout.getAspect(SimuImpl.B));
+			transformedLayout = createOrGet(SimuImpl.NONE, layout.getAspect(SimuImpl.A),layout.getAspect(SimuImpl.B));
 		return transformedLayout;
 	}
 	
@@ -50,7 +50,8 @@ public class LayoutImpl implements Layout {
 		this.label = createPrimitiveKey(aspectA, aspectB, aspectC);
 		aspects.put(SimuImpl.A, aspectA);
 		aspects.put(SimuImpl.B, aspectB);
-		aspects.put(SimuImpl.C, aspectC);		
+		aspects.put(SimuImpl.C, aspectC);	
+		aspects.put(SimuImpl.O, SimuImpl.NONE);
 	}
 
 	public Aspect getAspect(Area area) {
@@ -58,7 +59,7 @@ public class LayoutImpl implements Layout {
 	}
 
 	public boolean isEmpty(Area area) {
-		return this.aspects.get(area).equals(SimuImpl.EMPTY);
+		return this.aspects.get(area).equals(SimuImpl.NONE);
 	}
 
 	public String getLabel() {
@@ -66,9 +67,9 @@ public class LayoutImpl implements Layout {
 	}
 	
 	public Observation observe(){
-		Area area = SimuImpl.B;
+		Area area = SimuImpl.O;
 		for (Area a : AreaImpl.getAREAS())
-			if (!this.aspects.get(a).equals(SimuImpl.EMPTY))
+			if (!this.aspects.get(a).equals(SimuImpl.NONE))
 				area = a;
 		Aspect aspect = getAspect(area);
 		return ObservationImpl.createOrGet(aspect, area);

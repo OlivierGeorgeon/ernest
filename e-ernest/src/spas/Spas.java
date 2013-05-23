@@ -72,7 +72,7 @@ public class Spas implements ISpas
 	{
 		tick();
 		if (enaction.getIntendedPrimitiveInteraction() != null)
-			this.transform = SimuImpl.spasTransform(enaction.getIntendedPrimitiveInteraction().getAction().getTransformation());
+			this.transform = SimuImpl.spasTransform(enaction.getIntendedPrimitiveInteraction().getPrimitive().getAction().getTransformation());
 		m_localSpaceMemory.transform(this.transform);		
 		//m_localSpaceMemory.transform(enaction.getEffect().getTransformation());		
 		m_localSpaceMemory.decay();

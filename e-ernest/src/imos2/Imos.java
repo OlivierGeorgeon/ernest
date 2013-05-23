@@ -135,6 +135,12 @@ public class Imos implements IImos
 			// Compute the enacted primitive interaction from the move and the effect.
 			enactedPrimitiveInteraction = addAct(enaction.getEnactedPrimitive(), enaction.getArea());
 
+			if (enaction.getArea().equals(SimuImpl.O))
+				enactedPrimitiveInteraction.getPrimitive().setAspect(SimuImpl.NONE); 
+			else 
+				enactedPrimitiveInteraction.getPrimitive().setAspect(SimuImpl.ANYTHING); 
+			
+
 			// Compute the top actually enacted interaction
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
 			// TODO compute the actually enacted top interaction.
@@ -196,10 +202,10 @@ public class Imos implements IImos
 				
 				//boolean newAlternate = intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
 				
-				if (!enactedTopInteraction.getAction().equals(intendedTopInteraction.getAction())){
-					System.out.println("Action " + enactedTopInteraction.getAction().getLabel() + " merged to " + intendedTopInteraction.getAction().getLabel());
+				if (!enactedTopInteraction.getPrimitive().getAction().equals(intendedTopInteraction.getPrimitive().getAction())){
+					System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					if (m_tracer != null){
-						m_tracer.addSubelement(actionElmnt, "enacted", enactedTopInteraction.getAction().getLabel() + " merged to " + intendedTopInteraction.getAction().getLabel());
+						m_tracer.addSubelement(actionElmnt, "enacted", enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					}
 				}
 				
@@ -213,7 +219,7 @@ public class Imos implements IImos
 				// The enacted and intended interactions correspond to the same action.
 				// Under construction /// not tested
 				//if (newAlternate)
-					ActionImpl.merge(enactedTopInteraction.getAction(), intendedTopInteraction.getAction());
+					ActionImpl.merge(enactedTopInteraction.getPrimitive().getAction(), intendedTopInteraction.getPrimitive().getAction());
 				//ActionImpl.remove(enactedTopInteraction.getAction().getLabel());
 				//enactedTopInteraction.setAction(intendedTopInteraction.getAction());
 

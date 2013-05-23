@@ -22,7 +22,7 @@ public class ActionImpl implements Action {
 	private String label;
 	private int propositionWeight;
 	private Transformation transformation = SimuImpl.UNKNOWN;
-	private List<Act> acts = new ArrayList<Act>();
+	private List<Primitive> primitives = new ArrayList<Primitive>();
 	
 	/**
 	 * Create or get an action from its label.
@@ -41,8 +41,9 @@ public class ActionImpl implements Action {
 	 */
 	public static Action createNew(){
 		index++;
-		ACTIONS.put(index + "", new ActionImpl(index +""));			
-		return ACTIONS.get(index + "");
+		String key = index + "";
+		ACTIONS.put(key, new ActionImpl(key));			
+		return ACTIONS.get(key);
 	}
 	
 	/**
@@ -60,7 +61,7 @@ public class ActionImpl implements Action {
 	 */
 	public static void merge(Action enactedAction, Action intendedAction){
 		if (!enactedAction.equals(intendedAction)){
-			for (Act act : enactedAction.getActs())
+			for (Primitive act : enactedAction.getPrimitives())
 				act.setAction(intendedAction);
 			if (!enactedAction.getTransformation().equals(SimuImpl.UNKNOWN))
 				intendedAction.setTransformation(enactedAction.getTransformation());
@@ -76,13 +77,13 @@ public class ActionImpl implements Action {
 		return this.label;
 	}
 	
-	public void addAct(Act act){
-		if (!this.acts.contains(act))
-				this.acts.add(act);
+	public void addPrimitive(Primitive primitive){
+		if (!this.primitives.contains(primitive))
+				this.primitives.add(primitive);
 	}
 	
-	public List<Act> getActs(){
-		return this.acts;
+	public List<Primitive> getPrimitives(){
+		return this.primitives;
 	}
 	
 	public int getPropositionWeight() {

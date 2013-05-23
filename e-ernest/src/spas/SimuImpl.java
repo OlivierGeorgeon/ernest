@@ -21,19 +21,21 @@ public class SimuImpl implements Simu {
 	public static Area A = AreaImpl.createOrGet("A");
 	public static Area B = AreaImpl.createOrGet("B");
 	public static Area C = AreaImpl.createOrGet("C");
+	public static Area O = AreaImpl.createOrGet("O");
 
 	/** Predefined aspects */
-	public static Aspect EMPTY = AspectImpl.createOrGet("_");
-	public static Aspect PHENOMENON = AspectImpl.createOrGet("0");
+	public static Aspect EMPTY = AspectImpl.createOrGet("?");
+	public static Aspect NONE = AspectImpl.createOrGet("0");
+	public static Aspect ANYTHING = AspectImpl.createOrGet("1");
 	
 	/** Predefined transformations */
 	public static Transformation UNKNOWN = TransformationImpl.createOrGet("?");
-	public static Transformation IDENTITY = TransformationImpl.createOrGet(">");
+	public static Transformation IDENTITY = TransformationImpl.createOrGet("<");
 	public static Transformation SHIFT_LEFT = TransformationImpl.createOrGet("^");
 	public static Transformation SHIFT_RIGHT = TransformationImpl.createOrGet("v");
 	
 	//private Layout previousLayout = LayoutImpl.createOrGet(EMPTY, EMPTY, EMPTY);
-	private Layout layout  = LayoutImpl.createOrGet(EMPTY, EMPTY, EMPTY);
+	private Layout layout  = LayoutImpl.createOrGet(NONE, NONE, NONE);
 	
 	/**
 	 * Gives the area to which a point belongs.
@@ -42,7 +44,9 @@ public class SimuImpl implements Simu {
 	 */
 	public static Area getArea(Point3f point) 
 	{
-		if (ErnestUtils.polarAngle(point) > .1f)
+		if (point.epsilonEquals(new Point3f(), .1f))
+			return O;
+		else if (ErnestUtils.polarAngle(point) > .1f)
 			return A; 
 		else if (ErnestUtils.polarAngle(point) >= -.1f)
 			return B; 
@@ -76,36 +80,35 @@ public class SimuImpl implements Simu {
 	}
 	
 	public void track(IEnaction enaction){
-		Aspect aspectA = EMPTY;
-		Aspect aspectB = EMPTY;
-		Aspect aspectC = EMPTY;
+		Aspect aspectA = NONE;
+		Aspect aspectB = NONE;
+		Aspect aspectC = NONE;
 		
 		//previousLayout = layout;
 
 		if (enaction.getEnactedPrimitiveInteraction() != null){
 			if (enaction.getArea().equals(A)){
-				aspectA = enaction.getEnactedPrimitiveInteraction().getAspect();
+				aspectA = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
 			}
 			else if (enaction.getArea().equals(B)){
-				aspectB = enaction.getEnactedPrimitiveInteraction().getAspect();
+				aspectB = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
 			}
 			else if (enaction.getArea().equals(C)){
-				aspectC = enaction.getEnactedPrimitiveInteraction().getAspect();
+				aspectC = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
 			}
 		}
 		layout = LayoutImpl.createOrGet(aspectA, aspectB, aspectC);
-		//Transformation transformation = trackTransformation();
 		Transformation transformation = transformation(enaction);
 		
-		if (!transformation.equals(SimuImpl.UNKNOWN))
-			enaction.getEnactedPrimitiveInteraction().getAction().setTransformation(transformation);
+		//if (!transformation.equals(SimuImpl.UNKNOWN))
+		enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction().setTransformation(transformation);
 		enaction.setTransformation(transformation);
 	}
 	
 	private Transformation transformation(IEnaction enaction){
 		Transformation transform = SimuImpl.UNKNOWN;
 
-		if (!layout.isEmpty()){
+		//if (!layout.isEmpty()){
 			transform = SimuImpl.IDENTITY;
 			Transform3D t = enaction.getEffect().getTransformation();
 			float angle = ErnestUtils.angle(t);
@@ -115,36 +118,9 @@ public class SimuImpl implements Simu {
 				else 		
 					transform = SimuImpl.SHIFT_RIGHT;
 			}
-		}
+		//}
 		return transform;
 	}
-	
-//	private Transformation trackTransformation(){
-//		Transformation trans = UNKNOWN;
-//		
-//		if (!currentLayout.isEmpty() &&
-//			currentLayout.isEmpty(A)== previousLayout.isEmpty(A) &&
-//			currentLayout.isEmpty(B)== previousLayout.isEmpty(B) &&
-//			currentLayout.isEmpty(C)== previousLayout.isEmpty(C))
-//			trans = IDENTITY;
-//		
-//		else if (!currentLayout.isEmpty(A)){
-//			if (!previousLayout.isEmpty(B) || !previousLayout.isEmpty(C))
-//				trans = SHIFT_LEFT;
-//		}
-//		else if (!currentLayout.isEmpty(C)){
-//			if (!previousLayout.isEmpty(A) || !previousLayout.isEmpty(B))
-//				trans = SHIFT_RIGHT;
-//		}
-//		else if (!currentLayout.isEmpty(B)){
-//			if (!previousLayout.isEmpty(C))
-//				trans = SHIFT_LEFT;
-//			if (!previousLayout.isEmpty(A))
-//				trans = SHIFT_RIGHT;
-//		}
-//		
-//		return trans;
-//	}
 	
 	public Observation predict(Action action){
 		
@@ -158,7 +134,11 @@ public class SimuImpl implements Simu {
 		if (tracer != null)
 		{
 			Object localSpace = tracer.addEventElement("local_space");
-			tracer.addSubelement(localSpace, "position_8", "FFFFFF");
+			if (layout.isEmpty())
+				tracer.addSubelement(localSpace, "position_8", "9680FF");
+			else
+				tracer.addSubelement(localSpace, "position_8", "FFFFFF");
+	
 			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
 			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
 			

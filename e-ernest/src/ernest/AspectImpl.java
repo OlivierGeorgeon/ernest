@@ -18,7 +18,7 @@ public class AspectImpl implements Aspect {
 	private static int index = 0;
 	
 	private String label;
-	private List<Act> acts = new ArrayList<Act>();
+	private List<Primitive> acts = new ArrayList<Primitive>();
 
 	/**
 	 * @param label The aspect's label
@@ -48,7 +48,7 @@ public class AspectImpl implements Aspect {
 	 */
 	public static void merge(Aspect enactedAspect, Aspect intendedAspect){
 		if (!enactedAspect.equals(intendedAspect)){
-			for (Act act : enactedAspect.getActs())
+			for (Primitive act : enactedAspect.getPrimitives())
 				act.setAspect(intendedAspect);
 			ASPECTS.remove(enactedAspect.getLabel());
 		}
@@ -62,12 +62,12 @@ public class AspectImpl implements Aspect {
 		return this.label;
 	}
 	
-	public void addAct(Act act){
+	public void addPrimitive(Primitive act){
 		if (!this.acts.contains(act))
 				this.acts.add(act);
 	}
 	
-	public List<Act> getActs(){
+	public List<Primitive> getPrimitives(){
 		return this.acts;
 	}
 	

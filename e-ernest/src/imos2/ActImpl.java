@@ -12,6 +12,7 @@ import ernest.AspectImpl;
 import ernest.Observation;
 import ernest.ObservationImpl;
 import ernest.Primitive;
+import ernest.PrimitiveImpl;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -35,11 +36,10 @@ public class ActImpl implements Act
 	private int m_length = 1;
 	private Act m_prescriber = null;
 	private int m_step = 0;
-//	private Primitive interaction;
+	private Primitive primitive;
 	private Action action;
 	//private Observation observation;
 	private Area area;
-	private Aspect aspect;
 	
 	/**
 	 * @return The list of all acts known by the agent.
@@ -58,13 +58,16 @@ public class ActImpl implements Act
 		String key = createPrimitiveKey(interaction, area);
 		if (!ACTS.containsKey(key)){
 			ActImpl newAct = new ActImpl(key, true, null, null, interaction.getValue(), interaction, area);
-			newAct.setAction(ActionImpl.createNew());
-			newAct.setAspect(SimuImpl.PHENOMENON); // Currently, all the acts concern the same phenomenon.
-			//newAct.setAspect(AspectImpl.createNew());
+//			newAct.setAction(ActionImpl.createNew());
 			ACTS.put(key, newAct);
-			
+
+//			if (area.equals(SimuImpl.O))
+//				interaction.setAspect(SimuImpl.EMPTY); 
+//			else 
+//				interaction.setAspect(SimuImpl.ANYTHING); 
+//			
 			System.out.println("Define primitive act " + key);
-			System.out.println("With action " + newAct.getAction().getLabel() + " and aspect " + newAct.getAspect().getLabel());
+//			System.out.println("With action " + newAct.getAction().getLabel());
 		}
 		return ACTS.get(key);
 	}
@@ -91,12 +94,21 @@ public class ActImpl implements Act
 	}
 	
 	public static Act getAct(Action action, Observation observation){
-		for (Act a : ACTS.values()){
-			//if (action.equals(a.getAction()) && observation.equals(a.getObservation()))
-			if (action.equals(a.getAction()) && a.getAspect().equals(observation.getAspect()) && a.getArea().equals(observation.getArea()))			
-				return a;
+		
+		Primitive interaction = action.getPrimitives().get(0);
+		for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
+			if (i.getAction().equals(action) && i.getAspect().equals(observation.getAspect()))
+				interaction = i;
 		}
-		return action.getActs().get(0);
+
+		Act act = createOrGetPrimitiveAct(interaction, observation.getArea());
+		
+//		for (Act a : ACTS.values()){
+//			//if (action.equals(a.getAction()) && observation.equals(a.getObservation()))
+//			if (action.equals(a.getAction()) && a.getPrimitive().getAspect().equals(observation.getAspect()) && a.getArea().equals(observation.getArea()))			
+//				return a;
+//		}
+		return act;
 	}
 	
 	private static String createCompositeKey(Act preAct, Act postAct) {
@@ -108,6 +120,7 @@ public class ActImpl implements Act
 	{
 		this.label = label;
 		m_primitive = primitive;
+		this.primitive = interaction;
 		m_preInteraction = preInteraction;
 		m_postInteraction = postInteraction;
 		this.value = value;
@@ -120,13 +133,14 @@ public class ActImpl implements Act
 	}
 	
 	public Action getAction() {
-		return this.action;
+		System.out.println(label);
+		return this.primitive.getAction();
 	}
-	
-	public void setAction(Action action){
-		this.action = action;
-		action.addAct(this);
-	}
+//	
+//	public void setAction(Action action){
+//		this.action = action;
+//		action.addAct(this);
+//	}
 
 //	public Observation getObservation() {
 //		return this.observation;
@@ -282,14 +296,14 @@ public class ActImpl implements Act
 		return getLabel() + "(" + value/10 + "," + m_enactionWeight + ")";
 	}
 
-	public Aspect getAspect() {
-		return this.aspect;
-	}
-
-	public void setAspect(Aspect aspect) {
-		this.aspect = aspect;
-		aspect.addAct(this);
-	}
+//	public Aspect getAspect() {
+//		return this.aspect;
+//	}
+//
+//	public void setAspect(Aspect aspect) {
+//		this.aspect = aspect;
+//		aspect.addAct(this);
+//	}
 
 	public Area getArea() {
 		return this.area;
@@ -297,5 +311,13 @@ public class ActImpl implements Act
 
 	public void setArea(Area area) {
 		this.area = area;
+	}
+
+	public Primitive getPrimitive() {
+		return this.primitive;
+	}
+
+	public void setPrimitive(Primitive primitive) {
+		this.primitive = primitive;
 	}
 }

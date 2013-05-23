@@ -7,6 +7,7 @@ import ernest.ActionImpl;
 import ernest.Action;
 import ernest.ITracer;
 import ernest.Observation;
+import ernest.Primitive;
 import spas.ISpas;
 
 /**
@@ -47,6 +48,14 @@ public class Decider implements IDecider
 
 		// Predict the next observation
 		Observation  observation = this.spas.predict(action);
+		if (this.tracer != null){
+			Object predictElmt = this.tracer.addEventElement("predict", true);
+			String details ="";
+			for (Primitive a : observation.getAspect().getPrimitives())
+				details += a.getLabel() + " ";
+			this.tracer.addSubelement(predictElmt, "aspect", observation.getAspect().getLabel() + " " + details);
+			this.tracer.addSubelement(predictElmt, "area", observation.getArea().getLabel());
+		}
 		
 		// Construct the intended act
 		Act nextTopIntention = ActImpl.getAct(action, observation);
@@ -71,7 +80,7 @@ public class Decider implements IDecider
 		
 		// Proposed interactions that correspond to an identified action support this action.
 		for (IProposition p: propositions)
-			if (p.getAct().getAction() != null)
+			if (p.getAct().getPrimitive() != null)
 				p.getAct().getAction().addPropositionWeight(p.getWeight());	
 		
 		// trace weighted actions 
@@ -80,8 +89,8 @@ public class Decider implements IDecider
 			decisionElmt = this.tracer.addEventElement("Actions", true);
 			for (Action a : ActionImpl.getACTIONS()){
 				String details = a.getTransformation().getLabel() + " ";
-				for (Act act : a.getActs())
-					details += (" " + act.getLabel());
+				for (Primitive primitive : a.getPrimitives())
+					details += (" " + primitive.getLabel());
 				System.out.println("Propose action " + a.getLabel() + " with weight " + a.getPropositionWeight());
 				this.tracer.addSubelement(decisionElmt, "Action", a.getLabel() + " proposition weight " + a.getPropositionWeight() + " " + details);
 			}

@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import spas.AreaImpl;
+import spas.SimuImpl;
 
 /**
  * A primitive interaction.
@@ -17,6 +18,8 @@ public class PrimitiveImpl implements Primitive {
 
 	private String label = "";
 	private int value = 0;
+	private Action action = ActionImpl.createNew();
+	private Aspect aspect = SimuImpl.EMPTY;
 
 	/**
 	 * @param label The primitive interaction's label
@@ -48,6 +51,7 @@ public class PrimitiveImpl implements Primitive {
 		this.label = label;
 		this.value = value;
 		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet("B"));
+		this.action.addPrimitive(this);		 
 	}
 	
 	public String getLabel(){
@@ -84,4 +88,23 @@ public class PrimitiveImpl implements Primitive {
 	{
 		return this.label + "(" + this.value / 10 + ")";
 	}
+
+	public Aspect getAspect() {
+		return this.aspect;
+	}
+
+	public void setAspect(Aspect aspect) {
+		this.aspect = aspect;
+		aspect.addPrimitive(this);
+	}
+
+	public Action getAction() {
+		return action;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;
+		action.addPrimitive(this);
+	}
+	
 }

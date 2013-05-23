@@ -35,8 +35,8 @@ public interface Action extends Comparable
 	 */
 	public void addPropositionWeight(int weight);
 	
-	public void addAct(Act act);
-	public List<Act> getActs();
+	public void addPrimitive(Primitive act);
+	public List<Primitive> getPrimitives();
 
 	public void setTransformation(Transformation transformation);
 	public Transformation getTransformation();

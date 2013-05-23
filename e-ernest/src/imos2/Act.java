@@ -96,13 +96,16 @@ public interface Act
 	 * @return The action corresponding to this act
 	 */
 	public Action getAction();
-	public void setAction(Action action);
+//	public void setAction(Action action);
 	
-	public Aspect getAspect();
-	public void setAspect(Aspect aspect);
+//	public Aspect getAspect();
+//	public void setAspect(Aspect aspect);
 
 	public Area getArea();
 	public void setArea(Area area);
+
+	public Primitive getPrimitive();
+	public void setPrimitive(Primitive primitive);
 	
 	/**
 	 * @return The aspect of the phenomenon observed through this act.

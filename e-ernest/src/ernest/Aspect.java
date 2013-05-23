@@ -15,6 +15,6 @@ public interface Aspect {
 	 */
 	public String getLabel();
 	
-	public void addAct(Act act);
-	public List<Act> getActs();
+	public void addPrimitive(Primitive primitive);
+	public List<Primitive> getPrimitives();
 }
