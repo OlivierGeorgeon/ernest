@@ -13,5 +13,11 @@ public interface Primitive
 	/**
 	 * @return The primitive interaction's value (multiplied by 10)
 	 */
-	public int getValue();	
+	public int getValue();
+	
+	public Action getAction();
+	public void setAction(Action action);
+	
+	public Aspect getAspect();
+	public void setAspect(Aspect aspect);
 }
