@@ -28,9 +28,6 @@ public class Spas implements ISpas
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
 	
-	/** The clock of the spatial system. (updated on each update cycle as opposed to IMOS) */
-	private int m_clock;
-
 	/** A list of all the bundles ever identified. */
 	public List<IBundle> m_bundles = new ArrayList<IBundle>(10);
 	
@@ -75,12 +72,10 @@ public class Spas implements ISpas
 			this.transform = SimuImpl.spasTransform(enaction.getIntendedPrimitiveInteraction().getPrimitive().getAction().getTransformation());
 
 		m_localSpaceMemory.transform(this.transform);		
-		//m_localSpaceMemory.transform(enaction.getEffect().getTransformation());		
-		m_localSpaceMemory.decay();
+		m_localSpaceMemory.forgetOldPlaces();
 		
 		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveInteraction() != null){
-		//	addPlace(enaction.getEffect().getLocation(), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
-			addPlace(SimuImpl.spasPoint(enaction.getArea()), Place.ENACTION_PLACE, enaction.getEffect().getColor(), enaction.getEnactedPrimitiveInteraction());			
+			addPlace(enaction.getEnactedPrimitiveInteraction(), SimuImpl.spasPoint(enaction.getArea()), enaction.getEffect().getColor());			
 		}
 
 		this.simu.track(enaction);
@@ -92,7 +87,7 @@ public class Spas implements ISpas
 	{
 		Point3f position = new Point3f(1 - j, 1 - i, 0);
 		if (m_localSpaceMemory != null)
-			return m_localSpaceMemory.getValue(position);
+			return m_localSpaceMemory.getDisplayCode(position);
 		else
 			return 0xFFFFFF;
 	}
@@ -100,35 +95,24 @@ public class Spas implements ISpas
 	public ArrayList<IPlace> getPlaceList()
 	{
 		// return m_localSpaceMemory.getPlaceList();
-		return m_localSpaceMemory.clone();
+		return m_localSpaceMemory.clonePlaceList();
 	}
 
-	private IPlace addPlace(Point3f position, int type, int value, Act act) 
+	private IPlace addPlace(Act act, Point3f position,int value) 
 	{
 		IPlace place = m_localSpaceMemory.addPlace(act, position);
 		place.setValue(value);
-		//place.setAct(act);
-//		place.setType(type);
-		//place.setClock(m_clock);
-//		place.setClock(0);
-		
 		return place;
-	}
-
-	public int getClock() 
-	{
-		return m_clock;
 	}
 
 	public void tick() 
 	{
-		m_clock++;
 		m_localSpaceMemory.tick();
 	}
 
 	public int getValue(Point3f position) 
 	{
-		return m_localSpaceMemory.getValue(position);
+		return m_localSpaceMemory.getDisplayCode(position);
 	}
 
 	public ISpatialMemory getSpatialMemory()

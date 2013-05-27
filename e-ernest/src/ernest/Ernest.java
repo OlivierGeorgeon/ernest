@@ -138,7 +138,11 @@ public class Ernest implements IErnest
 
 	public int getUpdateCount() 
 	{
-		return m_spas.getClock();
+		if (m_imos == null)
+			return 0;
+		else
+			return m_imos.getCounter();
+		//return m_spas.getClock();
 	}
 
 	public ISpatialMemory getSpatialSimulation() 
