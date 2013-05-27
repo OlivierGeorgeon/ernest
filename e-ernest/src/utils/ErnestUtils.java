@@ -3,6 +3,7 @@ package utils;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Matrix3d;
 import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Point3f;
 
@@ -126,5 +127,17 @@ public final class ErnestUtils
 		}
 		catch(InterruptedException ie)
 		{}
+	}
+
+	public static float translationX(Transform3D transformation) {
+		Vector3f vec = new Vector3f();
+		transformation.get(vec);
+		return vec.x;
+	}
+
+	public static float translationY(Transform3D transformation) {
+		Vector3f vec = new Vector3f();
+		transformation.get(vec);
+		return vec.y;
 	}
 }
