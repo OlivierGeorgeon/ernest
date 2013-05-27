@@ -17,16 +17,6 @@ public interface IPlace extends Cloneable
 	public void transform(Transform3D transform);
 
 	/**
-	 * @param type This place's type.
-	 */
-	public void setType(int type);
-	
-	/**
-	 * @return This place's type.
-	 */
-	public int getType();
-	
-	/**
 	 * @param clock The timestamp of this place.
 	 */
 	public void setClock(int clock);
@@ -52,14 +42,9 @@ public interface IPlace extends Cloneable
 	public Point3f getPosition();
 	
 	/**
-	 * @param act This place's interaction.
-	 */
-	public void setInteraction(Act act); 
-	
-	/**
 	 * @return This place's act.
 	 */
-	public Act getInteraction(); 
+	public Act getAct(); 
 	
 	/**
 	 * Test if this place is at this position.
@@ -104,16 +89,8 @@ public interface IPlace extends Cloneable
 	public void incClock();
 	
 	public void setOrientation(float orientation);
+	
 	public float getOrientationAngle();
 	
-	//public void setSpeed(Vector3f speed);	
-	//public Vector3f getSpeed();
-	
-	//public boolean evokePhenomenon(int clock);
-	//public boolean isPhenomenon();
-	public boolean from(Vector3f position); 
-	//public boolean from(IPlace previousPlace); 
-	
-	//public boolean anticipateTo(Vector3f position);	
-	
+	//public boolean from(Vector3f position); 
 }

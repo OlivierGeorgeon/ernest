@@ -17,6 +17,8 @@ import ernest.Observation;
 
 public class SimuImpl implements Simu {
 
+	public static int SCALE = 3;
+	
 	/** Predefined areas */
 	public static Area A = AreaImpl.createOrGet("A");
 	public static Area B = AreaImpl.createOrGet("B");
@@ -58,9 +60,11 @@ public class SimuImpl implements Simu {
 		Point3f spasPoint = new Point3f(1, 0, 0);
 		if (area.equals(A))
 			spasPoint.set((float)Math.cos(Math.PI/4), (float)Math.sin(Math.PI/4), 0);
-		if (area.equals(C))
+		else if (area.equals(C))
 			spasPoint.set((float)Math.cos(Math.PI/4),-(float)Math.sin(Math.PI/4), 0);
-		spasPoint.scale(4);
+		else if (area.equals(O))
+			spasPoint.set(0,0, 0);
+		spasPoint.scale(3);
 		return spasPoint;
 	}
 	

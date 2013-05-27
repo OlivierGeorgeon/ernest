@@ -65,7 +65,7 @@ public interface ISpas
 	/**
 	 * @return The clock of spatial memory
 	 */
-	public int getClock();
+	//public int getClock();
 	
 	/**
 	 * @param position This place's position.
