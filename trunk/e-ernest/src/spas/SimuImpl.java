@@ -73,7 +73,7 @@ public class SimuImpl implements Simu {
 			else if (transformation.equals(SHIFT_RIGHT))		
 				spasTransform.rotZ(-Math.PI/2);
 			else
-				spasTransform.setTranslation(new Vector3f(-1,0,0));
+				spasTransform.setTranslation(new Vector3f(0,0,0));
 		}
 		
 		return spasTransform;

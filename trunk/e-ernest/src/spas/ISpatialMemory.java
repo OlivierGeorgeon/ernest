@@ -21,7 +21,7 @@ public interface ISpatialMemory
 	/**
 	 * @return A clone of this spatial memory
 	 */
-	public ISpatialMemory clone();
+	public ArrayList<IPlace> clone();
 	
 	/**
 	 * Simulates an act in spatial memory to check its consistency with the current state of spatial memory.
@@ -66,7 +66,7 @@ public interface ISpatialMemory
 	 * @return The list of places in this spatial memory
 	 */
 	public ArrayList<IPlace> getPlaceList();
-	
+ 	
 	/**
 	 * Set the list of places 
 	 * (used to clone spatial memory)
