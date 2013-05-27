@@ -46,26 +46,24 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	 * From tutorial here: http://ydisanto.developpez.com/tutoriels/java/cloneable/ 
 	 * @return The cloned spatial memory
 	 */
-	public ISpatialMemory clone() 
+	public ArrayList<IPlace> clone() 
 	{
-		LocalSpaceMemory cloneSpatialMemory = null;
-		try {
-			cloneSpatialMemory = (LocalSpaceMemory) super.clone();
-		} catch(CloneNotSupportedException cnse) {
-			cnse.printStackTrace(System.err);
-		}
-
-		// We must clone the place list because it is passed by reference by default
-
 		ArrayList<IPlace> clonePlaces = new ArrayList<IPlace>();
 		for (IPlace place : m_places)
 			clonePlaces.add(place.clone());
-		cloneSpatialMemory.setPlaceList(clonePlaces);
-
+		
+//		LocalSpaceMemory cloneSpatialMemory = null;
+//		try {
+//			cloneSpatialMemory = (LocalSpaceMemory) super.clone();
+//		} catch(CloneNotSupportedException cnse) {
+//			cnse.printStackTrace(System.err);
+//		}
+//		cloneSpatialMemory.setPlaceList(clonePlaces);
 		//cloneSpatialMemory.m_places = clonePlaces;
 		//cloneSpatialMemory.m_clock = m_clock;
+		//return cloneSpatialMemory;
 		
-		return cloneSpatialMemory;
+		return clonePlaces;
 	}
 
 	public void tick()
