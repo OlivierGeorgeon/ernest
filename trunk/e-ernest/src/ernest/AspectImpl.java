@@ -41,15 +41,15 @@ public class AspectImpl implements Aspect {
 	}
 	
 	/**
-	 * Merge the enacted aspect into the intended aspect.
-	 * The interactions attached to the enactedAction are transferred to the intendedAction and the enactedAction is removed
+	 * Merge the new aspect into the previous aspect.
+	 * The interactions attached to the new aspect are transferred to the previous aspect and the new aspect is removed
 	 * @param enactedAspect The first action from which to merge (removed). 
-	 * @param intendedAspect The second action to which to merge (kept).
+	 * @param previousAspect The second action to which to merge (kept).
 	 */
-	public static void merge(Aspect enactedAspect, Aspect intendedAspect){
-		if (!enactedAspect.equals(intendedAspect)){
+	public static void merge(Aspect enactedAspect, Aspect previousAspect){
+		if (!enactedAspect.equals(previousAspect)){
 			for (Primitive act : enactedAspect.getPrimitives())
-				act.setAspect(intendedAspect);
+				act.setAspect(previousAspect);
 			ASPECTS.remove(enactedAspect.getLabel());
 		}
 	}

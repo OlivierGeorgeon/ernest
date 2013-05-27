@@ -1,11 +1,13 @@
 package imos2;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import spas.Area;
 import spas.AreaImpl;
 import spas.SimuImpl;
+import utils.ErnestUtils;
 import ernest.ActionImpl;
 import ernest.Primitive;
 import ernest.ITracer;
@@ -96,9 +98,9 @@ public class Imos implements IImos
     	Act i = ActImpl.createOrGetCompositeAct(preInteraction, postInteraction);
     	
     	// Any alternate interactions of the preInteraction is an alternate interaction of the composite interaction
-		Object alternateElmnt = null;
-		if (m_tracer != null)
-			alternateElmnt = m_tracer.addEventElement("alternate", true);
+//		Object alternateElmnt = null;
+//		if (m_tracer != null)
+//			alternateElmnt = m_tracer.addEventElement("alternate", true);
 //    	for (Act a: preInteraction.getAlternateActs())
 //    	{
 //    		boolean newAlternate = i.addAlternateInteraction(a);
@@ -119,51 +121,58 @@ public class Imos implements IImos
 	{
 		m_imosCycle++;		
 		
-		Act intendedPrimitiveInteraction = enaction.getIntendedPrimitiveInteraction();
-		Act enactedPrimitiveInteraction  = null;
-		Act topEnactedInteraction        = null;
-		Act topRemainingInteraction      = null;
+		Act intendedPrimitiveAct = enaction.getIntendedPrimitiveInteraction();
+		Act enactedPrimitiveAct  = null;
+		Act topEnactedAct        = null;
+		Act topRemainingAct      = null;
 
 		
-		if (intendedPrimitiveInteraction == null){
+		if (intendedPrimitiveAct == null){
 			// On startup create a first enacted interaction
-			enactedPrimitiveInteraction = addAct(PrimitiveImpl.get(">*"), AreaImpl.createOrGet("B"));
+			enactedPrimitiveAct = addAct(PrimitiveImpl.get(">*"), AreaImpl.createOrGet("B"));
 		}
 		// If we are not on startup
 		else
 		{
-			// Compute the enacted primitive interaction from the move and the effect.
-			enactedPrimitiveInteraction = addAct(enaction.getEnactedPrimitive(), enaction.getArea());
-
-			if (enaction.getArea().equals(SimuImpl.O))
-				enactedPrimitiveInteraction.getPrimitive().setAspect(SimuImpl.NONE); 
-			else 
-				enactedPrimitiveInteraction.getPrimitive().setAspect(SimuImpl.ANYTHING); 
+			// Compute the enacted primitive act from the primitive interaction and the area.
+			enactedPrimitiveAct = addAct(enaction.getEnactedPrimitive(), enaction.getArea());
 			
+//			if (enactedPrimitiveAct.getPrimitive().getAspect().equals(SimuImpl.EMPTY)){				
+//				if (enaction.getArea().equals(SimuImpl.O)){
+//					enactedPrimitiveAct.getPrimitive().setAspect(SimuImpl.NONE);
+//					if (m_tracer != null){
+//						m_tracer.addEventElement("phenomenon", "none");}
+//				}
+//				else{ 
+//					enactedPrimitiveAct.getPrimitive().setAspect(SimuImpl.ANYTHING); 
+//					if (m_tracer != null){
+//						m_tracer.addEventElement("phenomenon", "anything");}
+//				}
+//			}
 
 			// Compute the top actually enacted interaction
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
 			// TODO compute the actually enacted top interaction.
-			topEnactedInteraction = topEnactedInteraction(enactedPrimitiveInteraction, intendedPrimitiveInteraction);
+			topEnactedAct = topEnactedInteraction(enactedPrimitiveAct, intendedPrimitiveAct);
 			
 			// Update the prescriber hierarchy.
-			if (intendedPrimitiveInteraction.equals(enactedPrimitiveInteraction)) 
-				topRemainingInteraction = intendedPrimitiveInteraction.updatePrescriber();
+			if (intendedPrimitiveAct.equals(enactedPrimitiveAct)) 
+				topRemainingAct = intendedPrimitiveAct.updatePrescriber();
 			else
 			{
-				intendedPrimitiveInteraction.terminate();
+				intendedPrimitiveAct.terminate();
 			}
 			
-			System.out.println("Enacted primitive interaction " + enactedPrimitiveInteraction );
-			System.out.println("Top remaining interaction " + topRemainingInteraction );
-			System.out.println("Enacted top interaction " + topEnactedInteraction );
+			System.out.println("Enacted primitive interaction " + enactedPrimitiveAct );
+			System.out.println("Top remaining interaction " + topRemainingAct );
+			System.out.println("Enacted top interaction " + topEnactedAct );
 			
 		}					
 		
 		// Update the current enaction
-		enaction.setEnactedPrimitiveInteraction(enactedPrimitiveInteraction);
-		enaction.setTopEnactedInteraction(topEnactedInteraction);
-		enaction.setTopRemainingInteraction(topRemainingInteraction);
+		enaction.setEnactedPrimitiveInteraction(enactedPrimitiveAct);
+		enaction.setTopEnactedInteraction(topEnactedAct);
+		enaction.setTopRemainingInteraction(topRemainingAct);
 
 		// Trace
 		//enaction.traceTrack(m_tracer);
@@ -184,13 +193,6 @@ public class Imos implements IImos
 		ArrayList<Act> previousLearningContext = enaction.getPreviousLearningContext();
 		ArrayList<Act> initialLearningContext = enaction.getInitialLearningContext();
 
-		Object alternateElmnt = null;
-		Object actionElmnt = null;
-		if (m_tracer != null){
-			alternateElmnt = m_tracer.addEventElement("alternate", true);
-			actionElmnt = m_tracer.addEventElement("action", true);
-		}
-		
 		// if we are not on startup
 		if (enactedTopInteraction != null)
 		{
@@ -200,29 +202,14 @@ public class Imos implements IImos
 				m_internalState= "!";
 				enaction.setCorrect(false);	
 				
-				//boolean newAlternate = intendedTopInteraction.addAlternateInteraction(enactedTopInteraction);
-				
 				if (!enactedTopInteraction.getPrimitive().getAction().equals(intendedTopInteraction.getPrimitive().getAction())){
 					System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					if (m_tracer != null){
-						m_tracer.addSubelement(actionElmnt, "enacted", enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
+						m_tracer.addEventElement("action", enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to intended action " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					}
 				}
 				
-//				if (enactedTopInteraction.isPrimitive() && enactedTopInteraction.isPrimitive())
-//				{
-//					newAlternate = enactedTopInteraction.addAlternateInteraction(intendedTopInteraction);
-//					if (m_tracer != null && newAlternate)
-//						m_tracer.addSubelement(alternateElmnt, "prominent", enactedTopInteraction + " alternate " + intendedTopInteraction);
-//				}
-				
-				// The enacted and intended interactions correspond to the same action.
-				// Under construction /// not tested
-				//if (newAlternate)
-					ActionImpl.merge(enactedTopInteraction.getPrimitive().getAction(), intendedTopInteraction.getPrimitive().getAction());
-				//ActionImpl.remove(enactedTopInteraction.getAction().getLabel());
-				//enactedTopInteraction.setAction(intendedTopInteraction.getAction());
-
+				ActionImpl.merge(enactedTopInteraction.getPrimitive().getAction(), intendedTopInteraction.getPrimitive().getAction());
 			}
 			
 			// learn from the  context and the enacted interaction

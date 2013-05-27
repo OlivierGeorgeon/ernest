@@ -51,10 +51,15 @@ public class Enaction implements IEnaction
 	/** The area slice of the primitive enacted interaction */
 	private Area area;
 	private Transformation transformation = SimuImpl.UNKNOWN;
+	private Area previousArea;
 	
 	//private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();	
 	//private int m_simulationStatus = 0;
 	
+	public Area getPreviousArea() {
+		return previousArea;
+	}
+
 	public void setEffect(IEffect effect) 
 	{
 		m_effect = effect;
@@ -62,6 +67,7 @@ public class Enaction implements IEnaction
 
 	public void setArea(Area area)
 	{
+		this.previousArea = this.area;
 		this.area = area;
 	}
 

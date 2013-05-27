@@ -106,6 +106,8 @@ public interface IEnaction
 	 */
 	//public void setSimulationStatus(int simulationStatus);
 	
+	public Area getPreviousArea();
+
 	/**
 	 * @return True if this enaction is terminated.
 	 */
