@@ -61,8 +61,8 @@ public class ActionImpl implements Action {
 	 */
 	public static void merge(Action enactedAction, Action intendedAction){
 		if (!enactedAction.equals(intendedAction)){
-			for (Primitive act : enactedAction.getPrimitives())
-				act.setAction(intendedAction);
+			for (Primitive primitive : enactedAction.getPrimitives())
+				primitive.setAction(intendedAction);
 			if (!enactedAction.getTransformation().equals(SimuImpl.UNKNOWN))
 				intendedAction.setTransformation(enactedAction.getTransformation());
 			ACTIONS.remove(enactedAction.getLabel());

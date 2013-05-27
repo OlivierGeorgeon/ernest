@@ -71,6 +71,20 @@ public class Spas implements ISpas
 		if (enaction.getIntendedPrimitiveInteraction() != null)
 			this.transform = SimuImpl.spasTransform(enaction.getIntendedPrimitiveInteraction().getPrimitive().getAction().getTransformation());
 
+		if (enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect().equals(SimuImpl.EMPTY)){				
+			if (enaction.getArea().equals(SimuImpl.O)){
+				enaction.getEnactedPrimitiveInteraction().getPrimitive().setAspect(SimuImpl.NONE);
+				if (m_tracer != null){
+					m_tracer.addEventElement("phenomenon", "none");}
+			}
+			else{ 
+				enaction.getEnactedPrimitiveInteraction().getPrimitive().setAspect(SimuImpl.ANYTHING); 
+				if (m_tracer != null){
+					m_tracer.addEventElement("phenomenon", "anything");}
+			}
+		}
+
+
 		m_localSpaceMemory.transform(this.transform);		
 		m_localSpaceMemory.forgetOldPlaces();
 		
