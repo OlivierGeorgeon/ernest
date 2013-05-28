@@ -19,7 +19,8 @@ public class PrimitiveImpl implements Primitive {
 	private String label = "";
 	private int value = 0;
 	private Action action = ActionImpl.createNew();
-	private Aspect aspect = SimuImpl.EMPTY;
+	//private Aspect aspect = SimuImpl.EMPTY;
+	private Aspect aspect = AspectImpl.createNew();
 
 	/**
 	 * @param label The primitive interaction's label
@@ -51,7 +52,8 @@ public class PrimitiveImpl implements Primitive {
 		this.label = label;
 		this.value = value;
 		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet("B"));
-		this.action.addPrimitive(this);		 
+		this.action.addPrimitive(this);	
+		this.aspect.addPrimitive(this);
 	}
 	
 	public String getLabel(){

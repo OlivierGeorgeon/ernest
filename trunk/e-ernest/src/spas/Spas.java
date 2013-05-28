@@ -13,6 +13,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import ernest.Action;
+import ernest.Aspect;
+import ernest.AspectImpl;
 import ernest.Primitive;
 import ernest.ITracer;
 import ernest.Observation;
@@ -68,22 +70,12 @@ public class Spas implements ISpas
 	public void track(IEnaction enaction) 
 	{
 		tick();
-		if (enaction.getIntendedPrimitiveInteraction() != null)
-			this.transform = SimuImpl.spasTransform(enaction.getIntendedPrimitiveInteraction().getPrimitive().getAction().getTransformation());
+		
+		// Update spatial memory
+		
+		this.simu.track(enaction);
 
-		if (enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect().equals(SimuImpl.EMPTY)){				
-			if (enaction.getArea().equals(SimuImpl.O)){
-				enaction.getEnactedPrimitiveInteraction().getPrimitive().setAspect(SimuImpl.NONE);
-				if (m_tracer != null){
-					m_tracer.addEventElement("phenomenon", "none");}
-			}
-			else{ 
-				enaction.getEnactedPrimitiveInteraction().getPrimitive().setAspect(SimuImpl.ANYTHING); 
-				if (m_tracer != null){
-					m_tracer.addEventElement("phenomenon", "anything");}
-			}
-		}
-
+		this.transform = SimuImpl.spasTransform(enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction().getTransformation());
 
 		m_localSpaceMemory.transform(this.transform);		
 		m_localSpaceMemory.forgetOldPlaces();
@@ -92,7 +84,33 @@ public class Spas implements ISpas
 			addPlace(enaction.getEnactedPrimitiveInteraction(), SimuImpl.spasPoint(enaction.getArea()), enaction.getEffect().getColor());			
 		}
 
-		this.simu.track(enaction);
+		// Merge phenomena
+		
+		//if (enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect().equals(SimuImpl.EMPTY)){				
+			if (enaction.getArea().equals(SimuImpl.O) && enaction.getIntendedPrimitiveInteraction() != null){
+				enaction.getEnactedPrimitiveInteraction().getPrimitive().setAspect(SimuImpl.NONE);
+				//if (m_tracer != null){
+				//	m_tracer.addEventElement("phenomenon", "none");}
+			}
+			else{ 
+				Aspect newAspect = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
+				IPlace previousPlace = m_localSpaceMemory.getPreviousPlace();
+				if (previousPlace != null){
+					System.out.println("previous place " + previousPlace.getValue());
+					Area previousArea = SimuImpl.getArea(previousPlace.getPosition());
+					if (previousArea.equals(enaction.getArea())){
+						Aspect previousAspect = previousPlace.getAct().getPrimitive().getAspect();
+						if (!previousAspect.equals(newAspect)){
+							AspectImpl.merge(newAspect, previousAspect);
+							//enaction.getEnactedPrimitiveInteraction().getPrimitive().setAspect(SimuImpl.ANYTHING); 
+							if (m_tracer != null){
+								m_tracer.addEventElement("phenomenon", newAspect.getLabel() + " merged to " + previousAspect.getLabel());}
+						}
+					}
+				}
+			}
+		//}
+
 
 		if (m_tracer != null) this.simu.trace(m_tracer);
 	}

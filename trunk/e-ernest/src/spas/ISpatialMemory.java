@@ -64,4 +64,5 @@ public interface ISpatialMemory
 	 */
 	public void trace(ITracer tracer);
 
+	public IPlace getPreviousPlace();
 }

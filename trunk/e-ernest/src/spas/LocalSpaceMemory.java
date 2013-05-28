@@ -175,5 +175,12 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}
 	}
 	
+	public IPlace getPreviousPlace(){
+		IPlace place = null;
+		for (IPlace p : this.m_places)
+			if (p.getClock() >= 1)
+				place = p;
+		return place;
+	}
 
 }
