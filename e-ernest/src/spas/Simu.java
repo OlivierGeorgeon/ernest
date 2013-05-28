@@ -4,6 +4,7 @@ import imos2.IEnaction;
 import ernest.Action;
 import ernest.Aspect;
 import ernest.ITracer;
+import ernest.Layout;
 import ernest.Observation;
 
 /**

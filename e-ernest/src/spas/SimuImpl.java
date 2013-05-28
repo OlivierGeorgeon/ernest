@@ -26,9 +26,7 @@ public class SimuImpl implements Simu {
 	public static Area O = AreaImpl.createOrGet("O");
 
 	/** Predefined aspects */
-	public static Aspect EMPTY = AspectImpl.createOrGet("?");
-	public static Aspect NONE = AspectImpl.createOrGet("0");
-	public static Aspect ANYTHING = AspectImpl.createOrGet("1");
+	public static Aspect NONE = AspectImpl.createOrGet("_");
 	
 	/** Predefined transformations */
 	public static Transformation UNKNOWN = TransformationImpl.createOrGet("?");
@@ -36,7 +34,6 @@ public class SimuImpl implements Simu {
 	public static Transformation SHIFT_LEFT = TransformationImpl.createOrGet("^");
 	public static Transformation SHIFT_RIGHT = TransformationImpl.createOrGet("v");
 	
-	//private Layout previousLayout = LayoutImpl.createOrGet(EMPTY, EMPTY, EMPTY);
 	private Layout layout  = LayoutImpl.createOrGet(NONE, NONE, NONE);
 	
 	/**
@@ -88,7 +85,8 @@ public class SimuImpl implements Simu {
 		Aspect aspectB = NONE;
 		Aspect aspectC = NONE;
 		
-		//previousLayout = layout;
+		Transformation transformation = transformation(enaction);
+		//previousLayout = LayoutImpl.transform(layout, transformation);
 
 		if (enaction.getEnactedPrimitiveInteraction() != null){
 			if (enaction.getArea().equals(A)){
@@ -101,8 +99,8 @@ public class SimuImpl implements Simu {
 				aspectC = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
 			}
 		}
+
 		layout = LayoutImpl.createOrGet(aspectA, aspectB, aspectC);
-		Transformation transformation = transformation(enaction);
 		
 		//if (!transformation.equals(SimuImpl.UNKNOWN))
 		enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction().setTransformation(transformation);

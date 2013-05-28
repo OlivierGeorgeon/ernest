@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import ernest.ActionImpl;
 import ernest.Action;
+import ernest.Aspect;
+import ernest.AspectImpl;
 import ernest.ITracer;
 import ernest.Observation;
 import ernest.Primitive;
@@ -49,11 +51,16 @@ public class Decider implements IDecider
 		// Predict the next observation
 		Observation  observation = this.spas.predict(action);
 		if (this.tracer != null){
+			Object aspectElmt = this.tracer.addEventElement("aspect", true);
+			for (Aspect a : AspectImpl.getAspects()){
+				String details ="";
+				for (Primitive i : a.getPrimitives())
+					details += i.getLabel() + " ";				
+				this.tracer.addSubelement(aspectElmt, "aspect", a.getLabel() + " " + details);
+			}
+			
 			Object predictElmt = this.tracer.addEventElement("predict", true);
-			String details ="";
-			for (Primitive a : observation.getAspect().getPrimitives())
-				details += a.getLabel() + " ";
-			this.tracer.addSubelement(predictElmt, "aspect", observation.getAspect().getLabel() + " " + details);
+			this.tracer.addSubelement(predictElmt, "phenomenon", observation.getAspect().getLabel());
 			this.tracer.addSubelement(predictElmt, "area", observation.getArea().getLabel());
 		}
 		
