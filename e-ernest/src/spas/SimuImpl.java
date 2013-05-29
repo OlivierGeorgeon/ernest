@@ -26,7 +26,7 @@ public class SimuImpl implements Simu {
 	public static Area O = AreaImpl.createOrGet("O");
 
 	/** Predefined aspects */
-	public static Aspect NONE = AspectImpl.createOrGet("_");
+	public static Aspect EMPTY = AspectImpl.createOrGet("_");
 	
 	/** Predefined transformations */
 	public static Transformation UNKNOWN = TransformationImpl.createOrGet("?");
@@ -34,7 +34,7 @@ public class SimuImpl implements Simu {
 	public static Transformation SHIFT_LEFT = TransformationImpl.createOrGet("^");
 	public static Transformation SHIFT_RIGHT = TransformationImpl.createOrGet("v");
 	
-	private Layout layout  = LayoutImpl.createOrGet(NONE, NONE, NONE);
+	private Layout layout  = LayoutImpl.createOrGet(EMPTY, EMPTY, EMPTY);
 	
 	/**
 	 * Gives the area to which a point belongs.
@@ -81,9 +81,9 @@ public class SimuImpl implements Simu {
 	}
 	
 	public void track(IEnaction enaction){
-		Aspect aspectA = NONE;
-		Aspect aspectB = NONE;
-		Aspect aspectC = NONE;
+		Aspect aspectA = EMPTY;
+		Aspect aspectB = EMPTY;
+		Aspect aspectC = EMPTY;
 		
 		Transformation transformation = transformation(enaction);
 		//previousLayout = LayoutImpl.transform(layout, transformation);
@@ -102,7 +102,6 @@ public class SimuImpl implements Simu {
 
 		layout = LayoutImpl.createOrGet(aspectA, aspectB, aspectC);
 		
-		//if (!transformation.equals(SimuImpl.UNKNOWN))
 		enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction().setTransformation(transformation);
 		enaction.setTransformation(transformation);
 	}
@@ -110,17 +109,16 @@ public class SimuImpl implements Simu {
 	private Transformation transformation(IEnaction enaction){
 		Transformation transform = SimuImpl.UNKNOWN;
 
-		//if (!layout.isEmpty()){
-			transform = SimuImpl.IDENTITY;
-			Transform3D t = enaction.getEffect().getTransformation();
-			float angle = ErnestUtils.angle(t);
-			if (Math.abs(angle) > .1){
-				if ( angle > 0)		
-					transform = SimuImpl.SHIFT_LEFT;
-				else 		
-					transform = SimuImpl.SHIFT_RIGHT;
-			}
-		//}
+		transform = SimuImpl.IDENTITY;
+		Transform3D t = enaction.getEffect().getTransformation();
+		float angle = ErnestUtils.angle(t);
+		if (Math.abs(angle) > .1){
+			if ( angle > 0)		
+				transform = SimuImpl.SHIFT_LEFT;
+			else 		
+				transform = SimuImpl.SHIFT_RIGHT;
+		}
+
 		return transform;
 	}
 	
