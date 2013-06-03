@@ -39,10 +39,24 @@ public class LayoutImpl implements Layout {
 	 */
 	public static Layout transform(Layout layout, Transformation transformation){
 		Layout transformedLayout = layout;
-		if (transformation.equals(SimuImpl.SHIFT_LEFT))
-			transformedLayout = createOrGet(layout.getAspect(SimuImpl.B),layout.getAspect(SimuImpl.C), SimuImpl.EMPTY);
-		if (transformation.equals(SimuImpl.SHIFT_RIGHT))
-			transformedLayout = createOrGet(SimuImpl.EMPTY, layout.getAspect(SimuImpl.A),layout.getAspect(SimuImpl.B));
+		if (transformation.equals(SimuImpl.SHIFT_LEFT)){
+			//transformedLayout = createOrGet(layout.getAspect(SimuImpl.B),layout.getAspect(SimuImpl.C), SimuImpl.EMPTY);
+			if (!layout.getAspect(SimuImpl.B).equals(SimuImpl.EMPTY) )
+				transformedLayout = createOrGet(layout.getAspect(SimuImpl.B),SimuImpl.EMPTY, SimuImpl.EMPTY);
+			else if (!layout.getAspect(SimuImpl.C).equals(SimuImpl.EMPTY) )
+				transformedLayout = createOrGet(layout.getAspect(SimuImpl.C),SimuImpl.EMPTY, SimuImpl.EMPTY);
+			else 
+				transformedLayout = createOrGet(SimuImpl.EMPTY,SimuImpl.EMPTY, SimuImpl.EMPTY);
+		}
+		if (transformation.equals(SimuImpl.SHIFT_RIGHT)){
+			//transformedLayout = createOrGet(SimuImpl.EMPTY, layout.getAspect(SimuImpl.A),layout.getAspect(SimuImpl.B));
+			if (!layout.getAspect(SimuImpl.A).equals(SimuImpl.EMPTY) )
+				transformedLayout = createOrGet(SimuImpl.EMPTY, SimuImpl.EMPTY, layout.getAspect(SimuImpl.A));
+			else if (!layout.getAspect(SimuImpl.B).equals(SimuImpl.EMPTY) )
+				transformedLayout = createOrGet(SimuImpl.EMPTY, SimuImpl.EMPTY, layout.getAspect(SimuImpl.B));
+			else 
+				transformedLayout = createOrGet(SimuImpl.EMPTY,SimuImpl.EMPTY, SimuImpl.EMPTY);
+		}
 		return transformedLayout;
 	}
 	

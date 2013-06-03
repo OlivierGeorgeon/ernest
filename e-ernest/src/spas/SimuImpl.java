@@ -1,5 +1,7 @@
 package spas;
 
+import imos2.Act;
+import imos2.ActImpl;
 import imos2.IEnaction;
 
 import javax.media.j3d.Transform3D;
@@ -10,10 +12,14 @@ import utils.ErnestUtils;
 import ernest.Action;
 import ernest.Aspect;
 import ernest.AspectImpl;
+import ernest.Experiment;
+import ernest.ExperimentImpl;
 import ernest.ITracer;
 import ernest.Layout;
 import ernest.LayoutImpl;
 import ernest.Observation;
+import ernest.Primitive;
+import ernest.PrimitiveImpl;
 
 public class SimuImpl implements Simu {
 
@@ -80,6 +86,23 @@ public class SimuImpl implements Simu {
 		return spasTransform;
 	}
 	
+	public static Act getAct(Action action, Observation observation){
+		
+		Experiment exp = ExperimentImpl.createOrGet(action, observation);
+		Act act = exp.predictAct();
+		
+		if (act == null){
+			Primitive interaction = action.getPrimitives().get(0);
+			for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
+				if (i.getAction().equals(action) && i.getAspect().equals(observation.getAspect()))
+					interaction = i;
+			}
+			act = ActImpl.createOrGetPrimitiveAct(interaction, observation.getArea());
+		}
+
+		return act;
+	}
+
 	public void track(IEnaction enaction){
 		Aspect aspectA = EMPTY;
 		Aspect aspectB = EMPTY;

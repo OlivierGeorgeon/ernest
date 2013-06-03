@@ -15,6 +15,9 @@ import javax.vecmath.Vector3f;
 import ernest.Action;
 import ernest.Aspect;
 import ernest.AspectImpl;
+import ernest.Experiment;
+import ernest.ExperimentImpl;
+import ernest.ObservationImpl;
 import ernest.Primitive;
 import ernest.ITracer;
 import ernest.Observation;
@@ -107,6 +110,11 @@ public class Spas implements ISpas
 				}
 			}
 		}
+		
+		// Record the experiment
+		Observation observation = ObservationImpl.createOrGet(newAspect, enaction.getArea());
+		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction(), observation);
+		newExp.addAct(enaction.getEnactedPrimitiveInteraction());
 
 		if (m_tracer != null) this.simu.trace(m_tracer);
 	}
