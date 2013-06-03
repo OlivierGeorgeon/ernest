@@ -7,10 +7,13 @@ import ernest.ActionImpl;
 import ernest.Action;
 import ernest.Aspect;
 import ernest.AspectImpl;
+import ernest.Experiment;
+import ernest.ExperimentImpl;
 import ernest.ITracer;
 import ernest.Observation;
 import ernest.Primitive;
 import spas.ISpas;
+import spas.SimuImpl;
 
 /**
  * This is the regular decider for Ernest 7 that does not use spatial memory.
@@ -51,13 +54,12 @@ public class Decider implements IDecider
 		// Predict the next observation
 		Observation  observation = this.spas.predict(action);
 		if (this.tracer != null){
-			Object aspectElmt = this.tracer.addEventElement("aspect", true);
-			for (Aspect a : AspectImpl.getAspects()){
-				String details ="";
-				for (Primitive i : a.getPrimitives())
-					details += i.getLabel() + " ";				
-				this.tracer.addSubelement(aspectElmt, "aspect", a.getLabel() + " " + details);
-			}
+			Object aspectElmt = this.tracer.addEventElement("aspects", true);
+			for (Aspect a : AspectImpl.getAspects())
+				this.tracer.addSubelement(aspectElmt, "aspect", a.toString());
+			Object experimentElmt = this.tracer.addEventElement("experiments", true);
+			for (Experiment a : ExperimentImpl.getExperiments())
+				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
 			Object predictElmt = this.tracer.addEventElement("predict", true);
 			this.tracer.addSubelement(predictElmt, "phenomenon", observation.getAspect().getLabel());
@@ -65,7 +67,7 @@ public class Decider implements IDecider
 		}
 		
 		// Construct the intended act
-		Act nextTopIntention = ActImpl.getAct(action, observation);
+		Act nextTopIntention = SimuImpl.getAct(action, observation);
 
 		System.out.println("Act " + nextTopIntention.getLabel());
 		newEnaction.setTopInteraction(nextTopIntention);

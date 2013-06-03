@@ -18,7 +18,7 @@ public class AspectImpl implements Aspect {
 	private static int index = 0;
 	
 	private String label;
-	private List<Primitive> acts = new ArrayList<Primitive>();
+	private List<Primitive> primitives = new ArrayList<Primitive>();
 
 	/**
 	 * @param label The aspect's label
@@ -63,12 +63,12 @@ public class AspectImpl implements Aspect {
 	}
 	
 	public void addPrimitive(Primitive act){
-		if (!this.acts.contains(act))
-				this.acts.add(act);
+		if (!this.primitives.contains(act))
+				this.primitives.add(act);
 	}
 	
 	public List<Primitive> getPrimitives(){
-		return this.acts;
+		return this.primitives;
 	}
 	
 	/**
@@ -95,6 +95,13 @@ public class AspectImpl implements Aspect {
 
 	public static Collection<Aspect> getAspects() {
 		return ASPECTS.values();
+	}
+	
+	public String toString(){
+		String s = this.label;
+		for (Primitive i : primitives)
+			s += " " + i.getLabel();
+		return s;
 	}
 
 }

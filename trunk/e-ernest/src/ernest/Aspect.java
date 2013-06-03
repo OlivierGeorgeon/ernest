@@ -15,6 +15,13 @@ public interface Aspect {
 	 */
 	public String getLabel();
 	
+	/**
+	 * @param primitive The primitive interaction to add to this aspect
+	 */
 	public void addPrimitive(Primitive primitive);
+	
+	/**
+	 * @return The list of primitive interactions attached to this aspect
+	 */
 	public List<Primitive> getPrimitives();
 }

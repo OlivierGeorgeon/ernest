@@ -140,7 +140,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			IPlace p = (IPlace)it.next();
-			if (p.getClock() > PERSISTENCE_DURATION ) 
+			if (p.getClock() > PERSISTENCE_DURATION || p.getPosition().x < -.1) 
 				it.remove();
 		}
 	}

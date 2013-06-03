@@ -93,23 +93,23 @@ public class ActImpl implements Act
 		//return new ActImpl(label, false, preInteraction, postInteraction, enactionValue, null, null);
 	}
 	
-	public static Act getAct(Action action, Observation observation){
-		
-		Primitive interaction = action.getPrimitives().get(0);
-		for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
-			if (i.getAction().equals(action) && i.getAspect().equals(observation.getAspect()))
-				interaction = i;
-		}
-
-		Act act = createOrGetPrimitiveAct(interaction, observation.getArea());
-		
-//		for (Act a : ACTS.values()){
-//			//if (action.equals(a.getAction()) && observation.equals(a.getObservation()))
-//			if (action.equals(a.getAction()) && a.getPrimitive().getAspect().equals(observation.getAspect()) && a.getArea().equals(observation.getArea()))			
-//				return a;
+//	public static Act getAct(Action action, Observation observation){
+//		
+//		Primitive interaction = action.getPrimitives().get(0);
+//		for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
+//			if (i.getAction().equals(action) && i.getAspect().equals(observation.getAspect()))
+//				interaction = i;
 //		}
-		return act;
-	}
+//
+//		Act act = createOrGetPrimitiveAct(interaction, observation.getArea());
+//		
+////		for (Act a : ACTS.values()){
+////			//if (action.equals(a.getAction()) && observation.equals(a.getObservation()))
+////			if (action.equals(a.getAction()) && a.getPrimitive().getAspect().equals(observation.getAspect()) && a.getArea().equals(observation.getArea()))			
+////				return a;
+////		}
+//		return act;
+//	}
 	
 	private static String createCompositeKey(Act preAct, Act postAct) {
 		String key = preAct.getLabel() + postAct.getLabel();
