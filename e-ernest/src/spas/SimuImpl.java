@@ -10,8 +10,8 @@ import javax.vecmath.Vector3f;
 
 import utils.ErnestUtils;
 import ernest.Action;
-import ernest.Aspect;
-import ernest.AspectImpl;
+import ernest.Phenomenon;
+import ernest.PhenomenonImpl;
 import ernest.Experiment;
 import ernest.ExperimentImpl;
 import ernest.ITracer;
@@ -32,7 +32,7 @@ public class SimuImpl implements Simu {
 	public static Area O = AreaImpl.createOrGet("O");
 
 	/** Predefined aspects */
-	public static Aspect EMPTY = AspectImpl.createOrGet("_");
+	public static Phenomenon EMPTY = PhenomenonImpl.createOrGet("_");
 	
 	/** Predefined transformations */
 	public static Transformation UNKNOWN = TransformationImpl.createOrGet("?");
@@ -104,9 +104,9 @@ public class SimuImpl implements Simu {
 	}
 
 	public void track(IEnaction enaction){
-		Aspect aspectA = EMPTY;
-		Aspect aspectB = EMPTY;
-		Aspect aspectC = EMPTY;
+		Phenomenon aspectA = EMPTY;
+		Phenomenon aspectB = EMPTY;
+		Phenomenon aspectC = EMPTY;
 		
 		Transformation transformation = transformation(enaction);
 		//previousLayout = LayoutImpl.transform(layout, transformation);

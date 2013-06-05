@@ -17,7 +17,7 @@ public interface Layout {
 	 * @param area the area
 	 * @return The aspect present in this area.
 	 */
-	public Aspect getAspect(Area area);
+	public Phenomenon getAspect(Area area);
 	
 	/**
 	 * @param area The area

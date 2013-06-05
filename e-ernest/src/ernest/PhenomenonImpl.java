@@ -12,9 +12,9 @@ import java.util.Map;
  * An Aspect is the element of an observation that can be situated in space
  * @author Olivier
  */
-public class AspectImpl implements Aspect {
+public class PhenomenonImpl implements Phenomenon {
 	
-	private static Map<String , Aspect> ASPECTS = new HashMap<String , Aspect>() ;
+	private static Map<String , Phenomenon> ASPECTS = new HashMap<String , Phenomenon>() ;
 	private static int index = 0;
 	
 	private String label;
@@ -24,9 +24,9 @@ public class AspectImpl implements Aspect {
 	 * @param label The aspect's label
 	 * @return The aspect
 	 */
-	public static Aspect createOrGet(String label){
+	public static Phenomenon createOrGet(String label){
 		if (!ASPECTS.containsKey(label))
-			ASPECTS.put(label, new AspectImpl(label));			
+			ASPECTS.put(label, new PhenomenonImpl(label));			
 		return ASPECTS.get(label);
 	}
 	
@@ -34,9 +34,9 @@ public class AspectImpl implements Aspect {
 	 * Creates a new aspect using an incremental label
 	 * @return The new created aspect
 	 */
-	public static Aspect createNew(){
+	public static Phenomenon createNew(){
 		index++;
-		ASPECTS.put(index + "", new AspectImpl(index +""));			
+		ASPECTS.put(index + "", new PhenomenonImpl(index +""));			
 		return ASPECTS.get(index + "");
 	}
 	
@@ -46,7 +46,7 @@ public class AspectImpl implements Aspect {
 	 * @param enactedAspect The first action from which to merge (removed). 
 	 * @param previousAspect The second action to which to merge (kept).
 	 */
-	public static void merge(Aspect enactedAspect, Aspect previousAspect){
+	public static void merge(Phenomenon enactedAspect, Phenomenon previousAspect){
 		if (!enactedAspect.equals(previousAspect)){
 			for (Primitive act : enactedAspect.getPrimitives())
 				act.setAspect(previousAspect);
@@ -54,7 +54,7 @@ public class AspectImpl implements Aspect {
 		}
 	}
 	
-	private AspectImpl(String label){
+	private PhenomenonImpl(String label){
 		this.label = label;
 	}
 
@@ -86,14 +86,14 @@ public class AspectImpl implements Aspect {
 			ret = false;
 		else
 		{
-			Aspect other = (Aspect)o;
+			Phenomenon other = (Phenomenon)o;
 			ret = (other.getLabel().equals(this.label));
 		}
 		
 		return ret;
 	}
 
-	public static Collection<Aspect> getAspects() {
+	public static Collection<Phenomenon> getAspects() {
 		return ASPECTS.values();
 	}
 	
