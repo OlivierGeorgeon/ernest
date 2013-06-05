@@ -74,6 +74,8 @@ public class Spas implements ISpas
 	{
 		tick();
 		
+		Area area = enaction.getEnactedPrimitiveInteraction().getArea();
+		
 		// Update spatial memory
 		
 		this.simu.track(enaction);
@@ -84,13 +86,13 @@ public class Spas implements ISpas
 		m_localSpaceMemory.forgetOldPlaces();
 		
 		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveInteraction() != null){
-			addPlace(enaction.getEnactedPrimitiveInteraction(), SimuImpl.spasPoint(enaction.getArea()), enaction.getEffect().getColor());			
+			addPlace(enaction.getEnactedPrimitiveInteraction(), SimuImpl.spasPoint(area), enaction.getEffect().getColor());			
 		}
 
 		// Merge phenomena
 		
-		Phenomenon newAspect = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
-		if (enaction.getArea().equals(SimuImpl.O) && enaction.getIntendedPrimitiveInteraction() != null){
+		Phenomenon newAspect = enaction.getEnactedPrimitiveInteraction().getPrimitive().getPhenomenon();
+		if (area.equals(SimuImpl.O) && enaction.getIntendedPrimitiveInteraction() != null){
 			PhenomenonImpl.merge(newAspect, SimuImpl.EMPTY);
 			if (m_tracer != null && !newAspect.equals(SimuImpl.EMPTY)){
 				m_tracer.addEventElement("empty", newAspect.getLabel() + " merged to " + SimuImpl.EMPTY.getLabel());}
@@ -100,8 +102,8 @@ public class Spas implements ISpas
 			if (previousPlace != null){
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = SimuImpl.getArea(previousPlace.getPosition());
-				if (previousArea.equals(enaction.getArea())){
-					Phenomenon previousAspect = previousPlace.getAct().getPrimitive().getAspect();
+				if (previousArea.equals(area)){
+					Phenomenon previousAspect = previousPlace.getAct().getPrimitive().getPhenomenon();
 					if (!previousAspect.equals(newAspect)){
 						PhenomenonImpl.merge(newAspect, previousAspect);
 						if (m_tracer != null){
@@ -112,7 +114,7 @@ public class Spas implements ISpas
 		}
 		
 		// Record the experiment
-		Observation observation = ObservationImpl.createOrGet(newAspect, enaction.getArea());
+		Observation observation = ObservationImpl.createOrGet(newAspect, area);
 		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction(), observation);
 		newExp.addAct(enaction.getEnactedPrimitiveInteraction());
 

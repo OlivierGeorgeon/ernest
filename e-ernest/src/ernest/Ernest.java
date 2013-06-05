@@ -8,11 +8,13 @@ import java.util.TreeMap;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
+
+import spas.AreaImpl;
 import spas.IPlace;
 import spas.ISpas;
 import spas.ISpatialMemory;
 import spas.Spas;
-import imos2.Enaction;
+import imos2.EnactionImpl;
 import imos2.IEnaction;
 import imos2.IImos;
 import imos2.Act;
@@ -34,7 +36,7 @@ public class Ernest implements IErnest
 	public static int UNANIMATED_COLOR = 0x808080;
 
 	/** Ernest's current enaction */
-	private IEnaction m_enaction = new Enaction();
+	private IEnaction m_enaction = new EnactionImpl();
 	
 	/** Ernest's spatial system. */
 	private ISpas m_spas = new Spas();
@@ -81,6 +83,15 @@ public class Ernest implements IErnest
 		
 		Primitive enactedPrimitive = PrimitiveImpl.get(effect.getEnactedInteractionLabel());
 		m_enaction.setEnactedPrimitive(enactedPrimitive);
+		Act enactedPrimitiveAct  = null;
+		if (m_enaction.getIntendedPrimitiveInteraction() == null)
+			// On startup create a first enacted interaction
+			enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">*"), AreaImpl.createOrGet("B"));
+		else
+			// If we are not on startup
+			// Compute the enacted primitive act from the primitive interaction and the area.
+			enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(enactedPrimitive, m_spas.categorizePosition(effect.getLocation()));
+		m_enaction.setEnactedPrimitiveInteraction(enactedPrimitiveAct);
 		
 		// Start a new interaction cycle.
 		if (m_tracer != null)
@@ -91,7 +102,6 @@ public class Ernest implements IErnest
 		
 		// track the enaction 
 		
-		m_enaction.setArea(m_spas.categorizePosition(effect.getLocation()));
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
 		m_enaction.traceTrack(m_tracer);

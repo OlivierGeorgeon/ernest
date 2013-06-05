@@ -5,13 +5,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import spas.SimuImpl;
 import spas.Transformation;
-import imos2.Act;
 
 /**
- * An action represents the active part of an interaction.
+ * An action that may be performed by interactions.
  * @author Olivier
  */
 public class ActionImpl implements Action {
