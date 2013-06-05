@@ -30,6 +30,7 @@ public class ActImpl implements Act
 	private int m_step = 0;
 	private Primitive primitive;
 	private Area area;
+	private int color;
 	
 	/**
 	 * @return The list of all acts known by the agent.
@@ -256,5 +257,13 @@ public class ActImpl implements Act
 
 	public void setPrimitive(Primitive primitive) {
 		this.primitive = primitive;
+	}
+
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
 	}
 }

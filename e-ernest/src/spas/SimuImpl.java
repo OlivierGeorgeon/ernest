@@ -2,7 +2,7 @@ package spas;
 
 import imos2.Act;
 import imos2.ActImpl;
-import imos2.IEnaction;
+import imos2.Enaction;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
@@ -10,6 +10,7 @@ import javax.vecmath.Vector3f;
 
 import utils.ErnestUtils;
 import ernest.Action;
+import ernest.IEffect;
 import ernest.Phenomenon;
 import ernest.PhenomenonImpl;
 import ernest.Experiment;
@@ -103,38 +104,39 @@ public class SimuImpl implements Simu {
 		return act;
 	}
 
-	public void track(IEnaction enaction){
-		Area area = enaction.getEnactedPrimitiveInteraction().getArea();
+	public void track(Enaction enaction){
+		Area area = enaction.getEnactedPrimitiveAct().getArea();
 		Phenomenon aspectA = EMPTY;
 		Phenomenon aspectB = EMPTY;
 		Phenomenon aspectC = EMPTY;
 		
-		Transformation transformation = transformation(enaction);
+		//Transformation transformation = transformation(enaction.getEffect());
+		Transformation transformation = enaction.getTransformation();
 		//previousLayout = LayoutImpl.transform(layout, transformation);
 
-		if (enaction.getEnactedPrimitiveInteraction() != null){
+		if (enaction.getEnactedPrimitiveAct() != null){
 			if (area.equals(A)){
-				aspectA = enaction.getEnactedPrimitiveInteraction().getPrimitive().getPhenomenon();
+				aspectA = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenon();
 			}
 			else if (area.equals(B)){
-				aspectB = enaction.getEnactedPrimitiveInteraction().getPrimitive().getPhenomenon();
+				aspectB = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenon();
 			}
 			else if (area.equals(C)){
-				aspectC = enaction.getEnactedPrimitiveInteraction().getPrimitive().getPhenomenon();
+				aspectC = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenon();
 			}
 		}
 
 		layout = LayoutImpl.createOrGet(aspectA, aspectB, aspectC);
 		
-		enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction().setTransformation(transformation);
-		enaction.setTransformation(transformation);
+		enaction.getEnactedPrimitiveAct().getPrimitive().getAction().setTransformation(enaction.getTransformation());
+		//enaction.setTransformation(transformation);
 	}
 	
-	private Transformation transformation(IEnaction enaction){
+	public static Transformation transformation(IEffect effect){
 		Transformation transform = SimuImpl.UNKNOWN;
 
 		transform = SimuImpl.IDENTITY;
-		Transform3D t = enaction.getEffect().getTransformation();
+		Transform3D t = effect.getTransformation();
 		float angle = ErnestUtils.angle(t);
 		if (Math.abs(angle) > .1){
 			if ( angle > 0)		

@@ -19,10 +19,10 @@ public interface IDecider
 	 * @param enaction The current enaction.
 	 * @return The next enaction.
 	 */
-	public IEnaction decide(IEnaction enaction);
+	public Enaction decide(Enaction enaction);
 	
 	/**
 	 * @param enaction The current enaction.
 	 */
-	public void carry(IEnaction enaction);
+	public void carry(Enaction enaction);
 }

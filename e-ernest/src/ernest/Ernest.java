@@ -9,13 +9,16 @@ import java.util.TreeMap;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
+import spas.Area;
 import spas.AreaImpl;
 import spas.IPlace;
 import spas.ISpas;
 import spas.ISpatialMemory;
+import spas.SimuImpl;
 import spas.Spas;
+import spas.Transformation;
 import imos2.EnactionImpl;
-import imos2.IEnaction;
+import imos2.Enaction;
 import imos2.IImos;
 import imos2.Act;
 import imos2.Imos;
@@ -36,7 +39,7 @@ public class Ernest implements IErnest
 	public static int UNANIMATED_COLOR = 0x808080;
 
 	/** Ernest's current enaction */
-	private IEnaction m_enaction = new EnactionImpl();
+	private Enaction m_enaction = new EnactionImpl();
 	
 	/** Ernest's spatial system. */
 	private ISpas m_spas = new Spas();
@@ -77,39 +80,26 @@ public class Ernest implements IErnest
 		m_decider.setTracer(m_tracer);
 	}
 
-	public String step(IEffect effect) 
+	public String step(IEffect input) 
 	{
-		m_enaction.setEffect(effect);
 		
-		Primitive enactedPrimitive = PrimitiveImpl.get(effect.getEnactedInteractionLabel());
-		m_enaction.setEnactedPrimitive(enactedPrimitive);
-		Act enactedPrimitiveAct  = null;
-		if (m_enaction.getIntendedPrimitiveInteraction() == null)
-			// On startup create a first enacted interaction
-			enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">*"), AreaImpl.createOrGet("B"));
-		else
-			// If we are not on startup
-			// Compute the enacted primitive act from the primitive interaction and the area.
-			enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(enactedPrimitive, m_spas.categorizePosition(effect.getLocation()));
-		m_enaction.setEnactedPrimitiveInteraction(enactedPrimitiveAct);
-		
-		// Start a new interaction cycle.
-		if (m_tracer != null)
-		{
+		// Trace a new interaction cycle.
+		if (m_tracer != null){
             m_tracer.startNewEvent(m_imos.getCounter());
 			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+			input.trace(m_tracer);		
 		}                
-		
+
 		// track the enaction 
 		
+		m_enaction.track(input);
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
 		m_enaction.traceTrack(m_tracer);
 
 		
 		// Decision cycle
-		if (m_enaction.isOver())
-		{
+		if (m_enaction.isOver()){
 			m_imos.terminate(m_enaction);
 			m_enaction = m_decider.decide(m_enaction);
 		}
@@ -118,9 +108,7 @@ public class Ernest implements IErnest
 		
 		m_decider.carry(m_enaction);
 		
-		//return m_enaction.getIntendedPrimitiveInteraction().getMoveLabel();
-		return m_enaction.getIntendedPrimitiveInteraction().getLabel();		
-
+		return m_enaction.getIntendedPrimitiveAct().getLabel();		
 	}
 
 	public int getValue(int i, int j)

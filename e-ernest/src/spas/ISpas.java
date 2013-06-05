@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.IEnaction;
+import imos2.Enaction;
 import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
@@ -28,7 +28,7 @@ public interface ISpas
 	 * The main routine of the Spatial System that is called on each interaction cycle.
 	 * @param enaction The current enaction.
 	 */
-	public void track(IEnaction enaction);
+	public void track(Enaction enaction);
 
 	/**
 	 * Provide a rgb code to display the local space map in the environment.

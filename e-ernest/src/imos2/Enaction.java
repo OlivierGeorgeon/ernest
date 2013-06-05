@@ -1,52 +1,52 @@
 package imos2;
 
 import java.util.ArrayList;
-
-import spas.Area;
 import spas.Transformation;
 import ernest.IEffect;
-import ernest.Primitive;
 import ernest.ITracer;
-
 
 /**
  * A structure used to manage the enaction of a scheme in the real world
  * or the simulation of the enaction of a scheme in spatial memory.
  * @author ogeorgeon
  */
-public interface IEnaction 
+public interface Enaction 
 {
 	/**
-	 * @param effect The effect resulting from the last enacted interaction.
+	 * Track the current enaction based on Ernest's input.
+	 * @param input Ernest's input.
 	 */
-	public void setEffect(IEffect effect);
+	public void track(IEffect input);
 	
-	public void setTransformation(Transformation transformation);
-	public Transformation getTransformation();
 	/**
-	 * @return The effect resulting from the last enacted interaction.
+	 * @param transformation The transformation sensed during this primitive enaction.
 	 */
-	public IEffect getEffect();
+	public void setTransformation(Transformation transformation);
+	
+	/**
+	 * @return The transformation sensed during this primitive enaction.
+	 */
+	public Transformation getTransformation();
 	
 	/**
 	 * @param act The last primitive intended interaction
 	 */
-	public void setIntendedPrimitiveInteraction(Act act);
+	public void setIntendedPrimitiveAct(Act act);
 	
 	/**
 	 * @return The last primitive intended interaction
 	 */
-	public Act getIntendedPrimitiveInteraction();	
+	public Act getIntendedPrimitiveAct();	
 
 	/**
 	 * @param act The last primitive enacted interaction
 	 */
-	public void setEnactedPrimitiveInteraction(Act act);
+	public void setEnactedPrimitiveAct(Act act);
 	
 	/**
 	 * @return The last primitive enacted interaction
 	 */
-	public Act getEnactedPrimitiveInteraction();	
+	public Act getEnactedPrimitiveAct();	
 
 	/**
 	 * @param act The composite interaction to be enacted
@@ -56,27 +56,27 @@ public interface IEnaction
 	/**
 	 * @return The composite interaction to be enacted
 	 */
-	public Act getTopInteraction();	
+	public Act getTopAct();	
 
 	/**
 	 * @param act The highest-level composite interaction enacted thus far.
 	 */
-	public void setTopEnactedInteraction(Act act);
+	public void setTopEnactedAct(Act act);
 	
 	/**
 	 * @return The highest-level composite interaction enacted thus far.
 	 */
-	public Act getTopEnactedInteraction();	
+	public Act getTopEnactedAct();	
 
 	/**
 	 * @param act The remaining highest-level composite interaction to enact.
 	 */
-	public void setTopRemainingInteraction(Act act);
+	public void setTopRemainingAct(Act act);
 	
 	/**
 	 * @return The remaining highest-level composite interaction to enact.
 	 */
-	public Act getTopRemainingInteraction();	
+	public Act getTopRemainingAct();	
 
 	/**
 	 * @param step The rank of the primitive act in the current enaction 
@@ -98,13 +98,46 @@ public interface IEnaction
 	 */
 	public boolean isOver();
 	
-	public void setFinalContext(Act enactedInteraction, Act performedInteraction, ArrayList<Act> contextList);
+	/**
+	 * @param enactedAct The enacted act.
+	 * @param performedAct The performed act.
+	 * @param contextList The context List.
+	 */
+	public void setFinalContext(Act enactedAct, Act performedAct, ArrayList<Act> contextList);
+	
+	/**
+	 * @return
+	 */
 	public ArrayList<Act> getFinalLearningContext();
+	
+	/**
+	 * @return
+	 */
 	public ArrayList<Act> getFinalActivationContext();
+	
+	/**
+	 * @param learningContext
+	 */
 	public void setInitialLearningContext(ArrayList<Act> learningContext);
+	
+	/**
+	 * @return
+	 */
 	public ArrayList<Act>  getInitialLearningContext();
+	
+	/**
+	 * @param learningContext
+	 */
 	public void setPreviousLearningContext(ArrayList<Act> learningContext);
+	
+	/**
+	 * @return
+	 */
 	public ArrayList<Act>  getPreviousLearningContext();
+	
+	/**
+	 * @param nbActLearned
+	 */
 	public void setNbActLearned(int nbActLearned);
 	
 
@@ -125,12 +158,4 @@ public interface IEnaction
 	 * @param tracer The tracer
 	 */
 	public void traceTerminate(ITracer tracer);
-	//public void trace(ITracer tracer);
-	
-	//public void addOngoingInteraction(IInteraction intraction);
-	//public ArrayList<IInteraction> getOngoingInteractions();
-	
-	public Primitive getEnactedPrimitive(); 
-	public void setEnactedPrimitive(Primitive enactedPrimitive); 
-
 }

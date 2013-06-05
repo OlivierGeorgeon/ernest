@@ -40,9 +40,9 @@ public class Decider implements IDecider
 		this.tracer = tracer;
 	}
 	
-	public IEnaction decide(IEnaction enaction) 
+	public Enaction decide(Enaction enaction) 
 	{
-		IEnaction newEnaction = new EnactionImpl();
+		Enaction newEnaction = new EnactionImpl();
 		
 		System.out.println("New decision ================ ");
 
@@ -71,7 +71,7 @@ public class Decider implements IDecider
 
 		System.out.println("Act " + nextTopIntention.getLabel());
 		newEnaction.setTopInteraction(nextTopIntention);
-		newEnaction.setTopRemainingInteraction(nextTopIntention);
+		newEnaction.setTopRemainingAct(nextTopIntention);
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		
@@ -133,10 +133,10 @@ public class Decider implements IDecider
 		return selectedAction;
 	}
 
-	public void carry(IEnaction enaction)
+	public void carry(Enaction enaction)
 	{
-		Act intendedPrimitiveInteraction = enaction.getTopRemainingInteraction().prescribe();
-		enaction.setIntendedPrimitiveInteraction(intendedPrimitiveInteraction);
+		Act intendedPrimitiveInteraction = enaction.getTopRemainingAct().prescribe();
+		enaction.setIntendedPrimitiveAct(intendedPrimitiveInteraction);
 		enaction.setStep(enaction.getStep() + 1);
 		enaction.traceCarry(this.tracer);
 	}

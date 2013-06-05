@@ -25,17 +25,5 @@ public interface IProposition extends Comparable<IProposition>
 	/**
 	 * Two propositions are equal if they propose the same interaction. 
 	 */
-	public boolean equals(Object o);
-	
-	/**
-	 * The angst depends on the values at stake and on how tight are the pros and cons
-	 * @return The angst value associated with this choice
-	 */
-	public int getAngst();
-	
-	//public boolean addAlternateInteraction(IInteraction alternateInteraction);
-	//public ArrayList<IInteraction> getAlternateInteractions();
-	
-	//public void setTransferred(boolean transferred);
-	//public boolean getTransferred();
+	public boolean equals(Object o);	
 }

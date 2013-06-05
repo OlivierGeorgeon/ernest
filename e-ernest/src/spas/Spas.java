@@ -1,7 +1,7 @@
 package spas;
 
 import imos2.Act;
-import imos2.IEnaction;
+import imos2.Enaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,29 +70,29 @@ public class Spas implements ISpas
 	 * Track the spatial consequences of the current enaction.
 	 * @param enaction The current enaction.
 	 */
-	public void track(IEnaction enaction) 
+	public void track(Enaction enaction) 
 	{
 		tick();
 		
-		Area area = enaction.getEnactedPrimitiveInteraction().getArea();
+		Area area = enaction.getEnactedPrimitiveAct().getArea();
 		
 		// Update spatial memory
 		
 		this.simu.track(enaction);
 
-		this.transform = SimuImpl.spasTransform(enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction().getTransformation());
+		this.transform = SimuImpl.spasTransform(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation());
 
 		m_localSpaceMemory.transform(this.transform);		
 		m_localSpaceMemory.forgetOldPlaces();
 		
-		if (enaction.getEffect().getLocation() != null && enaction.getEnactedPrimitiveInteraction() != null){
-			addPlace(enaction.getEnactedPrimitiveInteraction(), SimuImpl.spasPoint(area), enaction.getEffect().getColor());			
+		if ( enaction.getEnactedPrimitiveAct() != null){
+			addPlace(enaction.getEnactedPrimitiveAct(), SimuImpl.spasPoint(area), enaction.getEnactedPrimitiveAct().getColor());			
 		}
 
 		// Merge phenomena
 		
-		Phenomenon newAspect = enaction.getEnactedPrimitiveInteraction().getPrimitive().getPhenomenon();
-		if (area.equals(SimuImpl.O) && enaction.getIntendedPrimitiveInteraction() != null){
+		Phenomenon newAspect = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenon();
+		if (area.equals(SimuImpl.O) && enaction.getIntendedPrimitiveAct() != null){
 			PhenomenonImpl.merge(newAspect, SimuImpl.EMPTY);
 			if (m_tracer != null && !newAspect.equals(SimuImpl.EMPTY)){
 				m_tracer.addEventElement("empty", newAspect.getLabel() + " merged to " + SimuImpl.EMPTY.getLabel());}
@@ -115,8 +115,8 @@ public class Spas implements ISpas
 		
 		// Record the experiment
 		Observation observation = ObservationImpl.createOrGet(newAspect, area);
-		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveInteraction().getPrimitive().getAction(), observation);
-		newExp.addAct(enaction.getEnactedPrimitiveInteraction());
+		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveAct().getPrimitive().getAction(), observation);
+		newExp.addAct(enaction.getEnactedPrimitiveAct());
 
 		if (m_tracer != null) this.simu.trace(m_tracer);
 	}
