@@ -13,8 +13,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import ernest.Action;
-import ernest.Aspect;
-import ernest.AspectImpl;
+import ernest.Phenomenon;
+import ernest.PhenomenonImpl;
 import ernest.Experiment;
 import ernest.ExperimentImpl;
 import ernest.ObservationImpl;
@@ -89,9 +89,9 @@ public class Spas implements ISpas
 
 		// Merge phenomena
 		
-		Aspect newAspect = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
+		Phenomenon newAspect = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
 		if (enaction.getArea().equals(SimuImpl.O) && enaction.getIntendedPrimitiveInteraction() != null){
-			AspectImpl.merge(newAspect, SimuImpl.EMPTY);
+			PhenomenonImpl.merge(newAspect, SimuImpl.EMPTY);
 			if (m_tracer != null && !newAspect.equals(SimuImpl.EMPTY)){
 				m_tracer.addEventElement("empty", newAspect.getLabel() + " merged to " + SimuImpl.EMPTY.getLabel());}
 		}
@@ -101,9 +101,9 @@ public class Spas implements ISpas
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = SimuImpl.getArea(previousPlace.getPosition());
 				if (previousArea.equals(enaction.getArea())){
-					Aspect previousAspect = previousPlace.getAct().getPrimitive().getAspect();
+					Phenomenon previousAspect = previousPlace.getAct().getPrimitive().getAspect();
 					if (!previousAspect.equals(newAspect)){
-						AspectImpl.merge(newAspect, previousAspect);
+						PhenomenonImpl.merge(newAspect, previousAspect);
 						if (m_tracer != null){
 							m_tracer.addEventElement("phenomenon", newAspect.getLabel() + " merged to " + previousAspect.getLabel());}
 					}

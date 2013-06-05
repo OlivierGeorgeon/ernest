@@ -6,8 +6,8 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
-import ernest.Aspect;
-import ernest.AspectImpl;
+import ernest.Phenomenon;
+import ernest.PhenomenonImpl;
 
 import utils.ErnestUtils;
 

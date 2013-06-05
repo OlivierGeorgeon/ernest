@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import ernest.ActionImpl;
 import ernest.Action;
-import ernest.Aspect;
-import ernest.AspectImpl;
+import ernest.Phenomenon;
+import ernest.PhenomenonImpl;
 import ernest.Experiment;
 import ernest.ExperimentImpl;
 import ernest.ITracer;
@@ -55,7 +55,7 @@ public class Decider implements IDecider
 		Observation  observation = this.spas.predict(action);
 		if (this.tracer != null){
 			Object aspectElmt = this.tracer.addEventElement("aspects", true);
-			for (Aspect a : AspectImpl.getAspects())
+			for (Phenomenon a : PhenomenonImpl.getAspects())
 				this.tracer.addSubelement(aspectElmt, "aspect", a.toString());
 			Object experimentElmt = this.tracer.addEventElement("experiments", true);
 			for (Experiment a : ExperimentImpl.getExperiments())

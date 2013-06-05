@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import spas.Area;
 import ernest.Action;
-import ernest.Aspect;
+import ernest.Phenomenon;
 import ernest.Observation;
 import ernest.Primitive;
 

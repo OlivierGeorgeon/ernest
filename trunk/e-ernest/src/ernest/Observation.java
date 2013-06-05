@@ -16,7 +16,7 @@ public interface Observation {
 	
 	public Area getArea();
 	
-	public Aspect getAspect();	
+	public Phenomenon getAspect();	
 	
 	public void addAct(Act act);
 	public List<Act> getActs();

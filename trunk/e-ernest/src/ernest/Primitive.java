@@ -18,6 +18,6 @@ public interface Primitive
 	public Action getAction();
 	public void setAction(Action action);
 	
-	public Aspect getAspect();
-	public void setAspect(Aspect aspect);
+	public Phenomenon getAspect();
+	public void setAspect(Phenomenon phenomenon);
 }

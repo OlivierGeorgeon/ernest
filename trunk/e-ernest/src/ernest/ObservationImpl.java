@@ -16,19 +16,19 @@ public class ObservationImpl implements Observation {
 	private static int index = 0;
 
 	private String label;
-	private Aspect aspect;
+	private Phenomenon phenomenon;
 	private Area area;
 	private List<Act> acts = new ArrayList<Act>();
 	
 	/**
-	 * @param aspect The observation's aspect
+	 * @param phenomenon The observation's aspect
 	 * @param area The observation's area
 	 * @return The new or old observation
 	 */
-	public static Observation createOrGet(Aspect aspect, Area area){
-		String key = createKey(aspect, area);
+	public static Observation createOrGet(Phenomenon phenomenon, Area area){
+		String key = createKey(phenomenon, area);
 		if (!OBSERVATIONS.containsKey(key))
-			OBSERVATIONS.put(key, new ObservationImpl(aspect, area));			
+			OBSERVATIONS.put(key, new ObservationImpl(phenomenon, area));			
 		return OBSERVATIONS.get(key);
 	}
 
@@ -38,8 +38,8 @@ public class ObservationImpl implements Observation {
 		return OBSERVATIONS.get(label);
 	}
 
-	private static String createKey(Aspect aspect, Area area) {
-		String key = aspect.getLabel() + area.getLabel();
+	private static String createKey(Phenomenon phenomenon, Area area) {
+		String key = phenomenon.getLabel() + area.getLabel();
 		return key;
 	}
 	
@@ -53,9 +53,9 @@ public class ObservationImpl implements Observation {
 		this.label = label;
 	}	
 	
-	private ObservationImpl(Aspect aspect, Area area){
-		this.label = aspect.getLabel() + area.getLabel();
-		this.aspect = aspect;
+	private ObservationImpl(Phenomenon phenomenon, Area area){
+		this.label = phenomenon.getLabel() + area.getLabel();
+		this.phenomenon = phenomenon;
 		this.area = area;
 	}	
 	
@@ -64,8 +64,8 @@ public class ObservationImpl implements Observation {
 		//return this.aspect.getLabel() + this.area.getLabel();
 	}
 	
-	public Aspect getAspect(){
-		return this.aspect;
+	public Phenomenon getAspect(){
+		return this.phenomenon;
 	}
 	
 	public Area getArea(){

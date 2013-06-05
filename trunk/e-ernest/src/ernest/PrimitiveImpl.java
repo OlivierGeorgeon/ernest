@@ -20,7 +20,7 @@ public class PrimitiveImpl implements Primitive {
 	private int value = 0;
 	private Action action = ActionImpl.createNew();
 	//private Aspect aspect = SimuImpl.EMPTY;
-	private Aspect aspect = AspectImpl.createNew();
+	private Phenomenon phenomenon = PhenomenonImpl.createNew();
 
 	/**
 	 * @param label The primitive interaction's label
@@ -53,7 +53,7 @@ public class PrimitiveImpl implements Primitive {
 		this.value = value;
 		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet("B"));
 		this.action.addPrimitive(this);	
-		this.aspect.addPrimitive(this);
+		this.phenomenon.addPrimitive(this);
 	}
 	
 	public String getLabel(){
@@ -91,13 +91,13 @@ public class PrimitiveImpl implements Primitive {
 		return this.label + "(" + this.value / 10 + ")";
 	}
 
-	public Aspect getAspect() {
-		return this.aspect;
+	public Phenomenon getAspect() {
+		return this.phenomenon;
 	}
 
-	public void setAspect(Aspect aspect) {
-		this.aspect = aspect;
-		aspect.addPrimitive(this);
+	public void setAspect(Phenomenon phenomenon) {
+		this.phenomenon = phenomenon;
+		phenomenon.addPrimitive(this);
 	}
 
 	public Action getAction() {

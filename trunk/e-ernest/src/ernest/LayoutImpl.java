@@ -12,7 +12,7 @@ public class LayoutImpl implements Layout {
 	private static Map<String , Layout> LAYOUTS = new HashMap<String , Layout>() ;
 
 	private String label;
-	private Map<Area , Aspect> aspects = new HashMap<Area , Aspect>() ;
+	private Map<Area , Phenomenon> phenomenons = new HashMap<Area , Phenomenon>() ;
 
 	/**
 	 * @param aspectA The aspect in area A
@@ -20,14 +20,14 @@ public class LayoutImpl implements Layout {
 	 * @param aspectC The aspect in area C
 	 * @return The aspect
 	 */
-	public static Layout createOrGet(Aspect aspectA, Aspect aspectB, Aspect aspectC){
+	public static Layout createOrGet(Phenomenon aspectA, Phenomenon aspectB, Phenomenon aspectC){
 		String key = createPrimitiveKey(aspectA, aspectB, aspectC);
 		if (!LAYOUTS.containsKey(key))
 			LAYOUTS.put(key, new LayoutImpl(aspectA, aspectB, aspectC));			
 		return LAYOUTS.get(key);
 	}
 	
-	private static String createPrimitiveKey(Aspect aspectA, Aspect aspectB, Aspect aspectC) {
+	private static String createPrimitiveKey(Phenomenon aspectA, Phenomenon aspectB, Phenomenon aspectC) {
 		String key = aspectA.getLabel() + "-" + aspectB.getLabel() + "-" + aspectC.getLabel();
 		return key;
 	}
@@ -60,20 +60,20 @@ public class LayoutImpl implements Layout {
 		return transformedLayout;
 	}
 	
-	private LayoutImpl(Aspect aspectA, Aspect aspectB, Aspect aspectC){
+	private LayoutImpl(Phenomenon aspectA, Phenomenon aspectB, Phenomenon aspectC){
 		this.label = createPrimitiveKey(aspectA, aspectB, aspectC);
-		aspects.put(SimuImpl.A, aspectA);
-		aspects.put(SimuImpl.B, aspectB);
-		aspects.put(SimuImpl.C, aspectC);	
-		aspects.put(SimuImpl.O, SimuImpl.EMPTY);
+		phenomenons.put(SimuImpl.A, aspectA);
+		phenomenons.put(SimuImpl.B, aspectB);
+		phenomenons.put(SimuImpl.C, aspectC);	
+		phenomenons.put(SimuImpl.O, SimuImpl.EMPTY);
 	}
 
-	public Aspect getAspect(Area area) {
-		return aspects.get(area);
+	public Phenomenon getAspect(Area area) {
+		return phenomenons.get(area);
 	}
 
 	public boolean isEmpty(Area area) {
-		return this.aspects.get(area).equals(SimuImpl.EMPTY);
+		return this.phenomenons.get(area).equals(SimuImpl.EMPTY);
 	}
 
 	public String getLabel() {
@@ -83,10 +83,10 @@ public class LayoutImpl implements Layout {
 	public Observation observe(){
 		Area area = SimuImpl.O;
 		for (Area a : AreaImpl.getAREAS())
-			if (!this.aspects.get(a).equals(SimuImpl.EMPTY))
+			if (!this.phenomenons.get(a).equals(SimuImpl.EMPTY))
 				area = a;
-		Aspect aspect = getAspect(area);
-		return ObservationImpl.createOrGet(aspect, area);
+		Phenomenon phenomenon = getAspect(area);
+		return ObservationImpl.createOrGet(phenomenon, area);
 	}
 	
 	/**

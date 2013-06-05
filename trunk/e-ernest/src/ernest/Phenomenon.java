@@ -8,7 +8,7 @@ import java.util.List;
  * An aspect of a phenomenon observed in an area.
  * @author Olivier
  */
-public interface Aspect {
+public interface Phenomenon {
 	
 	/**
 	 * @return This aspect's label.
