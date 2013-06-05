@@ -15,9 +15,23 @@ public interface Primitive
 	 */
 	public int getValue();
 	
+	/**
+	 * @return The action performed by this primitive interaction
+	 */
 	public Action getAction();
+	
+	/**
+	 * @param action The action performed by this primitive interaction.
+	 */
 	public void setAction(Action action);
 	
-	public Phenomenon getAspect();
+	/**
+	 * @return The phenomenon observed by this primitive interaction.
+	 */
+	public Phenomenon getPhenomenon();
+	
+	/**
+	 * @param phenomenon The phenomenon observed by this primitive interaction.
+	 */
 	public void setAspect(Phenomenon phenomenon);
 }

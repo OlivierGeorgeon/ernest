@@ -21,9 +21,6 @@ public interface IEnaction
 	 */
 	public void setEffect(IEffect effect);
 	
-	public void setArea(Area area);
-	public Area getArea();
-
 	public void setTransformation(Transformation transformation);
 	public Transformation getTransformation();
 	/**
@@ -96,18 +93,6 @@ public interface IEnaction
 	 */
 	public void setCorrect(boolean correct);
 	
-	/**
-	 * @return The status of simulating this enaction in spatial memory.
-	 */
-	//public int getSimulationStatus();
-
-	/**
-	 * @param simulationStatus The status of simulating this enaction in spatial memory.
-	 */
-	//public void setSimulationStatus(int simulationStatus);
-	
-	public Area getPreviousArea();
-
 	/**
 	 * @return True if this enaction is terminated.
 	 */

@@ -2,11 +2,9 @@ package imos2;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import spas.Area;
 import spas.SimuImpl;
 import spas.Transformation;
-import utils.ErnestUtils;
 import ernest.Effect;
 import ernest.IEffect;
 import ernest.Primitive;
@@ -17,7 +15,7 @@ import ernest.ITracer;
  * or the simulation of the enaction of an interaction in memory.
  * @author ogeorgeon
  */
-public class Enaction implements IEnaction 
+public class EnactionImpl implements IEnaction 
 {
 	
 	private Primitive enactedPrimitive = null;
@@ -48,34 +46,16 @@ public class Enaction implements IEnaction
 	private int m_nbSchemaLearned = 0;
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
-	/** The area slice of the primitive enacted interaction */
-	private Area area;
 	private Transformation transformation = SimuImpl.UNKNOWN;
-	private Area previousArea;
 	
 	//private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();	
 	//private int m_simulationStatus = 0;
 	
-	public Area getPreviousArea() {
-		return previousArea;
-	}
-
 	public void setEffect(IEffect effect) 
 	{
 		m_effect = effect;
 	}
 
-	public void setArea(Area area)
-	{
-		this.previousArea = this.area;
-		this.area = area;
-	}
-
-	public Area getArea()
-	{
-		return this.area;
-	}
-	
 	public IEffect getEffect() 
 	{
 		return m_effect;
@@ -280,7 +260,7 @@ public class Enaction implements IEnaction
 			tracer.addSubelement(e, "primitive_intended_interaction", m_intendedPrimitiveInteraction.getLabel());
 			tracer.addSubelement(e, "primitive_enacted_interaction", this.enactedPrimitive.getLabel());
 			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
-			tracer.addSubelement(e, "area", this.area.getLabel());
+			tracer.addSubelement(e, "area", m_enactedPrimitiveInteraction.getArea().getLabel());
 			tracer.addSubelement(e, "transformation", this.transformation.getLabel());
 		}
 	}

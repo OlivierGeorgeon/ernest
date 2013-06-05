@@ -6,6 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An experiment is an Action performed on a Phenomenon.
+ * Experiments record the resulting interactions. 
+ * @author Olivier
+ */
 public class ExperimentImpl implements Experiment {
 	
 	private static Map<String , Experiment> EXPERIMENTS = new HashMap<String , Experiment>() ;

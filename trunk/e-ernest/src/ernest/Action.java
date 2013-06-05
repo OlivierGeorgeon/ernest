@@ -1,13 +1,10 @@
 package ernest;
 
 import java.util.List;
-
 import spas.Transformation;
 
-import imos2.Act;
-
 /**
- * An modality is a set if interactions that are alternate to each other.
+ * An action that may be performed by interactions.
  * @author Olivier
  */
 public interface Action extends Comparable
@@ -30,15 +27,29 @@ public interface Action extends Comparable
 	public void setPropositionWeight(int propositionWeight);
 	
 	/**
-	 * Add additionnal weight to this action during the decision process.
-	 * @param weight The additionnal weight to add to this action
+	 * Add additional weight to this action during the decision process.
+	 * @param weight The additional weight to add to this action
 	 */
 	public void addPropositionWeight(int weight);
 	
-	public void addPrimitive(Primitive act);
+	/**
+	 * @param primitive The primitive interaction to add to this action.
+	 */
+	public void addPrimitive(Primitive primitive);
+	
+	/**
+	 * @return The list of primitive interactions that perform this action.
+	 */
 	public List<Primitive> getPrimitives();
 
+	/**
+	 * @param transformation The transformation performed by this action
+	 */
 	public void setTransformation(Transformation transformation);
+	
+	/**
+	 * @return The transformation performed by this action. 
+	 */
 	public Transformation getTransformation();
 
 }

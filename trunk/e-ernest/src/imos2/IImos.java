@@ -47,7 +47,7 @@ public interface IImos
 	 * @param satisfaction The interaction's satisfaction.
 	 * @return The act that was created or that already existed.
 	 */
-	public Act addAct(Primitive interaction, Area are); 
+	//public Act addAct(Primitive interaction, Area are); 
 
 	/**
 	 * @param tracer The tracer used to generate the activity traces

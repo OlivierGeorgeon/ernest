@@ -94,7 +94,7 @@ public class SimuImpl implements Simu {
 		if (act == null){
 			Primitive interaction = action.getPrimitives().get(0);
 			for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
-				if (i.getAction().equals(action) && i.getAspect().equals(observation.getAspect()))
+				if (i.getAction().equals(action) && i.getPhenomenon().equals(observation.getAspect()))
 					interaction = i;
 			}
 			act = ActImpl.createOrGetPrimitiveAct(interaction, observation.getArea());
@@ -104,6 +104,7 @@ public class SimuImpl implements Simu {
 	}
 
 	public void track(IEnaction enaction){
+		Area area = enaction.getEnactedPrimitiveInteraction().getArea();
 		Phenomenon aspectA = EMPTY;
 		Phenomenon aspectB = EMPTY;
 		Phenomenon aspectC = EMPTY;
@@ -112,14 +113,14 @@ public class SimuImpl implements Simu {
 		//previousLayout = LayoutImpl.transform(layout, transformation);
 
 		if (enaction.getEnactedPrimitiveInteraction() != null){
-			if (enaction.getArea().equals(A)){
-				aspectA = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
+			if (area.equals(A)){
+				aspectA = enaction.getEnactedPrimitiveInteraction().getPrimitive().getPhenomenon();
 			}
-			else if (enaction.getArea().equals(B)){
-				aspectB = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
+			else if (area.equals(B)){
+				aspectB = enaction.getEnactedPrimitiveInteraction().getPrimitive().getPhenomenon();
 			}
-			else if (enaction.getArea().equals(C)){
-				aspectC = enaction.getEnactedPrimitiveInteraction().getPrimitive().getAspect();
+			else if (area.equals(C)){
+				aspectC = enaction.getEnactedPrimitiveInteraction().getPrimitive().getPhenomenon();
 			}
 		}
 

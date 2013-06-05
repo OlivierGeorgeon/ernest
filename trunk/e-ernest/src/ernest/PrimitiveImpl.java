@@ -1,12 +1,10 @@
 package ernest;
 
 import imos2.ActImpl;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import spas.AreaImpl;
-import spas.SimuImpl;
 
 /**
  * A primitive interaction.
@@ -19,7 +17,6 @@ public class PrimitiveImpl implements Primitive {
 	private String label = "";
 	private int value = 0;
 	private Action action = ActionImpl.createNew();
-	//private Aspect aspect = SimuImpl.EMPTY;
 	private Phenomenon phenomenon = PhenomenonImpl.createNew();
 
 	/**
@@ -91,7 +88,7 @@ public class PrimitiveImpl implements Primitive {
 		return this.label + "(" + this.value / 10 + ")";
 	}
 
-	public Phenomenon getAspect() {
+	public Phenomenon getPhenomenon() {
 		return this.phenomenon;
 	}
 

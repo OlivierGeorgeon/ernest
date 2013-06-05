@@ -1,11 +1,7 @@
 package imos2;
 
-import java.util.ArrayList;
-
 import spas.Area;
 import ernest.Action;
-import ernest.Phenomenon;
-import ernest.Observation;
 import ernest.Primitive;
 
 /**
@@ -93,24 +89,27 @@ public interface Act
 	public void terminate();
 	
 	/**
-	 * @return The action corresponding to this act
+	 * @return The primitive interaction enacted by this act.
 	 */
-	public Action getAction();
-//	public void setAction(Action action);
-	
-//	public Aspect getAspect();
-//	public void setAspect(Aspect aspect);
-
-	public Area getArea();
-	public void setArea(Area area);
-
 	public Primitive getPrimitive();
+	
+	/**
+	 * @param primitive The primitive interaction enacted by this act.
+	 */
 	public void setPrimitive(Primitive primitive);
 	
 	/**
-	 * @return The aspect of the phenomenon observed through this act.
+	 * @return The area where this act is enacted.
 	 */
-//	public Observation getObservation();
-//	public void setObservation(Observation observation);
+	public Area getArea();
 	
+	/**
+	 * @param area The area where this act is enacted.
+	 */
+	public void setArea(Area area);
+	
+	/**
+	 * @return The action performed by the primitive interaction of this act
+	 */
+	public Action getAction();
 }

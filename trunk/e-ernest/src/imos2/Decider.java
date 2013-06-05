@@ -42,7 +42,7 @@ public class Decider implements IDecider
 	
 	public IEnaction decide(IEnaction enaction) 
 	{
-		IEnaction newEnaction = new Enaction();
+		IEnaction newEnaction = new EnactionImpl();
 		
 		System.out.println("New decision ================ ");
 

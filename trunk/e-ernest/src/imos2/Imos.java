@@ -80,11 +80,11 @@ public class Imos implements IImos
 	 * @param area The area of this act.
 	 * @return The act that was created or that already existed.
 	 */
-	public Act addAct(Primitive interaction, Area area)
-	{
-		Act act = ActImpl.createOrGetPrimitiveAct(interaction, area);
-		return act;	
-	}
+//	public Act addAct(Primitive interaction, Area area)
+//	{
+//		Act act = ActImpl.createOrGetPrimitiveAct(interaction, area);
+//		return act;	
+//	}
 
 	/**
 	 * Add a composite schema and its succeeding act that represent a composite possibility 
@@ -122,33 +122,20 @@ public class Imos implements IImos
 		m_imosCycle++;		
 		
 		Act intendedPrimitiveAct = enaction.getIntendedPrimitiveInteraction();
-		Act enactedPrimitiveAct  = null;
+		Act enactedPrimitiveAct  = enaction.getEnactedPrimitiveInteraction();
 		Act topEnactedAct        = null;
 		Act topRemainingAct      = null;
 
 		
 		if (intendedPrimitiveAct == null){
 			// On startup create a first enacted interaction
-			enactedPrimitiveAct = addAct(PrimitiveImpl.get(">*"), AreaImpl.createOrGet("B"));
+			//enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">*"), AreaImpl.createOrGet("B"));
 		}
 		// If we are not on startup
 		else
 		{
 			// Compute the enacted primitive act from the primitive interaction and the area.
-			enactedPrimitiveAct = addAct(enaction.getEnactedPrimitive(), enaction.getArea());
-			
-//			if (enactedPrimitiveAct.getPrimitive().getAspect().equals(SimuImpl.EMPTY)){				
-//				if (enaction.getArea().equals(SimuImpl.O)){
-//					enactedPrimitiveAct.getPrimitive().setAspect(SimuImpl.NONE);
-//					if (m_tracer != null){
-//						m_tracer.addEventElement("phenomenon", "none");}
-//				}
-//				else{ 
-//					enactedPrimitiveAct.getPrimitive().setAspect(SimuImpl.ANYTHING); 
-//					if (m_tracer != null){
-//						m_tracer.addEventElement("phenomenon", "anything");}
-//				}
-//			}
+			//enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(enaction.getEnactedPrimitive(), enaction.getArea());
 
 			// Compute the top actually enacted interaction
 			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
@@ -170,12 +157,9 @@ public class Imos implements IImos
 		}					
 		
 		// Update the current enaction
-		enaction.setEnactedPrimitiveInteraction(enactedPrimitiveAct);
+		//enaction.setEnactedPrimitiveInteraction(enactedPrimitiveAct);
 		enaction.setTopEnactedInteraction(topEnactedAct);
 		enaction.setTopRemainingInteraction(topRemainingAct);
-
-		// Trace
-		//enaction.traceTrack(m_tracer);
 	}
 	
 	/**

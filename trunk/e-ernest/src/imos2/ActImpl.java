@@ -4,15 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import spas.Area;
-import spas.SimuImpl;
 import ernest.Action;
-import ernest.ActionImpl;
-import ernest.Phenomenon;
-import ernest.PhenomenonImpl;
-import ernest.Observation;
-import ernest.ObservationImpl;
 import ernest.Primitive;
-import ernest.PrimitiveImpl;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -23,7 +16,6 @@ public class ActImpl implements Act
 
 	/** The list of all acts */
 	private static Map<String , Act> ACTS = new HashMap<String , Act>() ;
-
 	/** Default weight of primitive interactions */
 	private static int PRIMITIVE_WEIGHT = 100;
 	
@@ -37,8 +29,6 @@ public class ActImpl implements Act
 	private Act m_prescriber = null;
 	private int m_step = 0;
 	private Primitive primitive;
-	private Action action;
-	//private Observation observation;
 	private Area area;
 	
 	/**
@@ -58,16 +48,8 @@ public class ActImpl implements Act
 		String key = createPrimitiveKey(interaction, area);
 		if (!ACTS.containsKey(key)){
 			ActImpl newAct = new ActImpl(key, true, null, null, interaction.getValue(), interaction, area);
-//			newAct.setAction(ActionImpl.createNew());
 			ACTS.put(key, newAct);
-
-//			if (area.equals(SimuImpl.O))
-//				interaction.setAspect(SimuImpl.EMPTY); 
-//			else 
-//				interaction.setAspect(SimuImpl.ANYTHING); 
-//			
 			System.out.println("Define primitive act " + key);
-//			System.out.println("With action " + newAct.getAction().getLabel());
 		}
 		return ACTS.get(key);
 	}
@@ -89,27 +71,7 @@ public class ActImpl implements Act
 		if (!ACTS.containsKey(key))
 			ACTS.put(key, new ActImpl(key, false, preAct, postAct, enactionValue, null, null));			
 		return ACTS.get(key);
-		//String label = preInteraction.getLabel() + postInteraction.getLabel();
-		//return new ActImpl(label, false, preInteraction, postInteraction, enactionValue, null, null);
 	}
-	
-//	public static Act getAct(Action action, Observation observation){
-//		
-//		Primitive interaction = action.getPrimitives().get(0);
-//		for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
-//			if (i.getAction().equals(action) && i.getAspect().equals(observation.getAspect()))
-//				interaction = i;
-//		}
-//
-//		Act act = createOrGetPrimitiveAct(interaction, observation.getArea());
-//		
-////		for (Act a : ACTS.values()){
-////			//if (action.equals(a.getAction()) && observation.equals(a.getObservation()))
-////			if (action.equals(a.getAction()) && a.getPrimitive().getAspect().equals(observation.getAspect()) && a.getArea().equals(observation.getArea()))			
-////				return a;
-////		}
-//		return act;
-//	}
 	
 	private static String createCompositeKey(Act preAct, Act postAct) {
 		String key = preAct.getLabel() + postAct.getLabel();
@@ -128,28 +90,12 @@ public class ActImpl implements Act
 			m_enactionWeight = PRIMITIVE_WEIGHT;
 		else
 			m_length = preInteraction.getLength() + postInteraction.getLength();
-		//this.interaction = interaction;
 		this.area = area;
 	}
 	
 	public Action getAction() {
-		System.out.println(label);
 		return this.primitive.getAction();
 	}
-//	
-//	public void setAction(Action action){
-//		this.action = action;
-//		action.addAct(this);
-//	}
-
-//	public Observation getObservation() {
-//		return this.observation;
-//	}
-//	
-//	public void setObservation(Observation observation){
-//		this.observation = observation;
-//		observation.addAct(this);
-//	}
 
 	public Act getPreAct() 
 	{
@@ -172,7 +118,7 @@ public class ActImpl implements Act
 	}
 	
 	/**
-	 * Interactions are equal if they have the same label. 
+	 * Acts are equal if they have the same label. 
 	 */
 	public boolean equals(Object o)
 	{
@@ -295,15 +241,6 @@ public class ActImpl implements Act
 	{
 		return getLabel() + "(" + value/10 + "," + m_enactionWeight + ")";
 	}
-
-//	public Aspect getAspect() {
-//		return this.aspect;
-//	}
-//
-//	public void setAspect(Aspect aspect) {
-//		this.aspect = aspect;
-//		aspect.addAct(this);
-//	}
 
 	public Area getArea() {
 		return this.area;
