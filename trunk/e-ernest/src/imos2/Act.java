@@ -112,4 +112,7 @@ public interface Act
 	 * @return The action performed by the primitive interaction of this act
 	 */
 	public Action getAction();
+	
+	public void setColor(int color);
+	public int getColor();
 }

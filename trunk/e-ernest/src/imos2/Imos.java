@@ -1,20 +1,12 @@
 package imos2;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-
-import spas.Area;
-import spas.AreaImpl;
-import spas.SimuImpl;
-import utils.ErnestUtils;
 import ernest.ActionImpl;
-import ernest.Primitive;
 import ernest.ITracer;
-import ernest.PrimitiveImpl;
 
 /**
- * The Intrinsically Motivated Schema mechanism.
+ * The sequential system of the Enactive Cognitive Architecture.
  * @author ogeorgeon
  */
 
@@ -29,17 +21,14 @@ public class Imos implements IImos
 	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
 	private int regularityThreshold = 6;
 	
-	/** The maximul length of acts. */
+	/** The maximal length of acts. */
 	private int maxSchemaLength = 10;
 
-	/** A list of all the acts ever created. */
-	//private ArrayList<Act> acts = new ArrayList<Act>(2000);
-	
 	/** Counter of learned schemas for tracing */
 	private int m_nbSchemaLearned = 0;
 	
 	/** The Tracer. */
-	private ITracer<Object> m_tracer = null; //new Tracer("trace.txt");
+	private ITracer<Object> m_tracer = null;
 
 	/** A representation of the internal state for display in the environment. */
 	private String m_internalState = "";
@@ -75,91 +64,36 @@ public class Imos implements IImos
 	}
 
 	/**
-	 * Construct a new act or retrieve the act if it already exists.
-	 * @param interaction The interaction of this act.
-	 * @param area The area of this act.
-	 * @return The act that was created or that already existed.
-	 */
-//	public Act addAct(Primitive interaction, Area area)
-//	{
-//		Act act = ActImpl.createOrGetPrimitiveAct(interaction, area);
-//		return act;	
-//	}
-
-	/**
-	 * Add a composite schema and its succeeding act that represent a composite possibility 
-	 * of interaction between Ernest and its environment. 
-	 * @param preInteraction The context Act.
-	 * @param postInteraction The intention Act.
-	 * @return The schema made of the two specified acts, whether it has been created or it already existed. 
-	 */
-    private Act addCompositeInteraction(Act preInteraction, Act postInteraction)
-    {
-    	Act i = ActImpl.createOrGetCompositeAct(preInteraction, postInteraction);
-    	
-    	// Any alternate interactions of the preInteraction is an alternate interaction of the composite interaction
-//		Object alternateElmnt = null;
-//		if (m_tracer != null)
-//			alternateElmnt = m_tracer.addEventElement("alternate", true);
-//    	for (Act a: preInteraction.getAlternateActs())
-//    	{
-//    		boolean newAlternate = i.addAlternateInteraction(a);
-//			if (m_tracer != null && newAlternate)
-//				m_tracer.addSubelement(alternateElmnt, "prominent", i + " alternate " + a);
-//    	}
-
-    	return i;
-    }
-
-	/**
 	 * Track the current enaction. 
 	 * Use the intended primitive act and the effect.
 	 * Generates the enacted primitive act, the top enacted act, and the top remaining act.
 	 * @param enaction The current enaction.
 	 */
-	public void track(IEnaction enaction) 
+	public void track(Enaction enaction) 
 	{
 		m_imosCycle++;		
 		
-		Act intendedPrimitiveAct = enaction.getIntendedPrimitiveInteraction();
-		Act enactedPrimitiveAct  = enaction.getEnactedPrimitiveInteraction();
+		Act intendedPrimitiveAct = enaction.getIntendedPrimitiveAct();
+		Act enactedPrimitiveAct  = enaction.getEnactedPrimitiveAct();
 		Act topEnactedAct        = null;
 		Act topRemainingAct      = null;
-
 		
-		if (intendedPrimitiveAct == null){
-			// On startup create a first enacted interaction
-			//enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">*"), AreaImpl.createOrGet("B"));
-		}
-		// If we are not on startup
-		else
-		{
-			// Compute the enacted primitive act from the primitive interaction and the area.
-			//enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(enaction.getEnactedPrimitive(), enaction.getArea());
-
-			// Compute the top actually enacted interaction
-			//topEnactedInteraction = enactedInteraction(enactedPrimitiveInteraction, enaction);
-			// TODO compute the actually enacted top interaction.
+		if (intendedPrimitiveAct != null){
 			topEnactedAct = topEnactedInteraction(enactedPrimitiveAct, intendedPrimitiveAct);
 			
 			// Update the prescriber hierarchy.
 			if (intendedPrimitiveAct.equals(enactedPrimitiveAct)) 
 				topRemainingAct = intendedPrimitiveAct.updatePrescriber();
 			else
-			{
 				intendedPrimitiveAct.terminate();
-			}
 			
-			System.out.println("Enacted primitive interaction " + enactedPrimitiveAct );
-			System.out.println("Top remaining interaction " + topRemainingAct );
-			System.out.println("Enacted top interaction " + topEnactedAct );
-			
+			System.out.println("Enacted primitive act " + enactedPrimitiveAct );
+			System.out.println("Top remaining act " + topRemainingAct );
+			System.out.println("Enacted top act " + topEnactedAct );			
 		}					
 		
-		// Update the current enaction
-		//enaction.setEnactedPrimitiveInteraction(enactedPrimitiveAct);
-		enaction.setTopEnactedInteraction(topEnactedAct);
-		enaction.setTopRemainingInteraction(topRemainingAct);
+		enaction.setTopEnactedAct(topEnactedAct);
+		enaction.setTopRemainingAct(topRemainingAct);
 	}
 	
 	/**
@@ -169,11 +103,11 @@ public class Imos implements IImos
 	 * Record or reinforce the learned interactions. 
 	 * @param enaction The current enaction.
 	 */
-	public void terminate(IEnaction enaction)
+	public void terminate(Enaction enaction)
 	{
 
-		Act intendedTopInteraction = enaction.getTopInteraction();
-		Act enactedTopInteraction  = enaction.getTopEnactedInteraction();
+		Act intendedTopInteraction = enaction.getTopAct();
+		Act enactedTopInteraction  = enaction.getTopEnactedAct();
 		ArrayList<Act> previousLearningContext = enaction.getPreviousLearningContext();
 		ArrayList<Act> initialLearningContext = enaction.getInitialLearningContext();
 
@@ -223,6 +157,18 @@ public class Imos implements IImos
 	}
 
 	/**
+	 * Add a composite schema and its succeeding act that represent a composite possibility 
+	 * of interaction between Ernest and its environment. 
+	 * @param preInteraction The context Act.
+	 * @param postInteraction The intention Act.
+	 * @return The schema made of the two specified acts, whether it has been created or it already existed. 
+	 */
+    private Act addCompositeAct(Act preInteraction, Act postInteraction)
+    {
+    	return  ActImpl.createOrGetCompositeAct(preInteraction, postInteraction);
+    }
+
+	/**
 	 * Learn from an enacted interaction after a given context.
 	 * Returns the list of learned acts that are based on reliable subacts. The first act of the list is the stream act.
 	 * @param contextList The list of acts that constitute the context in which the learning occurs.
@@ -246,7 +192,7 @@ public class Imos implements IImos
 			for (Act preInteraction : contextList)
 			{
 				// Build a new interaction with the context pre-interaction and the enacted post-interaction 
-				Act newInteraction = addCompositeInteraction(preInteraction, enactedInteraction);
+				Act newInteraction = addCompositeAct(preInteraction, enactedInteraction);
 				newInteraction.setWeight(newInteraction.getWeight() + 1);
 				System.out.println("learned " + newInteraction);
 				if (m_tracer != null)	
@@ -264,11 +210,6 @@ public class Imos implements IImos
 		}
 		return newContextList; 
 	}
-
-//	public ArrayList<Act> getActs()
-//	{
-//		return this.acts;
-//	}
 
 	public int getCounter() 
 	{
@@ -302,7 +243,7 @@ public class Imos implements IImos
 			else
 			{
 				// enacted the prescriber's post-interaction
-				Act act = addCompositeInteraction(prescriberInteraction.getPreAct(), enactedInteraction);
+				Act act = addCompositeAct(prescriberInteraction.getPreAct(), enactedInteraction);
 				topEnactedInteraction = topEnactedInteraction(act, prescriberInteraction);
 				//topEnactedInteraction = enactedAct(prescriberSchema, enactedSchema.getSucceedingAct());
 			}
@@ -311,7 +252,7 @@ public class Imos implements IImos
 		return topEnactedInteraction;
 	}
 	
-	public ArrayList<IProposition> propose(IEnaction enaction)
+	public ArrayList<IProposition> propose(Enaction enaction)
 	{
 		ArrayList<IProposition> propositions = new ArrayList<IProposition>();
 		
@@ -319,7 +260,6 @@ public class Imos implements IImos
 		if (m_tracer != null)
 			activationElmt = m_tracer.addEventElement("activation", true);
 		
-		//for (Act activatedAct : this.acts)
 		for (Act activatedAct : ActImpl.getACTS())
 		{
 			if (!activatedAct.isPrimitive())

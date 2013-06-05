@@ -3,112 +3,96 @@ package imos2;
 import java.util.ArrayList;
 import java.util.List;
 import spas.Area;
+import spas.AreaImpl;
 import spas.SimuImpl;
 import spas.Transformation;
-import ernest.Effect;
 import ernest.IEffect;
-import ernest.Primitive;
 import ernest.ITracer;
+import ernest.PrimitiveImpl;
 
 /**
  * A structure used to handle the enaction of an interaction
  * or the simulation of the enaction of an interaction in memory.
  * @author ogeorgeon
  */
-public class EnactionImpl implements IEnaction 
+public class EnactionImpl implements Enaction 
 {
-	
-	private Primitive enactedPrimitive = null;
-	
 	/** The intended primitive interaction */
-	private Act m_intendedPrimitiveInteraction = null;
+	private Act m_intendedPrimitiveAct = null;
+	
 	/** The enacted primitive interaction */
-	private Act m_enactedPrimitiveInteraction = null;
-	/** The effect obtained from the enaction of the enacted primitive interaction */
-	private IEffect m_effect = new Effect();
+	private Act m_enactedPrimitiveAct = null;
+	
 	/** The composite interaction being enacted */
-	private Act m_topInteraction = null;
+	private Act m_topAct = null;
+
 	/** The highest level composite interaction enacted thus far */
-	private Act m_topEnactedInteraction = null;
+	private Act m_topEnactedAct = null;
+
 	/** The highest remaining composite interaction */ 
-	private Act m_topRemainingInteraction = null;
+	private Act m_topRemainingAct = null;
+
 	/** The current step of this enaction*/
 	private int m_step = 0;
+
 	/** The previous learning context (the context of the stream enaction) */
 	private ArrayList<Act> m_previousLearningContext   = new ArrayList<Act>();
+
 	/** The learning context at the beginning of this enaction*/
 	private ArrayList<Act> m_initialLearningContext   = new ArrayList<Act>();
+
 	/** The learning context at the end of this enaction*/
 	private ArrayList<Act> m_finalLearningContext   = new ArrayList<Act>();
 	/** The activation context at the end of this enaction*/
+
 	private ArrayList<Act> m_finalActivationContext = new ArrayList<Act>();
+
 	/** Number of schema learned after this enaction*/
 	private int m_nbSchemaLearned = 0;
+
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
+
 	private Transformation transformation = SimuImpl.UNKNOWN;
 	
-	//private ArrayList<IInteraction> m_ongoingInteractions = new ArrayList<IInteraction>();	
-	//private int m_simulationStatus = 0;
-	
-	public void setEffect(IEffect effect) 
+	public void setIntendedPrimitiveAct(Act act) 
 	{
-		m_effect = effect;
+		m_intendedPrimitiveAct = act;
 	}
 
-	public IEffect getEffect() 
+	public Act getIntendedPrimitiveAct() 
 	{
-		return m_effect;
-	}
-
-	public Primitive getEnactedPrimitive() 
-	{
-		return this.enactedPrimitive;
-	}
-
-	public void setEnactedPrimitive(Primitive enactedPrimitive) 
-	{
-		this.enactedPrimitive = enactedPrimitive;
-	}
-
-	public void setIntendedPrimitiveInteraction(Act act) 
-	{
-		m_intendedPrimitiveInteraction = act;
-	}
-
-	public Act getIntendedPrimitiveInteraction() 
-	{
-		return m_intendedPrimitiveInteraction;
+		return m_intendedPrimitiveAct;
 	}
 
 	public void setTopInteraction(Act act) 
 	{
-		m_topInteraction = act;
+		m_topAct = act;
 	}
 
-	public Act getTopInteraction() 
+	public Act getTopAct() 
 	{
-		return m_topInteraction;
+		return m_topAct;
 	}
 	
-	public void setTopEnactedInteraction(Act act) 
+	public void setTopEnactedAct(Act act) 
 	{
-		m_topEnactedInteraction = act;
+		m_topEnactedAct = act;
 	}
 
-	public Act getTopEnactedInteraction() 
+	public Act getTopEnactedAct() 
 	{
-		return m_topEnactedInteraction;
+		return m_topEnactedAct;
 	}
 	
-	public void setTopRemainingInteraction(Act act) 
+	public void setTopRemainingAct(Act act) 
 	{
-		m_topRemainingInteraction = act;
+		m_topRemainingAct = act;
 	}
 
-	public Act getTopRemainingInteraction() 
+	public Act getTopRemainingAct() 
 	{
-		return m_topRemainingInteraction;
+		return m_topRemainingAct;
 	}
 	
 	public void setStep(int step)
@@ -121,29 +105,19 @@ public class EnactionImpl implements IEnaction
 		return m_step;
 	}
 
-//	public void setSimulationStatus(int simulationStatus) 
-//	{
-//		m_simulationStatus = simulationStatus;
-//	}
-
-//	public int getSimulationStatus() 
-//	{
-//		return m_simulationStatus;
-//	}
-
-	public void setEnactedPrimitiveInteraction(Act act) 
+	public void setEnactedPrimitiveAct(Act act) 
 	{
-		m_enactedPrimitiveInteraction = act;
+		m_enactedPrimitiveAct = act;
 	}
 
-	public Act getEnactedPrimitiveInteraction() 
+	public Act getEnactedPrimitiveAct() 
 	{
-		return m_enactedPrimitiveInteraction;
+		return m_enactedPrimitiveAct;
 	}
 	
 	public boolean isOver()
 	{
-		return (m_topRemainingInteraction == null);
+		return (m_topRemainingAct == null);
 	}
 	
 	public void setCorrect(boolean correct) 
@@ -243,24 +217,21 @@ public class EnactionImpl implements IEnaction
 
 	public void traceTrack(ITracer tracer) 
 	{
-		if (tracer != null && m_intendedPrimitiveInteraction != null)
+		if (tracer != null && m_intendedPrimitiveAct != null)
 		{
 			//tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
-			tracer.addEventElement("top_level", m_topInteraction.getLength() + "");
-			tracer.addEventElement("satisfaction", m_enactedPrimitiveInteraction.getEnactionValue()/10 + "");
-			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveInteraction.getLabel().substring(0, 1));
-
-			m_effect.trace(tracer);
+			tracer.addEventElement("top_level", m_topAct.getLength() + "");
+			tracer.addEventElement("satisfaction", m_enactedPrimitiveAct.getEnactionValue()/10 + "");
+			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveAct.getLabel().substring(0, 1));
 			
-			Object e = tracer.addEventElement("track_enaction");
-		
-			tracer.addSubelement(e, "top_intention", m_topInteraction.getLabel());
-			tracer.addSubelement(e, "top_enacted_interaction", m_topEnactedInteraction.getLabel());
+			Object e = tracer.addEventElement("track_enaction");		
+			tracer.addSubelement(e, "top_intention", m_topAct.getLabel());
+			tracer.addSubelement(e, "top_enacted_interaction", m_topEnactedAct.getLabel());
 			tracer.addSubelement(e, "step", m_step + "");
-			tracer.addSubelement(e, "primitive_intended_interaction", m_intendedPrimitiveInteraction.getLabel());
-			tracer.addSubelement(e, "primitive_enacted_interaction", this.enactedPrimitive.getLabel());
-			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveInteraction.getLabel());
-			tracer.addSubelement(e, "area", m_enactedPrimitiveInteraction.getArea().getLabel());
+			tracer.addSubelement(e, "primitive_intended_interaction", m_intendedPrimitiveAct.getLabel());
+			tracer.addSubelement(e, "primitive_enacted_interaction", m_enactedPrimitiveAct.getPrimitive().getLabel());
+			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
+			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "transformation", this.transformation.getLabel());
 		}
 	}
@@ -271,13 +242,13 @@ public class EnactionImpl implements IEnaction
 		{
 			Object e = tracer.addEventElement("carry_enaction");
 
-			tracer.addSubelement(e, "top_intention", m_topInteraction.toString());
-			tracer.addSubelement(e, "top_level", m_topInteraction.getLength() + "");
-			if (m_topEnactedInteraction != null)
-				tracer.addSubelement(e, "top_enacted", m_topEnactedInteraction.toString());
-			tracer.addSubelement(e, "top_remaining", m_topRemainingInteraction.toString());
+			tracer.addSubelement(e, "top_intention", m_topAct.toString());
+			tracer.addSubelement(e, "top_level", m_topAct.getLength() + "");
+			if (m_topEnactedAct != null)
+				tracer.addSubelement(e, "top_enacted", m_topEnactedAct.toString());
+			tracer.addSubelement(e, "top_remaining", m_topRemainingAct.toString());
 			tracer.addSubelement(e, "next_step", m_step + "");
-			tracer.addSubelement(e, "next_primitive_intended_act", m_intendedPrimitiveInteraction.toString());
+			tracer.addSubelement(e, "next_primitive_intended_act", m_intendedPrimitiveAct.toString());
 		}
 	}
 	
@@ -309,5 +280,21 @@ public class EnactionImpl implements IEnaction
 
 	public Transformation getTransformation() {
 		return this.transformation;
+	}
+
+	public void track(IEffect input) {
+		
+		if (this.m_intendedPrimitiveAct == null)
+			// On startup create a first enacted interaction
+			this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">_"), AreaImpl.createOrGet("O"));
+		else{
+			// If we are not on startup
+			// Compute the enacted primitive act from the primitive interaction and the area.
+			Area area = SimuImpl.getArea(input.getLocation());
+			this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(input.getEnactedInteractionLabel()), area);
+		}
+		
+		this.transformation = SimuImpl.transformation(input);
+		this.m_enactedPrimitiveAct.setColor(input.getColor());
 	}	
 }

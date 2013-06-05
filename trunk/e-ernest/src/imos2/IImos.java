@@ -1,14 +1,10 @@
 package imos2;
 
 import java.util.ArrayList;
-
-import spas.Area;
-
-import ernest.Primitive;
 import ernest.ITracer;
 
 /**
- * The Intrinsically Motivated Schema mechanism (Ernest's sequential system).
+ * The sequential system of the Enactive Cognitive Architecture.
  * @author ogeorgeon
  */
 public interface IImos 
@@ -17,37 +13,11 @@ public interface IImos
 	 * @param regularityThreshold The regularity sensibility threshold.
 	 */
 	public void setRegularityThreshold(int regularityThreshold);
+	
+	/**
+	 * @param maxSchemaLength The maximum length of acts
+	 */
 	public void setMaxSchemaLength(int maxSchemaLength);
-
-	/**
-	 * Track the enaction at hand. 
-	 * @param enaction The current enaction.
-	 */
-	public void track(IEnaction enaction); 
-	
-	/**
-	 * Terminates the enaction at hand
-	 * Record and reinforce new schemas and construct the final context.
-	 * @param enaction The current enaction that is being terminated.
-	 */
-	public void terminate(IEnaction enaction);
-	
-	/**
-	 * @return The list of interactions.
-	 */
-	//public ArrayList<Act> getActs();
-	
-	/**
-	 * Constructs a new interaction in episodic memory.
-	 * or retrieve the the interaction if it already exists.
-	 * The interaction's action is recorded as a primitive schema.
-	 * If there is no stimuli, the interaction is marked as the schema's succeeding or failing interaction.
-	 * @param moveLabel The move label
-	 * @param effectLabel The effect label
-	 * @param satisfaction The interaction's satisfaction.
-	 * @return The act that was created or that already existed.
-	 */
-	//public Act addAct(Primitive interaction, Area are); 
 
 	/**
 	 * @param tracer The tracer used to generate the activity traces
@@ -55,15 +25,28 @@ public interface IImos
 	public void setTracer(ITracer<Object> tracer);
 	
 	/**
-	 * The counter of interaction cycles.
-	 * @return The current interaction cycle number.
+	 * Track the enaction at hand. 
+	 * @param enaction The current enaction.
 	 */
-	public int getCounter();
+	public void track(Enaction enaction); 
 	
 	/**
+	 * Terminates the enaction at hand
+	 * Record and reinforce new schemas and construct the final context.
+	 * @param enaction The current enaction that is being terminated.
+	 */
+	public void terminate(Enaction enaction);
+	
+	/**
+	 * Generates a list of propositions based on the enaction's activation context.
 	 * @param enaction The previous enaction
 	 * @return The next list of propositions
 	 */
-	public ArrayList<IProposition> propose(IEnaction enaction);
-	
+	public ArrayList<IProposition> propose(Enaction enaction);
+
+	/**
+	 * The counter of interaction cycles.
+	 * @return The current interaction cycle number.
+	 */
+	public int getCounter();	
 }
