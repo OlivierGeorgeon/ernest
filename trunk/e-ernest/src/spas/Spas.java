@@ -98,7 +98,7 @@ public class Spas implements ISpas
 				m_tracer.addEventElement("empty", newAspect.getLabel() + " merged to " + SimuImpl.EMPTY.getLabel());}
 		}
 		else{ 
-			IPlace previousPlace = m_localSpaceMemory.getPreviousPlace();
+			Place previousPlace = m_localSpaceMemory.getPreviousPlace();
 			if (previousPlace != null){
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = SimuImpl.getArea(previousPlace.getPosition());
@@ -130,15 +130,15 @@ public class Spas implements ISpas
 			return 0xFFFFFF;
 	}
 	
-	public ArrayList<IPlace> getPlaceList()
+	public ArrayList<Place> getPlaceList()
 	{
 		// return m_localSpaceMemory.getPlaceList();
 		return m_localSpaceMemory.clonePlaceList();
 	}
 
-	private IPlace addPlace(Act act, Point3f position,int value) 
+	private Place addPlace(Act act, Point3f position,int value) 
 	{
-		IPlace place = m_localSpaceMemory.addPlace(act, position);
+		Place place = m_localSpaceMemory.addPlace(act, position);
 		place.setValue(value);
 		return place;
 	}

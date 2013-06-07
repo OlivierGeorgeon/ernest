@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.media.j3d.Transform3D;
 import javax.swing.JFrame;
-import spas.IPlace;
+import spas.Place;
 import spas.ISegment;
 import spas.ISpatialMemory;
 
@@ -69,7 +69,7 @@ public interface IErnest
 	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
-	public ArrayList<IPlace> getPlaceList();
+	public ArrayList<Place> getPlaceList();
 	
 	/**
 	 * @return The counter of cognitive cycles.
