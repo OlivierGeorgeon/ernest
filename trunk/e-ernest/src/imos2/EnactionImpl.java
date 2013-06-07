@@ -120,7 +120,7 @@ public class EnactionImpl implements Enaction
 		return (m_topRemainingAct == null);
 	}
 	
-	public void setCorrect(boolean correct) 
+	public void setSuccessful(boolean correct) 
 	{
 		m_correct = correct;
 	}

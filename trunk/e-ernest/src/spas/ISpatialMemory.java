@@ -64,5 +64,8 @@ public interface ISpatialMemory
 	 */
 	public void trace(ITracer tracer);
 
+	/**
+	 * @return The place that was recorded during the last decision cycle.
+	 */
 	public IPlace getPreviousPlace();
 }

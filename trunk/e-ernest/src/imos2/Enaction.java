@@ -89,9 +89,9 @@ public interface Enaction
 	public int getStep();
 	
 	/**
-	 * @param correct false if the top intention was not correctly enacted
+	 * @param successful false if the top intention was not correctly enacted
 	 */
-	public void setCorrect(boolean correct);
+	public void setSuccessful(boolean successful);
 	
 	/**
 	 * @return True if this enaction is terminated.

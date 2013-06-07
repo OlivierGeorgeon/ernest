@@ -52,17 +52,6 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		for (IPlace place : m_places)
 			clonePlaces.add(place.clone());
 		
-//		LocalSpaceMemory cloneSpatialMemory = null;
-//		try {
-//			cloneSpatialMemory = (LocalSpaceMemory) super.clone();
-//		} catch(CloneNotSupportedException cnse) {
-//			cnse.printStackTrace(System.err);
-//		}
-//		cloneSpatialMemory.setPlaceList(clonePlaces);
-		//cloneSpatialMemory.m_places = clonePlaces;
-		//cloneSpatialMemory.m_clock = m_clock;
-		//return cloneSpatialMemory;
-		
 		return clonePlaces;
 	}
 

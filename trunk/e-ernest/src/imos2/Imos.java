@@ -118,7 +118,7 @@ public class Imos implements IImos
 			if (intendedTopInteraction != enactedTopInteraction) 
 			{
 				m_internalState= "!";
-				enaction.setCorrect(false);	
+				enaction.setSuccessful(false);	
 				
 				if (!enactedTopInteraction.getPrimitive().getAction().equals(intendedTopInteraction.getPrimitive().getAction())){
 					System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
