@@ -4,7 +4,6 @@ import imos2.Act;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
 
@@ -36,10 +35,6 @@ public class Place implements IPlace
 	}
 
 	public Point3f getPosition() {
-//		Point3f pos = this.position;
-//		Vector3f t = new Vector3f(this.clock / 10f, this.clock / 10f, this.clock / 10f);
-//		pos.add(t);
-//		return pos;
 		return this.position;
 	}
 	
@@ -58,6 +53,7 @@ public class Place implements IPlace
 
 		// We must clone the objects because they are passed by reference by default
 		clonePlace.setPosition(this.position);
+		clonePlace.setOrientation(this.orientation);
 
 		return clonePlace;
 	}
@@ -79,9 +75,8 @@ public class Place implements IPlace
 	}
 	public void setPosition(Point3f position) 
 	{
-		// Create a new instance of the vector because it is needed by the clone method.
+		// Create a new instance of the vector so it can be used to clone this place.
 		this.position = new Point3f(position);
-		//m_position.set(position);
 	}
 
 	public void setClock(int clock) 
@@ -120,7 +115,8 @@ public class Place implements IPlace
 
 	public void setOrientation(Vector3f orientation) 
 	{
-		orientation.set(orientation);
+		// Create a new instance of the vector so it can be used to clone this place.
+		this.orientation = new Vector3f(orientation);
 	}
 
 	public Vector3f getOrientation() 
@@ -177,21 +173,21 @@ public class Place implements IPlace
 		return ret;		
 	}
 
-	public boolean from(Vector3f position) 
-	{
-		boolean from = false;
-		Vector3f compare = new Vector3f(this.position);
-		
-		// TODO Should take the differential speed of mobile objects into account.
-		// (not the speed due to Ernest's movement but the part that is due to the object's movement)
-		//if (m_speed != null) compare.sub(m_speed);
-		
-		compare.sub(position);
-		if (compare.length() < .2f) 
-			from = true;
-		
-		return from;
-	}
+//	public boolean from(Vector3f position) 
+//	{
+//		boolean from = false;
+//		Vector3f compare = new Vector3f(this.position);
+//		
+//		// TODO Should take the differential speed of mobile objects into account.
+//		// (not the speed due to Ernest's movement but the part that is due to the object's movement)
+//		//if (m_speed != null) compare.sub(m_speed);
+//		
+//		compare.sub(position);
+//		if (compare.length() < .2f) 
+//			from = true;
+//		
+//		return from;
+//	}
 
 
 }

@@ -88,7 +88,7 @@ public interface IPlace extends Cloneable
 	 */
 	public void incClock();
 	
-	public void setOrientation(float orientation);
+//	public void setOrientation(float orientation);
 	
 	public float getOrientationAngle();
 	
