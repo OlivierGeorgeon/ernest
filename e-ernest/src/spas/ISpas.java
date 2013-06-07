@@ -60,7 +60,7 @@ public interface ISpas
 	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
-	public ArrayList<IPlace> getPlaceList();
+	public ArrayList<Place> getPlaceList();
 	
 	/**
 	 * @return The clock of spatial memory

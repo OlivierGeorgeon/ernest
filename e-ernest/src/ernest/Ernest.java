@@ -11,7 +11,7 @@ import javax.vecmath.Point3f;
 
 import spas.Area;
 import spas.AreaImpl;
-import spas.IPlace;
+import spas.Place;
 import spas.ISpas;
 import spas.ISpatialMemory;
 import spas.SimuImpl;
@@ -121,7 +121,7 @@ public class Ernest implements IErnest
 		return PrimitiveImpl.createOrGet(label, value * 10);
 	}
 
-	public ArrayList<IPlace> getPlaceList()
+	public ArrayList<Place> getPlaceList()
 	{
 		return m_spas.getPlaceList();
 	}

@@ -38,7 +38,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public static int PERSISTENCE_DURATION = 7;//50;
 	
 	/** The Local space structure. */
-	private ArrayList<IPlace> m_places = new ArrayList<IPlace>();
+	private ArrayList<Place> m_places = new ArrayList<Place>();
 	
 	/**
 	 * Clone spatial memory to perform simulations
@@ -46,10 +46,10 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	 * From tutorial here: http://ydisanto.developpez.com/tutoriels/java/cloneable/ 
 	 * @return The cloned spatial memory
 	 */
-	public ArrayList<IPlace> clonePlaceList() 
+	public ArrayList<Place> clonePlaceList() 
 	{
-		ArrayList<IPlace> clonePlaces = new ArrayList<IPlace>();
-		for (IPlace place : m_places)
+		ArrayList<Place> clonePlaces = new ArrayList<Place>();
+		for (Place place : m_places)
 			clonePlaces.add(place.clone());
 		
 		return clonePlaces;
@@ -57,13 +57,13 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 
 	public void tick()
 	{
-		for (IPlace p : m_places)
+		for (Place p : m_places)
 			p.incClock();
 	}
 
-	public IPlace addPlace(Act act, Point3f position)
+	public Place addPlace(Act act, Point3f position)
 	{
-		IPlace place = new Place(act, position);	
+		Place place = new PlaceImpl(act, position);	
 		m_places.add(place);
 		return place;
 	}
@@ -71,7 +71,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public void transform(Transform3D transform)
 	{
 		if (transform != null)
-			for (IPlace p : m_places)
+			for (Place p : m_places)
 				p.transform(transform);
 	}
 	
@@ -85,7 +85,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public int getDisplayCode(Point3f position)
 	{
 		int value = Ernest.UNANIMATED_COLOR;
-		for (IPlace p : m_places)
+		for (Place p : m_places)
 		{
 			if (p.isInCell(position))
 				if (value != 0x73E600 && value != 0x00E6A0)
@@ -102,7 +102,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	{
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
-			IPlace l = (IPlace)it.next();
+			Place l = (Place)it.next();
 			if (l.isInCell(position))
 				it.remove();
 		}		
@@ -115,7 +115,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	{
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
-			IPlace l = (IPlace)it.next();
+			Place l = (Place)it.next();
 			if (l.getDistance() > DISTANCE_VISUAL_BACKGROUND - 1)
 				it.remove();
 		}
@@ -128,7 +128,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	{
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
-			IPlace p = (IPlace)it.next();
+			Place p = (Place)it.next();
 			if (p.getClock() > PERSISTENCE_DURATION || p.getPosition().x < -.1) 
 				it.remove();
 		}
@@ -137,12 +137,12 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	/**
 	 * @return The list of places in Local Spave Memory
 	 */
-	public ArrayList<IPlace> getPlaceList()
+	public ArrayList<Place> getPlaceList()
 	{
 		return m_places;
 	}
 	
-	public void setPlaceList(ArrayList<IPlace> places) 
+	public void setPlaceList(ArrayList<Place> places) 
 	{
 		m_places = places;
 	}
@@ -164,9 +164,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 		}
 	}
 	
-	public IPlace getPreviousPlace(){
-		IPlace place = null;
-		for (IPlace p : this.m_places)
+	public Place getPreviousPlace(){
+		Place place = null;
+		for (Place p : this.m_places)
 			if (p.getClock() >= 1)
 				place = p;
 		return place;
