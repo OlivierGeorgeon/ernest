@@ -5,12 +5,12 @@ import java.util.Iterator;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
-import spas.Place;
-import spas.PlaceImpl;
+import tracing.ITracer;
 import utils.ErnestUtils;
 import eca.enaction.Act;
+import eca.spas.Place;
+import eca.spas.PlaceImpl;
 import ernest.Ernest;
-import ernest.ITracer;
 
 
 /**

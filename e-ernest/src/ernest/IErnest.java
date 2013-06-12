@@ -12,9 +12,10 @@ import javax.swing.JFrame;
 
 import eca.Primitive;
 import eca.enaction.Act;
+import eca.spas.Place;
 import eca.spas.egomem.ISpatialMemory;
-import spas.Place;
 import spas.ISegment;
+import tracing.ITracer;
 
 
 /**

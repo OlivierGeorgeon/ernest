@@ -8,6 +8,7 @@ import javax.vecmath.Vector3f;
 
 import eca.enaction.Act;
 
+import tracing.ITracer;
 import utils.ErnestUtils;
 
 public class Effect implements IEffect 

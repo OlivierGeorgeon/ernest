@@ -3,9 +3,10 @@ package eca.ss;
 
 import java.util.ArrayList;
 
+import tracing.ITracer;
+
 import eca.decider.IProposition;
 import eca.enaction.Enaction;
-import ernest.ITracer;
 
 /**
  * The sequential system of the Enactive Cognitive Architecture.

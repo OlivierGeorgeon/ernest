@@ -2,9 +2,10 @@ package spas;
 
 import java.util.ArrayList;
 
+import tracing.ITracer;
+
 import eca.enaction.Act;
 import ernest.Ernest;
-import ernest.ITracer;
 
 /**
  * A bundle of interactions that may be "compresent" at the same location in space.

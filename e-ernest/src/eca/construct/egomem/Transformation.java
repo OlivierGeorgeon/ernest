@@ -1,4 +1,4 @@
-package eca.spas.egomem;
+package eca.construct.egomem;
 
 /**
  * A transformation in spatial memory

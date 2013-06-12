@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
-import spas.Place;
+import tracing.ITracer;
+
 import eca.enaction.Act;
-import ernest.ITracer;
+import eca.spas.Place;
 
 
 /**

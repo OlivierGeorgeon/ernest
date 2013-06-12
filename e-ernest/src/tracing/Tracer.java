@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import org.w3c.dom.Element;
 
-import ernest.ITracer;
 
 
 /**

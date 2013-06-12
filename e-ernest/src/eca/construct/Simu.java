@@ -1,9 +1,7 @@
-package spas;
+package eca.construct;
 
+import tracing.ITracer;
 import eca.enaction.Enaction;
-import ernest.Action;
-import ernest.ITracer;
-import ernest.Observation;
 
 /**
  * 

@@ -1,9 +1,9 @@
-package ernest;
+package eca.construct;
 
 import java.util.List;
 
 import eca.Primitive;
-import eca.spas.egomem.Transformation;
+import eca.construct.egomem.Transformation;
 
 /**
  * An action that may be performed by interactions.

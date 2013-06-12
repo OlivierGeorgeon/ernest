@@ -5,8 +5,9 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import tracing.ITracer;
+
 import eca.enaction.Act;
-import ernest.ITracer;
 
 /**
  * A bundle of sensory stimulations. 

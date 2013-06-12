@@ -1,4 +1,4 @@
-package ernest;
+package eca.construct;
 
 
 import java.util.ArrayList;
@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import eca.construct.egomem.Area;
+import eca.construct.egomem.AreaImpl;
 import eca.enaction.Act;
-import eca.spas.egomem.Area;
-import eca.spas.egomem.AreaImpl;
 
 
 public class ObservationImpl implements Observation {

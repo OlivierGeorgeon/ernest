@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import eca.construct.Action;
+import eca.construct.ActionImpl;
+import eca.construct.Phenomenon;
+import eca.construct.PhenomenonImpl;
+import eca.construct.egomem.AreaImpl;
 import eca.enaction.ActImpl;
-import eca.spas.egomem.AreaImpl;
-import ernest.Action;
-import ernest.ActionImpl;
-import ernest.Phenomenon;
-import ernest.PhenomenonImpl;
 
 /**
  * A primitive interaction.

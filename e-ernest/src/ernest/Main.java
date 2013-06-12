@@ -1,5 +1,6 @@
 package ernest;
 
+import tracing.ITracer;
 import tracing.Tracer;
 import tracing.XMLStreamTracer;
 

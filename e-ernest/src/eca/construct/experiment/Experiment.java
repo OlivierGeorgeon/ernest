@@ -1,4 +1,4 @@
-package ernest;
+package eca.construct.experiment;
 
 import eca.enaction.Act;
 

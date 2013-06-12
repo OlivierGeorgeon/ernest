@@ -1,4 +1,4 @@
-package spas;
+package eca.spas;
 
 
 import javax.media.j3d.Transform3D;

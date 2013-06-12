@@ -4,13 +4,14 @@ package eca.ss;
 import java.util.ArrayList;
 import java.util.List;
 
+import tracing.ITracer;
+
+import eca.construct.ActionImpl;
 import eca.decider.IProposition;
 import eca.decider.Proposition;
 import eca.enaction.Act;
 import eca.enaction.ActImpl;
 import eca.enaction.Enaction;
-import ernest.ActionImpl;
-import ernest.ITracer;
 
 /**
  * The sequential system of the Enactive Cognitive Architecture.

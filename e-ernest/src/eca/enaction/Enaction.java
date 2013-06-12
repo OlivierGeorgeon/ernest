@@ -2,9 +2,10 @@ package eca.enaction;
 
 import java.util.ArrayList;
 
-import eca.spas.egomem.Transformation;
+import tracing.ITracer;
+
+import eca.construct.egomem.Transformation;
 import ernest.IEffect;
-import ernest.ITracer;
 
 /**
  * A structure used to manage the enaction of a scheme in the real world
