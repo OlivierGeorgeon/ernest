@@ -1,15 +1,15 @@
 package eca.decider;
 
-import imos2.IProposition;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-import eca.Act;
-import eca.Enaction;
-import eca.EnactionImpl;
+import eca.Primitive;
+import eca.enaction.Act;
+import eca.enaction.Enaction;
+import eca.enaction.EnactionImpl;
 import eca.spas.ISpas;
 import eca.ss.IImos;
 import ernest.ActionImpl;
@@ -20,7 +20,6 @@ import ernest.Experiment;
 import ernest.ExperimentImpl;
 import ernest.ITracer;
 import ernest.Observation;
-import ernest.Primitive;
 import spas.SimuImpl;
 
 /**

@@ -1,11 +1,15 @@
-package ernest;
+package eca;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import eca.ActImpl;
+import eca.enaction.ActImpl;
 import eca.spas.egomem.AreaImpl;
+import ernest.Action;
+import ernest.ActionImpl;
+import ernest.Phenomenon;
+import ernest.PhenomenonImpl;
 
 /**
  * A primitive interaction.

@@ -15,8 +15,9 @@ import spas.Place;
 import spas.Simu;
 import spas.SimuImpl;
 
-import eca.Act;
-import eca.Enaction;
+import eca.Primitive;
+import eca.enaction.Act;
+import eca.enaction.Enaction;
 import eca.spas.egomem.Area;
 import eca.spas.egomem.ISpatialMemory;
 import eca.spas.egomem.LocalSpaceMemory;
@@ -26,7 +27,6 @@ import ernest.PhenomenonImpl;
 import ernest.Experiment;
 import ernest.ExperimentImpl;
 import ernest.ObservationImpl;
-import ernest.Primitive;
 import ernest.ITracer;
 import ernest.Observation;
 

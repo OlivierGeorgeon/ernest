@@ -3,7 +3,7 @@ package ernest;
 
 import java.util.List;
 
-import eca.Act;
+import eca.enaction.Act;
 import eca.spas.egomem.Area;
 
 

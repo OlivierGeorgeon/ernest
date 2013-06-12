@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eca.Act;
+import eca.enaction.Act;
 import eca.spas.egomem.Area;
 import eca.spas.egomem.AreaImpl;
 

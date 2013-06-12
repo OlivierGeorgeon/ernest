@@ -4,7 +4,7 @@ package ernest;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
-import eca.Act;
+import eca.enaction.Act;
 
 /**
  * An effect sensed by Ernest after making a move in the environment.

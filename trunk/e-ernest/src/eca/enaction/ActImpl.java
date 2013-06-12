@@ -1,12 +1,12 @@
-package eca;
+package eca.enaction;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import eca.Primitive;
 import eca.spas.egomem.Area;
 import ernest.Action;
-import ernest.Primitive;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 

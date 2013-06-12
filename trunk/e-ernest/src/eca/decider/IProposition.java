@@ -1,6 +1,6 @@
-package imos2;
+package eca.decider;
 
-import eca.Act;
+import eca.enaction.Act;
 
 
 /**

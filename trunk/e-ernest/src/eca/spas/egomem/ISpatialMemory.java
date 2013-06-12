@@ -5,7 +5,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
 import spas.Place;
-import eca.Act;
+import eca.enaction.Act;
 import ernest.ITracer;
 
 

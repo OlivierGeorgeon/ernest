@@ -1,4 +1,7 @@
-package ernest;
+package eca;
+
+import ernest.Action;
+import ernest.Phenomenon;
 
 /**
  * A primitive interaction.

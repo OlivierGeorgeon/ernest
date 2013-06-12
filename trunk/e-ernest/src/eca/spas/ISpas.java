@@ -7,13 +7,13 @@ import javax.vecmath.Vector3f;
 
 import spas.Place;
 
-import eca.Enaction;
+import eca.Primitive;
+import eca.enaction.Enaction;
 import eca.spas.egomem.Area;
 import eca.spas.egomem.ISpatialMemory;
 import ernest.Action;
 import ernest.ITracer;
 import ernest.Observation;
-import ernest.Primitive;
 
 /**
  * The spatial system.

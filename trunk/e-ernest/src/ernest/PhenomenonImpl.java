@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eca.Act;
+import eca.Primitive;
+import eca.enaction.Act;
 
 /**
  * An Aspect is the element of an observation that can be situated in space
