@@ -8,7 +8,7 @@ import java.util.Map;
 
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
-import eca.enaction.Act;
+import eca.ss.enaction.Act;
 
 
 public class ObservationImpl implements Observation {

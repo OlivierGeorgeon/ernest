@@ -1,6 +1,6 @@
 package eca.decider;
 
-import eca.enaction.Act;
+import eca.ss.enaction.Act;
 
 
 /**

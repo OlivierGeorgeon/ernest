@@ -12,8 +12,8 @@ import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.Observation;
 import eca.construct.egomem.Area;
-import eca.enaction.Enaction;
 import eca.spas.egomem.ISpatialMemory;
+import eca.ss.enaction.Enaction;
 
 /**
  * The spatial system.

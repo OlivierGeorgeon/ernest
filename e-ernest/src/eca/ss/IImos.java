@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import tracing.ITracer;
 
 import eca.decider.IProposition;
-import eca.enaction.Enaction;
+import eca.ss.enaction.Enaction;
 
 /**
  * The sequential system of the Enactive Cognitive Architecture.

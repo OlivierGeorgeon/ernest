@@ -19,16 +19,16 @@ import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Transformation;
 import eca.decider.Decider;
 import eca.decider.IDecider;
-import eca.enaction.Act;
-import eca.enaction.ActImpl;
-import eca.enaction.Enaction;
-import eca.enaction.EnactionImpl;
 import eca.spas.ISpas;
 import eca.spas.Place;
 import eca.spas.Spas;
 import eca.spas.egomem.ISpatialMemory;
 import eca.ss.IImos;
 import eca.ss.Imos;
+import eca.ss.enaction.Act;
+import eca.ss.enaction.ActImpl;
+import eca.ss.enaction.Enaction;
+import eca.ss.enaction.EnactionImpl;
 
 
 /**

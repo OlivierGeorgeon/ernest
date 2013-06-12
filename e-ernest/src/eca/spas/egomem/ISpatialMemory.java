@@ -6,8 +6,8 @@ import javax.vecmath.Point3f;
 
 import tracing.ITracer;
 
-import eca.enaction.Act;
 import eca.spas.Place;
+import eca.ss.enaction.Act;
 
 
 /**

@@ -11,9 +11,9 @@ import javax.media.j3d.Transform3D;
 import javax.swing.JFrame;
 
 import eca.Primitive;
-import eca.enaction.Act;
 import eca.spas.Place;
 import eca.spas.egomem.ISpatialMemory;
+import eca.ss.enaction.Act;
 import spas.ISegment;
 import tracing.ITracer;
 

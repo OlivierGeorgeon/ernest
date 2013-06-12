@@ -7,9 +7,9 @@ import javax.vecmath.Point3f;
 
 import tracing.ITracer;
 import utils.ErnestUtils;
-import eca.enaction.Act;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
+import eca.ss.enaction.Act;
 import ernest.Ernest;
 
 
