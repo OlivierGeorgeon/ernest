@@ -1,9 +1,10 @@
-package imos2;
+package eca;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import spas.Area;
+
+import eca.spas.egomem.Area;
 import ernest.Action;
 import ernest.Primitive;
 

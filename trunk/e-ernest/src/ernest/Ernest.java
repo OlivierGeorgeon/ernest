@@ -9,23 +9,23 @@ import java.util.TreeMap;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
+import eca.Act;
+import eca.ActImpl;
+import eca.Enaction;
+import eca.EnactionImpl;
 import eca.decider.Decider;
 import eca.decider.IDecider;
+import eca.spas.ISpas;
+import eca.spas.Spas;
+import eca.spas.egomem.Area;
+import eca.spas.egomem.AreaImpl;
+import eca.spas.egomem.ISpatialMemory;
+import eca.spas.egomem.Transformation;
 import eca.ss.IImos;
 import eca.ss.Imos;
 
-import spas.Area;
-import spas.AreaImpl;
 import spas.Place;
-import spas.ISpas;
-import spas.ISpatialMemory;
 import spas.SimuImpl;
-import spas.Spas;
-import spas.Transformation;
-import imos2.EnactionImpl;
-import imos2.Enaction;
-import imos2.Act;
-import imos2.ActImpl;
 
 /**
  * The main Ernest class used to create an Ernest agent in the environment.

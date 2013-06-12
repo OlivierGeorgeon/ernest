@@ -1,10 +1,11 @@
 package ernest;
 
-import imos2.ActImpl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import spas.AreaImpl;
+
+import eca.ActImpl;
+import eca.spas.egomem.AreaImpl;
 
 /**
  * A primitive interaction.

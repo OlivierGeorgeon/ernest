@@ -1,4 +1,4 @@
-package spas;
+package eca.spas.egomem;
 
 /**
  * A transformation in spatial memory

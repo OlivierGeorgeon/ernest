@@ -1,5 +1,7 @@
 package imos2;
 
+import eca.Act;
+
 /**
  * A proposition that Ernest enacts an interaction. 
  * @author ogeorgeon

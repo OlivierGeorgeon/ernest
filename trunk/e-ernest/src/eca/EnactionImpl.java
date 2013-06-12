@@ -1,11 +1,11 @@
-package imos2;
+package eca;
 
 import java.util.ArrayList;
 import java.util.List;
-import spas.Area;
-import spas.AreaImpl;
 import spas.SimuImpl;
-import spas.Transformation;
+import eca.spas.egomem.Area;
+import eca.spas.egomem.AreaImpl;
+import eca.spas.egomem.Transformation;
 import ernest.IEffect;
 import ernest.ITracer;
 import ernest.PrimitiveImpl;

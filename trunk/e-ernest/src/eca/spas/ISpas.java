@@ -1,11 +1,15 @@
-package spas;
+package eca.spas;
 
-import imos2.Enaction;
 import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import spas.Place;
+
+import eca.Enaction;
+import eca.spas.egomem.Area;
+import eca.spas.egomem.ISpatialMemory;
 import ernest.Action;
 import ernest.ITracer;
 import ernest.Observation;

@@ -1,6 +1,6 @@
 package eca.decider;
 
-import imos2.Enaction;
+import eca.Enaction;
 import ernest.ITracer;
 
 /**

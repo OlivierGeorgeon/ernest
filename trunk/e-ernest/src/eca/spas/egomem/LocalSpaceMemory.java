@@ -1,13 +1,16 @@
-package spas;
+package eca.spas.egomem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
+
+import spas.Place;
+import spas.PlaceImpl;
 import utils.ErnestUtils;
+import eca.Act;
 import ernest.Ernest;
 import ernest.ITracer;
-import imos2.Act;
 
 
 /**

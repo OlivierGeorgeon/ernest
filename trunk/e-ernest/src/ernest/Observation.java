@@ -1,10 +1,11 @@
 package ernest;
 
-import imos2.Act;
 
 import java.util.List;
 
-import spas.Area;
+import eca.Act;
+import eca.spas.egomem.Area;
+
 
 /**
  * An observation of a feature in an area.

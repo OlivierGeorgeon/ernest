@@ -1,9 +1,10 @@
 package eca.ss;
 
-import imos2.Enaction;
 import imos2.IProposition;
 
 import java.util.ArrayList;
+
+import eca.Enaction;
 import ernest.ITracer;
 
 /**

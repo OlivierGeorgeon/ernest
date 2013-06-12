@@ -1,8 +1,9 @@
 package ernest;
 
-import imos2.Act;
 
 import java.util.List;
+
+import eca.Act;
 
 /**
  * An aspect of a phenomenon observed in an area.

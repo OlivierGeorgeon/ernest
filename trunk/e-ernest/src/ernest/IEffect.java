@@ -1,9 +1,10 @@
 package ernest;
 
-import imos2.Act;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
+
+import eca.Act;
 
 /**
  * An effect sensed by Ernest after making a move in the environment.

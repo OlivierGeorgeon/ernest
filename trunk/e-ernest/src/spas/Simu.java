@@ -1,6 +1,6 @@
 package spas;
 
-import imos2.Enaction;
+import eca.Enaction;
 import ernest.Action;
 import ernest.ITracer;
 import ernest.Observation;
