@@ -1,7 +1,14 @@
-package imos2;
+package eca.ss;
+
+import imos2.Act;
+import imos2.ActImpl;
+import imos2.Enaction;
+import imos2.IProposition;
+import imos2.Proposition;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import ernest.ActionImpl;
 import ernest.ITracer;
 
