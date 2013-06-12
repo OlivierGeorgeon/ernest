@@ -1,7 +1,8 @@
-package imos2;
+package eca;
 
 import java.util.ArrayList;
-import spas.Transformation;
+
+import eca.spas.egomem.Transformation;
 import ernest.IEffect;
 import ernest.ITracer;
 

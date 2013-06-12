@@ -1,14 +1,15 @@
 package ernest;
 
-import imos2.Act;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import spas.AreaImpl;
-import spas.Area;
+import eca.Act;
+import eca.spas.egomem.Area;
+import eca.spas.egomem.AreaImpl;
+
 
 public class ObservationImpl implements Observation {
 	

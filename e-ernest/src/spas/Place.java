@@ -1,9 +1,10 @@
 package spas;
 
-import imos2.Act;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+
+import eca.Act;
 
 /**
  * A place is a location in spatial memory.

@@ -1,7 +1,6 @@
 package ernest;
 
 //import imos.IAct;
-import imos2.Act;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,9 +9,11 @@ import java.util.Map;
 
 import javax.media.j3d.Transform3D;
 import javax.swing.JFrame;
+
+import eca.Act;
+import eca.spas.egomem.ISpatialMemory;
 import spas.Place;
 import spas.ISegment;
-import spas.ISpatialMemory;
 
 
 /**

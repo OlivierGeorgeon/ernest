@@ -1,12 +1,13 @@
 package ernest;
 
-import imos2.Act;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import eca.Act;
 
 /**
  * An Aspect is the element of an observation that can be situated in space

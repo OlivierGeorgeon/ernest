@@ -1,4 +1,4 @@
-package spas;
+package eca.spas.egomem;
 
 import java.util.Collection;
 import java.util.HashMap;

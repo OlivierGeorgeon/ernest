@@ -1,10 +1,11 @@
 package ernest;
 
-import imos2.Act;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import eca.Act;
 
 /**
  * An experiment is an Action performed on a Phenomenon.

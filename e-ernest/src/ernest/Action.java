@@ -1,7 +1,8 @@
 package ernest;
 
 import java.util.List;
-import spas.Transformation;
+
+import eca.spas.egomem.Transformation;
 
 /**
  * An action that may be performed by interactions.

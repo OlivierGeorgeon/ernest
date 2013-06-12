@@ -1,6 +1,6 @@
 package ernest;
 
-import spas.Area;
+import eca.spas.egomem.Area;
 
 /**
  * A spatial configuration of the surroundings of the agent.

@@ -2,10 +2,11 @@ package ernest;
 
 import java.util.HashMap;
 import java.util.Map;
-import spas.Area;
-import spas.AreaImpl;
+
+import eca.spas.egomem.Area;
+import eca.spas.egomem.AreaImpl;
+import eca.spas.egomem.Transformation;
 import spas.SimuImpl;
-import spas.Transformation;
 
 public class LayoutImpl implements Layout {
 	

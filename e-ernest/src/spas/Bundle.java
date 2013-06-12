@@ -1,7 +1,8 @@
 package spas;
 
-import imos2.Act;
 import java.util.ArrayList;
+
+import eca.Act;
 import ernest.Ernest;
 import ernest.ITracer;
 

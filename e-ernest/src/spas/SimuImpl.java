@@ -1,14 +1,18 @@
 package spas;
 
-import imos2.Act;
-import imos2.ActImpl;
-import imos2.Enaction;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import utils.ErnestUtils;
+import eca.Act;
+import eca.ActImpl;
+import eca.Enaction;
+import eca.spas.egomem.Area;
+import eca.spas.egomem.AreaImpl;
+import eca.spas.egomem.Transformation;
+import eca.spas.egomem.TransformationImpl;
 import ernest.Action;
 import ernest.IEffect;
 import ernest.Phenomenon;

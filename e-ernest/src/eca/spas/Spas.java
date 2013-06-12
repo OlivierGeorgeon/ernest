@@ -1,7 +1,5 @@
-package spas;
+package eca.spas;
 
-import imos2.Act;
-import imos2.Enaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +10,16 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import spas.IBundle;
+import spas.Place;
+import spas.Simu;
+import spas.SimuImpl;
+
+import eca.Act;
+import eca.Enaction;
+import eca.spas.egomem.Area;
+import eca.spas.egomem.ISpatialMemory;
+import eca.spas.egomem.LocalSpaceMemory;
 import ernest.Action;
 import ernest.Phenomenon;
 import ernest.PhenomenonImpl;

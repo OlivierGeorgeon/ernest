@@ -5,8 +5,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import eca.spas.egomem.Transformation;
 import spas.SimuImpl;
-import spas.Transformation;
 
 /**
  * An action that may be performed by interactions.

@@ -1,6 +1,6 @@
 package ernest;
 
-import imos2.Act;
+import eca.Act;
 
 /**
  * An experiment is an Action performed on a Phenomenon.
