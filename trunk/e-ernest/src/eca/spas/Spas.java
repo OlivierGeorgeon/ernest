@@ -24,10 +24,10 @@ import eca.construct.SimuImpl;
 import eca.construct.egomem.Area;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
-import eca.enaction.Act;
-import eca.enaction.Enaction;
 import eca.spas.egomem.ISpatialMemory;
 import eca.spas.egomem.LocalSpaceMemory;
+import eca.ss.enaction.Act;
+import eca.ss.enaction.Enaction;
 
 /**
  * The spatial system.

@@ -1,7 +1,7 @@
 package eca.construct;
 
 import tracing.ITracer;
-import eca.enaction.Enaction;
+import eca.ss.enaction.Enaction;
 
 /**
  * 

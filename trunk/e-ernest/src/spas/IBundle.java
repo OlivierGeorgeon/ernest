@@ -7,7 +7,7 @@ import javax.vecmath.Vector3f;
 
 import tracing.ITracer;
 
-import eca.enaction.Act;
+import eca.ss.enaction.Act;
 
 /**
  * A bundle of sensory stimulations. 

@@ -9,7 +9,7 @@ import eca.construct.ActionImpl;
 import eca.construct.Phenomenon;
 import eca.construct.PhenomenonImpl;
 import eca.construct.egomem.AreaImpl;
-import eca.enaction.ActImpl;
+import eca.ss.enaction.ActImpl;
 
 /**
  * A primitive interaction.

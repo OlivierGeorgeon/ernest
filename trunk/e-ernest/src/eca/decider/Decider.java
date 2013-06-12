@@ -17,11 +17,11 @@ import eca.construct.PhenomenonImpl;
 import eca.construct.SimuImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
-import eca.enaction.Act;
-import eca.enaction.Enaction;
-import eca.enaction.EnactionImpl;
 import eca.spas.ISpas;
 import eca.ss.IImos;
+import eca.ss.enaction.Act;
+import eca.ss.enaction.Enaction;
+import eca.ss.enaction.EnactionImpl;
 
 /**
  * This is the regular decider for Ernest 7 that does not use spatial memory.

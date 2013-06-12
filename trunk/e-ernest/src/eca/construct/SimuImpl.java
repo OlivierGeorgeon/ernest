@@ -17,9 +17,9 @@ import eca.construct.egomem.Transformation;
 import eca.construct.egomem.TransformationImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
-import eca.enaction.Act;
-import eca.enaction.ActImpl;
-import eca.enaction.Enaction;
+import eca.ss.enaction.Act;
+import eca.ss.enaction.ActImpl;
+import eca.ss.enaction.Enaction;
 import ernest.IEffect;
 
 public class SimuImpl implements Simu {

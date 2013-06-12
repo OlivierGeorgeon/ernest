@@ -7,7 +7,7 @@ import java.util.Map;
 
 import eca.construct.Action;
 import eca.construct.Observation;
-import eca.enaction.Act;
+import eca.ss.enaction.Act;
 
 /**
  * An experiment is an Action performed on a Phenomenon.

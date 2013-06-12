@@ -6,7 +6,7 @@ import javax.vecmath.Matrix3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import eca.enaction.Act;
+import eca.ss.enaction.Act;
 
 import tracing.ITracer;
 import utils.ErnestUtils;

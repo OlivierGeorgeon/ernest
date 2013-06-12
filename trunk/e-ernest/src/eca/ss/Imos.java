@@ -9,9 +9,9 @@ import tracing.ITracer;
 import eca.construct.ActionImpl;
 import eca.decider.IProposition;
 import eca.decider.Proposition;
-import eca.enaction.Act;
-import eca.enaction.ActImpl;
-import eca.enaction.Enaction;
+import eca.ss.enaction.Act;
+import eca.ss.enaction.ActImpl;
+import eca.ss.enaction.Enaction;
 
 /**
  * The sequential system of the Enactive Cognitive Architecture.

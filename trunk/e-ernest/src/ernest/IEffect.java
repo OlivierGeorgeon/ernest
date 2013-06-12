@@ -6,7 +6,7 @@ import javax.vecmath.Point3f;
 
 import tracing.ITracer;
 
-import eca.enaction.Act;
+import eca.ss.enaction.Act;
 
 /**
  * An effect sensed by Ernest after making a move in the environment.

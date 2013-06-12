@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import tracing.ITracer;
 
-import eca.enaction.Act;
+import eca.ss.enaction.Act;
 import ernest.Ernest;
 
 /**

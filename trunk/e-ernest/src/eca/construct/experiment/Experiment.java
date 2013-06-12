@@ -1,10 +1,10 @@
 package eca.construct.experiment;
 
-import eca.enaction.Act;
+import eca.ss.enaction.Act;
 
 /**
  * An experiment is an Action performed on a Phenomenon.
- * Experiments record the resuting interactions. 
+ * Experiments record the resulting interactions. 
  * @author Olivier
  */
 public interface Experiment {
