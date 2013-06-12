@@ -9,6 +9,11 @@ import java.util.TreeMap;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
+import eca.decider.Decider;
+import eca.decider.IDecider;
+import eca.ss.IImos;
+import eca.ss.Imos;
+
 import spas.Area;
 import spas.AreaImpl;
 import spas.Place;
@@ -19,11 +24,7 @@ import spas.Spas;
 import spas.Transformation;
 import imos2.EnactionImpl;
 import imos2.Enaction;
-import imos2.IImos;
 import imos2.Act;
-import imos2.Imos;
-import imos2.Decider;
-import imos2.IDecider;
 import imos2.ActImpl;
 
 /**

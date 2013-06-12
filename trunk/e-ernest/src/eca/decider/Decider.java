@@ -1,8 +1,16 @@
-package imos2;
+package eca.decider;
+
+import imos2.Act;
+import imos2.Enaction;
+import imos2.EnactionImpl;
+import imos2.IProposition;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+
+import eca.ss.IImos;
 import ernest.ActionImpl;
 import ernest.Action;
 import ernest.Phenomenon;
