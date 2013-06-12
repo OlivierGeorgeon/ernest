@@ -11,24 +11,23 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import spas.IBundle;
-import spas.Place;
-import spas.Simu;
-import spas.SimuImpl;
+import tracing.ITracer;
 
 import eca.Primitive;
+import eca.construct.Action;
+import eca.construct.Observation;
+import eca.construct.ObservationImpl;
+import eca.construct.Phenomenon;
+import eca.construct.PhenomenonImpl;
+import eca.construct.Simu;
+import eca.construct.SimuImpl;
+import eca.construct.egomem.Area;
+import eca.construct.experiment.Experiment;
+import eca.construct.experiment.ExperimentImpl;
 import eca.enaction.Act;
 import eca.enaction.Enaction;
-import eca.spas.egomem.Area;
 import eca.spas.egomem.ISpatialMemory;
 import eca.spas.egomem.LocalSpaceMemory;
-import ernest.Action;
-import ernest.Phenomenon;
-import ernest.PhenomenonImpl;
-import ernest.Experiment;
-import ernest.ExperimentImpl;
-import ernest.ObservationImpl;
-import ernest.ITracer;
-import ernest.Observation;
 
 /**
  * The spatial system.

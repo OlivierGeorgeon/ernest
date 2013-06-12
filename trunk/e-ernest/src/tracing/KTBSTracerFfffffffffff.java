@@ -28,7 +28,6 @@ import org.jrdf.util.ClosableIterable;
 import org.jrdf.writer.Writer;
 import org.jrdf.writer.ntriples.NTriplesWriterImpl;
 
-import ernest.ITracer;
 
 import utils.Strings;
 

@@ -1,4 +1,4 @@
-package eca.spas.egomem;
+package eca.construct.egomem;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
-import ernest.Phenomenon;
-import ernest.PhenomenonImpl;
+import eca.construct.Phenomenon;
+import eca.construct.PhenomenonImpl;
 
 import utils.ErnestUtils;
 

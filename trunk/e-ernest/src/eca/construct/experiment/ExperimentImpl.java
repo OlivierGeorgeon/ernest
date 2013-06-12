@@ -1,10 +1,12 @@
-package ernest;
+package eca.construct.experiment;
 
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import eca.construct.Action;
+import eca.construct.Observation;
 import eca.enaction.Act;
 
 /**

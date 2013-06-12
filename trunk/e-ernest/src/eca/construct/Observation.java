@@ -1,10 +1,10 @@
-package ernest;
+package eca.construct;
 
 
 import java.util.List;
 
+import eca.construct.egomem.Area;
 import eca.enaction.Act;
-import eca.spas.egomem.Area;
 
 
 /**

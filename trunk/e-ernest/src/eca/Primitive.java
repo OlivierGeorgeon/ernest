@@ -1,7 +1,7 @@
 package eca;
 
-import ernest.Action;
-import ernest.Phenomenon;
+import eca.construct.Action;
+import eca.construct.Phenomenon;
 
 /**
  * A primitive interaction.

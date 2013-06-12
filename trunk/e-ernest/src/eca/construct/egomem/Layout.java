@@ -1,6 +1,7 @@
-package ernest;
+package eca.construct.egomem;
 
-import eca.spas.egomem.Area;
+import eca.construct.Observation;
+import eca.construct.Phenomenon;
 
 /**
  * A spatial configuration of the surroundings of the agent.

@@ -1,12 +1,12 @@
-package ernest;
+package eca.construct.egomem;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import eca.spas.egomem.Area;
-import eca.spas.egomem.AreaImpl;
-import eca.spas.egomem.Transformation;
-import spas.SimuImpl;
+import eca.construct.Observation;
+import eca.construct.ObservationImpl;
+import eca.construct.Phenomenon;
+import eca.construct.SimuImpl;
 
 public class LayoutImpl implements Layout {
 	

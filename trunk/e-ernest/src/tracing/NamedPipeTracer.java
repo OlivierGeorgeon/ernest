@@ -10,7 +10,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.jrdf.graph.ObjectNode;
 import org.w3c.dom.*;
 
-import ernest.ITracer;
 
 
 import java.util.Calendar;

@@ -5,22 +5,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import tracing.ITracer;
+
 
 import eca.Primitive;
+import eca.construct.Action;
+import eca.construct.ActionImpl;
+import eca.construct.Observation;
+import eca.construct.Phenomenon;
+import eca.construct.PhenomenonImpl;
+import eca.construct.SimuImpl;
+import eca.construct.experiment.Experiment;
+import eca.construct.experiment.ExperimentImpl;
 import eca.enaction.Act;
 import eca.enaction.Enaction;
 import eca.enaction.EnactionImpl;
 import eca.spas.ISpas;
 import eca.ss.IImos;
-import ernest.ActionImpl;
-import ernest.Action;
-import ernest.Phenomenon;
-import ernest.PhenomenonImpl;
-import ernest.Experiment;
-import ernest.ExperimentImpl;
-import ernest.ITracer;
-import ernest.Observation;
-import spas.SimuImpl;
 
 /**
  * This is the regular decider for Ernest 7 that does not use spatial memory.

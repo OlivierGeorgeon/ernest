@@ -5,15 +5,15 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
-import spas.Place;
+import tracing.ITracer;
+
 
 import eca.Primitive;
+import eca.construct.Action;
+import eca.construct.Observation;
+import eca.construct.egomem.Area;
 import eca.enaction.Enaction;
-import eca.spas.egomem.Area;
 import eca.spas.egomem.ISpatialMemory;
-import ernest.Action;
-import ernest.ITracer;
-import ernest.Observation;
 
 /**
  * The spatial system.

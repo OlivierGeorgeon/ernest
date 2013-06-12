@@ -1,4 +1,4 @@
-package ernest;
+package eca.construct;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import eca.Primitive;
-import eca.spas.egomem.Transformation;
-import spas.SimuImpl;
+import eca.construct.egomem.Transformation;
 
 /**
  * An action that may be performed by interactions.

@@ -1,30 +1,26 @@
-package spas;
+package eca.construct;
 
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import tracing.ITracer;
 import utils.ErnestUtils;
 import eca.Primitive;
 import eca.PrimitiveImpl;
+import eca.construct.egomem.Area;
+import eca.construct.egomem.AreaImpl;
+import eca.construct.egomem.Layout;
+import eca.construct.egomem.LayoutImpl;
+import eca.construct.egomem.Transformation;
+import eca.construct.egomem.TransformationImpl;
+import eca.construct.experiment.Experiment;
+import eca.construct.experiment.ExperimentImpl;
 import eca.enaction.Act;
 import eca.enaction.ActImpl;
 import eca.enaction.Enaction;
-import eca.spas.egomem.Area;
-import eca.spas.egomem.AreaImpl;
-import eca.spas.egomem.Transformation;
-import eca.spas.egomem.TransformationImpl;
-import ernest.Action;
 import ernest.IEffect;
-import ernest.Phenomenon;
-import ernest.PhenomenonImpl;
-import ernest.Experiment;
-import ernest.ExperimentImpl;
-import ernest.ITracer;
-import ernest.Layout;
-import ernest.LayoutImpl;
-import ernest.Observation;
 
 public class SimuImpl implements Simu {
 

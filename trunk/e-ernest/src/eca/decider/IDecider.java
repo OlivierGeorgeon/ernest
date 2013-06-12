@@ -1,7 +1,7 @@
 package eca.decider;
 
+import tracing.ITracer;
 import eca.enaction.Enaction;
-import ernest.ITracer;
 
 /**
  * A decider decides what interaction to try to enact next
