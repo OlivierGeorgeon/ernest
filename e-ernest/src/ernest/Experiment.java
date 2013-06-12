@@ -1,6 +1,6 @@
 package ernest;
 
-import eca.Act;
+import eca.enaction.Act;
 
 /**
  * An experiment is an Action performed on a Phenomenon.

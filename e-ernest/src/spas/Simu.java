@@ -1,6 +1,6 @@
 package spas;
 
-import eca.Enaction;
+import eca.enaction.Enaction;
 import ernest.Action;
 import ernest.ITracer;
 import ernest.Observation;

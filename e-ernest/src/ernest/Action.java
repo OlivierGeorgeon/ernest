@@ -2,6 +2,7 @@ package ernest;
 
 import java.util.List;
 
+import eca.Primitive;
 import eca.spas.egomem.Transformation;
 
 /**

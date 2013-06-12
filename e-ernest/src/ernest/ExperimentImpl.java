@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import eca.Act;
+import eca.enaction.Act;
 
 /**
  * An experiment is an Action performed on a Phenomenon.

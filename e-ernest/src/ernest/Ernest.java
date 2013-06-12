@@ -9,12 +9,14 @@ import java.util.TreeMap;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
-import eca.Act;
-import eca.ActImpl;
-import eca.Enaction;
-import eca.EnactionImpl;
+import eca.Primitive;
+import eca.PrimitiveImpl;
 import eca.decider.Decider;
 import eca.decider.IDecider;
+import eca.enaction.Act;
+import eca.enaction.ActImpl;
+import eca.enaction.Enaction;
+import eca.enaction.EnactionImpl;
 import eca.spas.ISpas;
 import eca.spas.Spas;
 import eca.spas.egomem.Area;

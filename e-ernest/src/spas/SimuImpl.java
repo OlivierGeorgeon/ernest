@@ -6,9 +6,11 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import utils.ErnestUtils;
-import eca.Act;
-import eca.ActImpl;
-import eca.Enaction;
+import eca.Primitive;
+import eca.PrimitiveImpl;
+import eca.enaction.Act;
+import eca.enaction.ActImpl;
+import eca.enaction.Enaction;
 import eca.spas.egomem.Area;
 import eca.spas.egomem.AreaImpl;
 import eca.spas.egomem.Transformation;
@@ -23,8 +25,6 @@ import ernest.ITracer;
 import ernest.Layout;
 import ernest.LayoutImpl;
 import ernest.Observation;
-import ernest.Primitive;
-import ernest.PrimitiveImpl;
 
 public class SimuImpl implements Simu {
 

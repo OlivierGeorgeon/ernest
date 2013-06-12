@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
-import eca.Act;
+import eca.enaction.Act;
 import ernest.ITracer;
 
 /**

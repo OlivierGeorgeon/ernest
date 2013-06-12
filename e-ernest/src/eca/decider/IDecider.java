@@ -1,6 +1,6 @@
 package eca.decider;
 
-import eca.Enaction;
+import eca.enaction.Enaction;
 import ernest.ITracer;
 
 /**

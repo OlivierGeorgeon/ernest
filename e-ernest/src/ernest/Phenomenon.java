@@ -3,7 +3,8 @@ package ernest;
 
 import java.util.List;
 
-import eca.Act;
+import eca.Primitive;
+import eca.enaction.Act;
 
 /**
  * An aspect of a phenomenon observed in an area.

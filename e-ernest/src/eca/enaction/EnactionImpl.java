@@ -1,14 +1,14 @@
-package eca;
+package eca.enaction;
 
 import java.util.ArrayList;
 import java.util.List;
 import spas.SimuImpl;
+import eca.PrimitiveImpl;
 import eca.spas.egomem.Area;
 import eca.spas.egomem.AreaImpl;
 import eca.spas.egomem.Transformation;
 import ernest.IEffect;
 import ernest.ITracer;
-import ernest.PrimitiveImpl;
 
 /**
  * A structure used to handle the enaction of an interaction

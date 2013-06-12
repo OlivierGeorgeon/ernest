@@ -1,14 +1,14 @@
 package eca.ss;
 
-import imos2.IProposition;
-import imos2.Proposition;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import eca.Act;
-import eca.ActImpl;
-import eca.Enaction;
+import eca.decider.IProposition;
+import eca.decider.Proposition;
+import eca.enaction.Act;
+import eca.enaction.ActImpl;
+import eca.enaction.Enaction;
 import ernest.ActionImpl;
 import ernest.ITracer;
 

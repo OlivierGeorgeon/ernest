@@ -2,7 +2,7 @@ package spas;
 
 import java.util.ArrayList;
 
-import eca.Act;
+import eca.enaction.Act;
 import ernest.Ernest;
 import ernest.ITracer;
 
