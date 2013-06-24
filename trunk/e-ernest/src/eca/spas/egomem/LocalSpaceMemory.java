@@ -7,6 +7,7 @@ import javax.vecmath.Point3f;
 
 import tracing.ITracer;
 import utils.ErnestUtils;
+import eca.Primitive;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 import eca.ss.enaction.Act;
@@ -64,9 +65,9 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 			p.incClock();
 	}
 
-	public Place addPlace(Act act, Point3f position)
+	public Place addPlace(Primitive primitive, Point3f position)
 	{
-		Place place = new PlaceImpl(act, position);	
+		Place place = new PlaceImpl(primitive, position);	
 		m_places.add(place);
 		return place;
 	}

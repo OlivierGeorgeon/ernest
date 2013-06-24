@@ -93,7 +93,7 @@ public class Spas implements ISpas
 		m_localSpaceMemory.forgetOldPlaces();
 		
 		if ( enaction.getEnactedPrimitiveAct() != null){
-			addPlace(enaction.getEnactedPrimitiveAct(), SimuImpl.spasPoint(area), enaction.getEnactedPrimitiveAct().getColor());			
+			addPlace(enaction.getEnactedPrimitiveAct().getPrimitive(), SimuImpl.spasPoint(area), enaction.getEnactedPrimitiveAct().getColor());			
 		}
 
 		// Merge phenomena
@@ -110,7 +110,7 @@ public class Spas implements ISpas
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = SimuImpl.getArea(previousPlace.getPosition());
 				if (previousArea.equals(area)){
-					Phenomenon previousAspect = previousPlace.getAct().getPrimitive().getPhenomenon();
+					Phenomenon previousAspect = previousPlace.getPrimitive().getPhenomenon();
 					if (!previousAspect.equals(newAspect)){
 						PhenomenonImpl.merge(newAspect, previousAspect);
 						if (m_tracer != null){
@@ -143,9 +143,9 @@ public class Spas implements ISpas
 		return m_localSpaceMemory.clonePlaceList();
 	}
 
-	private Place addPlace(Act act, Point3f position,int value) 
+	private Place addPlace(Primitive primitive, Point3f position,int value) 
 	{
-		Place place = m_localSpaceMemory.addPlace(act, position);
+		Place place = m_localSpaceMemory.addPlace(primitive, position);
 		place.setValue(value);
 		return place;
 	}

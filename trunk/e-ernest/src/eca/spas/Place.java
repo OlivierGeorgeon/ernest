@@ -4,6 +4,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import eca.Primitive;
 import eca.ss.enaction.Act;
 
 /**
@@ -45,7 +46,9 @@ public interface Place extends Cloneable
 	/**
 	 * @return This place's act.
 	 */
-	public Act getAct(); 
+	//public Act getAct(); 
+	
+	public Primitive getPrimitive();
 	
 	/**
 	 * Test if this place is at this position.
