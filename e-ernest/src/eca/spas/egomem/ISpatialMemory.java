@@ -6,6 +6,7 @@ import javax.vecmath.Point3f;
 
 import tracing.ITracer;
 
+import eca.Primitive;
 import eca.spas.Place;
 import eca.ss.enaction.Act;
 
@@ -27,7 +28,7 @@ public interface ISpatialMemory
 	 * @param position This place's position
 	 * @return The created place
 	 */
-	public Place addPlace(Act act, Point3f position);
+	public Place addPlace(Primitive primitive, Point3f position);
 
 	/**
 	 * @return A clone of this spatial memory

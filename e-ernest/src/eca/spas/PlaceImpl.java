@@ -4,8 +4,7 @@ package eca.spas;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-
-import eca.ss.enaction.Act;
+import eca.Primitive;
 import utils.ErnestUtils;
 
 /**
@@ -14,7 +13,8 @@ import utils.ErnestUtils;
  */
 public class PlaceImpl implements Place 
 {
-	private Act act;
+	//private Act act;
+	private Primitive primitive;
 	private Point3f position = new Point3f();
 	private Vector3f orientation = new Vector3f(1,0,0);	
 	private int displayCode;
@@ -26,13 +26,17 @@ public class PlaceImpl implements Place
 	 * @param act The interaction at this place.
 	 * @param position This place's position.
 	 */
-	public PlaceImpl(Act act, Point3f position){
-		this.act = act;
+	public PlaceImpl(Primitive primitive, Point3f position){
+		this.primitive = primitive;
 		this.position.set(position);
 	}
 	
-	public Act getAct() {
-		return this.act;
+//	public Act getAct() {
+//		return this.act;
+//	}
+
+	public Primitive getPrimitive() {
+		return this.primitive;
 	}
 
 	public Point3f getPosition() {
@@ -132,7 +136,7 @@ public class PlaceImpl implements Place
 	}
 
 	/**
-	 * Places are equal if they have the same act and location and clock
+	 * Places are equal if they have the same primitive and location and clock
 	 */
 	public boolean equals(Object o){
 		boolean ret = false;
@@ -146,7 +150,7 @@ public class PlaceImpl implements Place
 		else
 		{
 			Place other = (Place)o;
-			ret  = (this.act.equals(other.getAct()) 
+			ret  = (this.getPrimitive().equals(other.getPrimitive()) 
 					&& this.position.epsilonEquals(other.getPosition(), .1f)
 					&& (this.clock == other.getClock()));
 			//ret = isInCell(other.getPosition()) && other.getClock() == getClock() && other.getType() == getType();
