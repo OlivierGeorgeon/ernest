@@ -1,10 +1,14 @@
 package eca.ss.enaction;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.media.j3d.Transform3D;
 
 import tracing.ITracer;
 
 import eca.construct.egomem.Transformation;
+import eca.spas.Place;
 import ernest.IEffect;
 
 /**
@@ -19,6 +23,8 @@ public interface Enaction
 	 * @param input Ernest's input.
 	 */
 	public void track(IEffect input);
+	
+	public void track(List<Place> places, Transform3D transform);
 	
 	/**
 	 * @param transformation The transformation sensed during this primitive enaction.

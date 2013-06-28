@@ -9,8 +9,6 @@ import java.util.Map;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-
-import spas.IBundle;
 import tracing.ITracer;
 
 import eca.Primitive;
@@ -39,9 +37,6 @@ public class Spas implements ISpas
 	
 	/** The Tracer. */
 	private ITracer m_tracer = null; 
-	
-	/** A list of all the bundles ever identified. */
-	public List<IBundle> m_bundles = new ArrayList<IBundle>(10);
 	
 	/** Ernest's local space memory  */
 	private ISpatialMemory m_localSpaceMemory = new LocalSpaceMemory();

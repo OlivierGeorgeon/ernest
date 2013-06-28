@@ -3,12 +3,15 @@ package eca.ss.enaction;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.media.j3d.Transform3D;
+
 import tracing.ITracer;
 import eca.PrimitiveImpl;
 import eca.construct.SimuImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Transformation;
+import eca.spas.Place;
 import ernest.IEffect;
 
 /**
@@ -55,6 +58,8 @@ public class EnactionImpl implements Enaction
 	private boolean m_correct = true;
 
 	private Transformation transformation = SimuImpl.UNKNOWN;
+	
+	private List<Place> enactedPlaces = new ArrayList<Place>();
 	
 	public void setIntendedPrimitiveAct(Act act) 
 	{
@@ -298,4 +303,18 @@ public class EnactionImpl implements Enaction
 		this.transformation = SimuImpl.transformation(input);
 		this.m_enactedPrimitiveAct.setColor(input.getColor());
 	}	
+	
+	public void track(List<Place> places, Transform3D transform){
+		
+		this.enactedPlaces = places;
+		
+		this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">_"), AreaImpl.createOrGet("O"));
+
+		for (Place place : places){
+			this.m_enactedPrimitiveAct = place.getAct();
+			this.m_enactedPrimitiveAct.setColor(place.getValue());
+		}
+		this.transformation = SimuImpl.transformation(transform);
+	}
+
 }

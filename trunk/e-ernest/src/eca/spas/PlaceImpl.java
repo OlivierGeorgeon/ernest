@@ -5,6 +5,9 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import eca.Primitive;
+import eca.construct.SimuImpl;
+import eca.ss.enaction.Act;
+import eca.ss.enaction.ActImpl;
 import utils.ErnestUtils;
 
 /**
@@ -13,7 +16,6 @@ import utils.ErnestUtils;
  */
 public class PlaceImpl implements Place 
 {
-	//private Act act;
 	private Primitive primitive;
 	private Point3f position = new Point3f();
 	private Vector3f orientation = new Vector3f(1,0,0);	
@@ -31,9 +33,9 @@ public class PlaceImpl implements Place
 		this.position.set(position);
 	}
 	
-//	public Act getAct() {
-//		return this.act;
-//	}
+	public Act getAct() {
+		return ActImpl.createOrGetPrimitiveAct(primitive, SimuImpl.getArea(position));
+	}
 
 	public Primitive getPrimitive() {
 		return this.primitive;
@@ -177,22 +179,4 @@ public class PlaceImpl implements Place
 		
 		return ret;		
 	}
-
-//	public boolean from(Vector3f position) 
-//	{
-//		boolean from = false;
-//		Vector3f compare = new Vector3f(this.position);
-//		
-//		// TODO Should take the differential speed of mobile objects into account.
-//		// (not the speed due to Ernest's movement but the part that is due to the object's movement)
-//		//if (m_speed != null) compare.sub(m_speed);
-//		
-//		compare.sub(position);
-//		if (compare.length() < .2f) 
-//			from = true;
-//		
-//		return from;
-//	}
-
-
 }

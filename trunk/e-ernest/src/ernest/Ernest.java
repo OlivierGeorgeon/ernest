@@ -3,6 +3,7 @@ package ernest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -54,10 +55,6 @@ public class Ernest implements IErnest
 	
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
-	
-	/** The list of primitive interactions available to Ernest */
-	//private final Map<String , IPrimitive> interactions = new TreeMap<String , IPrimitive>() ;
-//	private final Map<String , Primitive> interactions = new HashMap<String , Primitive>() ;
 	
 	/** Ernest's decisional Mechanism. */
 	private IDecider m_decider = new Decider(m_imos, m_spas); // Regular decider for Ernest 7.
@@ -115,6 +112,38 @@ public class Ernest implements IErnest
 		
 		return m_enaction.getIntendedPrimitiveAct().getLabel();		
 	}
+	
+	public String step(List<Place> places, Transform3D transform){
+		
+		// Trace a new interaction cycle.
+		if (m_tracer != null){
+            m_tracer.startNewEvent(m_imos.getCounter());
+			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+			//input.trace(m_tracer);		
+		}                
+
+		// track the enaction 
+		
+		m_enaction.track(places, transform);
+		m_imos.track(m_enaction);
+		m_spas.track(m_enaction);			
+		m_enaction.traceTrack(m_tracer);
+
+		
+		// Decision cycle
+		if (m_enaction.isOver()){
+			m_imos.terminate(m_enaction);
+			m_enaction = m_decider.decide(m_enaction);
+		}
+
+		// Carry out the current enaction
+		
+		m_decider.carry(m_enaction);
+		
+		return m_enaction.getIntendedPrimitiveAct().getLabel();		
+		
+	}
+	
 
 	public int getValue(int i, int j)
 	{

@@ -32,7 +32,7 @@ public class SimuImpl implements Simu {
 	public static Area C = AreaImpl.createOrGet("C");
 	public static Area O = AreaImpl.createOrGet("O");
 
-	/** Predefined aspects */
+	/** Predefined phenomena */
 	public static Phenomenon EMPTY = PhenomenonImpl.createOrGet("_");
 	
 	/** Predefined transformations */
@@ -133,10 +133,26 @@ public class SimuImpl implements Simu {
 	}
 	
 	public static Transformation transformation(IEffect effect){
+//		Transformation transform = SimuImpl.UNKNOWN;
+//
+//		transform = SimuImpl.IDENTITY;
+//		Transform3D t = effect.getTransformation();
+//		float angle = ErnestUtils.angle(t);
+//		if (Math.abs(angle) > .1){
+//			if ( angle > 0)		
+//				transform = SimuImpl.SHIFT_LEFT;
+//			else 		
+//				transform = SimuImpl.SHIFT_RIGHT;
+//		}
+
+		return transformation(effect.getTransformation());
+		//return transform;
+	}
+	
+	public static Transformation transformation(Transform3D t){
 		Transformation transform = SimuImpl.UNKNOWN;
 
 		transform = SimuImpl.IDENTITY;
-		Transform3D t = effect.getTransformation();
 		float angle = ErnestUtils.angle(t);
 		if (Math.abs(angle) > .1){
 			if ( angle > 0)		
