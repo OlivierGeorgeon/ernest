@@ -1,20 +1,13 @@
 package ernest;
 
-//import imos.IAct;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.media.j3d.Transform3D;
-import javax.swing.JFrame;
-
 import eca.Primitive;
 import eca.spas.Place;
 import eca.spas.egomem.ISpatialMemory;
-import eca.ss.enaction.Act;
-import spas.ISegment;
 import tracing.ITracer;
 
 
@@ -49,10 +42,12 @@ public interface IErnest
 	
 	/**
 	 * Run Ernest one step.
-	 * @param effect The effect recieved from the environment.
+	 * @param effect The effect received from the environment.
 	 * @return The next primitive schema to enact.
 	 */
 	public String step(IEffect effect);
+	
+	public String step(List<Place> places, Transform3D transform);
 	
 	/**
 	 * @param i x coordinate (0 = left, 2 = right)

@@ -44,10 +44,13 @@ public interface Place extends Cloneable
 	public Point3f getPosition();
 	
 	/**
-	 * @return This place's act.
+	 * @return The act constructed from this place.
 	 */
-	//public Act getAct(); 
+	public Act getAct(); 
 	
+	/**
+	 * @return This place's primitive interaction.
+	 */
 	public Primitive getPrimitive();
 	
 	/**
@@ -92,9 +95,9 @@ public interface Place extends Cloneable
 	 */
 	public void incClock();
 	
-//	public void setOrientation(float orientation);
-	
+	/**
+	 * @return The orientation angle of this place
+	 */
 	public float getOrientationAngle();
 	
-	//public boolean from(Vector3f position); 
 }
