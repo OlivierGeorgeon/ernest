@@ -5,10 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.vecmath.Point3f;
-
-import eca.construct.Phenomenon;
-import eca.construct.PhenomenonImpl;
-
 import utils.ErnestUtils;
 
 /**
@@ -16,6 +12,7 @@ import utils.ErnestUtils;
  * @author Olivier
  */
 public class AreaImpl implements Area {
+
 
 	private static Map<String , Area> AREAS = new HashMap<String , Area>() ;
 
@@ -32,6 +29,35 @@ public class AreaImpl implements Area {
 	 */
 	public static Collection<Area> getAREAS() {
 		return AREAS.values();
+	}
+	
+	/**
+	 * Gives the area to which a point belongs.
+	 * @param point The point
+	 * @return The area of interest
+	 */
+	public static Area getArea(Point3f point) 
+	{
+		if (point.epsilonEquals(new Point3f(), .1f))
+			return O;
+		else if (ErnestUtils.polarAngle(point) > .1f)
+			return A; 
+		else if (ErnestUtils.polarAngle(point) >= -.1f)
+			return B; 
+		else
+			return C; 
+	}
+	
+	public static Point3f spasPoint(Area area){
+		Point3f spasPoint = new Point3f(1, 0, 0);
+		if (area.equals(A))
+			spasPoint.set((float)Math.cos(Math.PI/4), (float)Math.sin(Math.PI/4), 0);
+		else if (area.equals(C))
+			spasPoint.set((float)Math.cos(Math.PI/4),-(float)Math.sin(Math.PI/4), 0);
+		else if (area.equals(O))
+			spasPoint.set(0,0, 0);
+		spasPoint.scale(3);
+		return spasPoint;
 	}
 	
 	/**

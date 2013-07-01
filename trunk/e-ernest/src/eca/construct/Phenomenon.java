@@ -9,6 +9,9 @@ import eca.Primitive;
  */
 public interface Phenomenon {
 	
+	/** Predefined phenomena */
+	public static Phenomenon EMPTY = PhenomenonImpl.createOrGet("_");
+	
 	/**
 	 * @return This aspect's label.
 	 */

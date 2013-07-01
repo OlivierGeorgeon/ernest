@@ -11,6 +11,7 @@ import eca.construct.SimuImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Transformation;
+import eca.construct.egomem.TransformationImpl;
 import eca.spas.Place;
 import ernest.IEffect;
 
@@ -57,7 +58,7 @@ public class EnactionImpl implements Enaction
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
 
-	private Transformation transformation = SimuImpl.UNKNOWN;
+	private Transformation transformation = TransformationImpl.UNKNOWN;
 	
 	private List<Place> enactedPlaces = new ArrayList<Place>();
 	
@@ -296,11 +297,11 @@ public class EnactionImpl implements Enaction
 		else{
 			// If we are not on startup
 			// Compute the enacted primitive act from the primitive interaction and the area.
-			Area area = SimuImpl.getArea(input.getLocation());
+			Area area = AreaImpl.getArea(input.getLocation());
 			this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(input.getEnactedInteractionLabel()), area);
 		}
 		
-		this.transformation = SimuImpl.transformation(input);
+		this.transformation = TransformationImpl.transformation(input);
 		this.m_enactedPrimitiveAct.setColor(input.getColor());
 	}	
 	
@@ -314,7 +315,7 @@ public class EnactionImpl implements Enaction
 			this.m_enactedPrimitiveAct = place.getAct();
 			this.m_enactedPrimitiveAct.setColor(place.getValue());
 		}
-		this.transformation = SimuImpl.transformation(transform);
+		this.transformation = TransformationImpl.transformation(transform);
 		this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.transformation);
 	}
 

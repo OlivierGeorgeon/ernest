@@ -5,8 +5,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eca.Primitive;
+import eca.PrimitiveImpl;
 import eca.construct.Action;
+import eca.construct.Observation;
 import eca.construct.egomem.Area;
+import eca.construct.experiment.Experiment;
+import eca.construct.experiment.ExperimentImpl;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -80,6 +84,22 @@ public class ActImpl implements Act
 		return key;
 	}
 	
+	public static Act getAct(Action action, Observation observation){
+		
+		Experiment exp = ExperimentImpl.createOrGet(action, observation);
+		Act act = exp.predictAct();
+		
+		if (act == null){
+			Primitive interaction = action.getPrimitives().get(0);
+			for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
+				if (i.getAction().equals(action) && i.getPhenomenonType().equals(observation.getPhenomenon()))
+					interaction = i;
+			}
+			act = createOrGetPrimitiveAct(interaction, observation.getArea());
+		}
+
+		return act;
+	}
 	private ActImpl(String label, boolean primitive, Act preInteraction, Act postInteraction, int value, Primitive interaction, Area area)
 	{
 		this.label = label;

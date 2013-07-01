@@ -6,5 +6,10 @@ package eca.construct.egomem;
  */
 public interface Area 
 {
+	/** Predefined areas */
+	public static Area A = AreaImpl.createOrGet("A");
+	public static Area B = AreaImpl.createOrGet("B");
+	public static Area C = AreaImpl.createOrGet("C");
+	public static Area O = AreaImpl.createOrGet("O");
 	public String getLabel();
 }

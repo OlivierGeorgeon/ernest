@@ -20,6 +20,7 @@ import eca.construct.experiment.ExperimentImpl;
 import eca.spas.ISpas;
 import eca.ss.IImos;
 import eca.ss.enaction.Act;
+import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
 import eca.ss.enaction.EnactionImpl;
 
@@ -74,7 +75,7 @@ public class Decider implements IDecider
 		}
 		
 		// Construct the intended act
-		Act nextTopIntention = SimuImpl.getAct(action, observation);
+		Act nextTopIntention = ActImpl.getAct(action, observation);
 
 		System.out.println("Act " + nextTopIntention.getLabel());
 		newEnaction.setTopInteraction(nextTopIntention);
