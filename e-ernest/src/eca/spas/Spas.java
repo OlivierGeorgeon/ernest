@@ -20,6 +20,7 @@ import eca.construct.PhenomenonImpl;
 import eca.construct.Simu;
 import eca.construct.SimuImpl;
 import eca.construct.egomem.Area;
+import eca.construct.egomem.Layout;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.egomem.ISpatialMemory;
@@ -93,11 +94,11 @@ public class Spas implements ISpas
 
 		// Merge phenomena
 		
-		Phenomenon newAspect = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenon();
+		Phenomenon newPhenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
 		if (area.equals(SimuImpl.O) && enaction.getIntendedPrimitiveAct() != null){
-			PhenomenonImpl.merge(newAspect, SimuImpl.EMPTY);
-			if (m_tracer != null && !newAspect.equals(SimuImpl.EMPTY)){
-				m_tracer.addEventElement("empty", newAspect.getLabel() + " merged to " + SimuImpl.EMPTY.getLabel());}
+			PhenomenonImpl.merge(newPhenomenonType, SimuImpl.EMPTY);
+			if (m_tracer != null && !newPhenomenonType.equals(SimuImpl.EMPTY)){
+				m_tracer.addEventElement("empty", newPhenomenonType.getLabel() + " merged to " + SimuImpl.EMPTY.getLabel());}
 		}
 		else{ 
 			Place previousPlace = m_localSpaceMemory.getPreviousPlace();
@@ -105,18 +106,18 @@ public class Spas implements ISpas
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = SimuImpl.getArea(previousPlace.getPosition());
 				if (previousArea.equals(area)){
-					Phenomenon previousAspect = previousPlace.getPrimitive().getPhenomenon();
-					if (!previousAspect.equals(newAspect)){
-						PhenomenonImpl.merge(newAspect, previousAspect);
+					Phenomenon previousAspect = previousPlace.getPrimitive().getPhenomenonType();
+					if (!previousAspect.equals(newPhenomenonType)){
+						PhenomenonImpl.merge(newPhenomenonType, previousAspect);
 						if (m_tracer != null){
-							m_tracer.addEventElement("phenomenon", newAspect.getLabel() + " merged to " + previousAspect.getLabel());}
+							m_tracer.addEventElement("phenomenon", newPhenomenonType.getLabel() + " merged to " + previousAspect.getLabel());}
 					}
 				}
 			}
 		}
 		
 		// Record the experiment
-		Observation observation = ObservationImpl.createOrGet(newAspect, area);
+		Observation observation = ObservationImpl.createOrGet(newPhenomenonType, area);
 		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveAct().getPrimitive().getAction(), observation);
 		newExp.addAct(enaction.getEnactedPrimitiveAct());
 
@@ -160,7 +161,7 @@ public class Spas implements ISpas
 		return m_localSpaceMemory;
 	}
 
-	public Observation predict(Action action){
+	public Layout predict(Action action){
 		return this.simu.predict(action);
 	}
 

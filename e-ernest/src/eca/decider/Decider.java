@@ -60,7 +60,7 @@ public class Decider implements IDecider
 		Action action = selectAction();
 
 		// Predict the next observation
-		Observation  observation = this.spas.predict(action);
+		Observation  observation = this.spas.predict(action).observe();
 		if (this.tracer != null){
 			Object aspectElmt = this.tracer.addEventElement("aspects", true);
 			for (Phenomenon a : PhenomenonImpl.getAspects())
@@ -70,7 +70,7 @@ public class Decider implements IDecider
 				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
 			Object predictElmt = this.tracer.addEventElement("predict", true);
-			this.tracer.addSubelement(predictElmt, "phenomenon", observation.getAspect().getLabel());
+			this.tracer.addSubelement(predictElmt, "phenomenon", observation.getPhenomenon().getLabel());
 			this.tracer.addSubelement(predictElmt, "area", observation.getArea().getLabel());
 		}
 		

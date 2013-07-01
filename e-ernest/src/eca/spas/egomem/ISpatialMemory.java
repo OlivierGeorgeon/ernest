@@ -3,13 +3,9 @@ package eca.spas.egomem;
 import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-
 import tracing.ITracer;
-
 import eca.Primitive;
 import eca.spas.Place;
-import eca.ss.enaction.Act;
-
 
 /**
  * A Spatial Memory is a memory of a spatial configuration
@@ -24,7 +20,7 @@ public interface ISpatialMemory
 	
 	/**
 	 * Add a place in this spatial memory
-	 * @param act The act to be placed in spatial memory.
+	 * @param primitive The interaction to be placed in spatial memory.
 	 * @param position This place's position
 	 * @return The created place
 	 */

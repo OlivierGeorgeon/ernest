@@ -25,7 +25,7 @@ public class PlaceImpl implements Place
 	/**
 	 * Create a new place 
 	 * (The provided position is cloned so the place can be moved without changing the provided position).
-	 * @param act The interaction at this place.
+	 * @param primitive The interaction at this place.
 	 * @param position This place's position.
 	 */
 	public PlaceImpl(Primitive primitive, Point3f position){

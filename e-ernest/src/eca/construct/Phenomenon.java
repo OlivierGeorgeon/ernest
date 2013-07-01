@@ -1,13 +1,10 @@
 package eca.construct;
 
-
 import java.util.List;
-
 import eca.Primitive;
-import eca.ss.enaction.Act;
 
 /**
- * An aspect of a phenomenon observed in an area.
+ * A type of phenomenon.
  * @author Olivier
  */
 public interface Phenomenon {

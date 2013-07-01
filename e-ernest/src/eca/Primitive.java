@@ -29,12 +29,12 @@ public interface Primitive
 	public void setAction(Action action);
 	
 	/**
-	 * @return The phenomenon observed by this primitive interaction.
+	 * @return The type of phenomenon observed by this primitive interaction.
 	 */
-	public Phenomenon getPhenomenon();
+	public Phenomenon getPhenomenonType();
 	
 	/**
-	 * @param phenomenon The phenomenon observed by this primitive interaction.
+	 * @param phenomenon The type phenomenon observed by this primitive interaction.
 	 */
-	public void setAspect(Phenomenon phenomenon);
+	public void setPhenomenonType(Phenomenon phenomenon);
 }

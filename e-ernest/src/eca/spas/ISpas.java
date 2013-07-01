@@ -3,15 +3,11 @@ package eca.spas;
 import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
 import tracing.ITracer;
-
-
-import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.Observation;
 import eca.construct.egomem.Area;
+import eca.construct.egomem.Layout;
 import eca.spas.egomem.ISpatialMemory;
 import eca.ss.enaction.Enaction;
 
@@ -50,60 +46,24 @@ public interface ISpas
 	public Area categorizePosition(Point3f point);
 
 	/**
-	 * Provide a rgb code to display the object of Ernest's attention in the environment.
-	 * @return The value of the focus bundle.
-	 */
-	//public int getAttention();
-
-	/**
-	 * Set the place list (from Simon's local space map).
-	 * @param placeList The list of place in Ernest's local space memory.
-	 */
-	//public void setPlaceList(List<IPlace> placeList);
-
-	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
 	public ArrayList<Place> getPlaceList();
 	
-	/**
-	 * @return The clock of spatial memory
-	 */
-	//public int getClock();
-	
-	/**
-	 * @param position This place's position.
-	 * @param type This place's type.
-	 * @return The crated place
-	 */
-	//public IPlace addPlace(Point3f position, int type);
-
 	/**
 	 * Tick the clock of spatial memory
 	 */
 	public void tick();
 	
 	/**
-	 * Generate a list of places that represents the phenomena in the local space.
-	 * @return the list of places. 
+	 * @param position
+	 * @return The value to display at this position
 	 */
-	//public ArrayList<IPlace> getPhenomena();
-	
-	//public boolean checkAct(IAct act);
-	
-	//public IBundle addBundle(IAct firstAct, IAct secondAct); 
-	//public ArrayList<IBundle> evokeCompresences(IAct act);
-
-	//public IBundle aggregateBundle(IBundle bundle, IAct act); 
-
 	public int getValue(Point3f position);
 	
 	public ISpatialMemory getSpatialMemory();
 	
-	//public void simulatePrimitiveAct(IEnaction enaction);
-	//public IActProposition runSimulation(IAct act);
-	
-	public Observation predict(Action action);
+	public Layout predict(Action action);
 	
 	public Transform3D getTransformToAnim();
 }
