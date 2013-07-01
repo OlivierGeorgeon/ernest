@@ -2,11 +2,8 @@ package eca.construct.egomem;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.media.j3d.Transform3D;
-
 import utils.ErnestUtils;
-import eca.construct.SimuImpl;
 import ernest.IEffect;
 
 public class TransformationImpl implements Transformation {

@@ -11,15 +11,12 @@ import eca.construct.Observation;
 import eca.construct.ObservationImpl;
 import eca.construct.Phenomenon;
 import eca.construct.PhenomenonImpl;
-import eca.construct.Simu;
-import eca.construct.SimuImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.egomem.ISpatialMemory;
 import eca.spas.egomem.LocalSpaceMemory;
-import eca.ss.enaction.Act;
 import eca.ss.enaction.Enaction;
 
 /**

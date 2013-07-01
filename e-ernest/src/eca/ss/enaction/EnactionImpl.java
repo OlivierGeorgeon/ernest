@@ -2,12 +2,9 @@ package eca.ss.enaction;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.j3d.Transform3D;
-
 import tracing.ITracer;
 import eca.PrimitiveImpl;
-import eca.construct.SimuImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Transformation;
