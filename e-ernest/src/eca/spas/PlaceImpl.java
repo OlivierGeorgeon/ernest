@@ -5,7 +5,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import eca.Primitive;
-import eca.construct.SimuImpl;
+import eca.construct.egomem.AreaImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import utils.ErnestUtils;
@@ -34,7 +34,7 @@ public class PlaceImpl implements Place
 	}
 	
 	public Act getAct() {
-		return ActImpl.createOrGetPrimitiveAct(primitive, SimuImpl.getArea(position));
+		return ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.getArea(position));
 	}
 
 	public Primitive getPrimitive() {

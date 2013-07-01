@@ -13,7 +13,7 @@ public interface Simu {
 	 * Updates the simulator according to the last enacted act
 	 * @param enaction The current enaction.
 	 */
-	public void track(Enaction enaction);
+	//public void track(Enaction enaction);
 	
 	/**
 	 * Predict the layout resulting from an action.

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import eca.Primitive;
 import eca.construct.egomem.Transformation;
+import eca.construct.egomem.TransformationImpl;
 
 /**
  * An action that may be performed by interactions.
@@ -20,7 +21,7 @@ public class ActionImpl implements Action {
 
 	private String label;
 	private int propositionWeight;
-	private Transformation transformation = SimuImpl.UNKNOWN;
+	private Transformation transformation = TransformationImpl.UNKNOWN;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
 	
 	/**
@@ -62,7 +63,7 @@ public class ActionImpl implements Action {
 		if (!enactedAction.equals(intendedAction)){
 			for (Primitive primitive : enactedAction.getPrimitives())
 				primitive.setAction(intendedAction);
-			if (!enactedAction.getTransformation().equals(SimuImpl.UNKNOWN))
+			if (!enactedAction.getTransformation().equals(TransformationImpl.UNKNOWN))
 				intendedAction.setTransformation(enactedAction.getTransformation());
 			ACTIONS.remove(enactedAction.getLabel());
 		}

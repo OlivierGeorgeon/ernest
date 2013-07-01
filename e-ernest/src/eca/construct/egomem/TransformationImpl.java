@@ -5,6 +5,10 @@ import java.util.Map;
 
 import javax.media.j3d.Transform3D;
 
+import utils.ErnestUtils;
+import eca.construct.SimuImpl;
+import ernest.IEffect;
+
 public class TransformationImpl implements Transformation {
 
 	private static Map<String , Transformation> TRANSFORMATIONS = new HashMap<String , Transformation>() ;
@@ -21,6 +25,27 @@ public class TransformationImpl implements Transformation {
 		if (!TRANSFORMATIONS.containsKey(label))
 			TRANSFORMATIONS.put(label, new TransformationImpl(label));			
 		return TRANSFORMATIONS.get(label);
+	}
+	
+	public static Transformation transformation(IEffect effect){
+		return transformation(effect.getTransformation());
+	}
+	
+	public static Transformation transformation(Transform3D t){
+		Transformation transform = IDENTITY;
+		float angle = ErnestUtils.angle(t);
+		if (Math.abs(angle) > .1){
+			if ( angle > 0){		
+				transform = SHIFT_LEFT;
+				transform.setTransform3D(t);
+			}
+			else{ 		
+				transform = SHIFT_RIGHT;
+				transform.setTransform3D(t);
+			}
+		}
+
+		return transform;
 	}
 	
 	private TransformationImpl(String label){
