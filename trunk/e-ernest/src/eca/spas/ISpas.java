@@ -36,13 +36,6 @@ public interface ISpas
 	public int getValue(int i, int j);
 	
 	/**
-	 * Return the identifier of an area to which a point belongs.
-	 * @param point The point.
-	 * @return The code of the area.
-	 */
-	//public Area categorizePosition(Point3f point);
-
-	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
 	public ArrayList<Place> getPlaceList();
@@ -57,8 +50,6 @@ public interface ISpas
 	 * @return The value to display at this position
 	 */
 	public int getValue(Point3f position);
-	
-	//public ISpatialMemory getSpatialMemory();
 	
 	/**
 	 * @param action The next action
