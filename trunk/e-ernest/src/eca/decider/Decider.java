@@ -37,14 +37,12 @@ public class Decider implements IDecider
 	 * @param imos The sequential system
 	 * @param spas The spatial system
 	 */
-	public Decider(IImos imos, ISpas spas)
-	{
+	public Decider(IImos imos, ISpas spas){
 		this.imos = imos;
 		this.spas = spas;
 	}
 
-	public void setTracer(ITracer tracer)
-	{
+	public void setTracer(ITracer tracer){
 		this.tracer = tracer;
 	}
 	
@@ -60,7 +58,8 @@ public class Decider implements IDecider
 		Action action = selectAction();
 
 		// Predict the next observation
-		Observation  observation = this.spas.predict(action).observe();
+		//Observation  observation = this.spas.predict(action).observe();
+		Observation  observation = this.spas.predictPhenomenonInst(action);
 		if (this.tracer != null){
 			Object aspectElmt = this.tracer.addEventElement("aspects", true);
 			for (Phenomenon a : PhenomenonImpl.getAspects())

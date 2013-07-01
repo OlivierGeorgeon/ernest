@@ -169,7 +169,7 @@ public class LocalSpaceMemory implements ISpatialMemory, Cloneable
 	public Place getPreviousPlace(){
 		Place place = null;
 		for (Place p : this.m_places)
-			if (p.getClock() >= 1)
+			if (p.getClock() == 1)
 				place = p;
 		return place;
 	}

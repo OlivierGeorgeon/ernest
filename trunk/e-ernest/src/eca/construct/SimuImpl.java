@@ -11,8 +11,6 @@ import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
-import eca.construct.egomem.Layout;
-import eca.construct.egomem.LayoutImpl;
 import eca.construct.egomem.Transformation;
 import eca.construct.egomem.TransformationImpl;
 import eca.construct.experiment.Experiment;
@@ -41,7 +39,7 @@ public class SimuImpl implements Simu {
 	public static Transformation SHIFT_LEFT = TransformationImpl.createOrGet("^");
 	public static Transformation SHIFT_RIGHT = TransformationImpl.createOrGet("v");
 	
-	private Layout layout  = LayoutImpl.createOrGet(EMPTY, EMPTY, EMPTY);
+	//private Layout layout  = LayoutImpl.createOrGet(EMPTY, EMPTY, EMPTY);
 	
 	/**
 	 * Gives the area to which a point belongs.
@@ -105,54 +103,34 @@ public class SimuImpl implements Simu {
 	}
 
 	public void track(Enaction enaction){
-		Area area = enaction.getEnactedPrimitiveAct().getArea();
-		Phenomenon aspectA = EMPTY;
-		Phenomenon aspectB = EMPTY;
-		Phenomenon aspectC = EMPTY;
-		
-		//Transformation transformation = transformation(enaction.getEffect());
-		Transformation transformation = enaction.getTransformation();
-		//previousLayout = LayoutImpl.transform(layout, transformation);
-
-		if (enaction.getEnactedPrimitiveAct() != null){
-			if (area.equals(A)){
-				aspectA = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
-			}
-			else if (area.equals(B)){
-				aspectB = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
-			}
-			else if (area.equals(C)){
-				aspectC = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
-			}
-		}
-
-		layout = LayoutImpl.createOrGet(aspectA, aspectB, aspectC);
+//		Area area = enaction.getEnactedPrimitiveAct().getArea();
+//		Phenomenon aspectA = EMPTY;
+//		Phenomenon aspectB = EMPTY;
+//		Phenomenon aspectC = EMPTY;
+//		
+//		if (enaction.getEnactedPrimitiveAct() != null){
+//			if (area.equals(A)){
+//				aspectA = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
+//			}
+//			else if (area.equals(B)){
+//				aspectB = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
+//			}
+//			else if (area.equals(C)){
+//				aspectC = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
+//			}
+//		}
+//
+//		layout = LayoutImpl.createOrGet(aspectA, aspectB, aspectC);
 		
 		enaction.getEnactedPrimitiveAct().getPrimitive().getAction().setTransformation(enaction.getTransformation());
-		//enaction.setTransformation(transformation);
 	}
 	
 	public static Transformation transformation(IEffect effect){
-//		Transformation transform = SimuImpl.UNKNOWN;
-//
-//		transform = SimuImpl.IDENTITY;
-//		Transform3D t = effect.getTransformation();
-//		float angle = ErnestUtils.angle(t);
-//		if (Math.abs(angle) > .1){
-//			if ( angle > 0)		
-//				transform = SimuImpl.SHIFT_LEFT;
-//			else 		
-//				transform = SimuImpl.SHIFT_RIGHT;
-//		}
-
 		return transformation(effect.getTransformation());
-		//return transform;
 	}
 	
 	public static Transformation transformation(Transform3D t){
-		Transformation transform = SimuImpl.UNKNOWN;
-
-		transform = SimuImpl.IDENTITY;
+		Transformation transform = SimuImpl.IDENTITY;
 		float angle = ErnestUtils.angle(t);
 		if (Math.abs(angle) > .1){
 			if ( angle > 0)		
@@ -160,59 +138,60 @@ public class SimuImpl implements Simu {
 			else 		
 				transform = SimuImpl.SHIFT_RIGHT;
 		}
+		transform.setTransform3D(t);
 
 		return transform;
 	}
 	
-	public Layout predict(Action action){
-		return LayoutImpl.transform(layout, action.getTransformation()); 
-		
+//	public Layout predict(Action action){
+//		return LayoutImpl.transform(layout, action.getTransformation()); 
+//		
 //		Layout nextLayout = LayoutImpl.transform(layout, action.getTransformation()); 
 //		Observation observation = nextLayout.observe();		
 //		return observation;
-	}
+//	}
 
-	public void trace(ITracer tracer)
-	{
-		if (tracer != null)
-		{
-			Object localSpace = tracer.addEventElement("local_space");
-			if (layout.isEmpty())
-				tracer.addSubelement(localSpace, "position_8", "9680FF");
-			else
-				tracer.addSubelement(localSpace, "position_8", "FFFFFF");
-	
-			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
-			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
-			
-			if (!layout.isEmpty(A)){
-				tracer.addSubelement(localSpace, "position_5", "9680FF");
-				tracer.addSubelement(localSpace, "position_4", "9680FF");
-			}
-			else {
-				tracer.addSubelement(localSpace, "position_5", "FFFFFF");
-				tracer.addSubelement(localSpace, "position_4", "FFFFFF");
-			}
-			if (!layout.isEmpty(B)){
-				tracer.addSubelement(localSpace, "position_3", "9680FF");
-			}
-			else {
-				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
-			}
-			if (!layout.isEmpty(C)){
-				tracer.addSubelement(localSpace, "position_2", "9680FF");
-				tracer.addSubelement(localSpace, "position_1", "9680FF");
-			}
-			else {
-				tracer.addSubelement(localSpace, "position_2", "FFFFFF");
-				tracer.addSubelement(localSpace, "position_1", "FFFFFF");
-			}
-			tracer.addSubelement(localSpace, "position_0", "FFFFFF");
-			
-			Object layoutElmt = tracer.addEventElement("layout");
-			tracer.addSubelement(layoutElmt, "Aspect_A", layout.getPhenomenon(A).getLabel());
-			tracer.addSubelement(layoutElmt, "Aspect_B", layout.getPhenomenon(B).getLabel());
-			tracer.addSubelement(layoutElmt, "Aspect_C", layout.getPhenomenon(C).getLabel());
-		}
-	}
+//	public void trace(ITracer tracer)
+//	{
+//		if (tracer != null)
+//		{
+//			Object localSpace = tracer.addEventElement("local_space");
+//			if (layout.isEmpty())
+//				tracer.addSubelement(localSpace, "position_8", "9680FF");
+//			else
+//				tracer.addSubelement(localSpace, "position_8", "FFFFFF");
+//	
+//			tracer.addSubelement(localSpace, "position_7", "FFFFFF");
+//			tracer.addSubelement(localSpace, "position_6", "FFFFFF");
+//			
+//			if (!layout.isEmpty(A)){
+//				tracer.addSubelement(localSpace, "position_5", "9680FF");
+//				tracer.addSubelement(localSpace, "position_4", "9680FF");
+//			}
+//			else {
+//				tracer.addSubelement(localSpace, "position_5", "FFFFFF");
+//				tracer.addSubelement(localSpace, "position_4", "FFFFFF");
+//			}
+//			if (!layout.isEmpty(B)){
+//				tracer.addSubelement(localSpace, "position_3", "9680FF");
+//			}
+//			else {
+//				tracer.addSubelement(localSpace, "position_3", "FFFFFF");
+//			}
+//			if (!layout.isEmpty(C)){
+//				tracer.addSubelement(localSpace, "position_2", "9680FF");
+//				tracer.addSubelement(localSpace, "position_1", "9680FF");
+//			}
+//			else {
+//				tracer.addSubelement(localSpace, "position_2", "FFFFFF");
+//				tracer.addSubelement(localSpace, "position_1", "FFFFFF");
+//			}
+//			tracer.addSubelement(localSpace, "position_0", "FFFFFF");
+//			
+//			Object layoutElmt = tracer.addEventElement("layout");
+//			tracer.addSubelement(layoutElmt, "Aspect_A", layout.getPhenomenon(A).getLabel());
+//			tracer.addSubelement(layoutElmt, "Aspect_B", layout.getPhenomenon(B).getLabel());
+//			tracer.addSubelement(layoutElmt, "Aspect_C", layout.getPhenomenon(C).getLabel());
+//		}
+//	}
 }
