@@ -5,6 +5,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import eca.Primitive;
+import eca.construct.Phenomenon;
 import eca.construct.egomem.AreaImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
@@ -21,6 +22,8 @@ public class PlaceImpl implements Place
 	private Vector3f orientation = new Vector3f(1,0,0);	
 	private int displayCode;
 	private int clock = 0;
+	
+	private Phenomenon phenomenonType = null;
 
 	/**
 	 * Create a new place 
@@ -31,6 +34,7 @@ public class PlaceImpl implements Place
 	public PlaceImpl(Primitive primitive, Point3f position){
 		this.primitive = primitive;
 		this.position.set(position);
+		this.phenomenonType = primitive.getPhenomenonType();
 	}
 	
 	public Act getAct() {
@@ -101,8 +105,6 @@ public class PlaceImpl implements Place
 		//m_orientationAngle = orientation;
 		this.orientation.set((float) Math.cos(orientation), (float) Math.sin(orientation), 0);
 	}
-	
-
 
 	public float getOrientationAngle() 
 	{
@@ -178,5 +180,13 @@ public class PlaceImpl implements Place
 //			ret = false;
 		
 		return ret;		
+	}
+	
+	public Phenomenon getPhenomenonType(){
+		return this.phenomenonType;
+	}
+	
+	public void setPhenomenonType(Phenomenon phenomenonType){
+		this.phenomenonType = phenomenonType;
 	}
 }

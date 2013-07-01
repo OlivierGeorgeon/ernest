@@ -68,7 +68,6 @@ public class SpasImpl implements Spas
 		//this.simu.track(enaction);
 
 		this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation().getTransform3D());
-		//this.transform = SimuImpl.spasTransform(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation());
 
 		this.spacialMemory.transform(this.transform);		
 		this.spacialMemory.forgetOldPlaces();
@@ -91,11 +90,13 @@ public class SpasImpl implements Spas
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = AreaImpl.getArea(previousPlace.getPosition());
 				if (previousArea.equals(area)){
-					Phenomenon previousAspect = previousPlace.getPrimitive().getPhenomenonType();
-					if (!previousAspect.equals(newPhenomenonType)){
-						PhenomenonImpl.merge(newPhenomenonType, previousAspect);
+					Phenomenon previousPhenomenonType = previousPlace.getPrimitive().getPhenomenonType();
+					//Phenomenon previousPhenomenonType = previousPlace.getPhenomenonType();
+					if (!previousPhenomenonType.equals(newPhenomenonType)){
+						PhenomenonImpl.merge(newPhenomenonType, previousPhenomenonType);
+						//previousPlace.setPhenomenonType(newPhenomenonType);
 						if (m_tracer != null){
-							m_tracer.addEventElement("phenomenon", newPhenomenonType.getLabel() + " merged to " + previousAspect.getLabel());}
+							m_tracer.addEventElement("phenomenon", newPhenomenonType.getLabel() + " merged to " + previousPhenomenonType.getLabel());}
 					}
 				}
 			}
