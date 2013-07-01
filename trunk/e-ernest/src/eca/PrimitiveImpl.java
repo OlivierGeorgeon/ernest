@@ -21,8 +21,8 @@ public class PrimitiveImpl implements Primitive {
 
 	private String label = "";
 	private int value = 0;
-	private Action action = ActionImpl.createNew();
-	private Phenomenon phenomenon = PhenomenonImpl.createNew();
+	private Action action = null; //ActionImpl.createNew();
+	private Phenomenon phenomenon = null; //PhenomenonImpl.createNew();
 
 	/**
 	 * @param label The primitive interaction's label
@@ -54,7 +54,9 @@ public class PrimitiveImpl implements Primitive {
 		this.label = label;
 		this.value = value;
 		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet("B"));
+		this.action = ActionImpl.createNew();
 		this.action.addPrimitive(this);	
+		this.phenomenon = PhenomenonImpl.createNew();
 		this.phenomenon.addPrimitive(this);
 	}
 	
@@ -93,11 +95,11 @@ public class PrimitiveImpl implements Primitive {
 		return this.label + "(" + this.value / 10 + ")";
 	}
 
-	public Phenomenon getPhenomenon() {
+	public Phenomenon getPhenomenonType() {
 		return this.phenomenon;
 	}
 
-	public void setAspect(Phenomenon phenomenon) {
+	public void setPhenomenonType(Phenomenon phenomenon) {
 		this.phenomenon = phenomenon;
 		phenomenon.addPrimitive(this);
 	}

@@ -42,19 +42,19 @@ public class LayoutImpl implements Layout {
 		Layout transformedLayout = layout;
 		if (transformation.equals(SimuImpl.SHIFT_LEFT)){
 			//transformedLayout = createOrGet(layout.getAspect(SimuImpl.B),layout.getAspect(SimuImpl.C), SimuImpl.EMPTY);
-			if (!layout.getAspect(SimuImpl.B).equals(SimuImpl.EMPTY) )
-				transformedLayout = createOrGet(layout.getAspect(SimuImpl.B),SimuImpl.EMPTY, SimuImpl.EMPTY);
-			else if (!layout.getAspect(SimuImpl.C).equals(SimuImpl.EMPTY) )
-				transformedLayout = createOrGet(layout.getAspect(SimuImpl.C),SimuImpl.EMPTY, SimuImpl.EMPTY);
+			if (!layout.getPhenomenon(SimuImpl.B).equals(SimuImpl.EMPTY) )
+				transformedLayout = createOrGet(layout.getPhenomenon(SimuImpl.B),SimuImpl.EMPTY, SimuImpl.EMPTY);
+			else if (!layout.getPhenomenon(SimuImpl.C).equals(SimuImpl.EMPTY) )
+				transformedLayout = createOrGet(layout.getPhenomenon(SimuImpl.C),SimuImpl.EMPTY, SimuImpl.EMPTY);
 			else 
 				transformedLayout = createOrGet(SimuImpl.EMPTY,SimuImpl.EMPTY, SimuImpl.EMPTY);
 		}
 		if (transformation.equals(SimuImpl.SHIFT_RIGHT)){
 			//transformedLayout = createOrGet(SimuImpl.EMPTY, layout.getAspect(SimuImpl.A),layout.getAspect(SimuImpl.B));
-			if (!layout.getAspect(SimuImpl.A).equals(SimuImpl.EMPTY) )
-				transformedLayout = createOrGet(SimuImpl.EMPTY, SimuImpl.EMPTY, layout.getAspect(SimuImpl.A));
-			else if (!layout.getAspect(SimuImpl.B).equals(SimuImpl.EMPTY) )
-				transformedLayout = createOrGet(SimuImpl.EMPTY, SimuImpl.EMPTY, layout.getAspect(SimuImpl.B));
+			if (!layout.getPhenomenon(SimuImpl.A).equals(SimuImpl.EMPTY) )
+				transformedLayout = createOrGet(SimuImpl.EMPTY, SimuImpl.EMPTY, layout.getPhenomenon(SimuImpl.A));
+			else if (!layout.getPhenomenon(SimuImpl.B).equals(SimuImpl.EMPTY) )
+				transformedLayout = createOrGet(SimuImpl.EMPTY, SimuImpl.EMPTY, layout.getPhenomenon(SimuImpl.B));
 			else 
 				transformedLayout = createOrGet(SimuImpl.EMPTY,SimuImpl.EMPTY, SimuImpl.EMPTY);
 		}
@@ -69,7 +69,7 @@ public class LayoutImpl implements Layout {
 		phenomenons.put(SimuImpl.O, SimuImpl.EMPTY);
 	}
 
-	public Phenomenon getAspect(Area area) {
+	public Phenomenon getPhenomenon(Area area) {
 		return phenomenons.get(area);
 	}
 
@@ -86,7 +86,7 @@ public class LayoutImpl implements Layout {
 		for (Area a : AreaImpl.getAREAS())
 			if (!this.phenomenons.get(a).equals(SimuImpl.EMPTY))
 				area = a;
-		Phenomenon phenomenon = getAspect(area);
+		Phenomenon phenomenon = getPhenomenon(area);
 		return ObservationImpl.createOrGet(phenomenon, area);
 	}
 	

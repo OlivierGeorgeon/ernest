@@ -1,6 +1,7 @@
 package eca.construct;
 
 import tracing.ITracer;
+import eca.construct.egomem.Layout;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -11,16 +12,16 @@ public interface Simu {
 	
 	/**
 	 * Updates the simulator according to the last enacted act
-	 * @param act The last enacted act
+	 * @param enaction The current enaction.
 	 */
 	public void track(Enaction enaction);
 	
 	/**
-	 * Predict the observation resulting from an action.
+	 * Predict the layout resulting from an action.
 	 * @param action The action to simulate
-	 * @return the predicted observation
+	 * @return the predicted layout
 	 */
-	public Observation predict(Action action);
+	public Layout predict(Action action);
 	
 	/**
 	 * Trace the current state of the simulator

@@ -95,7 +95,7 @@ public class SimuImpl implements Simu {
 		if (act == null){
 			Primitive interaction = action.getPrimitives().get(0);
 			for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
-				if (i.getAction().equals(action) && i.getPhenomenon().equals(observation.getAspect()))
+				if (i.getAction().equals(action) && i.getPhenomenonType().equals(observation.getPhenomenon()))
 					interaction = i;
 			}
 			act = ActImpl.createOrGetPrimitiveAct(interaction, observation.getArea());
@@ -116,13 +116,13 @@ public class SimuImpl implements Simu {
 
 		if (enaction.getEnactedPrimitiveAct() != null){
 			if (area.equals(A)){
-				aspectA = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenon();
+				aspectA = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
 			}
 			else if (area.equals(B)){
-				aspectB = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenon();
+				aspectB = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
 			}
 			else if (area.equals(C)){
-				aspectC = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenon();
+				aspectC = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
 			}
 		}
 
@@ -164,11 +164,12 @@ public class SimuImpl implements Simu {
 		return transform;
 	}
 	
-	public Observation predict(Action action){
+	public Layout predict(Action action){
+		return LayoutImpl.transform(layout, action.getTransformation()); 
 		
-		Layout nextLayout = LayoutImpl.transform(layout, action.getTransformation()); 
-		Observation observation = nextLayout.observe();		
-		return observation;
+//		Layout nextLayout = LayoutImpl.transform(layout, action.getTransformation()); 
+//		Observation observation = nextLayout.observe();		
+//		return observation;
 	}
 
 	public void trace(ITracer tracer)
@@ -209,9 +210,9 @@ public class SimuImpl implements Simu {
 			tracer.addSubelement(localSpace, "position_0", "FFFFFF");
 			
 			Object layoutElmt = tracer.addEventElement("layout");
-			tracer.addSubelement(layoutElmt, "Aspect_A", layout.getAspect(A).getLabel());
-			tracer.addSubelement(layoutElmt, "Aspect_B", layout.getAspect(B).getLabel());
-			tracer.addSubelement(layoutElmt, "Aspect_C", layout.getAspect(C).getLabel());
+			tracer.addSubelement(layoutElmt, "Aspect_A", layout.getPhenomenon(A).getLabel());
+			tracer.addSubelement(layoutElmt, "Aspect_B", layout.getPhenomenon(B).getLabel());
+			tracer.addSubelement(layoutElmt, "Aspect_C", layout.getPhenomenon(C).getLabel());
 		}
 	}
 }

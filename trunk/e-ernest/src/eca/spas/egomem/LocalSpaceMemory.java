@@ -4,13 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-
 import tracing.ITracer;
 import utils.ErnestUtils;
 import eca.Primitive;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
-import eca.ss.enaction.Act;
 import ernest.Ernest;
 
 

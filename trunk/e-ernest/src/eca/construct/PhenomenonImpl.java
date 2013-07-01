@@ -51,7 +51,7 @@ public class PhenomenonImpl implements Phenomenon {
 	public static void merge(Phenomenon enactedAspect, Phenomenon previousAspect){
 		if (!enactedAspect.equals(previousAspect)){
 			for (Primitive act : enactedAspect.getPrimitives())
-				act.setAspect(previousAspect);
+				act.setPhenomenonType(previousAspect);
 			ASPECTS.remove(enactedAspect.getLabel());
 		}
 	}

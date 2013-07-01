@@ -16,9 +16,9 @@ public interface Layout {
 	
 	/**
 	 * @param area the area
-	 * @return The aspect present in this area.
+	 * @return The phenomenon present in this area.
 	 */
-	public Phenomenon getAspect(Area area);
+	public Phenomenon getPhenomenon(Area area);
 	
 	/**
 	 * @param area The area
@@ -31,6 +31,9 @@ public interface Layout {
 	 */
 	public boolean isEmpty();
 
+	/**
+	 * @return The observation produced by this layout
+	 */
 	public Observation observe();
 
 }

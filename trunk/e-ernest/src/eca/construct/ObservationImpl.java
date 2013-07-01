@@ -1,25 +1,17 @@
 package eca.construct;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import eca.construct.egomem.Area;
-import eca.construct.egomem.AreaImpl;
-import eca.ss.enaction.Act;
-
 
 public class ObservationImpl implements Observation {
 	
 	private static Map<String , Observation> OBSERVATIONS = new HashMap<String , Observation>() ;
 	private static int index = 0;
-
 	private String label;
 	private Phenomenon phenomenon;
 	private Area area;
-	private List<Act> acts = new ArrayList<Act>();
 	
 	/**
 	 * @param phenomenon The observation's aspect
@@ -27,32 +19,33 @@ public class ObservationImpl implements Observation {
 	 * @return The new or old observation
 	 */
 	public static Observation createOrGet(Phenomenon phenomenon, Area area){
-		String key = createKey(phenomenon, area);
-		if (!OBSERVATIONS.containsKey(key))
-			OBSERVATIONS.put(key, new ObservationImpl(phenomenon, area));			
-		return OBSERVATIONS.get(key);
-	}
-
-	public static Observation createOrGet(String label){
+		String label = createKey(phenomenon, area);
 		if (!OBSERVATIONS.containsKey(label))
-			OBSERVATIONS.put(label, new ObservationImpl(label));			
+			OBSERVATIONS.put(label, new ObservationImpl(phenomenon, area));			
 		return OBSERVATIONS.get(label);
 	}
+
+//	public static Observation createOrGet(String label){
+//		if (!OBSERVATIONS.containsKey(label))
+//			OBSERVATIONS.put(label, new ObservationImpl(label));			
+//		return OBSERVATIONS.get(label);
+//	}
 
 	private static String createKey(Phenomenon phenomenon, Area area) {
 		String key = phenomenon.getLabel() + area.getLabel();
 		return key;
 	}
 	
-	public static Observation createNew(){
-		index++;
-		OBSERVATIONS.put(index + "", new ObservationImpl(index +""));			
-		return OBSERVATIONS.get(index + "");
-	}
+//	public static Observation createNew(){
+//		index++;
+//		return createOrGet(index + "");
+//		OBSERVATIONS.put(index + "", new ObservationImpl(index +""));			
+//		return OBSERVATIONS.get(index + "");
+//	}
 	
-	private ObservationImpl(String label){
-		this.label = label;
-	}	
+//	private ObservationImpl(String label){
+//		this.label = label;
+//	}	
 	
 	private ObservationImpl(Phenomenon phenomenon, Area area){
 		this.label = phenomenon.getLabel() + area.getLabel();
@@ -65,7 +58,7 @@ public class ObservationImpl implements Observation {
 		//return this.aspect.getLabel() + this.area.getLabel();
 	}
 	
-	public Phenomenon getAspect(){
+	public Phenomenon getPhenomenon(){
 		return this.phenomenon;
 	}
 	
@@ -94,13 +87,4 @@ public class ObservationImpl implements Observation {
 		return ret;
 	}
 	
-	public void addAct(Act act){
-		if (!this.acts.contains(act))
-				this.acts.add(act);
-	}
-	
-	public List<Act> getActs(){
-		return this.acts;
-	}
-
 }
