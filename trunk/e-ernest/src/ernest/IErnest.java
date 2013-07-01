@@ -7,7 +7,7 @@ import java.util.List;
 import javax.media.j3d.Transform3D;
 import eca.Primitive;
 import eca.spas.Place;
-import eca.spas.egomem.ISpatialMemory;
+import eca.spas.egomem.SpatialMemory;
 import tracing.ITracer;
 
 
@@ -79,13 +79,16 @@ public interface IErnest
 	 */
 	public int getUpdateCount();
 	
-	/**
-	 * @return Ernest's spatial memory for display.
-	 */
-	public ISpatialMemory getSpatialSimulation();
+	//public ISpatialMemory getSpatialSimulation();
 	
+	/**
+	 * @return The list of primitive interactions available to Ernest.
+	 */
 	public Collection<Primitive> getPrimitives();
 	
+	/**
+	 * @return The transformation of spatial memory to anim.
+	 */
 	public Transform3D getTransformToAnim();
 	
 }

@@ -11,7 +11,7 @@ import eca.spas.Place;
  * A Spatial Memory is a memory of a spatial configuration
  * @author Olivier
  */
-public interface ISpatialMemory 
+public interface SpatialMemory 
 {
 	/**
 	 * Tick this spatial memory's clock (to compute decay)

@@ -12,7 +12,7 @@ import eca.decider.IDecider;
 import eca.spas.ISpas;
 import eca.spas.Place;
 import eca.spas.Spas;
-import eca.spas.egomem.ISpatialMemory;
+import eca.spas.egomem.SpatialMemory;
 import eca.ss.IImos;
 import eca.ss.Imos;
 import eca.ss.enaction.Enaction;
@@ -164,10 +164,10 @@ public class Ernest implements IErnest
 		//return m_spas.getClock();
 	}
 
-	public ISpatialMemory getSpatialSimulation() 
-	{
-		return m_spas.getSpatialMemory();
-	}
+//	public ISpatialMemory getSpatialSimulation() 
+//	{
+//		return m_spas.getSpatialMemory();
+//	}
 
 	public Collection<Primitive> getPrimitives() 
 	{

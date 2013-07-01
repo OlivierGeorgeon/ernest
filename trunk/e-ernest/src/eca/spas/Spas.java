@@ -15,8 +15,8 @@ import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
-import eca.spas.egomem.ISpatialMemory;
-import eca.spas.egomem.LocalSpaceMemory;
+import eca.spas.egomem.SpatialMemory;
+import eca.spas.egomem.SpacialMemoryImpl;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -31,10 +31,7 @@ public class Spas implements ISpas
 	private ITracer m_tracer = null; 
 	
 	/** Ernest's local space memory  */
-	private ISpatialMemory m_localSpaceMemory = new LocalSpaceMemory();
-	
-	/** The simulator. */
-	//Simu simu = new SimuImpl();
+	private SpatialMemory spacialMemory = new SpacialMemoryImpl();
 	
 	/** The transformation to apply to spatial memory */
 	Transform3D transform = new Transform3D();
@@ -55,10 +52,6 @@ public class Spas implements ISpas
 		m_tracer = tracer;
 	}
 	
-	public Area categorizePosition(Point3f point){
-		return AreaImpl.getArea(point);
-	}
-	
 	/**
 	 * The main method of the Spatial System that is called on each interaction cycle.
 	 * Track the spatial consequences of the current enaction.
@@ -77,8 +70,8 @@ public class Spas implements ISpas
 		this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation().getTransform3D());
 		//this.transform = SimuImpl.spasTransform(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation());
 
-		m_localSpaceMemory.transform(this.transform);		
-		m_localSpaceMemory.forgetOldPlaces();
+		this.spacialMemory.transform(this.transform);		
+		this.spacialMemory.forgetOldPlaces();
 		
 		if ( enaction.getEnactedPrimitiveAct() != null){
 			addPlace(enaction.getEnactedPrimitiveAct().getPrimitive(), AreaImpl.spasPoint(area), enaction.getEnactedPrimitiveAct().getColor());			
@@ -93,7 +86,7 @@ public class Spas implements ISpas
 				m_tracer.addEventElement("empty", newPhenomenonType.getLabel() + " merged to " + PhenomenonImpl.EMPTY.getLabel());}
 		}
 		else{ 
-			Place previousPlace = m_localSpaceMemory.getPreviousPlace();
+			Place previousPlace = spacialMemory.getPreviousPlace();
 			if (previousPlace != null){
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = AreaImpl.getArea(previousPlace.getPosition());
@@ -119,8 +112,8 @@ public class Spas implements ISpas
 	public int getValue(int i, int j)
 	{
 		Point3f position = new Point3f(1 - j, 1 - i, 0);
-		if (m_localSpaceMemory != null)
-			return m_localSpaceMemory.getDisplayCode(position);
+		if (spacialMemory != null)
+			return spacialMemory.getDisplayCode(position);
 		else
 			return 0xFFFFFF;
 	}
@@ -128,39 +121,34 @@ public class Spas implements ISpas
 	public ArrayList<Place> getPlaceList()
 	{
 		// return m_localSpaceMemory.getPlaceList();
-		return m_localSpaceMemory.clonePlaceList();
+		return this.spacialMemory.clonePlaceList();
 	}
 
 	private Place addPlace(Primitive primitive, Point3f position,int value) 
 	{
-		Place place = m_localSpaceMemory.addPlace(primitive, position);
+		Place place = this.spacialMemory.addPlace(primitive, position);
 		place.setValue(value);
 		return place;
 	}
 
-	public void tick() 
-	{
-		m_localSpaceMemory.tick();
+	public void tick() {
+		this.spacialMemory.tick();
 	}
 
 	public int getValue(Point3f position) 
 	{
-		return m_localSpaceMemory.getDisplayCode(position);
+		return this.spacialMemory.getDisplayCode(position);
 	}
 
-	public ISpatialMemory getSpatialMemory()
+	public SpatialMemory getSpatialMemory()
 	{
-		return m_localSpaceMemory;
+		return this.spacialMemory;
 	}
-
-//	public Layout predict(Action action){
-//		return this.simu.predict(action);
-//	}
 
 	public Observation predictPhenomenonInst(Action action){
 		Observation observation = ObservationImpl.createOrGet(PhenomenonImpl.EMPTY, AreaImpl.O);
-		if (m_localSpaceMemory.getPreviousPlace() != null){
-			Place lastPlace = m_localSpaceMemory.getPreviousPlace().clone();
+		if (this.spacialMemory.getPreviousPlace() != null){
+			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();
 			lastPlace.transform(action.getTransformation().getTransform3D());
 			observation = ObservationImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.getArea(lastPlace.getPosition()));
 		}
