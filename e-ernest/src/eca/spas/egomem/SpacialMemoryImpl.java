@@ -16,7 +16,7 @@ import ernest.Ernest;
  * Ernest's spatial memory. 
  * @author Olivier
  */
-public class LocalSpaceMemory implements ISpatialMemory, Cloneable
+public class SpacialMemoryImpl implements SpatialMemory, Cloneable
 {
 	
 	/** The radius of a location. */

@@ -6,8 +6,6 @@ import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.Observation;
-import eca.construct.egomem.Area;
-import eca.spas.egomem.ISpatialMemory;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -42,7 +40,7 @@ public interface ISpas
 	 * @param point The point.
 	 * @return The code of the area.
 	 */
-	public Area categorizePosition(Point3f point);
+	//public Area categorizePosition(Point3f point);
 
 	/**
 	 * @return The list of places in Ernest's local space memory.
@@ -60,15 +58,16 @@ public interface ISpas
 	 */
 	public int getValue(Point3f position);
 	
-	public ISpatialMemory getSpatialMemory();
+	//public ISpatialMemory getSpatialMemory();
 	
-	//public Layout predict(Action action);
-		
 	/**
 	 * @param action The next action
 	 * @return The Phenomenon instance to which the next action will apply 
 	 */
 	public Observation predictPhenomenonInst(Action action);
 	
+	/**
+	 * @return The transformation of spatial memory to anim.
+	 */
 	public Transform3D getTransformToAnim();
 }
