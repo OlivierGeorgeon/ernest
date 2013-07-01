@@ -11,7 +11,7 @@ import eca.decider.Decider;
 import eca.decider.IDecider;
 import eca.spas.ISpas;
 import eca.spas.Place;
-import eca.spas.Spas;
+import eca.spas.SpasImpl;
 import eca.spas.egomem.SpatialMemory;
 import eca.ss.IImos;
 import eca.ss.Imos;
@@ -35,7 +35,7 @@ public class Ernest implements IErnest
 	private Enaction m_enaction = new EnactionImpl();
 	
 	/** Ernest's spatial system. */
-	private ISpas m_spas = new Spas();
+	private ISpas m_spas = new SpasImpl();
 
 	/** Ernest's Intrinsically motivated Schema Mechanism. */
 	private IImos m_imos = new Imos();

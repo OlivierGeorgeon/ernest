@@ -24,7 +24,7 @@ import eca.ss.enaction.Enaction;
  * Maintains the local space map and the persistence memory.
  * @author Olivier
  */
-public class Spas implements ISpas 
+public class SpasImpl implements ISpas 
 {
 	
 	/** The Tracer. */
