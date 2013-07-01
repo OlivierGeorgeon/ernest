@@ -13,7 +13,7 @@ import eca.ss.enaction.Enaction;
  * Maintains the local space map and the persistence memory.
  * @author Olivier
  */
-public interface ISpas 
+public interface Spas 
 {
 
 	/**

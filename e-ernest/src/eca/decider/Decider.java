@@ -16,7 +16,7 @@ import eca.construct.Phenomenon;
 import eca.construct.PhenomenonImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
-import eca.spas.ISpas;
+import eca.spas.Spas;
 import eca.ss.IImos;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
@@ -30,14 +30,14 @@ import eca.ss.enaction.EnactionImpl;
 public class Decider implements IDecider 
 {
 	private IImos imos;
-	private ISpas spas;
+	private Spas spas;
 	private ITracer tracer;
 
 	/**
 	 * @param imos The sequential system
 	 * @param spas The spatial system
 	 */
-	public Decider(IImos imos, ISpas spas){
+	public Decider(IImos imos, Spas spas){
 		this.imos = imos;
 		this.spas = spas;
 	}
