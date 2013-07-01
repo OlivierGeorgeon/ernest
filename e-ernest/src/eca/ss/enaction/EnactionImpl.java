@@ -315,6 +315,7 @@ public class EnactionImpl implements Enaction
 			this.m_enactedPrimitiveAct.setColor(place.getValue());
 		}
 		this.transformation = SimuImpl.transformation(transform);
+		this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.transformation);
 	}
 
 }

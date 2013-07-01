@@ -7,7 +7,6 @@ import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.Observation;
 import eca.construct.egomem.Area;
-import eca.construct.egomem.Layout;
 import eca.spas.egomem.ISpatialMemory;
 import eca.ss.enaction.Enaction;
 
@@ -63,7 +62,13 @@ public interface ISpas
 	
 	public ISpatialMemory getSpatialMemory();
 	
-	public Layout predict(Action action);
+	//public Layout predict(Action action);
+		
+	/**
+	 * @param action The next action
+	 * @return The Phenomenon instance to which the next action will apply 
+	 */
+	public Observation predictPhenomenonInst(Action action);
 	
 	public Transform3D getTransformToAnim();
 }

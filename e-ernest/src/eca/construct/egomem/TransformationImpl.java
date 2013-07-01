@@ -3,11 +3,14 @@ package eca.construct.egomem;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.media.j3d.Transform3D;
+
 public class TransformationImpl implements Transformation {
 
 	private static Map<String , Transformation> TRANSFORMATIONS = new HashMap<String , Transformation>() ;
 
 	private String label;
+	private Transform3D transform3D = new Transform3D();
 	
 	/**
 	 * Create or get an action from its label.
@@ -27,6 +30,14 @@ public class TransformationImpl implements Transformation {
 
 	public String getLabel() {
 		return label;
+	}
+	
+	public void setTransform3D(Transform3D transform3D){
+		this.transform3D.set(transform3D);
+	}
+	
+	public Transform3D getTransform3D(){
+		return this.transform3D;
 	}
 
 	/**

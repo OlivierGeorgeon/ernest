@@ -2,15 +2,9 @@ package eca.spas;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
 import tracing.ITracer;
-
 import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.Observation;
@@ -20,7 +14,6 @@ import eca.construct.PhenomenonImpl;
 import eca.construct.Simu;
 import eca.construct.SimuImpl;
 import eca.construct.egomem.Area;
-import eca.construct.egomem.Layout;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.egomem.ISpatialMemory;
@@ -81,7 +74,7 @@ public class Spas implements ISpas
 		
 		// Update spatial memory
 		
-		this.simu.track(enaction);
+		//this.simu.track(enaction);
 
 		this.transform = SimuImpl.spasTransform(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation());
 
@@ -121,7 +114,7 @@ public class Spas implements ISpas
 		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveAct().getPrimitive().getAction(), observation);
 		newExp.addAct(enaction.getEnactedPrimitiveAct());
 
-		if (m_tracer != null) this.simu.trace(m_tracer);
+		//if (m_tracer != null) this.simu.trace(m_tracer);
 	}
 
 	public int getValue(int i, int j)
@@ -161,8 +154,19 @@ public class Spas implements ISpas
 		return m_localSpaceMemory;
 	}
 
-	public Layout predict(Action action){
-		return this.simu.predict(action);
+//	public Layout predict(Action action){
+//		return this.simu.predict(action);
+//	}
+
+	public Observation predictPhenomenonInst(Action action){
+		Observation observation = ObservationImpl.createOrGet(SimuImpl.EMPTY, SimuImpl.O);
+		if (m_localSpaceMemory.getPreviousPlace() != null){
+			Place lastPlace = m_localSpaceMemory.getPreviousPlace().clone();
+			lastPlace.transform(action.getTransformation().getTransform3D());
+			observation = ObservationImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), SimuImpl.getArea(lastPlace.getPosition()));
+		}
+		return observation;
+		
 	}
 
 	public Transform3D getTransformToAnim() {

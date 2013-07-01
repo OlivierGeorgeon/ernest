@@ -1,7 +1,6 @@
 package eca.construct;
 
 import tracing.ITracer;
-import eca.construct.egomem.Layout;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -21,12 +20,12 @@ public interface Simu {
 	 * @param action The action to simulate
 	 * @return the predicted layout
 	 */
-	public Layout predict(Action action);
+	//public Layout predict(Action action);
 	
 	/**
 	 * Trace the current state of the simulator
 	 * @param tracer The tracer
 	 */
-	public void trace(ITracer tracer);
+	//public void trace(ITracer tracer);
 
 }
