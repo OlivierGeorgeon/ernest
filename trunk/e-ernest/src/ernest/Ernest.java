@@ -2,22 +2,11 @@ package ernest;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import javax.media.j3d.Transform3D;
-import javax.vecmath.Point3f;
-
 import tracing.ITracer;
-
 import eca.Primitive;
 import eca.PrimitiveImpl;
-import eca.construct.SimuImpl;
-import eca.construct.egomem.Area;
-import eca.construct.egomem.AreaImpl;
-import eca.construct.egomem.Transformation;
 import eca.decider.Decider;
 import eca.decider.IDecider;
 import eca.spas.ISpas;
@@ -26,8 +15,6 @@ import eca.spas.Spas;
 import eca.spas.egomem.ISpatialMemory;
 import eca.ss.IImos;
 import eca.ss.Imos;
-import eca.ss.enaction.Act;
-import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
 import eca.ss.enaction.EnactionImpl;
 

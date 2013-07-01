@@ -14,7 +14,6 @@ import eca.construct.ActionImpl;
 import eca.construct.Observation;
 import eca.construct.Phenomenon;
 import eca.construct.PhenomenonImpl;
-import eca.construct.SimuImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.ISpas;
