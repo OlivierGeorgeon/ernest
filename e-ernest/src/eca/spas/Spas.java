@@ -16,7 +16,7 @@ import eca.construct.egomem.AreaImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.egomem.SpatialMemory;
-import eca.spas.egomem.SpacialMemoryImpl;
+import eca.spas.egomem.SpatialMemoryImpl;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -31,7 +31,7 @@ public class Spas implements ISpas
 	private ITracer m_tracer = null; 
 	
 	/** Ernest's local space memory  */
-	private SpatialMemory spacialMemory = new SpacialMemoryImpl();
+	private SpatialMemory spacialMemory = new SpatialMemoryImpl();
 	
 	/** The transformation to apply to spatial memory */
 	Transform3D transform = new Transform3D();
