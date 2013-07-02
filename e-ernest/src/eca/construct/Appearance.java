@@ -6,7 +6,7 @@ import eca.construct.egomem.Area;
  * An observation of a phenomenon in an area.
  * @author Olivier
  */
-public interface Observation {
+public interface Appearance {
 	
 	/**
 	 * @return The Observation's label

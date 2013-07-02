@@ -5,7 +5,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.construct.Action;
-import eca.construct.Observation;
+import eca.construct.Appearance;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -55,7 +55,7 @@ public interface Spas
 	 * @param action The next action
 	 * @return The Phenomenon instance to which the next action will apply 
 	 */
-	public Observation predictPhenomenonInst(Action action);
+	public Appearance predictPhenomenonInst(Action action);
 	
 	/**
 	 * @return The transformation of spatial memory to anim.

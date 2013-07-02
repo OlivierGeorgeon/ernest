@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import eca.construct.egomem.Area;
 
-public class ObservationImpl implements Observation {
+public class AppearanceImpl implements Appearance {
 	
-	private static Map<String , Observation> OBSERVATIONS = new HashMap<String , Observation>() ;
+	private static Map<String , Appearance> OBSERVATIONS = new HashMap<String , Appearance>() ;
 	private static int index = 0;
 	private String label;
 	private Phenomenon phenomenon;
@@ -18,10 +18,10 @@ public class ObservationImpl implements Observation {
 	 * @param area The observation's area
 	 * @return The new or old observation
 	 */
-	public static Observation createOrGet(Phenomenon phenomenon, Area area){
+	public static Appearance createOrGet(Phenomenon phenomenon, Area area){
 		String label = createKey(phenomenon, area);
 		if (!OBSERVATIONS.containsKey(label))
-			OBSERVATIONS.put(label, new ObservationImpl(phenomenon, area));			
+			OBSERVATIONS.put(label, new AppearanceImpl(phenomenon, area));			
 		return OBSERVATIONS.get(label);
 	}
 
@@ -47,7 +47,7 @@ public class ObservationImpl implements Observation {
 //		this.label = label;
 //	}	
 	
-	private ObservationImpl(Phenomenon phenomenon, Area area){
+	private AppearanceImpl(Phenomenon phenomenon, Area area){
 		this.label = phenomenon.getLabel() + area.getLabel();
 		this.phenomenon = phenomenon;
 		this.area = area;
@@ -81,7 +81,7 @@ public class ObservationImpl implements Observation {
 			ret = false;
 		else
 		{
-			Observation other = (Observation)o;
+			Appearance other = (Appearance)o;
 			ret = (other.getLabel().equals(this.getLabel()));
 		}
 		return ret;
