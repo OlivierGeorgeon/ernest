@@ -3,6 +3,7 @@ package eca.spas;
 
 import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.Primitive;
@@ -75,7 +76,7 @@ public class SpasImpl implements Spas
 		
 		Area area = enaction.getEnactedPrimitiveAct().getArea();
 		Phenomenon newPhenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
-		if (area.equals(AreaImpl.O) && enaction.getIntendedPrimitiveAct() != null){
+		if (area.getLabel().equals(AreaImpl.O) && enaction.getIntendedPrimitiveAct() != null){
 			PhenomenonImpl.merge(newPhenomenonType, PhenomenonImpl.EMPTY);
 			if (m_tracer != null && !newPhenomenonType.equals(PhenomenonImpl.EMPTY)){
 				m_tracer.addEventElement("empty", newPhenomenonType.getLabel() + " merged to " + PhenomenonImpl.EMPTY.getLabel());}
@@ -84,7 +85,7 @@ public class SpasImpl implements Spas
 			Place previousPlace = spacialMemory.getPreviousPlace();
 			if (previousPlace != null){
 				System.out.println("previous place " + previousPlace.getValue());
-				Area previousArea = AreaImpl.getArea(previousPlace.getPosition());
+				Area previousArea = AreaImpl.createOrGet(previousPlace.getPosition());
 				if (previousArea.equals(area)){
 					//Phenomenon previousPhenomenonType = previousPlace.getPrimitive().getPhenomenonType();
 					Phenomenon previousPhenomenonType = previousPlace.getPhenomenonType();
@@ -143,13 +144,13 @@ public class SpasImpl implements Spas
 	}
 
 	public Observation predictPhenomenonInst(Action action){
-		Observation observation = ObservationImpl.createOrGet(PhenomenonImpl.EMPTY, AreaImpl.O);
+		Observation observation = ObservationImpl.createOrGet(PhenomenonImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
 		if (this.spacialMemory.getPreviousPlace() != null){
 			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();
 			if (action.getPrimitives().get(0).getDisplace() != null)
 				lastPlace.transform(action.getPrimitives().get(0).getDisplace().getTransform3D()); // TODO manage simultaneously the displacement and the phenomenon instance
 //					.getTransformation().getTransform3D());
-			observation = ObservationImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.getArea(lastPlace.getPosition()));
+			observation = ObservationImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.createOrGet(lastPlace.getPosition()));
 		}
 		return observation;
 		

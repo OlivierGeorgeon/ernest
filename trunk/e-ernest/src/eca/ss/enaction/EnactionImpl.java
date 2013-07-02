@@ -59,7 +59,7 @@ public class EnactionImpl implements Enaction
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
 
-	private Displace displace = DisplaceImpl.UNKNOWN;
+	private Displace displace = null;//DisplaceImpl.UNKNOWN;
 	
 	private Place focusPlace = null;
 	
@@ -319,7 +319,7 @@ public class EnactionImpl implements Enaction
 		
 		this.enactedPlaces = places;
 		
-		this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">_"), AreaImpl.createOrGet("O"));
+		this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">_"), AreaImpl.createOrGet(new Point3f()));
 
 		for (Place place : places){
 			this.m_enactedPrimitiveAct = place.getAct();

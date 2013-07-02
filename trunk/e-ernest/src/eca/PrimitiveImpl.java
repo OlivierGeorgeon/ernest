@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.vecmath.Point3f;
+
 import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.Phenomenon;
@@ -55,7 +57,7 @@ public class PrimitiveImpl implements Primitive {
 	private PrimitiveImpl(String label, int value){
 		this.label = label;
 		this.value = value;
-		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet("B"));
+		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet(new Point3f(1,0,0)));
 		this.action = ActionImpl.createNew();
 		this.action.addPrimitive(this);	
 		this.phenomenon = PhenomenonImpl.createNew();

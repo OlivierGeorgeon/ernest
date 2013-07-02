@@ -14,12 +14,12 @@ public interface Observation {
 	public String getLabel();
 	
 	/**
-	 * @return The Observation's area
-	 */
-	public Area getArea();
-	
-	/**
 	 * @return The observation's phenomenon
 	 */
 	public Phenomenon getPhenomenon();	
+
+	/**
+	 * @return The Observation's area
+	 */
+	public Area getArea();
 }
