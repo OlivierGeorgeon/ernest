@@ -3,13 +3,17 @@ package eca.ss.enaction;
 import java.util.ArrayList;
 import java.util.List;
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Point3f;
+
 import tracing.ITracer;
+import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Transformation;
 import eca.construct.egomem.TransformationImpl;
 import eca.spas.Place;
+import eca.spas.PlaceImpl;
 import ernest.IEffect;
 
 /**
@@ -56,6 +60,8 @@ public class EnactionImpl implements Enaction
 	private boolean m_correct = true;
 
 	private Transformation transformation = TransformationImpl.UNKNOWN;
+	
+	private Place focusPlace = null;
 	
 	private List<Place> enactedPlaces = new ArrayList<Place>();
 	
@@ -288,18 +294,25 @@ public class EnactionImpl implements Enaction
 
 	public void track(IEffect input) {
 		
-		if (this.m_intendedPrimitiveAct == null)
-			// On startup create a first enacted interaction
-			this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">_"), AreaImpl.createOrGet("O"));
-		else{
+		Transform3D t = input.getTransformation();
+		Primitive p = PrimitiveImpl.get(">_");
+		Point3f l = new Point3f();
+		
+		if (this.m_intendedPrimitiveAct != null){
 			// If we are not on startup
 			// Compute the enacted primitive act from the primitive interaction and the area.
-			Area area = AreaImpl.getArea(input.getLocation());
-			this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(input.getEnactedInteractionLabel()), area);
+			p = PrimitiveImpl.get(input.getEnactedInteractionLabel());
+			l.set(input.getLocation());
 		}
-		
-		this.transformation = TransformationImpl.transformation(input);
-		this.m_enactedPrimitiveAct.setColor(input.getColor());
+
+		Place enactedPlace = new PlaceImpl(p, l);
+		List<Place> places =  new ArrayList<Place>(1);
+		places.add(enactedPlace);
+		track(places, t);
+
+//		this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(p, a);
+//		this.transformation = TransformationImpl.transformation(t);
+//		this.m_enactedPrimitiveAct.setColor(input.getColor());
 	}	
 	
 	public void track(List<Place> places, Transform3D transform){
@@ -314,6 +327,10 @@ public class EnactionImpl implements Enaction
 		}
 		this.transformation = TransformationImpl.transformation(transform);
 		this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.transformation);
+	}
+	
+	public List<Place> getEnactedPlaces(){
+		return this.enactedPlaces;
 	}
 
 }

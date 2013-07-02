@@ -166,4 +166,6 @@ public interface Enaction
 	 * @param tracer The tracer
 	 */
 	public void traceTerminate(ITracer tracer);
+	
+	public List<Place> getEnactedPlaces();
 }

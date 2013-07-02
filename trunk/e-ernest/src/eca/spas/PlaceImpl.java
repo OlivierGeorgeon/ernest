@@ -95,8 +95,7 @@ public class PlaceImpl implements Place
 		this.clock = clock;
 	}
 
-	public int getClock() 
-	{
+	public int getClock(){
 		return this.clock;
 	}
 
@@ -188,5 +187,10 @@ public class PlaceImpl implements Place
 	
 	public void setPhenomenonType(Phenomenon phenomenonType){
 		this.phenomenonType = phenomenonType;
+	}
+
+	public void normalize(float scale) {
+		float d = this.position.distance(new Point3f());
+		if (d > 0) this.position.scale(scale / d);
 	}
 }
