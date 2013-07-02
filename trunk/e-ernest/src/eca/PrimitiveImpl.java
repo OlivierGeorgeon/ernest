@@ -9,6 +9,7 @@ import eca.construct.ActionImpl;
 import eca.construct.Phenomenon;
 import eca.construct.PhenomenonImpl;
 import eca.construct.egomem.AreaImpl;
+import eca.construct.egomem.Displace;
 import eca.ss.enaction.ActImpl;
 
 /**
@@ -21,8 +22,9 @@ public class PrimitiveImpl implements Primitive {
 
 	private String label = "";
 	private int value = 0;
-	private Action action = null; //ActionImpl.createNew();
-	private Phenomenon phenomenon = null; //PhenomenonImpl.createNew();
+	private Action action = null; 
+	private Phenomenon phenomenon = null; 
+	private Displace displace = null;
 
 	/**
 	 * @param label The primitive interaction's label
@@ -111,6 +113,14 @@ public class PrimitiveImpl implements Primitive {
 	public void setAction(Action action) {
 		this.action = action;
 		action.addPrimitive(this);
+	}
+
+	public Displace getDisplace() {
+		return displace;
+	}
+
+	public void setDisplace(Displace displace) {
+		this.displace = displace;
 	}
 	
 }

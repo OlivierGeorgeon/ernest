@@ -3,7 +3,7 @@ package eca.construct;
 import java.util.List;
 
 import eca.Primitive;
-import eca.construct.egomem.Transformation;
+import eca.construct.egomem.Displace;
 
 /**
  * An action that may be performed by interactions.
@@ -45,13 +45,13 @@ public interface Action extends Comparable
 	public List<Primitive> getPrimitives();
 
 	/**
-	 * @param transformation The transformation performed by this action
+	 * @param displace The transformation performed by this action
 	 */
-	public void setTransformation(Transformation transformation);
+	public void setTransformation(Displace displace);
 	
 	/**
 	 * @return The transformation performed by this action. 
 	 */
-	public Transformation getTransformation();
+	public Displace getTransformation();
 
 }

@@ -6,13 +6,13 @@ import javax.media.j3d.Transform3D;
  * A transformation in spatial memory
  * @author Olivier
  */
-public interface Transformation {
+public interface Displace {
 
 	/** Predefined transformations */
-	public static Transformation UNKNOWN = TransformationImpl.createOrGet("?");
-	public static Transformation IDENTITY = TransformationImpl.createOrGet("<");
-	public static Transformation SHIFT_LEFT = TransformationImpl.createOrGet("^");
-	public static Transformation SHIFT_RIGHT = TransformationImpl.createOrGet("v");
+	public static Displace UNKNOWN = DisplaceImpl.createOrGet("?");
+	public static Displace IDENTITY = DisplaceImpl.createOrGet("<");
+	public static Displace SHIFT_LEFT = DisplaceImpl.createOrGet("^");
+	public static Displace SHIFT_RIGHT = DisplaceImpl.createOrGet("v");
 	
 	/**
 	 * @return The transformation's label.

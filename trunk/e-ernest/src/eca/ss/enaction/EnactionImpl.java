@@ -10,8 +10,8 @@ import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
-import eca.construct.egomem.Transformation;
-import eca.construct.egomem.TransformationImpl;
+import eca.construct.egomem.Displace;
+import eca.construct.egomem.DisplaceImpl;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 import ernest.IEffect;
@@ -59,7 +59,7 @@ public class EnactionImpl implements Enaction
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
 
-	private Transformation transformation = TransformationImpl.UNKNOWN;
+	private Displace displace = DisplaceImpl.UNKNOWN;
 	
 	private Place focusPlace = null;
 	
@@ -242,7 +242,7 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "primitive_enacted_interaction", m_enactedPrimitiveAct.getPrimitive().getLabel());
 			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
-			tracer.addSubelement(e, "transformation", this.transformation.getLabel());
+			tracer.addSubelement(e, "transformation", this.displace.getLabel());
 		}
 	}
 
@@ -284,12 +284,12 @@ public class EnactionImpl implements Enaction
 		}
 	}
 
-	public void setTransformation(Transformation transformation) {
-		this.transformation = transformation;
+	public void setTransformation(Displace displace) {
+		this.displace = displace;
 	}
 
-	public Transformation getTransformation() {
-		return this.transformation;
+	public Displace getTransformation() {
+		return this.displace;
 	}
 
 	public void track(IEffect input) {
@@ -325,8 +325,8 @@ public class EnactionImpl implements Enaction
 			this.m_enactedPrimitiveAct = place.getAct();
 			this.m_enactedPrimitiveAct.setColor(place.getValue());
 		}
-		this.transformation = TransformationImpl.transformation(transform);
-		this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.transformation);
+		this.displace = DisplaceImpl.displace(transform);
+		this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.displace);
 	}
 	
 	public List<Place> getEnactedPlaces(){

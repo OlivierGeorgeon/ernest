@@ -9,9 +9,9 @@ import utils.ErnestUtils;
  * A transformation in spatial memory
  * @author Olivier
  */
-public class TransformationImpl implements Transformation {
+public class DisplaceImpl implements Displace {
 
-	private static Map<String , Transformation> TRANSFORMATIONS = new HashMap<String , Transformation>() ;
+	private static Map<String , Displace> TRANSFORMATIONS = new HashMap<String , Displace>() ;
 
 	private String label;
 	private Transform3D transform3D = new Transform3D();
@@ -21,14 +21,14 @@ public class TransformationImpl implements Transformation {
 	 * @param label The action's label
 	 * @return The created or retrieved action.
 	 */
-	public static Transformation createOrGet(String label){
+	public static Displace createOrGet(String label){
 		if (!TRANSFORMATIONS.containsKey(label))
-			TRANSFORMATIONS.put(label, new TransformationImpl(label));			
+			TRANSFORMATIONS.put(label, new DisplaceImpl(label));			
 		return TRANSFORMATIONS.get(label);
 	}
 	
-	public static Transformation transformation(Transform3D t){
-		Transformation transform = IDENTITY;
+	public static Displace displace(Transform3D t){
+		Displace transform = IDENTITY;
 		float angle = ErnestUtils.angle(t);
 		if (Math.abs(angle) > .1){
 			if ( angle > 0){		
@@ -44,7 +44,7 @@ public class TransformationImpl implements Transformation {
 		return transform;
 	}
 	
-	private TransformationImpl(String label){
+	private DisplaceImpl(String label){
 		this.label = label;
 	}
 	
@@ -75,7 +75,7 @@ public class TransformationImpl implements Transformation {
 			ret = false;
 		else
 		{
-			Transformation other = (Transformation)o;
+			Displace other = (Displace)o;
 			ret = (other.getLabel().equals(this.label));
 		}
 		
