@@ -27,27 +27,51 @@ public class DisplaceImpl implements Displace {
 		return TRANSFORMATIONS.get(label);
 	}
 	
-	public static Displace displace(Transform3D t){
-		Displace transform = IDENTITY;
-		float angle = ErnestUtils.angle(t);
-		if (Math.abs(angle) > .1){
-			if ( angle > 0){		
-				transform = SHIFT_LEFT;
-				transform.setTransform3D(t);
-			}
-			else{ 		
-				transform = SHIFT_RIGHT;
-				transform.setTransform3D(t);
-			}
-		}
-
-		return transform;
+//	public static Displace displace(Transform3D t){
+//		Displace transform = IDENTITY;
+//		float angle = ErnestUtils.angle(t);
+//		if (Math.abs(angle) > .1){
+//			if ( angle > 0){		
+//				transform = SHIFT_LEFT;
+//				transform.setTransform3D(t);
+//			}
+//			else{ 		
+//				transform = SHIFT_RIGHT;
+//				transform.setTransform3D(t);
+//			}
+//		}
+//
+//		return transform;
+//	}
+	
+	public static Displace createOrGet(Transform3D t){
+		String label = createKey(t);
+		if (!TRANSFORMATIONS.containsKey(label))
+			TRANSFORMATIONS.put(label, new DisplaceImpl(t));			
+		return TRANSFORMATIONS.get(label);
 	}
 	
+	private static String createKey(Transform3D t) {
+		String key = "";
+		float angle = ErnestUtils.angle(t);
+		if (Math.abs(angle) > .1){
+			if ( angle > 0)	key = "^";
+			else			key ="v";
+		}
+		else{
+			if (ErnestUtils.translationX(t) > .5) key =".";
+			else key = "<";
+		}
+		return key;
+	}
 	private DisplaceImpl(String label){
 		this.label = label;
 	}
 	
+	private DisplaceImpl(Transform3D t){
+		this.label = createKey(t);
+		this.transform3D.set(t);
+	}
 
 	public String getLabel() {
 		return label;
@@ -58,11 +82,13 @@ public class DisplaceImpl implements Displace {
 	}
 	
 	public Transform3D getTransform3D(){
-		return this.transform3D;
+		Transform3D t = this.transform3D;
+		if (this.label.equals("<")) t = new Transform3D();
+		return t;
 	}
 
 	/**
-	 * Transformations are equal if they have the same label. 
+	 * Displacements are equal if they have the same label. 
 	 */
 	public boolean equals(Object o){
 		boolean ret = false;
@@ -76,6 +102,7 @@ public class DisplaceImpl implements Displace {
 		else
 		{
 			Displace other = (Displace)o;
+			//ret = (other.getTransform3D().epsilonEquals(transform3D, .1));
 			ret = (other.getLabel().equals(this.label));
 		}
 		

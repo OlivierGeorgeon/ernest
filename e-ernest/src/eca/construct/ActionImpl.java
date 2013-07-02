@@ -63,8 +63,8 @@ public class ActionImpl implements Action {
 		if (!enactedAction.equals(intendedAction)){
 			for (Primitive primitive : enactedAction.getPrimitives())
 				primitive.setAction(intendedAction);
-			if (!enactedAction.getTransformation().equals(DisplaceImpl.UNKNOWN))
-				intendedAction.setTransformation(enactedAction.getTransformation());
+//			if (!enactedAction.getTransformation().equals(DisplaceImpl.UNKNOWN))
+//				intendedAction.setTransformation(enactedAction.getTransformation());
 			ACTIONS.remove(enactedAction.getLabel());
 		}
 	}
@@ -129,11 +129,11 @@ public class ActionImpl implements Action {
 		return ret;
 	}
 
-	public void setTransformation(Displace displace) {
-		this.displace = displace;
-	}
-
-	public Displace getTransformation() {
-		return this.displace;
-	}
+//	public void setTransformation(Displace displace) {
+//		this.displace = displace;
+//	}
+//
+//	public Displace getTransformation() {
+//		return this.displace;
+//	}
 }
