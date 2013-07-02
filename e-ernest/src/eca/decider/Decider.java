@@ -4,10 +4,7 @@ package eca.decider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import tracing.ITracer;
-
-
 import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
@@ -60,22 +57,23 @@ public class Decider implements IDecider
 		// Predict the next observation
 		//Observation  observation = this.spas.predict(action).observe();
 		Observation  observation = this.spas.predictPhenomenonInst(action);
+		
+		// Construct the intended act
+		Act nextTopIntention = ActImpl.getAct(action, observation);
+
 		if (this.tracer != null){
 			Object aspectElmt = this.tracer.addEventElement("aspects", true);
-			for (Phenomenon a : PhenomenonImpl.getAspects())
-				this.tracer.addSubelement(aspectElmt, "aspect", a.toString());
+			for (Phenomenon phenomenon : PhenomenonImpl.getPhenomenonTypes())
+				this.tracer.addSubelement(aspectElmt, "phenomenon", phenomenon.toString());
 			Object experimentElmt = this.tracer.addEventElement("experiments", true);
 			for (Experiment a : ExperimentImpl.getExperiments())
 				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
 			Object predictElmt = this.tracer.addEventElement("predict", true);
-			this.tracer.addSubelement(predictElmt, "phenomenon", observation.getPhenomenon().getLabel());
+			this.tracer.addSubelement(predictElmt, "phenomenon_type", observation.getPhenomenon().getLabel());
 			this.tracer.addSubelement(predictElmt, "area", observation.getArea().getLabel());
 		}
 		
-		// Construct the intended act
-		Act nextTopIntention = ActImpl.getAct(action, observation);
-
 		System.out.println("Act " + nextTopIntention.getLabel());
 		newEnaction.setTopInteraction(nextTopIntention);
 		newEnaction.setTopRemainingAct(nextTopIntention);

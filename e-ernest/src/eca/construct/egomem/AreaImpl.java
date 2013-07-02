@@ -3,7 +3,6 @@ package eca.construct.egomem;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.vecmath.Point3f;
 import utils.ErnestUtils;
 
@@ -13,12 +12,22 @@ import utils.ErnestUtils;
  */
 public class AreaImpl implements Area {
 
+	/** Predefined areas */
+	public static String A = "A";
+	public static String B = "B";
+	public static String C = "C";
+	public static String O = "O";
 
 	private static Map<String , Area> AREAS = new HashMap<String , Area>() ;
 
 	private String label;
 	
-	public static Area createOrGet(String label){
+	/**
+	 * @param point The point from which to create or get the area
+	 * @return The area
+	 */
+	public static Area createOrGet(Point3f point){
+		String label = createKey(point);
 		if (!AREAS.containsKey(label))
 			AREAS.put(label, new AreaImpl(label));			
 		return AREAS.get(label);
@@ -31,30 +40,28 @@ public class AreaImpl implements Area {
 		return AREAS.values();
 	}
 	
-	/**
-	 * Gives the area to which a point belongs.
-	 * @param point The point
-	 * @return The area of interest
-	 */
-	public static Area getArea(Point3f point) 
-	{
+	private static String createKey(Point3f point) {
+		String key = "";
 		if (point.epsilonEquals(new Point3f(), .1f))
-			return O;
+			key = O;
 		else if (ErnestUtils.polarAngle(point) > .1f)
-			return A; 
+			key = A; 
 		else if (ErnestUtils.polarAngle(point) >= -.1f)
-			return B; 
+			key = B; 
 		else
-			return C; 
+			key = C; 
+		return key;
 	}
-	
-	public static Point3f spasPoint(Area area){
+	/**
+	 * @return The point prototypical of this area
+	 */
+	public Point3f getPoint(){
 		Point3f spasPoint = new Point3f(1, 0, 0);
-		if (area.equals(A))
+		if (label.equals(A))
 			spasPoint.set((float)Math.cos(Math.PI/4), (float)Math.sin(Math.PI/4), 0);
-		else if (area.equals(C))
+		else if (label.equals(C))
 			spasPoint.set((float)Math.cos(Math.PI/4),-(float)Math.sin(Math.PI/4), 0);
-		else if (area.equals(O))
+		else if (label.equals(O))
 			spasPoint.set(0,0, 0);
 		spasPoint.scale(3);
 		return spasPoint;

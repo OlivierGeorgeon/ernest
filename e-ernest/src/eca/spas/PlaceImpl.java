@@ -38,7 +38,7 @@ public class PlaceImpl implements Place
 	}
 	
 	public Act getAct() {
-		return ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.getArea(position));
+		return ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(position));
 	}
 
 	public Primitive getPrimitive() {

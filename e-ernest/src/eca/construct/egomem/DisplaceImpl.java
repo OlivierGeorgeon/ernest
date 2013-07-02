@@ -21,12 +21,12 @@ public class DisplaceImpl implements Displace {
 	 * @param label The action's label
 	 * @return The created or retrieved action.
 	 */
-	public static Displace createOrGet(String label){
-		if (!TRANSFORMATIONS.containsKey(label))
-			TRANSFORMATIONS.put(label, new DisplaceImpl(label));			
-		return TRANSFORMATIONS.get(label);
-	}
-	
+//	public static Displace createOrGet(String label){
+//		if (!TRANSFORMATIONS.containsKey(label))
+//			TRANSFORMATIONS.put(label, new DisplaceImpl(label));			
+//		return TRANSFORMATIONS.get(label);
+//	}
+//	
 //	public static Displace displace(Transform3D t){
 //		Displace transform = IDENTITY;
 //		float angle = ErnestUtils.angle(t);
@@ -64,6 +64,7 @@ public class DisplaceImpl implements Displace {
 		}
 		return key;
 	}
+
 	private DisplaceImpl(String label){
 		this.label = label;
 	}

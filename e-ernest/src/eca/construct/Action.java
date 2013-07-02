@@ -44,14 +44,4 @@ public interface Action extends Comparable
 	 */
 	public List<Primitive> getPrimitives();
 
-	/**
-	 * @param displace The transformation performed by this action
-	 */
-	//public void setTransformation(Displace displace);
-	
-	/**
-	 * @return The transformation performed by this action. 
-	 */
-	//public Displace getTransformation();
-
 }

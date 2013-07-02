@@ -6,9 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import eca.Primitive;
-import eca.ss.enaction.Act;
 
 /**
  * An Aspect is the element of an observation that can be situated in space
@@ -16,20 +14,27 @@ import eca.ss.enaction.Act;
  */
 public class PhenomenonImpl implements Phenomenon {
 	
-	private static Map<String , Phenomenon> ASPECTS = new HashMap<String , Phenomenon>() ;
+	private static Map<String , Phenomenon> PHENOMENA = new HashMap<String , Phenomenon>() ;
 	private static int index = 0;
 	
 	private String label;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
 
 	/**
+	 * @return The list of all types of phenomenon known by the agent thus far
+	 */
+	public static Collection<Phenomenon> getPhenomenonTypes() {
+		return PHENOMENA.values();
+	}
+	
+	/**
 	 * @param label The aspect's label
 	 * @return The aspect
 	 */
 	public static Phenomenon createOrGet(String label){
-		if (!ASPECTS.containsKey(label))
-			ASPECTS.put(label, new PhenomenonImpl(label));			
-		return ASPECTS.get(label);
+		if (!PHENOMENA.containsKey(label))
+			PHENOMENA.put(label, new PhenomenonImpl(label));			
+		return PHENOMENA.get(label);
 	}
 	
 	/**
@@ -38,8 +43,8 @@ public class PhenomenonImpl implements Phenomenon {
 	 */
 	public static Phenomenon createNew(){
 		index++;
-		ASPECTS.put(index + "", new PhenomenonImpl(index +""));			
-		return ASPECTS.get(index + "");
+		PHENOMENA.put(index + "", new PhenomenonImpl(index +""));			
+		return PHENOMENA.get(index + "");
 	}
 	
 	/**
@@ -52,7 +57,7 @@ public class PhenomenonImpl implements Phenomenon {
 		if (!enactedAspect.equals(previousAspect)){
 			for (Primitive act : enactedAspect.getPrimitives())
 				act.setPhenomenonType(previousAspect);
-			ASPECTS.remove(enactedAspect.getLabel());
+			PHENOMENA.remove(enactedAspect.getLabel());
 		}
 	}
 	
@@ -95,10 +100,6 @@ public class PhenomenonImpl implements Phenomenon {
 		return ret;
 	}
 
-	public static Collection<Phenomenon> getAspects() {
-		return ASPECTS.values();
-	}
-	
 	public String toString(){
 		String s = this.label;
 		for (Primitive i : primitives)
