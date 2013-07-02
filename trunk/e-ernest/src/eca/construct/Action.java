@@ -47,11 +47,11 @@ public interface Action extends Comparable
 	/**
 	 * @param displace The transformation performed by this action
 	 */
-	public void setTransformation(Displace displace);
+	//public void setTransformation(Displace displace);
 	
 	/**
 	 * @return The transformation performed by this action. 
 	 */
-	public Displace getTransformation();
+	//public Displace getTransformation();
 
 }

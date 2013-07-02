@@ -104,7 +104,7 @@ public class Decider implements IDecider
 		if (this.tracer != null){
 			decisionElmt = this.tracer.addEventElement("Actions", true);
 			for (Action a : ActionImpl.getACTIONS()){
-				String details = a.getTransformation().getLabel() + " ";
+				String details = " ";
 				for (Primitive primitive : a.getPrimitives())
 					details += (" " + primitive.getLabel());
 				System.out.println("Propose action " + a.getLabel() + " with weight " + a.getPropositionWeight());

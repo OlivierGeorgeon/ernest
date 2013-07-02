@@ -65,7 +65,8 @@ public class SpasImpl implements Spas
 		// Update spatial memory
 		
 		tick();
-		this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation().getTransform3D());
+		//this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation().getTransform3D());
+		this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getDisplace().getTransform3D());
 		this.spacialMemory.transform(this.transform);		
 		this.spacialMemory.forgetOldPlaces();
 		this.spacialMemory.addPlace(enactedPlace);
@@ -145,7 +146,9 @@ public class SpasImpl implements Spas
 		Observation observation = ObservationImpl.createOrGet(PhenomenonImpl.EMPTY, AreaImpl.O);
 		if (this.spacialMemory.getPreviousPlace() != null){
 			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();
-			lastPlace.transform(action.getTransformation().getTransform3D());
+			if (action.getPrimitives().get(0).getDisplace() != null)
+				lastPlace.transform(action.getPrimitives().get(0).getDisplace().getTransform3D()); // TODO manage simultaneously the displacement and the phenomenon instance
+//					.getTransformation().getTransform3D());
 			observation = ObservationImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.getArea(lastPlace.getPosition()));
 		}
 		return observation;

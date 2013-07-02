@@ -325,8 +325,9 @@ public class EnactionImpl implements Enaction
 			this.m_enactedPrimitiveAct = place.getAct();
 			this.m_enactedPrimitiveAct.setColor(place.getValue());
 		}
-		this.displace = DisplaceImpl.displace(transform);
-		this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.displace);
+		this.displace = DisplaceImpl.createOrGet(transform);
+		this.m_enactedPrimitiveAct.getPrimitive().setDisplace(this.displace);
+		//this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.displace);
 	}
 	
 	public List<Place> getEnactedPlaces(){

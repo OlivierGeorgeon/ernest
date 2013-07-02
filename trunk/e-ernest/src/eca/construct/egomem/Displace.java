@@ -10,9 +10,9 @@ public interface Displace {
 
 	/** Predefined transformations */
 	public static Displace UNKNOWN = DisplaceImpl.createOrGet("?");
-	public static Displace IDENTITY = DisplaceImpl.createOrGet("<");
-	public static Displace SHIFT_LEFT = DisplaceImpl.createOrGet("^");
-	public static Displace SHIFT_RIGHT = DisplaceImpl.createOrGet("v");
+//	public static Displace IDENTITY = DisplaceImpl.createOrGet("<");
+//	public static Displace SHIFT_LEFT = DisplaceImpl.createOrGet("^");
+//	public static Displace SHIFT_RIGHT = DisplaceImpl.createOrGet("v");
 	
 	/**
 	 * @return The transformation's label.
