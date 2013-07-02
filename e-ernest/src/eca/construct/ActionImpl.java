@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import eca.Primitive;
-import eca.construct.egomem.Transformation;
-import eca.construct.egomem.TransformationImpl;
+import eca.construct.egomem.Displace;
+import eca.construct.egomem.DisplaceImpl;
 
 /**
  * An action that may be performed by interactions.
@@ -21,7 +21,7 @@ public class ActionImpl implements Action {
 
 	private String label;
 	private int propositionWeight;
-	private Transformation transformation = TransformationImpl.UNKNOWN;
+	private Displace displace = DisplaceImpl.UNKNOWN;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
 	
 	/**
@@ -63,7 +63,7 @@ public class ActionImpl implements Action {
 		if (!enactedAction.equals(intendedAction)){
 			for (Primitive primitive : enactedAction.getPrimitives())
 				primitive.setAction(intendedAction);
-			if (!enactedAction.getTransformation().equals(TransformationImpl.UNKNOWN))
+			if (!enactedAction.getTransformation().equals(DisplaceImpl.UNKNOWN))
 				intendedAction.setTransformation(enactedAction.getTransformation());
 			ACTIONS.remove(enactedAction.getLabel());
 		}
@@ -129,11 +129,11 @@ public class ActionImpl implements Action {
 		return ret;
 	}
 
-	public void setTransformation(Transformation transformation) {
-		this.transformation = transformation;
+	public void setTransformation(Displace displace) {
+		this.displace = displace;
 	}
 
-	public Transformation getTransformation() {
-		return this.transformation;
+	public Displace getTransformation() {
+		return this.displace;
 	}
 }
