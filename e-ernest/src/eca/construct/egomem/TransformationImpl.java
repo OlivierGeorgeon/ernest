@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.media.j3d.Transform3D;
 import utils.ErnestUtils;
-import ernest.IEffect;
 
+/**
+ * A transformation in spatial memory
+ * @author Olivier
+ */
 public class TransformationImpl implements Transformation {
 
 	private static Map<String , Transformation> TRANSFORMATIONS = new HashMap<String , Transformation>() ;
@@ -22,10 +25,6 @@ public class TransformationImpl implements Transformation {
 		if (!TRANSFORMATIONS.containsKey(label))
 			TRANSFORMATIONS.put(label, new TransformationImpl(label));			
 		return TRANSFORMATIONS.get(label);
-	}
-	
-	public static Transformation transformation(IEffect effect){
-		return transformation(effect.getTransformation());
 	}
 	
 	public static Transformation transformation(Transform3D t){

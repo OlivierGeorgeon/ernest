@@ -24,7 +24,8 @@ public interface SpatialMemory
 	 * @param position This place's position
 	 * @return The created place
 	 */
-	public Place addPlace(Primitive primitive, Point3f position);
+	//public Place addPlace(Primitive primitive, Point3f position);
+	public void addPlace(Place place);
 
 	/**
 	 * @return A clone of this spatial memory

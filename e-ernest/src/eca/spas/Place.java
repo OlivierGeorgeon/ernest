@@ -105,4 +105,6 @@ public interface Place extends Cloneable
 	
 	public void setPhenomenonType(Phenomenon phenomenonType);
 	
+	public void normalize(float scale);
+	
 }

@@ -63,11 +63,15 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 			p.incClock();
 	}
 
-	public Place addPlace(Primitive primitive, Point3f position)
-	{
-		Place place = new PlaceImpl(primitive, position);	
+//	public Place addPlace(Primitive primitive, Point3f position)
+//	{
+//		Place place = new PlaceImpl(primitive, position);	
+//		m_places.add(place);
+//		return place;
+//	}
+	
+	public void addPlace(Place place){
 		m_places.add(place);
-		return place;
 	}
 	
 	public void transform(Transform3D transform)
@@ -131,7 +135,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 		for (Iterator it = m_places.iterator(); it.hasNext();)
 		{
 			Place p = (Place)it.next();
-			if (p.getClock() > PERSISTENCE_DURATION || p.getPosition().x < -.1) 
+			if (p.getClock() > PERSISTENCE_DURATION )//|| p.getPosition().x < -.1) 
 				it.remove();
 		}
 	}

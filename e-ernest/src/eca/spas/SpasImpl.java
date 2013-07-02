@@ -59,25 +59,20 @@ public class SpasImpl implements Spas
 	 */
 	public void track(Enaction enaction) 
 	{
-		tick();
-		
-		Area area = enaction.getEnactedPrimitiveAct().getArea();
-		
+		Place enactedPlace = enaction.getEnactedPlaces().get(0);	
+		enactedPlace.normalize(3);
+				
 		// Update spatial memory
 		
-		//this.simu.track(enaction);
-
+		tick();
 		this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation().getTransform3D());
-
 		this.spacialMemory.transform(this.transform);		
 		this.spacialMemory.forgetOldPlaces();
-		
-		if ( enaction.getEnactedPrimitiveAct() != null){
-			addPlace(enaction.getEnactedPrimitiveAct().getPrimitive(), AreaImpl.spasPoint(area), enaction.getEnactedPrimitiveAct().getColor());			
-		}
+		this.spacialMemory.addPlace(enactedPlace);
 
 		// Merge phenomena
 		
+		Area area = enaction.getEnactedPrimitiveAct().getArea();
 		Phenomenon newPhenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
 		if (area.equals(AreaImpl.O) && enaction.getIntendedPrimitiveAct() != null){
 			PhenomenonImpl.merge(newPhenomenonType, PhenomenonImpl.EMPTY);
@@ -90,11 +85,11 @@ public class SpasImpl implements Spas
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = AreaImpl.getArea(previousPlace.getPosition());
 				if (previousArea.equals(area)){
-					Phenomenon previousPhenomenonType = previousPlace.getPrimitive().getPhenomenonType();
-					//Phenomenon previousPhenomenonType = previousPlace.getPhenomenonType();
+					//Phenomenon previousPhenomenonType = previousPlace.getPrimitive().getPhenomenonType();
+					Phenomenon previousPhenomenonType = previousPlace.getPhenomenonType();
 					if (!previousPhenomenonType.equals(newPhenomenonType)){
 						PhenomenonImpl.merge(newPhenomenonType, previousPhenomenonType);
-						//previousPlace.setPhenomenonType(newPhenomenonType);
+						enactedPlace.setPhenomenonType(previousPhenomenonType);
 						if (m_tracer != null){
 							m_tracer.addEventElement("phenomenon", newPhenomenonType.getLabel() + " merged to " + previousPhenomenonType.getLabel());}
 					}
@@ -125,12 +120,12 @@ public class SpasImpl implements Spas
 		return this.spacialMemory.clonePlaceList();
 	}
 
-	private Place addPlace(Primitive primitive, Point3f position,int value) 
-	{
-		Place place = this.spacialMemory.addPlace(primitive, position);
-		place.setValue(value);
-		return place;
-	}
+//	private Place addPlace(Primitive primitive, Point3f position,int value) 
+//	{
+//		Place place = this.spacialMemory.addPlace(primitive, position);
+//		place.setValue(value);
+//		return place;
+//	}
 
 	public void tick() {
 		this.spacialMemory.tick();
