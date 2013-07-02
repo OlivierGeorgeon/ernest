@@ -8,7 +8,7 @@ import tracing.ITracer;
 import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
-import eca.construct.Observation;
+import eca.construct.Appearance;
 import eca.construct.Phenomenon;
 import eca.construct.PhenomenonImpl;
 import eca.construct.experiment.Experiment;
@@ -56,10 +56,10 @@ public class Decider implements IDecider
 
 		// Predict the next observation
 		//Observation  observation = this.spas.predict(action).observe();
-		Observation  observation = this.spas.predictPhenomenonInst(action);
+		Appearance  appearance = this.spas.predictPhenomenonInst(action);
 		
 		// Construct the intended act
-		Act nextTopIntention = ActImpl.getAct(action, observation);
+		Act nextTopIntention = ActImpl.getAct(action, appearance);
 
 		if (this.tracer != null){
 			Object aspectElmt = this.tracer.addEventElement("aspects", true);
@@ -70,8 +70,8 @@ public class Decider implements IDecider
 				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
 			Object predictElmt = this.tracer.addEventElement("predict", true);
-			this.tracer.addSubelement(predictElmt, "phenomenon_type", observation.getPhenomenon().getLabel());
-			this.tracer.addSubelement(predictElmt, "area", observation.getArea().getLabel());
+			this.tracer.addSubelement(predictElmt, "phenomenon_type", appearance.getPhenomenon().getLabel());
+			this.tracer.addSubelement(predictElmt, "area", appearance.getArea().getLabel());
 		}
 		
 		System.out.println("Act " + nextTopIntention.getLabel());

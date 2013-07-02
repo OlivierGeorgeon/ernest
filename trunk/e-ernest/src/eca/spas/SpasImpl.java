@@ -8,8 +8,8 @@ import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.Primitive;
 import eca.construct.Action;
-import eca.construct.Observation;
-import eca.construct.ObservationImpl;
+import eca.construct.Appearance;
+import eca.construct.AppearanceImpl;
 import eca.construct.Phenomenon;
 import eca.construct.PhenomenonImpl;
 import eca.construct.egomem.Area;
@@ -100,8 +100,8 @@ public class SpasImpl implements Spas
 		}
 		
 		// Record the experiment
-		Observation observation = ObservationImpl.createOrGet(newPhenomenonType, area);
-		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveAct().getPrimitive().getAction(), observation);
+		Appearance appearance = AppearanceImpl.createOrGet(newPhenomenonType, area);
+		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveAct().getPrimitive().getAction(), appearance);
 		newExp.addAct(enaction.getEnactedPrimitiveAct());
 
 		//if (m_tracer != null) this.simu.trace(m_tracer);
@@ -143,16 +143,16 @@ public class SpasImpl implements Spas
 		return this.spacialMemory;
 	}
 
-	public Observation predictPhenomenonInst(Action action){
-		Observation observation = ObservationImpl.createOrGet(PhenomenonImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
+	public Appearance predictPhenomenonInst(Action action){
+		Appearance appearance = AppearanceImpl.createOrGet(PhenomenonImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
 		if (this.spacialMemory.getPreviousPlace() != null){
 			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();
 			if (action.getPrimitives().get(0).getDisplace() != null)
 				lastPlace.transform(action.getPrimitives().get(0).getDisplace().getTransform3D()); // TODO manage simultaneously the displacement and the phenomenon instance
 //					.getTransformation().getTransform3D());
-			observation = ObservationImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.createOrGet(lastPlace.getPosition()));
+			appearance = AppearanceImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.createOrGet(lastPlace.getPosition()));
 		}
-		return observation;
+		return appearance;
 		
 	}
 

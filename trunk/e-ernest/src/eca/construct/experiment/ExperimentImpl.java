@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eca.construct.Action;
-import eca.construct.Observation;
+import eca.construct.Appearance;
 import eca.ss.enaction.Act;
 
 /**
@@ -19,7 +19,7 @@ public class ExperimentImpl implements Experiment {
 	private static Map<String , Experiment> EXPERIMENTS = new HashMap<String , Experiment>() ;
 	private String label;
 	private Action action;
-	private Observation observation;
+	private Appearance appearance;
 	private Map<Act , Integer> acts = new HashMap<Act , Integer>() ;
 
 	/**
@@ -27,22 +27,22 @@ public class ExperimentImpl implements Experiment {
 	 * @param aspect The Phenomenon.
 	 * @return The new or old experiment.
 	 */
-	public static Experiment createOrGet(Action action, Observation observation){
-		String key = createKey(action, observation);
+	public static Experiment createOrGet(Action action, Appearance appearance){
+		String key = createKey(action, appearance);
 		if (!EXPERIMENTS.containsKey(key))
-			EXPERIMENTS.put(key, new ExperimentImpl(action, observation));			
+			EXPERIMENTS.put(key, new ExperimentImpl(action, appearance));			
 		return EXPERIMENTS.get(key);
 	}
 
-	private static String createKey(Action action, Observation observation) {
-		String key = action.getLabel() + "/" + observation.getLabel();
+	private static String createKey(Action action, Appearance appearance) {
+		String key = action.getLabel() + "/" + appearance.getLabel();
 		return key;
 	}
 	
-	private ExperimentImpl(Action action, Observation observation){
-		this.label = createKey(action, observation);
+	private ExperimentImpl(Action action, Appearance appearance){
+		this.label = createKey(action, appearance);
 		this.action = action;
-		this.observation = observation;
+		this.appearance = appearance;
 	}	
 	
 	public String getLabel() {

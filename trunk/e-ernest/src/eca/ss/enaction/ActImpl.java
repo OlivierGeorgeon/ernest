@@ -7,7 +7,7 @@ import java.util.Map;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.Action;
-import eca.construct.Observation;
+import eca.construct.Appearance;
 import eca.construct.egomem.Area;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
@@ -84,18 +84,18 @@ public class ActImpl implements Act
 		return key;
 	}
 	
-	public static Act getAct(Action action, Observation observation){
+	public static Act getAct(Action action, Appearance appearance){
 		
-		Experiment exp = ExperimentImpl.createOrGet(action, observation);
+		Experiment exp = ExperimentImpl.createOrGet(action, appearance);
 		Act act = exp.predictAct();
 		
 		if (act == null){
 			Primitive interaction = action.getPrimitives().get(0);
 			for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
-				if (i.getAction().equals(action) && i.getPhenomenonType().equals(observation.getPhenomenon()))
+				if (i.getAction().equals(action) && i.getPhenomenonType().equals(appearance.getPhenomenon()))
 					interaction = i;
 			}
-			act = createOrGetPrimitiveAct(interaction, observation.getArea());
+			act = createOrGetPrimitiveAct(interaction, appearance.getArea());
 		}
 
 		return act;
