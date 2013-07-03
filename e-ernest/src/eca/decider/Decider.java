@@ -9,7 +9,7 @@ import eca.ss.enaction.Enaction;
  * based on the current state of sequential and spatial memory
  * @author Olivier
  */
-public interface IDecider 
+public interface Decider 
 {
 	/**
 	 * @param tracer The tracer.

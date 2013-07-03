@@ -24,7 +24,7 @@ import eca.ss.enaction.EnactionImpl;
  * This is the regular decider for Ernest 7 that does not use spatial memory.
  * @author Olivier
  */
-public class DeciderImpl implements IDecider 
+public class DeciderImpl implements Decider 
 {
 	private IImos imos;
 	private Spas spas;
