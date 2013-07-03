@@ -7,8 +7,6 @@ import java.util.List;
 import tracing.ITracer;
 
 import eca.construct.ActionImpl;
-import eca.decider.ActProposition;
-import eca.decider.ActPropositionImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
