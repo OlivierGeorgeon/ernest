@@ -11,6 +11,7 @@ import eca.construct.ActionImpl;
 import eca.construct.Appearance;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
+import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.Spas;
@@ -50,12 +51,13 @@ public class DeciderImpl implements Decider
 		System.out.println("New decision ================ ");
 
 		// Choose the next action
-		ArrayList<IProposition> propositions = this.imos.propose(enaction);	
+		ArrayList<ActProposition> propositions = this.imos.propose(enaction);	
 		weightActions(propositions);
 		Action action = selectAction();
 
 		// Predict the next appearance
-		Appearance  appearance = this.spas.predictAppearance(action);
+		Displacement displacement = action.getPrimitives().get(0).getDisplacement();			
+		Appearance  appearance = this.spas.predictAppearance(displacement);
 		
 		// Construct the intended act
 		Act nextTopIntention = ActImpl.getAct(action, appearance);
@@ -85,14 +87,14 @@ public class DeciderImpl implements Decider
 	/**
 	 * Weight the actions according to the proposed interactions
 	 */
-	private void weightActions(ArrayList<IProposition> propositions){
+	private void weightActions(ArrayList<ActProposition> propositions){
 		
 		// Reset the weight of actions.
 		for (Action m : ActionImpl.getACTIONS())
 			m.setPropositionWeight(0);
 		
 		// Proposed interactions that correspond to an identified action support this action.
-		for (IProposition p: propositions)
+		for (ActProposition p: propositions)
 			if (p.getAct().getPrimitive() != null)
 				p.getAct().getAction().addPropositionWeight(p.getWeight());	
 		

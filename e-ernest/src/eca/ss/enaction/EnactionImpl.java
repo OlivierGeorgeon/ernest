@@ -288,7 +288,7 @@ public class EnactionImpl implements Enaction
 		this.displacement = displacement;
 	}
 
-	public Displacement getTransformation() {
+	public Displacement getDisplacement() {
 		return this.displacement;
 	}
 

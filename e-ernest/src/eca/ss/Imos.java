@@ -7,8 +7,8 @@ import java.util.List;
 import tracing.ITracer;
 
 import eca.construct.ActionImpl;
-import eca.decider.IProposition;
-import eca.decider.Proposition;
+import eca.decider.ActProposition;
+import eca.decider.ActPropositionImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
@@ -137,7 +137,7 @@ public class Imos implements IImos
 				
 				ActionImpl.merge(enactedTopInteraction.getPrimitive().getAction(), intendedTopInteraction.getPrimitive().getAction());
 				//intendedTopInteraction.getPrimitive().getAction().setTransformation(enaction.getTransformation());
-				intendedTopInteraction.getPrimitive().setDisplacement(enaction.getTransformation());
+				intendedTopInteraction.getPrimitive().setDisplacement(enaction.getDisplacement());
 			}
 			
 			// learn from the  context and the enacted interaction
@@ -262,9 +262,9 @@ public class Imos implements IImos
 		return topEnactedInteraction;
 	}
 	
-	public ArrayList<IProposition> propose(Enaction enaction)
+	public ArrayList<ActProposition> propose(Enaction enaction)
 	{
-		ArrayList<IProposition> propositions = new ArrayList<IProposition>();
+		ArrayList<ActProposition> propositions = new ArrayList<ActProposition>();
 		
 		Object activationElmt = null;
 		if (m_tracer != null)
@@ -289,9 +289,9 @@ public class Imos implements IImos
 		return propositions;
 	}
 	
-	private void addProposition(ArrayList<IProposition> propositions, Act activatedAct)
+	private void addProposition(ArrayList<ActProposition> propositions, Act activatedAct)
 	{
-		IProposition proposition = propose(activatedAct);
+		ActProposition proposition = propose(activatedAct);
 		
 		if (proposition!=null)
 		{
@@ -300,22 +300,22 @@ public class Imos implements IImos
 				propositions.add(proposition);
 			else
 			{
-				IProposition previsousProposition = propositions.get(j);
+				ActProposition previsousProposition = propositions.get(j);
 				previsousProposition.addWeight(proposition.getWeight());
 			}
 		}
 	}
 	
-	private IProposition propose(Act activatedAct)
+	private ActProposition propose(Act activatedAct)
 	{
-		IProposition proposition = null;
+		ActProposition proposition = null;
 		Act proposedAct = activatedAct.getPostAct();
 		int w = activatedAct.getWeight() * proposedAct.getEnactionValue();
 		
 		if ((proposedAct.getWeight() > this.regularityThreshold ) &&						 
 				(proposedAct.getLength() <= this.maxSchemaLength ))
 		{
-			proposition = new Proposition(proposedAct, w);
+			proposition = new ActPropositionImpl(proposedAct, w);
 		}
 		// if the intended act has not passed the threshold then  
 		// the activation is propagated to the intended interaction's pre interaction
@@ -325,7 +325,7 @@ public class Imos implements IImos
 			{
 				// only if the intention's intention is positive (this is some form of positive anticipation)
 				if (proposedAct.getPostAct().getEnactionValue() > 0)
-					proposition = new Proposition(proposedAct.getPreAct(), w);
+					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w);
 			}
 		}
 		return proposition;

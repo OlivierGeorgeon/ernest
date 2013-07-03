@@ -14,6 +14,7 @@ import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
+import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.egomem.SpatialMemory;
@@ -143,13 +144,12 @@ public class SpasImpl implements Spas
 		return this.spacialMemory;
 	}
 
-	public Appearance predictAppearance(Action action){
+	public Appearance predictAppearance(Displacement displacement){
 		Appearance appearance = AppearanceImpl.createOrGet(PhenomenonTypeImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
 		if (this.spacialMemory.getPreviousPlace() != null){
 			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();
-			if (action.getPrimitives().get(0).getDisplacement() != null)
-				lastPlace.transform(action.getPrimitives().get(0).getDisplacement().getTransform3D()); // TODO manage simultaneously the displacement and the phenomenon instance
-//					.getTransformation().getTransform3D());
+			if (displacement != null)
+				lastPlace.transform(displacement.getTransform3D()); // TODO manage simultaneously the displacement and the phenomenon instance
 			appearance = AppearanceImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.createOrGet(lastPlace.getPosition()));
 		}
 		return appearance;

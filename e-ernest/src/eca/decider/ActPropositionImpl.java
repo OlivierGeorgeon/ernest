@@ -6,7 +6,7 @@ import eca.ss.enaction.Act;
  * A proposition that Ernest enacts an interaction. 
  * @author ogeorgeon
  */
-public class Proposition implements IProposition 
+public class ActPropositionImpl implements ActProposition 
 {
 	private Act act;
 	private int weight = 0; 
@@ -16,12 +16,12 @@ public class Proposition implements IProposition
 	 * @param a The proposed interaction.
 	 * @param w The proposal's weight.
 	 */
-	public Proposition(Act a, int w){
+	public ActPropositionImpl(Act a, int w){
 		act = a;
 		weight = w;
 	}
 
-	public int compareTo(IProposition o){
+	public int compareTo(ActProposition o){
 		return new Integer(o.getWeight()).compareTo(weight);
 	}
 
@@ -52,7 +52,7 @@ public class Proposition implements IProposition
 			ret = false;
 		else
 		{		
-			Proposition other = (Proposition)o;
+			ActPropositionImpl other = (ActPropositionImpl)o;
 			ret = other.act == act;
 		}
 		

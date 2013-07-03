@@ -6,6 +6,7 @@ import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.Appearance;
+import eca.construct.egomem.Displacement;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -55,7 +56,7 @@ public interface Spas
 	 * @param action The next action
 	 * @return The Phenomenon instance to which the next action will apply 
 	 */
-	public Appearance predictAppearance(Action action);
+	public Appearance predictAppearance(Displacement displacement);
 	
 	/**
 	 * @return The transformation of spatial memory to anim.
