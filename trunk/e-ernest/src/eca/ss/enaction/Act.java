@@ -5,7 +5,15 @@ import eca.construct.Action;
 import eca.construct.egomem.Area;
 
 /**
- * A sensorimotor pattern of interaction of Ernest with its environment 
+ * An Act is an Interaction with spatial information (Area) attached in order to characterize its enaction in space.
+ * An Act is enacted if it is afforded by the corresponding Area, 
+ *   meaning that there is an appearance of PhenomenonType that affords this Interaction in this Area.  
+ *   This appearance can be anticipated by simulating the displacement in spatial memory and checking for the existence of a PhenomenonType in the Area.
+ *
+ * A primitive Act is a Primitive interaction attached with an Area.
+ * A composite Act is a tuple of two acts (pre-act, post-act)
+ * ?? A composite Act that is enactable is a serial interaction attached with an area. ??
+ * ?? When the pre-act and post-act have the same Area then a serial interaction can be constructed as the series of their interactions  
  * @author Olivier
  */
 public interface Act 
@@ -113,6 +121,13 @@ public interface Act
 	 */
 	public Action getAction();
 	
+	/**
+	 * @param color The color used to display this act in sequential and spatial trace.
+	 */
 	public void setColor(int color);
+	
+	/**
+	 * @param The color used to display this act in sequential and spatial trace.
+	 */
 	public int getColor();
 }

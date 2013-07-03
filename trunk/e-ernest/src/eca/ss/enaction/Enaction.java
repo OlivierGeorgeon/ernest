@@ -24,6 +24,11 @@ public interface Enaction
 	 */
 	public void track(IEffect input);
 	
+	/**
+	 * Track the current enaction based on the list of places received from the environment
+	 * @param places The list of places received from the environment
+	 * @param transform The transformation sensed in the environment.
+	 */
 	public void track(List<Place> places, Transform3D transform);
 	
 	/**
@@ -34,7 +39,7 @@ public interface Enaction
 	/**
 	 * @return The transformation sensed during this primitive enaction.
 	 */
-	public Displacement getTransformation();
+	public Displacement getDisplacement();
 	
 	/**
 	 * @param act The last primitive intended interaction
@@ -167,5 +172,8 @@ public interface Enaction
 	 */
 	public void traceTerminate(ITracer tracer);
 	
+	/**
+	 * @return The list of places enacted during the last interaction cycle.
+	 */
 	public List<Place> getEnactedPlaces();
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import tracing.ITracer;
 
-import eca.decider.IProposition;
+import eca.decider.ActProposition;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -47,7 +47,7 @@ public interface IImos
 	 * @param enaction The previous enaction
 	 * @return The next list of propositions
 	 */
-	public ArrayList<IProposition> propose(Enaction enaction);
+	public ArrayList<ActProposition> propose(Enaction enaction);
 
 	/**
 	 * The counter of interaction cycles.
