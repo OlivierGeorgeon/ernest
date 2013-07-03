@@ -69,7 +69,7 @@ public class Decider implements IDecider
 				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
 			Object predictElmt = this.tracer.addEventElement("predict", true);
-			this.tracer.addSubelement(predictElmt, "phenomenon_type", appearance.getPhenomenon().getLabel());
+			this.tracer.addSubelement(predictElmt, "phenomenon_type", appearance.getPhenomenonType().getLabel());
 			this.tracer.addSubelement(predictElmt, "area", appearance.getArea().getLabel());
 		}
 		

@@ -58,7 +58,7 @@ public class AppearanceImpl implements Appearance {
 		//return this.aspect.getLabel() + this.area.getLabel();
 	}
 	
-	public PhenomenonType getPhenomenon(){
+	public PhenomenonType getPhenomenonType(){
 		return this.phenomenonType;
 	}
 	
