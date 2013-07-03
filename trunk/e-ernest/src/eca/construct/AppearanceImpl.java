@@ -10,18 +10,18 @@ public class AppearanceImpl implements Appearance {
 	private static Map<String , Appearance> OBSERVATIONS = new HashMap<String , Appearance>() ;
 	private static int index = 0;
 	private String label;
-	private Phenomenon phenomenon;
+	private PhenomenonType phenomenonType;
 	private Area area;
 	
 	/**
-	 * @param phenomenon The observation's aspect
+	 * @param phenomenonType The observation's aspect
 	 * @param area The observation's area
 	 * @return The new or old observation
 	 */
-	public static Appearance createOrGet(Phenomenon phenomenon, Area area){
-		String label = createKey(phenomenon, area);
+	public static Appearance createOrGet(PhenomenonType phenomenonType, Area area){
+		String label = createKey(phenomenonType, area);
 		if (!OBSERVATIONS.containsKey(label))
-			OBSERVATIONS.put(label, new AppearanceImpl(phenomenon, area));			
+			OBSERVATIONS.put(label, new AppearanceImpl(phenomenonType, area));			
 		return OBSERVATIONS.get(label);
 	}
 
@@ -31,8 +31,8 @@ public class AppearanceImpl implements Appearance {
 //		return OBSERVATIONS.get(label);
 //	}
 
-	private static String createKey(Phenomenon phenomenon, Area area) {
-		String key = phenomenon.getLabel() + area.getLabel();
+	private static String createKey(PhenomenonType phenomenonType, Area area) {
+		String key = phenomenonType.getLabel() + area.getLabel();
 		return key;
 	}
 	
@@ -47,9 +47,9 @@ public class AppearanceImpl implements Appearance {
 //		this.label = label;
 //	}	
 	
-	private AppearanceImpl(Phenomenon phenomenon, Area area){
-		this.label = phenomenon.getLabel() + area.getLabel();
-		this.phenomenon = phenomenon;
+	private AppearanceImpl(PhenomenonType phenomenonType, Area area){
+		this.label = phenomenonType.getLabel() + area.getLabel();
+		this.phenomenonType = phenomenonType;
 		this.area = area;
 	}	
 	
@@ -58,8 +58,8 @@ public class AppearanceImpl implements Appearance {
 		//return this.aspect.getLabel() + this.area.getLabel();
 	}
 	
-	public Phenomenon getPhenomenon(){
-		return this.phenomenon;
+	public PhenomenonType getPhenomenon(){
+		return this.phenomenonType;
 	}
 	
 	public Area getArea(){

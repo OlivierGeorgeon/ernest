@@ -3,7 +3,8 @@ package eca.construct;
 import eca.construct.egomem.Area;
 
 /**
- * An observation of a phenomenon in an area.
+ * An Appearance of a PhenomenonType in an Area.
+ * May also be called an Observation
  * @author Olivier
  */
 public interface Appearance {
@@ -16,7 +17,7 @@ public interface Appearance {
 	/**
 	 * @return The observation's phenomenon
 	 */
-	public Phenomenon getPhenomenon();	
+	public PhenomenonType getPhenomenon();	
 
 	/**
 	 * @return The Observation's area

@@ -5,7 +5,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import eca.Primitive;
-import eca.construct.Phenomenon;
+import eca.construct.PhenomenonType;
 import eca.construct.egomem.AreaImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
@@ -23,7 +23,7 @@ public class PlaceImpl implements Place
 	private int displayCode;
 	private int clock = 0;
 	
-	private Phenomenon phenomenonType = null;
+	private PhenomenonType phenomenonType = null;
 
 	/**
 	 * Create a new place 
@@ -181,11 +181,11 @@ public class PlaceImpl implements Place
 		return ret;		
 	}
 	
-	public Phenomenon getPhenomenonType(){
+	public PhenomenonType getPhenomenonType(){
 		return this.phenomenonType;
 	}
 	
-	public void setPhenomenonType(Phenomenon phenomenonType){
+	public void setPhenomenonType(PhenomenonType phenomenonType){
 		this.phenomenonType = phenomenonType;
 	}
 

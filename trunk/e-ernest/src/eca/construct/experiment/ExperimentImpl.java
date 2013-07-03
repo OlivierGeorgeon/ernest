@@ -24,7 +24,7 @@ public class ExperimentImpl implements Experiment {
 
 	/**
 	 * @param action The Action.
-	 * @param aspect The Phenomenon.
+	 * @param appearance The Appearance.
 	 * @return The new or old experiment.
 	 */
 	public static Experiment createOrGet(Action action, Appearance appearance){

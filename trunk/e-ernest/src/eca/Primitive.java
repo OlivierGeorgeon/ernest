@@ -1,7 +1,7 @@
 package eca;
 
 import eca.construct.Action;
-import eca.construct.Phenomenon;
+import eca.construct.PhenomenonType;
 import eca.construct.egomem.Displacement;
 
 /**
@@ -32,12 +32,12 @@ public interface Primitive
 	/**
 	 * @return The type of phenomenon observed by this primitive interaction.
 	 */
-	public Phenomenon getPhenomenonType();
+	public PhenomenonType getPhenomenonType();
 	
 	/**
-	 * @param phenomenon The type phenomenon observed by this primitive interaction.
+	 * @param phenomenonType The type phenomenon observed by this primitive interaction.
 	 */
-	public void setPhenomenonType(Phenomenon phenomenon);
+	public void setPhenomenonType(PhenomenonType phenomenonType);
 	
 	public void setDisplace(Displacement trans);
 	public Displacement getDisplace();

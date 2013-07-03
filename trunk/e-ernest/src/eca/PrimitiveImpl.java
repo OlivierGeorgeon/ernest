@@ -8,8 +8,8 @@ import javax.vecmath.Point3f;
 
 import eca.construct.Action;
 import eca.construct.ActionImpl;
-import eca.construct.Phenomenon;
-import eca.construct.PhenomenonImpl;
+import eca.construct.PhenomenonType;
+import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.ss.enaction.ActImpl;
@@ -25,7 +25,7 @@ public class PrimitiveImpl implements Primitive {
 	private String label = "";
 	private int value = 0;
 	private Action action = null; 
-	private Phenomenon phenomenon = null; 
+	private PhenomenonType phenomenonType = null; 
 	private Displacement displacement = null;
 
 	/**
@@ -60,8 +60,8 @@ public class PrimitiveImpl implements Primitive {
 		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet(new Point3f(1,0,0)));
 		this.action = ActionImpl.createNew();
 		this.action.addPrimitive(this);	
-		this.phenomenon = PhenomenonImpl.createNew();
-		this.phenomenon.addPrimitive(this);
+		this.phenomenonType = PhenomenonTypeImpl.createNew();
+		this.phenomenonType.addPrimitive(this);
 	}
 	
 	public String getLabel(){
@@ -99,13 +99,13 @@ public class PrimitiveImpl implements Primitive {
 		return this.label + "(" + this.value / 10 + ")";
 	}
 
-	public Phenomenon getPhenomenonType() {
-		return this.phenomenon;
+	public PhenomenonType getPhenomenonType() {
+		return this.phenomenonType;
 	}
 
-	public void setPhenomenonType(Phenomenon phenomenon) {
-		this.phenomenon = phenomenon;
-		phenomenon.addPrimitive(this);
+	public void setPhenomenonType(PhenomenonType phenomenonType) {
+		this.phenomenonType = phenomenonType;
+		phenomenonType.addPrimitive(this);
 	}
 
 	public Action getAction() {

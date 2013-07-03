@@ -12,9 +12,9 @@ import eca.Primitive;
  * An Aspect is the element of an observation that can be situated in space
  * @author Olivier
  */
-public class PhenomenonImpl implements Phenomenon {
+public class PhenomenonTypeImpl implements PhenomenonType {
 	
-	private static Map<String , Phenomenon> PHENOMENA = new HashMap<String , Phenomenon>() ;
+	private static Map<String , PhenomenonType> PHENOMENA = new HashMap<String , PhenomenonType>() ;
 	private static int index = 0;
 	
 	private String label;
@@ -23,7 +23,7 @@ public class PhenomenonImpl implements Phenomenon {
 	/**
 	 * @return The list of all types of phenomenon known by the agent thus far
 	 */
-	public static Collection<Phenomenon> getPhenomenonTypes() {
+	public static Collection<PhenomenonType> getPhenomenonTypes() {
 		return PHENOMENA.values();
 	}
 	
@@ -31,9 +31,9 @@ public class PhenomenonImpl implements Phenomenon {
 	 * @param label The aspect's label
 	 * @return The aspect
 	 */
-	public static Phenomenon createOrGet(String label){
+	public static PhenomenonType createOrGet(String label){
 		if (!PHENOMENA.containsKey(label))
-			PHENOMENA.put(label, new PhenomenonImpl(label));			
+			PHENOMENA.put(label, new PhenomenonTypeImpl(label));			
 		return PHENOMENA.get(label);
 	}
 	
@@ -41,9 +41,9 @@ public class PhenomenonImpl implements Phenomenon {
 	 * Creates a new aspect using an incremental label
 	 * @return The new created aspect
 	 */
-	public static Phenomenon createNew(){
+	public static PhenomenonType createNew(){
 		index++;
-		PHENOMENA.put(index + "", new PhenomenonImpl(index +""));			
+		PHENOMENA.put(index + "", new PhenomenonTypeImpl(index +""));			
 		return PHENOMENA.get(index + "");
 	}
 	
@@ -53,7 +53,7 @@ public class PhenomenonImpl implements Phenomenon {
 	 * @param enactedAspect The first action from which to merge (removed). 
 	 * @param previousAspect The second action to which to merge (kept).
 	 */
-	public static void merge(Phenomenon enactedAspect, Phenomenon previousAspect){
+	public static void merge(PhenomenonType enactedAspect, PhenomenonType previousAspect){
 		if (!enactedAspect.equals(previousAspect)){
 			for (Primitive act : enactedAspect.getPrimitives())
 				act.setPhenomenonType(previousAspect);
@@ -61,7 +61,7 @@ public class PhenomenonImpl implements Phenomenon {
 		}
 	}
 	
-	private PhenomenonImpl(String label){
+	private PhenomenonTypeImpl(String label){
 		this.label = label;
 	}
 
@@ -93,7 +93,7 @@ public class PhenomenonImpl implements Phenomenon {
 			ret = false;
 		else
 		{
-			Phenomenon other = (Phenomenon)o;
+			PhenomenonType other = (PhenomenonType)o;
 			ret = (other.getLabel().equals(this.label));
 		}
 		

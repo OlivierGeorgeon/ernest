@@ -9,8 +9,8 @@ import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.Appearance;
-import eca.construct.Phenomenon;
-import eca.construct.PhenomenonImpl;
+import eca.construct.PhenomenonType;
+import eca.construct.PhenomenonTypeImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.Spas;
@@ -62,8 +62,8 @@ public class Decider implements IDecider
 
 		if (this.tracer != null){
 			Object aspectElmt = this.tracer.addEventElement("aspects", true);
-			for (Phenomenon phenomenon : PhenomenonImpl.getPhenomenonTypes())
-				this.tracer.addSubelement(aspectElmt, "phenomenon", phenomenon.toString());
+			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
+				this.tracer.addSubelement(aspectElmt, "phenomenon", phenomenonType.toString());
 			Object experimentElmt = this.tracer.addEventElement("experiments", true);
 			for (Experiment a : ExperimentImpl.getExperiments())
 				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
