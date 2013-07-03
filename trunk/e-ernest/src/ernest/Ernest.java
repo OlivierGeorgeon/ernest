@@ -8,7 +8,7 @@ import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.decider.DeciderImpl;
-import eca.decider.IDecider;
+import eca.decider.Decider;
 import eca.spas.Spas;
 import eca.spas.Place;
 import eca.spas.SpasImpl;
@@ -44,7 +44,7 @@ public class Ernest implements IErnest
 	private ITracer m_tracer = null;
 	
 	/** Ernest's decisional Mechanism. */
-	private IDecider m_decider = new DeciderImpl(m_imos, m_spas); // Regular decider for Ernest 7.
+	private Decider m_decider = new DeciderImpl(m_imos, m_spas); // Regular decider for Ernest 7.
 	
 	/**
 	 * Set Ernest's fundamental learning parameters.
