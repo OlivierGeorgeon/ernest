@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-
 import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
+import eca.construct.Appearance;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
@@ -59,9 +59,11 @@ public class EnactionImpl implements Enaction
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
 
-	private Displacement displacement = null;//DisplaceImpl.UNKNOWN;
+	private Displacement displacement = null;
 	
-	private Place focusPlace = null;
+	private Appearance appearance = null;
+	
+	//private Place focusPlace = null;
 	
 	private List<Place> enactedPlaces = new ArrayList<Place>();
 	
@@ -284,7 +286,7 @@ public class EnactionImpl implements Enaction
 		}
 	}
 
-	public void setTransformation(Displacement displacement) {
+	public void setDisplacement(Displacement displacement) {
 		this.displacement = displacement;
 	}
 

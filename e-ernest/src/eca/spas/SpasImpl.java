@@ -63,16 +63,25 @@ public class SpasImpl implements Spas
 	{
 		Place enactedPlace = enaction.getEnactedPlaces().get(0);	
 		enactedPlace.normalize(3);
-				
+		
 		// Update spatial memory
 		
 		tick();
-		//this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation().getTransform3D());
-		this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement().getTransform3D());
+		Displacement displacement = enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement();
+		this.transform.set(displacement.getTransform3D());
 		this.spacialMemory.transform(this.transform);		
 		this.spacialMemory.forgetOldPlaces();
 		this.spacialMemory.addPlace(enactedPlace);
 
+		Appearance preAppearance = null;
+		Place previousPlace = spacialMemory.getPreviousPlace();
+		if (previousPlace != null){
+			//System.out.println("previous place " + previousPlace.getValue());
+			Area previousArea = AreaImpl.createOrGet(previousPlace.getPosition());
+			PhenomenonType previousPhenomenonType = previousPlace.getPhenomenonType();
+			preAppearance = AppearanceImpl.createOrGet(previousPhenomenonType, previousArea);
+		}
+		
 		// Merge phenomena
 		
 		Area area = enaction.getEnactedPrimitiveAct().getArea();
@@ -83,7 +92,7 @@ public class SpasImpl implements Spas
 				m_tracer.addEventElement("empty", newPhenomenonType.getLabel() + " merged to " + PhenomenonTypeImpl.EMPTY.getLabel());}
 		}
 		else{ 
-			Place previousPlace = spacialMemory.getPreviousPlace();
+//			Place previousPlace = spacialMemory.getPreviousPlace();
 			if (previousPlace != null){
 				System.out.println("previous place " + previousPlace.getValue());
 				Area previousArea = AreaImpl.createOrGet(previousPlace.getPosition());
@@ -101,11 +110,13 @@ public class SpasImpl implements Spas
 		}
 		
 		// Record the experiment
-		Appearance appearance = AppearanceImpl.createOrGet(newPhenomenonType, area);
-		Experiment newExp = ExperimentImpl.createOrGet(enaction.getEnactedPrimitiveAct().getPrimitive().getAction(), appearance);
-		newExp.addAct(enaction.getEnactedPrimitiveAct());
-
-		//if (m_tracer != null) this.simu.trace(m_tracer);
+		if (preAppearance != null){
+			Appearance postAppearance = AppearanceImpl.createOrGet(newPhenomenonType, area);
+			Experiment newExp = ExperimentImpl.createOrGet(preAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
+			newExp.incActCounter(enaction.getEnactedPrimitiveAct());
+			newExp.incDisplacementCounter(displacement);
+			newExp.incPostAppearanceCounter(postAppearance);
+		}
 	}
 
 	public int getValue(int i, int j)
@@ -158,6 +169,10 @@ public class SpasImpl implements Spas
 
 	public Transform3D getTransformToAnim() {
 		return this.transform;
+	}
+
+	public Appearance getLastAppearance() {
+		return this.spacialMemory.getLastAppearance();
 	}
 
 }

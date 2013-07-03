@@ -1,9 +1,9 @@
 package eca.construct;
 
 import java.util.List;
-
 import eca.Primitive;
 import eca.construct.egomem.Displacement;
+import eca.ss.enaction.Act;
 
 /**
  * An Action that can be performed in the external world.
@@ -18,41 +18,35 @@ public interface Action
 	public String getLabel();
 	
 	/**
+	 * @param primitive The primitive interaction to add to this action.
+	 */
+	public void addPrimitive(Primitive primitive);
+
+	/**
 	 * @return The list of primitive interactions that perform this action.
 	 */
 	public List<Primitive> getPrimitives();
 	
 	/**
-	 * @param displacement The displacement associated with this interaction.
+	 * Record the experiment of performing this action on this appearance.
+	 * @param appearance The appearance on which this action is performed.
+	 * @param act The act enacted during this experiment.
+	 * @param displacement The displacement enacted during this experiment.
 	 */
-	public void setDisplacement(Displacement displacement);
+	public void recordExperiment(Appearance appearance, Act act, Displacement displacement);
 	
 	/**
-	 * @return The displacement associated with this interaction.
+	 * @param appearance The appearance on which the action is performed.
+	 * @return The Act that will likely result from performing this action on this appearance.
 	 */
-	public Displacement getDisplacement();
+	public Act predictAct(Appearance appearance);
+	
+	/**
+	 * @param appearance The appearance on which the action is performed.
+	 * @return The Displacement that will likely result from performing this action on this appearance.
+	 */
+	public Displacement predictDisplacement(Appearance appearance);
 
-//	/**
-//	 * Provide the weight of this action for the decider to choose the most weighted action
-//	 * @return The weight of this action. 
-//	 */
-//	public int getPropositionWeight();
-//	
-//	/**
-//	 * Let the decider set the weight of this action on each decision cycle
-//	 * @param propositionWeight The weight of this action
-//	 */
-//	public void setPropositionWeight(int propositionWeight);
-//	
-//	/**
-//	 * Add additional weight to this action during the decision process.
-//	 * @param weight The additional weight to add to this action
-//	 */
-//	public void addPropositionWeight(int weight);
-//	
-	/**
-	 * @param primitive The primitive interaction to add to this action.
-	 */
-	public void addPrimitive(Primitive primitive);
-	
+	public Appearance predictPostAppearance(Appearance preAppearance);
+
 }

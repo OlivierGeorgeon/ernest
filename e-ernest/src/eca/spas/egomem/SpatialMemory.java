@@ -5,6 +5,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.Primitive;
+import eca.construct.Appearance;
 import eca.spas.Place;
 
 /**
@@ -69,4 +70,6 @@ public interface SpatialMemory
 	 * @return The place that was recorded during the last decision cycle.
 	 */
 	public Place getPreviousPlace();
+	
+	public Appearance getLastAppearance();
 }
