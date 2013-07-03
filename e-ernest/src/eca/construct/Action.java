@@ -6,7 +6,7 @@ import eca.Primitive;
 import eca.construct.egomem.Displacement;
 
 /**
- * An Action is intended to represent an action performed in the external world.
+ * An Action that can be performed in the external world.
  * An action conflates primitive interactions based on the fact that they are alternative to each other.
  * @author Olivier
  */

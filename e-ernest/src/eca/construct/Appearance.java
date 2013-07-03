@@ -4,7 +4,7 @@ import eca.construct.egomem.Area;
 
 /**
  * An Appearance of a PhenomenonType in an Area.
- * May also be called an Observation
+ * An Appearance may also be called an Observation
  * @author Olivier
  */
 public interface Appearance {
