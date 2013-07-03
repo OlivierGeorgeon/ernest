@@ -7,7 +7,7 @@ import javax.media.j3d.Transform3D;
 import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
-import eca.decider.Decider;
+import eca.decider.DeciderImpl;
 import eca.decider.IDecider;
 import eca.spas.Spas;
 import eca.spas.Place;
@@ -44,7 +44,7 @@ public class Ernest implements IErnest
 	private ITracer m_tracer = null;
 	
 	/** Ernest's decisional Mechanism. */
-	private IDecider m_decider = new Decider(m_imos, m_spas); // Regular decider for Ernest 7.
+	private IDecider m_decider = new DeciderImpl(m_imos, m_spas); // Regular decider for Ernest 7.
 	
 	/**
 	 * Set Ernest's fundamental learning parameters.

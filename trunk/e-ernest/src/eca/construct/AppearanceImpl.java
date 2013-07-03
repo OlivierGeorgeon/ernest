@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import eca.construct.egomem.Area;
 
+/**
+ * An Appearance is the observation of an instance of a phenomenonType in an area.
+ * An Appearance may also be called an Observation
+ * @author Olivier
+ */
 public class AppearanceImpl implements Appearance {
 	
 	private static Map<String , Appearance> OBSERVATIONS = new HashMap<String , Appearance>() ;
@@ -25,27 +30,10 @@ public class AppearanceImpl implements Appearance {
 		return OBSERVATIONS.get(label);
 	}
 
-//	public static Observation createOrGet(String label){
-//		if (!OBSERVATIONS.containsKey(label))
-//			OBSERVATIONS.put(label, new ObservationImpl(label));			
-//		return OBSERVATIONS.get(label);
-//	}
-
 	private static String createKey(PhenomenonType phenomenonType, Area area) {
 		String key = phenomenonType.getLabel() + area.getLabel();
 		return key;
 	}
-	
-//	public static Observation createNew(){
-//		index++;
-//		return createOrGet(index + "");
-//		OBSERVATIONS.put(index + "", new ObservationImpl(index +""));			
-//		return OBSERVATIONS.get(index + "");
-//	}
-	
-//	private ObservationImpl(String label){
-//		this.label = label;
-//	}	
 	
 	private AppearanceImpl(PhenomenonType phenomenonType, Area area){
 		this.label = phenomenonType.getLabel() + area.getLabel();

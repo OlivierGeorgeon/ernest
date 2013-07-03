@@ -6,7 +6,7 @@ import eca.Primitive;
 /**
  * A PhenomenonType is intended to represent a type of phenomenon that can be observed in the external world.
  * A PhenomenonType conflates primitive interactions based on the fact that their spatial location consistently overlaps.
- * May also be called a bundle.
+ * A PhenomenonType may also be called a Bundle.
  * @author Olivier
  */
 public interface PhenomenonType {
