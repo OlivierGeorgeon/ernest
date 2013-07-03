@@ -1,32 +1,33 @@
-package eca.ss;
+package eca.decider;
 
-import eca.ss.enaction.Act;
+import eca.construct.Action;
 
 /**
- * A proposition that Ernest enacts an interaction. 
+ * A proposition to perform an action. 
  * @author ogeorgeon
  */
-public class ActPropositionImpl implements ActProposition 
-{
-	private Act act;
+public class ActionPropositionImpl implements ActionProposition {
+
+	private Action action;
 	private int weight = 0; 
 	
 	/**
 	 * Constructor. 
-	 * @param a The proposed interaction.
+	 * @param a The proposed action.
 	 * @param w The proposal's weight.
 	 */
-	public ActPropositionImpl(Act a, int w){
-		act = a;
-		weight = w;
+	public ActionPropositionImpl(Action a, int w){
+		this.action = a;
+		this.weight = w;
 	}
 
-	public int compareTo(ActProposition o){
-		return new Integer(o.getWeight()).compareTo(weight);
+	public int compareTo(Object o){
+		ActionProposition a = (ActionProposition)o;
+		return new Integer(a.getWeight()).compareTo(weight);
 	}
 
-	public Act getAct(){
-		return act;
+	public Action getAction(){
+		return action;
 	}
 
 	public int getWeight(){
@@ -52,8 +53,8 @@ public class ActPropositionImpl implements ActProposition
 			ret = false;
 		else
 		{		
-			ActPropositionImpl other = (ActPropositionImpl)o;
-			ret = other.getAct() == this.act;
+			ActionPropositionImpl other = (ActionPropositionImpl)o;
+			ret = other.getAction() == this.action;
 		}
 		
 		return ret;
@@ -64,7 +65,6 @@ public class ActPropositionImpl implements ActProposition
 	 * @return A string that represents the proposition. 
 	 */
 	public String toString(){
-		return act + " with weight = " + weight/10;
+		return action + " with weight = " + weight/10;
 	}
-
 }

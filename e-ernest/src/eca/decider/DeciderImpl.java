@@ -53,8 +53,8 @@ public class DeciderImpl implements Decider
 
 		// Choose the next action
 		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
-		weightActions(actPropositions);
-		Action action = selectAction();
+		List<ActionProposition> actionPropositions = weightActions(actPropositions);
+		Action action = selectAction(actionPropositions);
 
 		// Predict the next appearance
 		Displacement displacement = action.getPrimitives().get(0).getDisplacement();			
@@ -88,50 +88,78 @@ public class DeciderImpl implements Decider
 	/**
 	 * Weight the actions according to the proposed interactions
 	 */
-	private void weightActions(ArrayList<ActProposition> propositions){
+	private List<ActionProposition> weightActions(List<ActProposition> actPropositions){
 		
-		// Reset the weight of actions.
-		for (Action m : ActionImpl.getACTIONS())
-			m.setPropositionWeight(0);
+		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		
-		// Proposed interactions that correspond to an identified action support this action.
-		for (ActProposition p: propositions)
-			if (p.getAct().getPrimitive() != null)
-				p.getAct().getAction().addPropositionWeight(p.getWeight());	
+		// All actions are proposed with a weight of 0 by default
+		for (Action a : ActionImpl.getACTIONS()){
+			ActionProposition actionProposition = new ActionPropositionImpl(a, 0);
+			actionPropositions.add(actionProposition);
+		}		
+		
+		for (ActProposition ap : actPropositions){
+			if (ap.getAct().getPrimitive() != null){
+				ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), ap.getWeight());
+				int j = actionPropositions.indexOf(actionProposition);
+				if (j == -1)
+					actionPropositions.add(actionProposition);
+				else
+				{
+					ActionProposition previsousProposition = actionPropositions.get(j);
+					previsousProposition.addWeight(actionProposition.getWeight());
+				}
+			}
+		}
+		
+		
+//		// Reset the weight of actions.
+//		for (Action m : ActionImpl.getACTIONS())
+//			m.setPropositionWeight(0);
+		
+//		// Proposed interactions that correspond to an identified action support this action.
+//		for (ActProposition p: propositions)
+//			if (p.getAct().getPrimitive() != null)
+//				p.getAct().getAction().addPropositionWeight(p.getWeight());	
 		
 		// trace weighted actions 
 		Object decisionElmt = null;
 		if (this.tracer != null){
 			decisionElmt = this.tracer.addEventElement("Actions", true);
-			for (Action a : ActionImpl.getACTIONS()){
+			for (ActionProposition a : actionPropositions){
 				String details = " ";
-				for (Primitive primitive : a.getPrimitives())
+				for (Primitive primitive : a.getAction().getPrimitives())
 					details += (" " + primitive.getLabel());
-				System.out.println("Propose action " + a.getLabel() + " with weight " + a.getPropositionWeight());
-				this.tracer.addSubelement(decisionElmt, "Action", a.getLabel() + " proposition weight " + a.getPropositionWeight() + " " + details);
+				System.out.println("Propose action " + a.getAction().getLabel() + " with weight " + a.getWeight());
+				this.tracer.addSubelement(decisionElmt, "Action", a.getAction().getLabel() + " proposition weight " + a.getWeight() + " " + details);
 			}
 		}
+		
+		return actionPropositions;
 	}
 	
 	/**
 	 * Select an interaction from the list of proposed interactions
 	 * @return The selected action.
 	 */
-	protected Action selectAction()
+	protected Action selectAction(List<ActionProposition> actionPropositions)
 	{
-		// Sort the propositions by weight.
-		// Oddly, i could not directly cast ACTIONS.values() to List<Action>
-		List<Action> actions = new ArrayList<Action>();
-		for (Action a : ActionImpl.getACTIONS())
-			actions.add(a);
-		Collections.sort(actions);
-
-		// Pick the most weighted action
-		Action selectedAction = actions.get(0);
+		Collections.sort(actionPropositions);
+		Action	selectedAction = actionPropositions.get(0).getAction();
+		
+//		// Sort the propositions by weight.
+//		// Oddly, i could not directly cast ACTIONS.values() to List<Action>
+//		List<Action> actions = new ArrayList<Action>();
+//		for (Action a : ActionImpl.getACTIONS())
+//			actions.add(a);
+//		Collections.sort(actions);
+//
+//		// Pick the most weighted action
+//		Action selectedAction = actions.get(0);
 		
 		System.out.println("Select:" + selectedAction.getLabel());
 
-		// Trace the selected interaction
+		// Trace the selected action
 		if (this.tracer != null){			
 			Object selectionElmt = this.tracer.addEventElement("selection", true);
 			this.tracer.addSubelement(selectionElmt, "selected_action", selectedAction.getLabel());

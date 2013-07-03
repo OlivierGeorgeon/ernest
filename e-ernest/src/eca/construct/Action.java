@@ -10,7 +10,7 @@ import eca.construct.egomem.Displacement;
  * An action conflates primitive interactions based on the fact that they are alternative to each other.
  * @author Olivier
  */
-public interface Action extends Comparable
+public interface Action
 {
 	/**
 	 * @return This action's label
@@ -32,24 +32,24 @@ public interface Action extends Comparable
 	 */
 	public Displacement getDisplacement();
 
-	/**
-	 * Provide the weight of this action for the decider to choose the most weighted action
-	 * @return The weight of this action. 
-	 */
-	public int getPropositionWeight();
-	
-	/**
-	 * Let the decider set the weight of this action on each decision cycle
-	 * @param propositionWeight The weight of this action
-	 */
-	public void setPropositionWeight(int propositionWeight);
-	
-	/**
-	 * Add additional weight to this action during the decision process.
-	 * @param weight The additional weight to add to this action
-	 */
-	public void addPropositionWeight(int weight);
-	
+//	/**
+//	 * Provide the weight of this action for the decider to choose the most weighted action
+//	 * @return The weight of this action. 
+//	 */
+//	public int getPropositionWeight();
+//	
+//	/**
+//	 * Let the decider set the weight of this action on each decision cycle
+//	 * @param propositionWeight The weight of this action
+//	 */
+//	public void setPropositionWeight(int propositionWeight);
+//	
+//	/**
+//	 * Add additional weight to this action during the decision process.
+//	 * @param weight The additional weight to add to this action
+//	 */
+//	public void addPropositionWeight(int weight);
+//	
 	/**
 	 * @param primitive The primitive interaction to add to this action.
 	 */

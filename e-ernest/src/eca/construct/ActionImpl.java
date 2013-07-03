@@ -93,27 +93,27 @@ public class ActionImpl implements Action {
 		this.displacement = displacement;
 	}
 
-	public int getPropositionWeight() {
-		return this.propositionWeight;
-	}
-
-	public void setPropositionWeight(int propositionWeight) {
-		this.propositionWeight = propositionWeight;
-	}
-
-	public void addPropositionWeight(int weight){
-		this.propositionWeight += weight;
-	}
-
-	/**
-	 * Actions are compared according to their proposition weight. 
-	 */
-	public int compareTo(Object action) 
-	{
-		Action a = (Action)action;
-		int c = - new Integer(this.propositionWeight).compareTo(new Integer(a.getPropositionWeight()));
-		return c; 
-	}
+//	public int getPropositionWeight() {
+//		return this.propositionWeight;
+//	}
+//
+//	public void setPropositionWeight(int propositionWeight) {
+//		this.propositionWeight = propositionWeight;
+//	}
+//
+//	public void addPropositionWeight(int weight){
+//		this.propositionWeight += weight;
+//	}
+//
+//	/**
+//	 * Actions are compared according to their proposition weight. 
+//	 */
+//	public int compareTo(Object action) 
+//	{
+//		Action a = (Action)action;
+//		int c = - new Integer(this.propositionWeight).compareTo(new Integer(a.getPropositionWeight()));
+//		return c; 
+//	}
 
 	/**
 	 * Actions are equal if they have the same label. 
