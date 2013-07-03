@@ -5,7 +5,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import eca.Primitive;
-import eca.construct.Phenomenon;
+import eca.construct.PhenomenonType;
 import eca.ss.enaction.Act;
 
 /**
@@ -101,9 +101,9 @@ public interface Place extends Cloneable
 	 */
 	public float getOrientationAngle();
 	
-	public Phenomenon getPhenomenonType();
+	public PhenomenonType getPhenomenonType();
 	
-	public void setPhenomenonType(Phenomenon phenomenonType);
+	public void setPhenomenonType(PhenomenonType phenomenonType);
 	
 	public void normalize(float scale);
 	

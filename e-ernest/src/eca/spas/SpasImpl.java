@@ -10,8 +10,8 @@ import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.Appearance;
 import eca.construct.AppearanceImpl;
-import eca.construct.Phenomenon;
-import eca.construct.PhenomenonImpl;
+import eca.construct.PhenomenonType;
+import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.experiment.Experiment;
@@ -75,11 +75,11 @@ public class SpasImpl implements Spas
 		// Merge phenomena
 		
 		Area area = enaction.getEnactedPrimitiveAct().getArea();
-		Phenomenon newPhenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
+		PhenomenonType newPhenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
 		if (area.getLabel().equals(AreaImpl.O) && enaction.getIntendedPrimitiveAct() != null){
-			PhenomenonImpl.merge(newPhenomenonType, PhenomenonImpl.EMPTY);
-			if (m_tracer != null && !newPhenomenonType.equals(PhenomenonImpl.EMPTY)){
-				m_tracer.addEventElement("empty", newPhenomenonType.getLabel() + " merged to " + PhenomenonImpl.EMPTY.getLabel());}
+			PhenomenonTypeImpl.merge(newPhenomenonType, PhenomenonTypeImpl.EMPTY);
+			if (m_tracer != null && !newPhenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
+				m_tracer.addEventElement("empty", newPhenomenonType.getLabel() + " merged to " + PhenomenonTypeImpl.EMPTY.getLabel());}
 		}
 		else{ 
 			Place previousPlace = spacialMemory.getPreviousPlace();
@@ -88,9 +88,9 @@ public class SpasImpl implements Spas
 				Area previousArea = AreaImpl.createOrGet(previousPlace.getPosition());
 				if (previousArea.equals(area)){
 					//Phenomenon previousPhenomenonType = previousPlace.getPrimitive().getPhenomenonType();
-					Phenomenon previousPhenomenonType = previousPlace.getPhenomenonType();
+					PhenomenonType previousPhenomenonType = previousPlace.getPhenomenonType();
 					if (!previousPhenomenonType.equals(newPhenomenonType)){
-						PhenomenonImpl.merge(newPhenomenonType, previousPhenomenonType);
+						PhenomenonTypeImpl.merge(newPhenomenonType, previousPhenomenonType);
 						enactedPlace.setPhenomenonType(previousPhenomenonType);
 						if (m_tracer != null){
 							m_tracer.addEventElement("phenomenon", newPhenomenonType.getLabel() + " merged to " + previousPhenomenonType.getLabel());}
@@ -144,7 +144,7 @@ public class SpasImpl implements Spas
 	}
 
 	public Appearance predictAppearance(Action action){
-		Appearance appearance = AppearanceImpl.createOrGet(PhenomenonImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
+		Appearance appearance = AppearanceImpl.createOrGet(PhenomenonTypeImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
 		if (this.spacialMemory.getPreviousPlace() != null){
 			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();
 			if (action.getPrimitives().get(0).getDisplace() != null)

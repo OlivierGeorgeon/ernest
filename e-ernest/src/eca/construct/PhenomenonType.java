@@ -7,10 +7,10 @@ import eca.Primitive;
  * A type of phenomenon.
  * @author Olivier
  */
-public interface Phenomenon {
+public interface PhenomenonType {
 	
 	/** Predefined phenomena */
-	public static Phenomenon EMPTY = PhenomenonImpl.createOrGet("_");
+	public static PhenomenonType EMPTY = PhenomenonTypeImpl.createOrGet("_");
 	
 	/**
 	 * @return This aspect's label.

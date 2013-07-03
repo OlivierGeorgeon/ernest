@@ -3,9 +3,9 @@ package eca.construct.experiment;
 import eca.ss.enaction.Act;
 
 /**
- * An experiment is an Action performed on a Phenomenon.
+ * An experiment is an Action performed on a Appearance.
  * Experiments record the resulting acts, 
- * so as to predict what act will result from an action performed an a phenomenon. 
+ * so as to predict what act will result from an Action performed on an Appearance. 
  * @author Olivier
  */
 public interface Experiment {
