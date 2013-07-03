@@ -10,8 +10,8 @@ import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
-import eca.construct.egomem.Displace;
-import eca.construct.egomem.DisplaceImpl;
+import eca.construct.egomem.Displacement;
+import eca.construct.egomem.DisplacementImpl;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 import ernest.IEffect;
@@ -59,7 +59,7 @@ public class EnactionImpl implements Enaction
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
 
-	private Displace displace = null;//DisplaceImpl.UNKNOWN;
+	private Displacement displacement = null;//DisplaceImpl.UNKNOWN;
 	
 	private Place focusPlace = null;
 	
@@ -242,7 +242,7 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "primitive_enacted_interaction", m_enactedPrimitiveAct.getPrimitive().getLabel());
 			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
-			tracer.addSubelement(e, "transformation", this.displace.getLabel());
+			tracer.addSubelement(e, "transformation", this.displacement.getLabel());
 		}
 	}
 
@@ -284,12 +284,12 @@ public class EnactionImpl implements Enaction
 		}
 	}
 
-	public void setTransformation(Displace displace) {
-		this.displace = displace;
+	public void setTransformation(Displacement displacement) {
+		this.displacement = displacement;
 	}
 
-	public Displace getTransformation() {
-		return this.displace;
+	public Displacement getTransformation() {
+		return this.displacement;
 	}
 
 	public void track(IEffect input) {
@@ -325,8 +325,8 @@ public class EnactionImpl implements Enaction
 			this.m_enactedPrimitiveAct = place.getAct();
 			this.m_enactedPrimitiveAct.setColor(place.getValue());
 		}
-		this.displace = DisplaceImpl.createOrGet(transform);
-		this.m_enactedPrimitiveAct.getPrimitive().setDisplace(this.displace);
+		this.displacement = DisplacementImpl.createOrGet(transform);
+		this.m_enactedPrimitiveAct.getPrimitive().setDisplace(this.displacement);
 		//this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.displace);
 	}
 	

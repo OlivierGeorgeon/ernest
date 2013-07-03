@@ -6,7 +6,7 @@ import javax.media.j3d.Transform3D;
  * A transformation in spatial memory
  * @author Olivier
  */
-public interface Displace {
+public interface Displacement {
 
 	/**
 	 * @return The transformation's label.

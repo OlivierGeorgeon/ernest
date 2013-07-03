@@ -9,9 +9,9 @@ import utils.ErnestUtils;
  * A transformation in spatial memory
  * @author Olivier
  */
-public class DisplaceImpl implements Displace {
+public class DisplacementImpl implements Displacement {
 
-	private static Map<String , Displace> TRANSFORMATIONS = new HashMap<String , Displace>() ;
+	private static Map<String , Displacement> TRANSFORMATIONS = new HashMap<String , Displacement>() ;
 
 	private String label;
 	private Transform3D transform3D = new Transform3D();
@@ -44,10 +44,10 @@ public class DisplaceImpl implements Displace {
 //		return transform;
 //	}
 	
-	public static Displace createOrGet(Transform3D t){
+	public static Displacement createOrGet(Transform3D t){
 		String label = createKey(t);
 		if (!TRANSFORMATIONS.containsKey(label))
-			TRANSFORMATIONS.put(label, new DisplaceImpl(t));			
+			TRANSFORMATIONS.put(label, new DisplacementImpl(t));			
 		return TRANSFORMATIONS.get(label);
 	}
 	
@@ -65,11 +65,11 @@ public class DisplaceImpl implements Displace {
 		return key;
 	}
 
-	private DisplaceImpl(String label){
+	private DisplacementImpl(String label){
 		this.label = label;
 	}
 	
-	private DisplaceImpl(Transform3D t){
+	private DisplacementImpl(Transform3D t){
 		this.label = createKey(t);
 		this.transform3D.set(t);
 	}
@@ -102,7 +102,7 @@ public class DisplaceImpl implements Displace {
 			ret = false;
 		else
 		{
-			Displace other = (Displace)o;
+			Displacement other = (Displacement)o;
 			//ret = (other.getTransform3D().epsilonEquals(transform3D, .1));
 			ret = (other.getLabel().equals(this.label));
 		}

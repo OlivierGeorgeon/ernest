@@ -54,9 +54,8 @@ public class Decider implements IDecider
 		weightActions(propositions);
 		Action action = selectAction();
 
-		// Predict the next observation
-		//Observation  observation = this.spas.predict(action).observe();
-		Appearance  appearance = this.spas.predictPhenomenonInst(action);
+		// Predict the next appearance
+		Appearance  appearance = this.spas.predictAppearance(action);
 		
 		// Construct the intended act
 		Act nextTopIntention = ActImpl.getAct(action, appearance);

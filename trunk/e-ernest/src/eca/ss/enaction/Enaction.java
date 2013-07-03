@@ -7,7 +7,7 @@ import javax.media.j3d.Transform3D;
 
 import tracing.ITracer;
 
-import eca.construct.egomem.Displace;
+import eca.construct.egomem.Displacement;
 import eca.spas.Place;
 import ernest.IEffect;
 
@@ -27,14 +27,14 @@ public interface Enaction
 	public void track(List<Place> places, Transform3D transform);
 	
 	/**
-	 * @param displace The transformation sensed during this primitive enaction.
+	 * @param displacement The transformation sensed during this primitive enaction.
 	 */
-	public void setTransformation(Displace displace);
+	public void setTransformation(Displacement displacement);
 	
 	/**
 	 * @return The transformation sensed during this primitive enaction.
 	 */
-	public Displace getTransformation();
+	public Displacement getTransformation();
 	
 	/**
 	 * @param act The last primitive intended interaction
