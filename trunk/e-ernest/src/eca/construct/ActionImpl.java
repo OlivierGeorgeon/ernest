@@ -7,9 +7,14 @@ import java.util.List;
 import java.util.Map;
 import eca.Primitive;
 import eca.construct.egomem.Displacement;
+import eca.construct.experiment.Experiment;
+import eca.construct.experiment.ExperimentImpl;
+import eca.ss.enaction.Act;
 
 /**
  * An Action that can be performed in the external world.
+ * An Action is intended to be performed on an Appearance
+ *   It maintains the list of appearance to which it applies and provides the expected Acts and Displacements. 
  * An action conflates primitive interactions based on the fact that they are alternative to each other.
  * @author Olivier
  */
@@ -19,10 +24,10 @@ public class ActionImpl implements Action {
 	private static int index = 0;
 
 	private String label;
-	private Displacement displacement;
-	private int propositionWeight;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
-	
+
+	private Map<Appearance , Displacement> experiences = new HashMap<Appearance , Displacement>() ;
+
 	/**
 	 * Create or get an action from its label.
 	 * @param label The action's label
@@ -62,8 +67,6 @@ public class ActionImpl implements Action {
 		if (!enactedAction.equals(intendedAction)){
 			for (Primitive primitive : enactedAction.getPrimitives())
 				primitive.setAction(intendedAction);
-//			if (!enactedAction.getTransformation().equals(DisplaceImpl.UNKNOWN))
-//				intendedAction.setTransformation(enactedAction.getTransformation());
 			ACTIONS.remove(enactedAction.getLabel());
 		}
 	}
@@ -85,36 +88,6 @@ public class ActionImpl implements Action {
 		return this.primitives;
 	}
 	
-	public Displacement getDisplacement() {
-		return displacement;
-	}
-
-	public void setDisplacement(Displacement displacement) {
-		this.displacement = displacement;
-	}
-
-//	public int getPropositionWeight() {
-//		return this.propositionWeight;
-//	}
-//
-//	public void setPropositionWeight(int propositionWeight) {
-//		this.propositionWeight = propositionWeight;
-//	}
-//
-//	public void addPropositionWeight(int weight){
-//		this.propositionWeight += weight;
-//	}
-//
-//	/**
-//	 * Actions are compared according to their proposition weight. 
-//	 */
-//	public int compareTo(Object action) 
-//	{
-//		Action a = (Action)action;
-//		int c = - new Integer(this.propositionWeight).compareTo(new Integer(a.getPropositionWeight()));
-//		return c; 
-//	}
-
 	/**
 	 * Actions are equal if they have the same label. 
 	 */
@@ -134,5 +107,23 @@ public class ActionImpl implements Action {
 			ret = (other.getLabel().equals(this.label));
 		}
 		return ret;
+	}
+
+	public Act predictAct(Appearance appearance) {
+		return ExperimentImpl.createOrGet(appearance, this).predictAct();
+	}
+
+	public Displacement predictDisplacement(Appearance appearance) {
+		return ExperimentImpl.createOrGet(appearance, this).predictDisplacement();
+	}
+
+	public Appearance predictPostAppearance(Appearance preAppearance) {
+		return ExperimentImpl.createOrGet(preAppearance, this).predictPostAppearance();
+	}
+
+	public void recordExperiment(Appearance appearance, Act act, Displacement displacement) {
+		Experiment ex = ExperimentImpl.createOrGet(appearance, this);
+		ex.incActCounter(act);
+		ex.incDisplacementCounter(displacement);
 	}
 }

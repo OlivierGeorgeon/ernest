@@ -62,4 +62,7 @@ public interface Spas
 	 * @return The transformation of spatial memory to anim.
 	 */
 	public Transform3D getTransformToAnim();
+	
+	public Appearance getLastAppearance();
+
 }

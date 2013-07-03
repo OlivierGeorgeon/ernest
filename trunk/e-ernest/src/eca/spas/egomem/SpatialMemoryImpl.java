@@ -7,6 +7,11 @@ import javax.vecmath.Point3f;
 import tracing.ITracer;
 import utils.ErnestUtils;
 import eca.Primitive;
+import eca.construct.Appearance;
+import eca.construct.AppearanceImpl;
+import eca.construct.PhenomenonType;
+import eca.construct.egomem.Area;
+import eca.construct.egomem.AreaImpl;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 import ernest.Ernest;
@@ -176,6 +181,22 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 			if (p.getClock() == 1)
 				place = p;
 		return place;
+	}
+
+	public Appearance getLastAppearance() {
+		Appearance appearance = null;
+		Place place = null;
+		for (Place p : this.m_places)
+			if (p.getClock() == 0)
+				place = p;
+		
+		if (place != null){
+			Area previousArea = AreaImpl.createOrGet(place.getPosition());
+			PhenomenonType previousPhenomenonType = place.getPhenomenonType();
+			appearance = AppearanceImpl.createOrGet(previousPhenomenonType, previousArea);
+		}
+
+		return appearance;
 	}
 
 }

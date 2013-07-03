@@ -1,5 +1,7 @@
 package eca.construct.experiment;
 
+import eca.construct.Appearance;
+import eca.construct.egomem.Displacement;
 import eca.ss.enaction.Act;
 
 /**
@@ -18,11 +20,25 @@ public interface Experiment {
 	/**
 	 * @param act the act to add to this experiment 
 	 */
-	public void addAct(Act act);
+	public void incActCounter(Act act);
 	
+	/**
+	 * @param displacement The displacement to record to this experiment
+	 */
+	public void incDisplacementCounter(Displacement displacement);
+	
+	public void incPostAppearanceCounter(Appearance appearance);
+
 	/**
 	 * @return The act most probably resulting from this experiment.
 	 */
 	public Act predictAct();
+
+	/**
+	 * @return The displacement most probably resulting from this experiment
+	 */
+	public Displacement predictDisplacement();
+	
+	public Appearance predictPostAppearance();
 
 }

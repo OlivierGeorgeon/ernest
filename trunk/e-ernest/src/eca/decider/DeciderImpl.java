@@ -57,11 +57,14 @@ public class DeciderImpl implements Decider
 		Action action = selectAction(actionPropositions);
 
 		// Predict the next appearance
-		Displacement displacement = action.getPrimitives().get(0).getDisplacement();			
-		Appearance  appearance = this.spas.predictAppearance(displacement);
+		//Displacement displacement = action.getPrimitives().get(0).getDisplacement();			
+		//Appearance  appearance = this.spas.predictAppearance(displacement);
+		
+		Appearance preAppearance = this.spas.getLastAppearance();
+		Appearance postAppearance = action.predictPostAppearance(preAppearance); 
 		
 		// Construct the intended act
-		Act nextTopIntention = ActImpl.getAct(action, appearance);
+		Act nextTopIntention = ActImpl.getAct(action, postAppearance);
 
 		if (this.tracer != null){
 			Object aspectElmt = this.tracer.addEventElement("aspects", true);
@@ -72,8 +75,8 @@ public class DeciderImpl implements Decider
 				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
 			Object predictElmt = this.tracer.addEventElement("predict", true);
-			this.tracer.addSubelement(predictElmt, "phenomenon_type", appearance.getPhenomenonType().getLabel());
-			this.tracer.addSubelement(predictElmt, "area", appearance.getArea().getLabel());
+			this.tracer.addSubelement(predictElmt, "phenomenon_type", postAppearance.getPhenomenonType().getLabel());
+			this.tracer.addSubelement(predictElmt, "area", postAppearance.getArea().getLabel());
 		}
 		
 		System.out.println("Act " + nextTopIntention.getLabel());
