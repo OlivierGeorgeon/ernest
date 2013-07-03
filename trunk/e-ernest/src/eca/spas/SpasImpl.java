@@ -67,7 +67,7 @@ public class SpasImpl implements Spas
 		
 		tick();
 		//this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getAction().getTransformation().getTransform3D());
-		this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getDisplace().getTransform3D());
+		this.transform.set(enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement().getTransform3D());
 		this.spacialMemory.transform(this.transform);		
 		this.spacialMemory.forgetOldPlaces();
 		this.spacialMemory.addPlace(enactedPlace);
@@ -147,8 +147,8 @@ public class SpasImpl implements Spas
 		Appearance appearance = AppearanceImpl.createOrGet(PhenomenonTypeImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
 		if (this.spacialMemory.getPreviousPlace() != null){
 			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();
-			if (action.getPrimitives().get(0).getDisplace() != null)
-				lastPlace.transform(action.getPrimitives().get(0).getDisplace().getTransform3D()); // TODO manage simultaneously the displacement and the phenomenon instance
+			if (action.getPrimitives().get(0).getDisplacement() != null)
+				lastPlace.transform(action.getPrimitives().get(0).getDisplacement().getTransform3D()); // TODO manage simultaneously the displacement and the phenomenon instance
 //					.getTransformation().getTransform3D());
 			appearance = AppearanceImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.createOrGet(lastPlace.getPosition()));
 		}

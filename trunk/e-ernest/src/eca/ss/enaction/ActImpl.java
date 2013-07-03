@@ -92,7 +92,7 @@ public class ActImpl implements Act
 		if (act == null){
 			Primitive interaction = action.getPrimitives().get(0);
 			for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
-				if (i.getAction().equals(action) && i.getPhenomenonType().equals(appearance.getPhenomenon()))
+				if (i.getAction().equals(action) && i.getPhenomenonType().equals(appearance.getPhenomenonType()))
 					interaction = i;
 			}
 			act = createOrGetPrimitiveAct(interaction, appearance.getArea());

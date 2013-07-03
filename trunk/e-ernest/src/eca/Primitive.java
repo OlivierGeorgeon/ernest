@@ -30,15 +30,22 @@ public interface Primitive
 	public void setAction(Action action);
 	
 	/**
-	 * @return The type of phenomenon observed by this primitive interaction.
+	 * @return The type of phenomenon observed through this primitive interaction.
 	 */
 	public PhenomenonType getPhenomenonType();
 	
 	/**
-	 * @param phenomenonType The type phenomenon observed by this primitive interaction.
+	 * @param phenomenonType The type of phenomenon observed through this primitive interaction.
 	 */
 	public void setPhenomenonType(PhenomenonType phenomenonType);
 	
-	public void setDisplace(Displacement trans);
-	public Displacement getDisplace();
+	/**
+	 * @param displacement The displacement associated with this interaction.
+	 */
+	public void setDisplacement(Displacement displacement);
+	
+	/**
+	 * @return The displacement associated with this interaction.
+	 */
+	public Displacement getDisplacement();
 }

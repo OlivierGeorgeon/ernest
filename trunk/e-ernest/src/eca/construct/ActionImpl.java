@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import eca.Primitive;
+import eca.construct.egomem.Displacement;
 
 /**
- * An action that may be performed by interactions.
+ * An Action is intended to represent an action performed in the external world.
+ * An action conflates primitive interactions based on the fact that they are alternative to each other.
  * @author Olivier
  */
 public class ActionImpl implements Action {
@@ -17,6 +19,7 @@ public class ActionImpl implements Action {
 	private static int index = 0;
 
 	private String label;
+	private Displacement displacement;
 	private int propositionWeight;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
 	
@@ -82,6 +85,14 @@ public class ActionImpl implements Action {
 		return this.primitives;
 	}
 	
+	public Displacement getDisplacement() {
+		return displacement;
+	}
+
+	public void setDisplacement(Displacement displacement) {
+		this.displacement = displacement;
+	}
+
 	public int getPropositionWeight() {
 		return this.propositionWeight;
 	}

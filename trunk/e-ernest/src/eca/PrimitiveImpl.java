@@ -117,11 +117,11 @@ public class PrimitiveImpl implements Primitive {
 		action.addPrimitive(this);
 	}
 
-	public Displacement getDisplace() {
+	public Displacement getDisplacement() {
 		return displacement;
 	}
 
-	public void setDisplace(Displacement displacement) {
+	public void setDisplacement(Displacement displacement) {
 		this.displacement = displacement;
 	}
 	

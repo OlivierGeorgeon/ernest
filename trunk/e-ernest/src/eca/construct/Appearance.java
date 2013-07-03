@@ -17,7 +17,7 @@ public interface Appearance {
 	/**
 	 * @return The observation's phenomenon
 	 */
-	public PhenomenonType getPhenomenon();	
+	public PhenomenonType getPhenomenonType();	
 
 	/**
 	 * @return The Observation's area

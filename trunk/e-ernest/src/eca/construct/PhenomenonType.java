@@ -4,7 +4,9 @@ import java.util.List;
 import eca.Primitive;
 
 /**
- * A type of phenomenon.
+ * A PhenomenonType is intended to represent a type of phenomenon that can be observed in the external world.
+ * A PhenomenonType conflates primitive interactions based on the fact that their spatial location consistently overlaps.
+ * May also be called a bundle.
  * @author Olivier
  */
 public interface PhenomenonType {

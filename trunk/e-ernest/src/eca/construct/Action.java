@@ -6,7 +6,8 @@ import eca.Primitive;
 import eca.construct.egomem.Displacement;
 
 /**
- * An action that may be performed by interactions.
+ * An Action is intended to represent an action performed in the external world.
+ * An action conflates primitive interactions based on the fact that they are alternative to each other.
  * @author Olivier
  */
 public interface Action extends Comparable
@@ -16,6 +17,21 @@ public interface Action extends Comparable
 	 */
 	public String getLabel();
 	
+	/**
+	 * @return The list of primitive interactions that perform this action.
+	 */
+	public List<Primitive> getPrimitives();
+	
+	/**
+	 * @param displacement The displacement associated with this interaction.
+	 */
+	public void setDisplacement(Displacement displacement);
+	
+	/**
+	 * @return The displacement associated with this interaction.
+	 */
+	public Displacement getDisplacement();
+
 	/**
 	 * Provide the weight of this action for the decider to choose the most weighted action
 	 * @return The weight of this action. 
@@ -39,9 +55,4 @@ public interface Action extends Comparable
 	 */
 	public void addPrimitive(Primitive primitive);
 	
-	/**
-	 * @return The list of primitive interactions that perform this action.
-	 */
-	public List<Primitive> getPrimitives();
-
 }
