@@ -15,6 +15,7 @@ import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.Spas;
+import eca.ss.ActProposition;
 import eca.ss.IImos;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
@@ -51,8 +52,8 @@ public class DeciderImpl implements Decider
 		System.out.println("New decision ================ ");
 
 		// Choose the next action
-		ArrayList<ActProposition> propositions = this.imos.propose(enaction);	
-		weightActions(propositions);
+		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
+		weightActions(actPropositions);
 		Action action = selectAction();
 
 		// Predict the next appearance

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import tracing.ITracer;
 
-import eca.decider.ActProposition;
 import eca.ss.enaction.Enaction;
 
 /**

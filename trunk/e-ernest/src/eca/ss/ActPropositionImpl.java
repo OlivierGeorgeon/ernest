@@ -1,4 +1,4 @@
-package eca.decider;
+package eca.ss;
 
 import eca.ss.enaction.Act;
 
