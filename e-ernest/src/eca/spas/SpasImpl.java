@@ -143,7 +143,7 @@ public class SpasImpl implements Spas
 		return this.spacialMemory;
 	}
 
-	public Appearance predictPhenomenonInst(Action action){
+	public Appearance predictAppearance(Action action){
 		Appearance appearance = AppearanceImpl.createOrGet(PhenomenonImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
 		if (this.spacialMemory.getPreviousPlace() != null){
 			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();

@@ -3,7 +3,7 @@ package eca.construct;
 import java.util.List;
 
 import eca.Primitive;
-import eca.construct.egomem.Displace;
+import eca.construct.egomem.Displacement;
 
 /**
  * An action that may be performed by interactions.
