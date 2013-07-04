@@ -3,14 +3,9 @@ package eca.ss.enaction;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import eca.Primitive;
-import eca.PrimitiveImpl;
 import eca.construct.Action;
-import eca.construct.Appearance;
 import eca.construct.egomem.Area;
-import eca.construct.experiment.Experiment;
-import eca.construct.experiment.ExperimentImpl;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -84,22 +79,23 @@ public class ActImpl implements Act
 		return key;
 	}
 	
-	public static Act getAct(Action action, Appearance appearance){
-		
-		Experiment exp = ExperimentImpl.createOrGet(appearance, action);
-		Act act = exp.predictAct();
-		
-		if (act == null){
-			Primitive interaction = action.getPrimitives().get(0);
-			for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
-				if (i.getAction().equals(action) && i.getPhenomenonType().equals(appearance.getPhenomenonType()))
-					interaction = i;
-			}
-			act = createOrGetPrimitiveAct(interaction, appearance.getArea());
-		}
+//	public static Act getAct(Action action, Appearance appearance){
+//		
+//		Experiment exp = ExperimentImpl.createOrGet(appearance, action);
+//		Act act = exp.predictAct();
+//		
+//		if (act == null){
+//			Primitive interaction = action.getPrimitives().get(0);
+//			for (Primitive i : PrimitiveImpl.getINTERACTIONS()){
+//				if (i.getAction().equals(action) && i.getPhenomenonType().equals(appearance.getPhenomenonType()))
+//					interaction = i;
+//			}
+//			act = createOrGetPrimitiveAct(interaction, appearance.getArea());
+//		}
+//
+//		return act;
+//	}
 
-		return act;
-	}
 	private ActImpl(String label, boolean primitive, Act preInteraction, Act postInteraction, int value, Primitive interaction, Area area)
 	{
 		this.label = label;

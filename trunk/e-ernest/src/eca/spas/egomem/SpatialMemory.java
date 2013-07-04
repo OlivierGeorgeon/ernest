@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import eca.Primitive;
-import eca.construct.Appearance;
 import eca.spas.Place;
 
 /**
@@ -21,11 +19,8 @@ public interface SpatialMemory
 	
 	/**
 	 * Add a place in this spatial memory
-	 * @param primitive The interaction to be placed in spatial memory.
-	 * @param position This place's position
-	 * @return The created place
+	 * @param place The place to add in spatial memory.
 	 */
-	//public Place addPlace(Primitive primitive, Point3f position);
 	public void addPlace(Place place);
 
 	/**
@@ -44,17 +39,6 @@ public interface SpatialMemory
 	public void forgetOldPlaces();
 
 	/**
-	 * @return The list of places in this spatial memory
-	 */
-	public ArrayList<Place> getPlaceList();
- 	
-	/**
-	 * Set the list of places 
-	 * @param places The list of places
-	 */
-	public void setPlaceList(ArrayList<Place> places);
-
-	/**
 	 * @param position The position.
 	 * @return The value of a place for display.
 	 */
@@ -67,9 +51,15 @@ public interface SpatialMemory
 	public void trace(ITracer tracer);
 
 	/**
-	 * @return The last appearance in spatial memory.
+	 * @return The list of places in this spatial memory
 	 */
-	public Appearance getLastAppearance();
-	//public Place getPreviousPlace();
+	//public ArrayList<Place> getPlaceList();
+ 	
+	/**
+	 * Set the list of places 
+	 * @param places The list of places
+	 */
+	//public void setPlaceList(ArrayList<Place> places);
+
 	
 }

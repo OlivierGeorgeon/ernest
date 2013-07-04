@@ -4,14 +4,8 @@ package eca.construct.experiment;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.vecmath.Point3f;
-
 import eca.construct.Action;
 import eca.construct.Appearance;
-import eca.construct.AppearanceImpl;
-import eca.construct.PhenomenonTypeImpl;
-import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.ss.enaction.Act;
 
@@ -78,18 +72,6 @@ public class ExperimentImpl implements Experiment {
 			postAppearances.put(appearance, 1);
 	}
 
-	public Act predictAct() {
-		int max = 0;
-		Act predictAct = null;
-		for (Map.Entry<Act, Integer> entry : acts.entrySet())
-			if (entry.getValue() > max){
-				predictAct = entry.getKey();
-				max = entry.getValue();
-			}
-		
-		return predictAct;
-	}
-	
 	/**
 	 * Experiments are equal if they have the same label. 
 	 */
@@ -128,6 +110,18 @@ public class ExperimentImpl implements Experiment {
 		return EXPERIMENTS.values();
 	}
 
+	public Act predictAct() {
+		int max = -1;
+		Act predictAct = null;
+		for (Map.Entry<Act, Integer> entry : acts.entrySet())
+			if (entry.getValue() > max){
+				predictAct = entry.getKey();
+				max = entry.getValue();
+			}
+		
+		return predictAct;
+	}
+	
 	public Displacement predictDisplacement() {
 		int max = 0;
 		Displacement predictDisplacement = null;
@@ -136,19 +130,17 @@ public class ExperimentImpl implements Experiment {
 				predictDisplacement = entry.getKey();
 				max = entry.getValue();
 			}
-		
 		return predictDisplacement;
 	}
 
 	public Appearance predictPostAppearance() {
 		int max = 0;
-		Appearance predictPostAppearance = AppearanceImpl.createOrGet(PhenomenonTypeImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
+		Appearance predictPostAppearance = null;
 		for (Map.Entry<Appearance, Integer> entry : postAppearances.entrySet())
 			if (entry.getValue() > max){
 				predictPostAppearance = entry.getKey();
 				max = entry.getValue();
-			}
-		
+			}		
 		return predictPostAppearance;
 	}
 

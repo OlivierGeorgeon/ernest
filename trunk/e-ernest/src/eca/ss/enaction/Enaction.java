@@ -75,7 +75,7 @@ public interface Enaction
 	/**
 	 * @param act The composite interaction to be enacted
 	 */
-	public void setTopInteraction(Act act);
+	public void setTopIntendedAct(Act act);
 	
 	/**
 	 * @return The composite interaction to be enacted

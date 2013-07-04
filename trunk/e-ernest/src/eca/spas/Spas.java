@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import eca.construct.Action;
-import eca.construct.Appearance;
-import eca.construct.egomem.Displacement;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -29,6 +26,22 @@ public interface Spas
 	public void track(Enaction enaction);
 
 	/**
+	 * @return The list of places in Ernest's local space memory.
+	 */
+	public ArrayList<Place> getPlaceList();
+	
+	/**
+	 * @return The transformation of spatial memory to anim.
+	 */
+	public Transform3D getTransformToAnim();
+	
+	/**
+	 * @param position The position.
+	 * @return The value to display at this position
+	 */
+	public int getValue(Point3f position);
+	
+	/**
 	 * Provide a rgb code to display the local space map in the environment.
 	 * @param i x coordinate.
 	 * @param j y coordinate.
@@ -36,33 +49,6 @@ public interface Spas
 	 */
 	public int getValue(int i, int j);
 	
-	/**
-	 * @return The list of places in Ernest's local space memory.
-	 */
-	public ArrayList<Place> getPlaceList();
-	
-	/**
-	 * Tick the clock of spatial memory
-	 */
-	public void tick();
-	
-	/**
-	 * @param position
-	 * @return The value to display at this position
-	 */
-	public int getValue(Point3f position);
-	
-	/**
-	 * @param action The next action
-	 * @return The Phenomenon instance to which the next action will apply 
-	 */
-	//public Appearance predictAppearance(Displacement displacement);
-	
-	/**
-	 * @return The transformation of spatial memory to anim.
-	 */
-	public Transform3D getTransformToAnim();
-	
-	public Appearance getLastAppearance();
+	//public Appearance getLastAppearance();
 
 }

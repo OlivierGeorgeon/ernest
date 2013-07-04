@@ -8,7 +8,6 @@ import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.Appearance;
-import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
@@ -63,8 +62,6 @@ public class EnactionImpl implements Enaction
 	
 	private Appearance appearance = null;
 	
-	//private Place focusPlace = null;
-	
 	private List<Place> enactedPlaces = new ArrayList<Place>();
 	
 	public void setIntendedPrimitiveAct(Act act) 
@@ -77,7 +74,7 @@ public class EnactionImpl implements Enaction
 		return m_intendedPrimitiveAct;
 	}
 
-	public void setTopInteraction(Act act) 
+	public void setTopIntendedAct(Act act) 
 	{
 		m_topAct = act;
 	}
@@ -311,17 +308,13 @@ public class EnactionImpl implements Enaction
 		List<Place> places =  new ArrayList<Place>(1);
 		places.add(enactedPlace);
 		track(places, t);
-
-//		this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(p, a);
-//		this.transformation = TransformationImpl.transformation(t);
-//		this.m_enactedPrimitiveAct.setColor(input.getColor());
 	}	
 	
 	public void track(List<Place> places, Transform3D transform){
 		
 		this.enactedPlaces = places;
 		
-		this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">_"), AreaImpl.createOrGet(new Point3f()));
+		//this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">_"), AreaImpl.createOrGet(new Point3f()));
 
 		for (Place place : places){
 			this.m_enactedPrimitiveAct = place.getAct();
@@ -329,7 +322,6 @@ public class EnactionImpl implements Enaction
 		}
 		this.displacement = DisplacementImpl.createOrGet(transform);
 		this.m_enactedPrimitiveAct.getPrimitive().setDisplacement(this.displacement);
-		//this.m_enactedPrimitiveAct.getPrimitive().getAction().setTransformation(this.displace);
 	}
 	
 	public List<Place> getEnactedPlaces(){
