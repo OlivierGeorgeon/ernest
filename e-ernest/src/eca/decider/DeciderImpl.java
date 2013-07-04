@@ -56,7 +56,7 @@ public class DeciderImpl implements Decider
 		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
 		List<ActionProposition> actionPropositions = proposeActions(actPropositions, preAppearance);
 		
-		Collections.sort(actionPropositions, new ActionSSWeightComparator() );
+		Collections.sort(actionPropositions, new ActionSSWeightComparator(ActionSSWeightComparator.SS) ); // or SPAS
 		//Collections.sort(actionPropositions, new ActionSpasWeightComparator() );
 
 		Action	selectedAction = actionPropositions.get(0).getAction();
