@@ -9,37 +9,39 @@ import eca.construct.Action;
 public class ActionPropositionImpl implements ActionProposition {
 
 	private Action action;
-	private int weight = 0; 
+	private int ssWeight = 0; 
+	private int spasWeight = 0;
 	
 	/**
 	 * Constructor. 
 	 * @param a The proposed action.
-	 * @param w The proposal's weight.
+	 * @param ssWeight The weight proposed by the ss.
+	 * @param spasWeight The weight proposed by Spas.
 	 */
-	public ActionPropositionImpl(Action a, int w){
+	public ActionPropositionImpl(Action a, int ssWeight, int spasWeight){
 		this.action = a;
-		this.weight = w;
+		this.ssWeight = ssWeight;
+		this.spasWeight = spasWeight;
 	}
 
-	public int compareTo(Object o){
-		ActionProposition a = (ActionProposition)o;
-		return new Integer(a.getWeight()).compareTo(weight);
+	public int compareTo(ActionProposition a){
+		return new Integer(a.getSSWeight()).compareTo(ssWeight);
 	}
 
 	public Action getAction(){
 		return action;
 	}
 
-	public int getWeight(){
-		return weight;
+	public int getSSWeight(){
+		return ssWeight;
 	}
 	
-	public void addWeight(int w){
-		weight += w;
+	public void addSSWeight(int w){
+		ssWeight += w;
 	}
 
 	/**
-	 * Two propositions are equal if they propose the same interaction. 
+	 * Two propositions are equal if they propose the same action. 
 	 */
 	public boolean equals(Object o)
 	{
@@ -65,6 +67,14 @@ public class ActionPropositionImpl implements ActionProposition {
 	 * @return A string that represents the proposition. 
 	 */
 	public String toString(){
-		return action + " with weight = " + weight/10;
+		return action + " with weight = " + ssWeight/10;
+	}
+
+	public int getSpasWeight() {
+		return this.spasWeight;
+	}
+
+	public void addSpasWeight(int spasWeight) {
+		this.spasWeight = spasWeight;
 	}
 }
