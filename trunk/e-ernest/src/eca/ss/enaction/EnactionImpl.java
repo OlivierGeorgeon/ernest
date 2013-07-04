@@ -8,7 +8,6 @@ import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.Appearance;
-import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 import eca.spas.Place;

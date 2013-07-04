@@ -7,6 +7,7 @@ import eca.ss.enaction.Enaction;
  * A decider decides what interaction to try to enact next
  * when the previous decision cycle is over
  * based on the current state of sequential and spatial memory
+ * and based on autotelic and interactional motivation
  * @author Olivier
  */
 public interface Decider 

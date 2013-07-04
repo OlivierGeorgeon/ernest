@@ -8,11 +8,11 @@ import eca.construct.egomem.Area;
  * An Act is an Interaction with spatial information (Area) attached in order to characterize its enaction in space.
  * An Act is enacted if it is afforded by the corresponding Area, 
  *   meaning that there is an appearance of PhenomenonType that affords this Interaction in this Area.  
- *   This appearance can be anticipated by simulating the displacement in spatial memory and checking for the existence of a PhenomenonType in the Area.
+ *   This appearance can be anticipated based on previous experiments enacting this act in the same context (post-appearance).
  *
  * A primitive Act is a Primitive interaction attached with an Area.
  * A composite Act is a tuple of two acts (pre-act, post-act)
- * ?? A composite Act that is enactable is a serial interaction attached with an area. ??
+ * ?? A composite Act is enactable if all its subacts concern the same PhenomenonType. ??
  * ?? When the pre-act and post-act have the same Area then a serial interaction can be constructed as the series of their interactions  
  * @author Olivier
  */

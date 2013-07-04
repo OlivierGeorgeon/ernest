@@ -6,24 +6,34 @@ import eca.construct.Action;
  * A proposition to perform an action. 
  * @author ogeorgeon
  */
-public interface ActionProposition extends Comparable {
+public interface ActionProposition extends Comparable<ActionProposition> {
 	/**
 	 * @return The interaction proposed by this proposition.
 	 */
 	public Action getAction();
 	
 	/**
-	 * @return The proposition's weight.
+	 * @return The proposition's weight according to the Spatial System.
 	 */
-	public int getWeight();
+	public int getSSWeight();
 	
 	/**
-	 * @param w The weight to add to the proposition.
+	 * @param ssWeight The weight to add to the proposition.
 	 */
-	public void addWeight(int w);
+	public void addSSWeight(int ssWeight);
 		
 	/**
-	 * Two propositions are equal if they propose the same interaction. 
+	 * @return The proposition's weight according to the Spatial System.
+	 */
+	public int getSpasWeight();
+	
+	/**
+	 * @param spasWeight The weight to add to the proposition.
+	 */
+	public void addSpasWeight(int spasWeight);
+		
+	/**
+	 * Two propositions are equal if they propose the same action. 
 	 */
 	public boolean equals(Object o);	
 }
