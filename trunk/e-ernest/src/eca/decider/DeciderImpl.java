@@ -62,12 +62,13 @@ public class DeciderImpl implements Decider
 		
 		Appearance preAppearance = this.spas.getLastAppearance();
 		Appearance postAppearance = action.predictPostAppearance(preAppearance); 
+		Displacement displacement = action.predictDisplacement(preAppearance);
 		
 		// Construct the intended act
 		Act nextTopIntention = ActImpl.getAct(action, postAppearance);
 
 		if (this.tracer != null){
-			Object aspectElmt = this.tracer.addEventElement("aspects", true);
+			Object aspectElmt = this.tracer.addEventElement("phenonmena", true);
 			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
 				this.tracer.addSubelement(aspectElmt, "phenomenon", phenomenonType.toString());
 			Object experimentElmt = this.tracer.addEventElement("experiments", true);
@@ -76,6 +77,8 @@ public class DeciderImpl implements Decider
 			
 			Object predictElmt = this.tracer.addEventElement("predict", true);
 			this.tracer.addSubelement(predictElmt, "phenomenon_type", postAppearance.getPhenomenonType().getLabel());
+			if (displacement != null)
+				this.tracer.addSubelement(predictElmt, "displacement", displacement.getLabel());
 			this.tracer.addSubelement(predictElmt, "area", postAppearance.getArea().getLabel());
 		}
 		
