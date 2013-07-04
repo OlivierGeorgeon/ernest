@@ -67,9 +67,9 @@ public interface SpatialMemory
 	public void trace(ITracer tracer);
 
 	/**
-	 * @return The place that was recorded during the last decision cycle.
+	 * @return The last appearance in spatial memory.
 	 */
-	public Place getPreviousPlace();
-	
 	public Appearance getLastAppearance();
+	//public Place getPreviousPlace();
+	
 }

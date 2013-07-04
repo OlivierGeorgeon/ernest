@@ -42,15 +42,15 @@ public interface Enaction
 	 */
 	public Displacement getDisplacement();
 	
-//	/**
-//	 * @param appearance The Appearance sensed during this primitive enaction.
-//	 */
-//	public void setAppearance(Appearance appearance);
-//	
-//	/**
-//	 * @return The Appearance sensed during this primitive enaction.
-//	 */
-//	public Appearance getAppearance();
+	/**
+	 * @param appearance The Appearance sensed during this primitive enaction.
+	 */
+	public void setAppearance(Appearance appearance);
+	
+	/**
+	 * @return The Appearance sensed during this primitive enaction.
+	 */
+	public Appearance getAppearance();
 	
 	/**
 	 * @param act The last primitive intended interaction

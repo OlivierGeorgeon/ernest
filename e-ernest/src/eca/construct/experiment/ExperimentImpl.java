@@ -36,19 +36,19 @@ public class ExperimentImpl implements Experiment {
 	 * @return The new or old experiment.
 	 */
 	public static Experiment createOrGet(Appearance preAppearance, Action action){
-		String key = createKey(action, preAppearance);
+		String key = createKey(preAppearance, action);
 		if (!EXPERIMENTS.containsKey(key))
 			EXPERIMENTS.put(key, new ExperimentImpl(preAppearance, action));			
 		return EXPERIMENTS.get(key);
 	}
 
-	private static String createKey(Action action, Appearance appearance) {
-		String key = action.getLabel() + "/" + appearance.getLabel();
+	private static String createKey(Appearance preAppearance, Action action) {
+		String key = preAppearance.getLabel() + "/" + action.getLabel();
 		return key;
 	}
 	
 	private ExperimentImpl(Appearance preAppearance, Action action){
-		this.label = createKey(action, preAppearance);
+		this.label = createKey(preAppearance, action);
 		this.action = action;
 		this.appearance = preAppearance;
 	}	
@@ -112,8 +112,14 @@ public class ExperimentImpl implements Experiment {
 	}
 	
 	public String toString(){
-		String s = this.label;
+		String s = this.label + " post-appearances:";
+		for (Map.Entry<Appearance, Integer> entry : postAppearances.entrySet())
+			s += " " + entry.getKey().getLabel() + "(" + entry.getValue() +")";
+		s += " acts:";
 		for (Map.Entry<Act, Integer> entry : acts.entrySet())
+			s += " " + entry.getKey().getLabel() + "(" + entry.getValue() +")";
+		s += " displacements:";
+		for (Map.Entry<Displacement, Integer> entry : displacements.entrySet())
 			s += " " + entry.getKey().getLabel() + "(" + entry.getValue() +")";
 		return s;
 	}

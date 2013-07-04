@@ -50,16 +50,17 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	}
 	
 	/**
-	 * Merge the new aspect into the previous aspect.
-	 * The interactions attached to the new aspect are transferred to the previous aspect and the new aspect is removed
-	 * @param enactedAspect The first action from which to merge (removed). 
-	 * @param previousAspect The second action to which to merge (kept).
+	 * Merge the new PhenomenonType into the previous PhenomenonType.
+	 * The interactions attached to the new PhenomenonType are added to the previous PhenomenonType 
+	 * The new PhenomenonType is removed from the list of PHENOMENA
+	 * @param newPhenomenonType The first action from which to merge (removed). 
+	 * @param previousPhenomenonType The second action to which to merge (kept).
 	 */
-	public static void merge(PhenomenonType enactedAspect, PhenomenonType previousAspect){
-		if (!enactedAspect.equals(previousAspect)){
-			for (Primitive act : enactedAspect.getPrimitives())
-				act.setPhenomenonType(previousAspect);
-			PHENOMENA.remove(enactedAspect.getLabel());
+	public static void merge(PhenomenonType newPhenomenonType, PhenomenonType previousPhenomenonType){
+		if (!newPhenomenonType.equals(previousPhenomenonType)){
+			for (Primitive act : newPhenomenonType.getPrimitives())
+				act.setPhenomenonType(previousPhenomenonType);
+			PHENOMENA.remove(newPhenomenonType.getLabel());
 		}
 	}
 	

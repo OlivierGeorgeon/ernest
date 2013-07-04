@@ -336,4 +336,12 @@ public class EnactionImpl implements Enaction
 		return this.enactedPlaces;
 	}
 
+	public Appearance getAppearance() {
+		return appearance;
+	}
+
+	public void setAppearance(Appearance appearance) {
+		this.appearance = appearance;
+	}
+
 }

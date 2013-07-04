@@ -56,7 +56,7 @@ public interface Spas
 	 * @param action The next action
 	 * @return The Phenomenon instance to which the next action will apply 
 	 */
-	public Appearance predictAppearance(Displacement displacement);
+	//public Appearance predictAppearance(Displacement displacement);
 	
 	/**
 	 * @return The transformation of spatial memory to anim.
