@@ -5,11 +5,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.media.j3d.Transform3D;
+import javax.vecmath.Point3f;
 import eca.Primitive;
+import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
-import eca.construct.experiment.Experiment;
+import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.ExperimentImpl;
 import eca.ss.enaction.Act;
+import eca.ss.enaction.ActImpl;
 
 /**
  * An Action that can be performed in the external world.
@@ -25,8 +29,6 @@ public class ActionImpl implements Action {
 
 	private String label;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
-
-	private Map<Appearance , Displacement> experiences = new HashMap<Appearance , Displacement>() ;
 
 	/**
 	 * Create or get an action from its label.
@@ -110,20 +112,23 @@ public class ActionImpl implements Action {
 	}
 
 	public Act predictAct(Appearance appearance) {
-		return ExperimentImpl.createOrGet(appearance, this).predictAct();
+		Act predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
+		if (predictAct == null)
+			predictAct = ActImpl.createOrGetPrimitiveAct(primitives.get(0), AreaImpl.createOrGet(new Point3f()));
+		return predictAct;
 	}
 
 	public Displacement predictDisplacement(Appearance appearance) {
-		return ExperimentImpl.createOrGet(appearance, this).predictDisplacement();
+		Displacement predictDisplacement = ExperimentImpl.createOrGet(appearance, this).predictDisplacement();
+		if (predictDisplacement == null)
+			predictDisplacement = DisplacementImpl.createOrGet(new Transform3D());
+		return predictDisplacement;
 	}
 
 	public Appearance predictPostAppearance(Appearance preAppearance) {
-		return ExperimentImpl.createOrGet(preAppearance, this).predictPostAppearance();
-	}
-
-	public void recordExperiment(Appearance appearance, Act act, Displacement displacement) {
-		Experiment ex = ExperimentImpl.createOrGet(appearance, this);
-		ex.incActCounter(act);
-		ex.incDisplacementCounter(displacement);
+		Appearance postAppearance = ExperimentImpl.createOrGet(preAppearance, this).predictPostAppearance();
+		if (postAppearance == null)
+			postAppearance = preAppearance; 	
+		return postAppearance;
 	}
 }

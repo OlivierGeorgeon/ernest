@@ -28,14 +28,8 @@ public interface Action
 	public List<Primitive> getPrimitives();
 	
 	/**
-	 * Record the experiment of performing this action on this appearance.
-	 * @param appearance The appearance on which this action is performed.
-	 * @param act The act enacted during this experiment.
-	 * @param displacement The displacement enacted during this experiment.
-	 */
-	public void recordExperiment(Appearance appearance, Act act, Displacement displacement);
-	
-	/**
+	 * Predicts the act that will likely result from performing this action on this appearance based on previous experiments
+	 * if no previous experiment then return the act made of the first primitive of this action in area O.
 	 * @param appearance The appearance on which the action is performed.
 	 * @return The Act that will likely result from performing this action on this appearance.
 	 */
@@ -47,6 +41,10 @@ public interface Action
 	 */
 	public Displacement predictDisplacement(Appearance appearance);
 
+	/**
+	 * @param preAppearance The Appearance 
+	 * @return The predicted post-appearance.
+	 */
 	public Appearance predictPostAppearance(Appearance preAppearance);
 
 }

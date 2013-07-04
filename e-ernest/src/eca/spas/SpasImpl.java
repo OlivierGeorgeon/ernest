@@ -3,11 +3,8 @@ package eca.spas;
 
 import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
-import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import eca.Primitive;
-import eca.construct.Action;
 import eca.construct.Appearance;
 import eca.construct.AppearanceImpl;
 import eca.construct.PhenomenonType;
@@ -64,27 +61,19 @@ public class SpasImpl implements Spas
 		Place enactedPlace = enaction.getEnactedPlaces().get(0);	
 		enactedPlace.normalize(3);
 
-		Appearance previousAppearance = spacialMemory.getLastAppearance();
+		//Appearance previousAppearance = spacialMemory.getLastAppearance();
+		Appearance previousAppearance = enaction.getAppearance();
+		Displacement displacement = enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement();
+		this.transform.set(displacement.getTransform3D());
 		
 		// Update spatial memory
 		
-		tick();
-		Displacement displacement = enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement();
-		this.transform.set(displacement.getTransform3D());
+		this.spacialMemory.tick();
 		this.spacialMemory.transform(this.transform);		
 		this.spacialMemory.forgetOldPlaces();
 		
 		this.spacialMemory.addPlace(enactedPlace);
 
-//		Appearance preAppearance = null;
-//		Place previousPlace = spacialMemory.getPreviousPlace();
-//		if (previousPlace != null){
-//			//System.out.println("previous place " + previousPlace.getValue());
-//			Area previousArea = AreaImpl.createOrGet(previousPlace.getPosition());
-//			PhenomenonType previousPhenomenonType = previousPlace.getPhenomenonType();
-//			preAppearance = AppearanceImpl.createOrGet(previousPhenomenonType, previousArea);
-//		}
-		
 		// Merge phenomena
 		
 		Area area = enaction.getEnactedPrimitiveAct().getArea();
@@ -95,11 +84,7 @@ public class SpasImpl implements Spas
 				m_tracer.addEventElement("empty", newPhenomenonType.getLabel() + " merged to " + PhenomenonTypeImpl.EMPTY.getLabel());}
 		}
 		else{ 
-			//if (previousPlace != null){
 			if (previousAppearance != null){
-				//System.out.println("previous place " + previousPlace.getValue());
-				//Area previousArea = AreaImpl.createOrGet(previousPlace.getPosition());
-				//Area preArea = preAppearance.getArea();
 				if (previousAppearance.getArea().equals(area)){
 					PhenomenonType previousPhenomenonType = previousAppearance.getPhenomenonType();
 					if (!previousPhenomenonType.equals(newPhenomenonType)){
@@ -114,15 +99,16 @@ public class SpasImpl implements Spas
 		}
 		
 		// Record the experiment
+		Appearance appearance = AppearanceImpl.createOrGet(newPhenomenonType, area);
 		if (previousAppearance != null){
-			Appearance postAppearance = AppearanceImpl.createOrGet(newPhenomenonType, area);
 			Experiment newExp = ExperimentImpl.createOrGet(previousAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
 			newExp.incActCounter(enaction.getEnactedPrimitiveAct());
 			newExp.incDisplacementCounter(displacement);
-			newExp.incPostAppearanceCounter(postAppearance);
+			newExp.incPostAppearanceCounter(appearance);
 			if (m_tracer != null){
 				m_tracer.addEventElement("experiment", newExp.toString());}
 		}
+		enaction.setAppearance(appearance);
 	}
 
 	public int getValue(int i, int j)
@@ -134,21 +120,8 @@ public class SpasImpl implements Spas
 			return 0xFFFFFF;
 	}
 	
-	public ArrayList<Place> getPlaceList()
-	{
-		// return m_localSpaceMemory.getPlaceList();
+	public ArrayList<Place> getPlaceList()	{
 		return this.spacialMemory.clonePlaceList();
-	}
-
-//	private Place addPlace(Primitive primitive, Point3f position,int value) 
-//	{
-//		Place place = this.spacialMemory.addPlace(primitive, position);
-//		place.setValue(value);
-//		return place;
-//	}
-
-	public void tick() {
-		this.spacialMemory.tick();
 	}
 
 	public int getValue(Point3f position) 
@@ -161,24 +134,12 @@ public class SpasImpl implements Spas
 		return this.spacialMemory;
 	}
 
-//	public Appearance predictAppearance(Displacement displacement){
-//		Appearance appearance = AppearanceImpl.createOrGet(PhenomenonTypeImpl.EMPTY, AreaImpl.createOrGet(new Point3f()));
-//		if (this.spacialMemory.getPreviousPlace() != null){
-//			Place lastPlace = this.spacialMemory.getPreviousPlace().clone();
-//			if (displacement != null)
-//				lastPlace.transform(displacement.getTransform3D()); // TODO manage simultaneously the displacement and the phenomenon instance
-//			appearance = AppearanceImpl.createOrGet(lastPlace.getPrimitive().getPhenomenonType(), AreaImpl.createOrGet(lastPlace.getPosition()));
-//		}
-//		return appearance;
-//		
-//	}
-
 	public Transform3D getTransformToAnim() {
 		return this.transform;
 	}
 
-	public Appearance getLastAppearance() {
-		return this.spacialMemory.getLastAppearance();
-	}
+//	public Appearance getLastAppearance() {
+//		return this.spacialMemory.getLastAppearance();
+//	}
 
 }

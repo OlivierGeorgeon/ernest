@@ -18,7 +18,6 @@ import eca.spas.Spas;
 import eca.ss.ActProposition;
 import eca.ss.IImos;
 import eca.ss.enaction.Act;
-import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
 import eca.ss.enaction.EnactionImpl;
 
@@ -47,44 +46,53 @@ public class DeciderImpl implements Decider
 	
 	public Enaction decide(Enaction enaction) 
 	{
-		Enaction newEnaction = new EnactionImpl();
-		
 		System.out.println("New decision ================ ");
 
+		Enaction newEnaction = new EnactionImpl();		
+//		Appearance preAppearance = this.spas.getLastAppearance();
+		Appearance preAppearance = enaction.getAppearance();
+
 		// Choose the next action
+		
 		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
-		List<ActionProposition> actionPropositions = weightActions(actPropositions);
-		Action action = selectAction(actionPropositions);
+		List<ActionProposition> actionPropositions = proposeActions(actPropositions);
 
-		// Predict the next appearance
-		//Displacement displacement = action.getPrimitives().get(0).getDisplacement();			
-		//Appearance  appearance = this.spas.predictAppearance(displacement);
-		
-		Appearance preAppearance = this.spas.getLastAppearance();
-		Appearance postAppearance = action.predictPostAppearance(preAppearance); 
-		Displacement displacement = action.predictDisplacement(preAppearance);
-		
-		// Construct the intended act
-		Act nextTopIntention = ActImpl.getAct(action, postAppearance);
+		Action	selectedAction = actionPropositions.get(0).getAction();
 
+		// Anticipate the consequences
+		
+		Act intendedAct = selectedAction.predictAct(preAppearance);
+		Displacement intendedDisplacement = selectedAction.predictDisplacement(preAppearance);
+		Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
+		
+		// Trace the decision
+		
 		if (this.tracer != null){
-			Object aspectElmt = this.tracer.addEventElement("phenonmena", true);
+			Object decisionElmt = this.tracer.addEventElement("decision", true);
+			
+			this.tracer.addSubelement(decisionElmt, "selected_action", selectedAction.getLabel());
+
+			Object aspectElmt = this.tracer.addSubelement(decisionElmt, "phenomena");
 			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
 				this.tracer.addSubelement(aspectElmt, "phenomenon", phenomenonType.toString());
-			Object experimentElmt = this.tracer.addEventElement("experiments", true);
+			
+			Object experimentElmt = this.tracer.addSubelement(decisionElmt, "experiments");
 			for (Experiment a : ExperimentImpl.getExperiments())
 				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
-			Object predictElmt = this.tracer.addEventElement("predict", true);
-			this.tracer.addSubelement(predictElmt, "phenomenon_type", postAppearance.getPhenomenonType().getLabel());
-			if (displacement != null)
-				this.tracer.addSubelement(predictElmt, "displacement", displacement.getLabel());
-			this.tracer.addSubelement(predictElmt, "area", postAppearance.getArea().getLabel());
-		}
+			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
+			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
+			this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
+			this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
+		}		
+		System.out.println("Select:" + selectedAction.getLabel());
+		System.out.println("Act " + intendedAct.getLabel());
 		
-		System.out.println("Act " + nextTopIntention.getLabel());
-		newEnaction.setTopInteraction(nextTopIntention);
-		newEnaction.setTopRemainingAct(nextTopIntention);
+		// Prepare the new enaction.
+		
+		newEnaction.setAppearance(preAppearance);
+		newEnaction.setTopIntendedAct(intendedAct);
+		newEnaction.setTopRemainingAct(intendedAct);
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		
@@ -94,7 +102,7 @@ public class DeciderImpl implements Decider
 	/**
 	 * Weight the actions according to the proposed interactions
 	 */
-	private List<ActionProposition> weightActions(List<ActProposition> actPropositions){
+	private List<ActionProposition> proposeActions(List<ActProposition> actPropositions){
 		
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		
@@ -118,25 +126,17 @@ public class DeciderImpl implements Decider
 			}
 		}
 		
-		
-//		// Reset the weight of actions.
-//		for (Action m : ActionImpl.getACTIONS())
-//			m.setPropositionWeight(0);
-		
-//		// Proposed interactions that correspond to an identified action support this action.
-//		for (ActProposition p: propositions)
-//			if (p.getAct().getPrimitive() != null)
-//				p.getAct().getAction().addPropositionWeight(p.getWeight());	
-		
+		Collections.sort(actionPropositions);
+
 		// trace weighted actions 
 		Object decisionElmt = null;
 		if (this.tracer != null){
-			decisionElmt = this.tracer.addEventElement("Actions", true);
+			decisionElmt = this.tracer.addEventElement("propositions", true);
 			for (ActionProposition a : actionPropositions){
 				String details = " ";
 				for (Primitive primitive : a.getAction().getPrimitives())
 					details += (" " + primitive.getLabel());
-				System.out.println("Propose action " + a.getAction().getLabel() + " with weight " + a.getWeight());
+				System.out.println("propose action " + a.getAction().getLabel() + " with weight " + a.getWeight());
 				this.tracer.addSubelement(decisionElmt, "Action", a.getAction().getLabel() + " proposition weight " + a.getWeight() + " " + details);
 			}
 		}
@@ -144,36 +144,6 @@ public class DeciderImpl implements Decider
 		return actionPropositions;
 	}
 	
-	/**
-	 * Select an interaction from the list of proposed interactions
-	 * @return The selected action.
-	 */
-	protected Action selectAction(List<ActionProposition> actionPropositions)
-	{
-		Collections.sort(actionPropositions);
-		Action	selectedAction = actionPropositions.get(0).getAction();
-		
-//		// Sort the propositions by weight.
-//		// Oddly, i could not directly cast ACTIONS.values() to List<Action>
-//		List<Action> actions = new ArrayList<Action>();
-//		for (Action a : ActionImpl.getACTIONS())
-//			actions.add(a);
-//		Collections.sort(actions);
-//
-//		// Pick the most weighted action
-//		Action selectedAction = actions.get(0);
-		
-		System.out.println("Select:" + selectedAction.getLabel());
-
-		// Trace the selected action
-		if (this.tracer != null){			
-			Object selectionElmt = this.tracer.addEventElement("selection", true);
-			this.tracer.addSubelement(selectionElmt, "selected_action", selectedAction.getLabel());
-		}
-		
-		return selectedAction;
-	}
-
 	public void carry(Enaction enaction)
 	{
 		Act intendedPrimitiveInteraction = enaction.getTopRemainingAct().prescribe();

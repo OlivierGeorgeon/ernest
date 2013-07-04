@@ -6,14 +6,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
 import utils.ErnestUtils;
-import eca.Primitive;
-import eca.construct.Appearance;
-import eca.construct.AppearanceImpl;
-import eca.construct.PhenomenonType;
-import eca.construct.egomem.Area;
-import eca.construct.egomem.AreaImpl;
 import eca.spas.Place;
-import eca.spas.PlaceImpl;
 import ernest.Ernest;
 
 
@@ -68,13 +61,6 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 			p.incClock();
 	}
 
-//	public Place addPlace(Primitive primitive, Point3f position)
-//	{
-//		Place place = new PlaceImpl(primitive, position);	
-//		m_places.add(place);
-//		return place;
-//	}
-	
 	public void addPlace(Place place){
 		m_places.add(place);
 	}
@@ -111,7 +97,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void clearPlace(Point3f position)
 	{
-		for (Iterator it = m_places.iterator(); it.hasNext();)
+		for (Iterator<Place> it = m_places.iterator(); it.hasNext();)
 		{
 			Place l = (Place)it.next();
 			if (l.isInCell(position))
@@ -124,7 +110,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void clearBackground()
 	{
-		for (Iterator it = m_places.iterator(); it.hasNext();)
+		for (Iterator<Place> it = m_places.iterator(); it.hasNext();)
 		{
 			Place l = (Place)it.next();
 			if (l.getDistance() > DISTANCE_VISUAL_BACKGROUND - 1)
@@ -137,27 +123,14 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void forgetOldPlaces()
 	{
-		for (Iterator it = m_places.iterator(); it.hasNext();)
+		for (Iterator<Place> it = m_places.iterator(); it.hasNext();)
 		{
 			Place p = (Place)it.next();
 			if (p.getClock() > PERSISTENCE_DURATION )//|| p.getPosition().x < -.1) 
 				it.remove();
 		}
 	}
-	
-	/**
-	 * @return The list of places in Local Spave Memory
-	 */
-	public ArrayList<Place> getPlaceList()
-	{
-		return m_places;
-	}
-	
-	public void setPlaceList(ArrayList<Place> places) 
-	{
-		m_places = places;
-	}
-	
+		
 	public void trace(ITracer tracer)
 	{
 		if (tracer != null && !m_places.isEmpty())
@@ -174,29 +147,18 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 			tracer.addSubelement(localSpace, "position_0", ErnestUtils.hexColor(getDisplayCode(DIRECTION_BEHIND_RIGHT)));
 		}
 	}
+
+//	/**
+//	 * @return The list of places in Local Spave Memory
+//	 */
+//	public ArrayList<Place> getPlaceList()
+//	{
+//		return m_places;
+//	}
+//	
+//	public void setPlaceList(ArrayList<Place> places) 
+//	{
+//		m_places = places;
+//	}
 	
-	public Place getPreviousPlace(){
-		Place place = null;
-		for (Place p : this.m_places)
-			if (p.getClock() == 1)
-				place = p;
-		return place;
-	}
-
-	public Appearance getLastAppearance() {
-		Appearance appearance = null;
-		Place place = null;
-		for (Place p : this.m_places)
-			if (p.getClock() == 0)
-				place = p;
-		
-		if (place != null){
-			Area previousArea = AreaImpl.createOrGet(place.getPosition());
-			PhenomenonType previousPhenomenonType = place.getPhenomenonType();
-			appearance = AppearanceImpl.createOrGet(previousPhenomenonType, previousArea);
-		}
-
-		return appearance;
-	}
-
 }
