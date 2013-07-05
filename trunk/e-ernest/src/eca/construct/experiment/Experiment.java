@@ -6,7 +6,7 @@ import eca.ss.enaction.Act;
 
 /**
  * An experiment is an Action performed on an Appearance.
- * Experiments record the resulting acts, 
+ * Experiments record the resulting act, displacement, and postAppearance.
  * so as to predict what act will result from an Action performed on an Appearance. 
  * @author Olivier
  */
@@ -27,6 +27,9 @@ public interface Experiment {
 	 */
 	public void incDisplacementCounter(Displacement displacement);
 	
+	/**
+	 * @param appearance The post-appearance
+	 */
 	public void incPostAppearanceCounter(Appearance appearance);
 
 	/**
@@ -39,6 +42,9 @@ public interface Experiment {
 	 */
 	public Displacement predictDisplacement();
 	
+	/**
+	 * @return The post-appearance most probably resulting from this experiment
+	 */
 	public Appearance predictPostAppearance();
 	
 	/**

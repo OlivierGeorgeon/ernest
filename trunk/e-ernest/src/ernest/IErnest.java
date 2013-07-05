@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.media.j3d.Transform3D;
 import eca.Primitive;
-import eca.spas.Place;
+import eca.spas.egomem.Place;
 import eca.spas.egomem.SpatialMemory;
 import tracing.ITracer;
 

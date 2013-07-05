@@ -10,8 +10,8 @@ import eca.PrimitiveImpl;
 import eca.construct.Appearance;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
-import eca.spas.Place;
-import eca.spas.PlaceImpl;
+import eca.spas.egomem.Place;
+import eca.spas.egomem.PlaceImpl;
 import ernest.IEffect;
 
 /**

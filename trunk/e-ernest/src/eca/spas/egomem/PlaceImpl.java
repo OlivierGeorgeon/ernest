@@ -1,4 +1,4 @@
-package eca.spas;
+package eca.spas.egomem;
 
 
 import javax.media.j3d.Transform3D;
