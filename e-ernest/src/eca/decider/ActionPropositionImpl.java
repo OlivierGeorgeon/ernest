@@ -1,6 +1,7 @@
 package eca.decider;
 
 import eca.construct.Action;
+import eca.ss.enaction.Act;
 
 /**
  * A proposition to perform an action. 
@@ -10,18 +11,16 @@ public class ActionPropositionImpl implements ActionProposition {
 
 	private Action action;
 	private int ssWeight = 0; 
-	private int spasWeight = 0;
+	private Act anticipatedAct = null;
 	
 	/**
 	 * Constructor. 
 	 * @param a The proposed action.
 	 * @param ssWeight The weight proposed by the ss.
-	 * @param spasWeight The weight proposed by Spas.
 	 */
-	public ActionPropositionImpl(Action a, int ssWeight, int spasWeight){
+	public ActionPropositionImpl(Action a, int ssWeight){
 		this.action = a;
 		this.ssWeight = ssWeight;
-		this.spasWeight = spasWeight;
 	}
 
 	public int compareTo(ActionProposition a){
@@ -70,11 +69,12 @@ public class ActionPropositionImpl implements ActionProposition {
 		return action + " with weight = " + ssWeight/10;
 	}
 
-	public int getSpasWeight() {
-		return this.spasWeight;
+	public Act getAnticipatedAct() {
+		return anticipatedAct;
 	}
 
-	public void addSpasWeight(int spasWeight) {
-		this.spasWeight = spasWeight;
+	public void setAnticipatedAct(Act anticipatedAct) {
+		this.anticipatedAct = anticipatedAct;
 	}
+
 }

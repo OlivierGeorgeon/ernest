@@ -143,5 +143,9 @@ public class ExperimentImpl implements Experiment {
 			}		
 		return predictPostAppearance;
 	}
+	
+	public boolean isTested(){
+		return ! acts.isEmpty();
+	}
 
 }
