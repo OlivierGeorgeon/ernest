@@ -40,7 +40,7 @@ public class Imos implements IImos
 	private String m_internalState = "";
 	
 	/** Counter of cognitive cycles. */
-	private int m_imosCycle = 0;
+	//private int m_imosCycle = 0;
 	
 	public void setRegularityThreshold(int regularityThreshold)
 	{
@@ -77,7 +77,7 @@ public class Imos implements IImos
 	 */
 	public void track(Enaction enaction) 
 	{
-		m_imosCycle++;		
+		//m_imosCycle++;		
 		
 		Act intendedPrimitiveAct = enaction.getIntendedPrimitiveAct();
 		Act enactedPrimitiveAct  = enaction.getEnactedPrimitiveAct();
@@ -219,10 +219,10 @@ public class Imos implements IImos
 		return newContextList; 
 	}
 
-	public int getCounter() 
-	{
-		return m_imosCycle;
-	}
+//	public int getCounter() 
+//	{
+//		return m_imosCycle;
+//	}
 
 	/**
 	 * Recursively construct the current actually enacted act. 

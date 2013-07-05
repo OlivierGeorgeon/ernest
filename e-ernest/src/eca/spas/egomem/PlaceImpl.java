@@ -23,7 +23,7 @@ public class PlaceImpl implements Place
 	private int displayCode;
 	private int clock = 0;
 	
-	private PhenomenonType phenomenonType = null;
+	//private PhenomenonType phenomenonType = null;
 
 	/**
 	 * Create a new place 
@@ -34,7 +34,7 @@ public class PlaceImpl implements Place
 	public PlaceImpl(Primitive primitive, Point3f position){
 		this.primitive = primitive;
 		this.position.set(position);
-		this.phenomenonType = primitive.getPhenomenonType();
+		//this.phenomenonType = primitive.getPhenomenonType();
 	}
 	
 	public Act getAct() {
@@ -181,13 +181,13 @@ public class PlaceImpl implements Place
 		return ret;		
 	}
 	
-	public PhenomenonType getPhenomenonType(){
-		return this.phenomenonType;
-	}
-	
-	public void setPhenomenonType(PhenomenonType phenomenonType){
-		this.phenomenonType = phenomenonType;
-	}
+//	public PhenomenonType getPhenomenonType(){
+//		return this.phenomenonType;
+//	}
+//	
+//	public void setPhenomenonType(PhenomenonType phenomenonType){
+//		this.phenomenonType = phenomenonType;
+//	}
 
 	public void normalize(float scale) {
 		float d = this.position.distance(new Point3f());

@@ -90,7 +90,7 @@ public class SpasImpl implements Spas
 					PhenomenonType previousPhenomenonType = previousAppearance.getPhenomenonType();
 					if (!previousPhenomenonType.equals(newPhenomenonType)){
 						PhenomenonTypeImpl.merge(newPhenomenonType, previousPhenomenonType);
-						enactedPlace.setPhenomenonType(previousPhenomenonType);
+						//enactedPlace.setPhenomenonType(previousPhenomenonType);
 						if (m_tracer != null){
 							m_tracer.addEventElement("phenomenon", newPhenomenonType.getLabel() + " merged to " + previousPhenomenonType.getLabel());}
 						newPhenomenonType = previousPhenomenonType;

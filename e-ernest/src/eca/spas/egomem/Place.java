@@ -101,9 +101,9 @@ public interface Place extends Cloneable
 	 */
 	public float getOrientationAngle();
 	
-	public PhenomenonType getPhenomenonType();
+	//public PhenomenonType getPhenomenonType();
 	
-	public void setPhenomenonType(PhenomenonType phenomenonType);
+	//public void setPhenomenonType(PhenomenonType phenomenonType);
 	
 	public void normalize(float scale);
 	
