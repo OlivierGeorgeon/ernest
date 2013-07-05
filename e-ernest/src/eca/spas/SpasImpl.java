@@ -14,6 +14,7 @@ import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
+import eca.spas.egomem.Place;
 import eca.spas.egomem.SpatialMemory;
 import eca.spas.egomem.SpatialMemoryImpl;
 import eca.ss.enaction.Enaction;

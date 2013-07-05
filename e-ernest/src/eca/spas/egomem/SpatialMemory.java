@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import eca.spas.Place;
 
 /**
  * A Spatial Memory is a memory of a spatial configuration

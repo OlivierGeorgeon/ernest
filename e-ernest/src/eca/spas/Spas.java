@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
+import eca.spas.egomem.Place;
 import eca.ss.enaction.Enaction;
 
 /**
