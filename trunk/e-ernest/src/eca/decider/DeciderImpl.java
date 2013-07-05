@@ -56,14 +56,13 @@ public class DeciderImpl implements Decider
 		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
 		List<ActionProposition> actionPropositions = proposeActions(actPropositions, preAppearance);
 		
-		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SS) ); // or SPAS
-		//Collections.sort(actionPropositions, new ActionSpasWeightComparator() );
+		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SPAS) ); // or SPAS
 
 		Action	selectedAction = actionPropositions.get(0).getAction();
+		Act intendedAct = actionPropositions.get(0).getAnticipatedAct();		
 
 		// Anticipate the consequences
 		
-		Act intendedAct = selectedAction.predictAct(preAppearance);
 		Displacement intendedDisplacement = selectedAction.predictDisplacement(preAppearance);
 		Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
 		
@@ -80,7 +79,8 @@ public class DeciderImpl implements Decider
 			
 			Object experimentElmt = this.tracer.addSubelement(decisionElmt, "experiments");
 			for (Experiment a : ExperimentImpl.getExperiments())
-				this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
+				if (a.isTested())
+					this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
 			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
 			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
@@ -108,16 +108,17 @@ public class DeciderImpl implements Decider
 		
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		
-		// All actions are proposed with their spasWeight
+		// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
 		for (Action a : ActionImpl.getACTIONS()){
-			Act intendedAct = a.predictAct(preAppearance);
-			ActionProposition actionProposition = new ActionPropositionImpl(a, 0, intendedAct.getPrimitive().getValue());
+			Act anticipatedAct = a.predictAct(preAppearance);
+			ActionProposition actionProposition = new ActionPropositionImpl(a, 0);
+			actionProposition.setAnticipatedAct(anticipatedAct);
 			actionPropositions.add(actionProposition);
 		}		
 		
 		for (ActProposition ap : actPropositions){
 			if (ap.getAct().getPrimitive() != null){
-				ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), ap.getWeight(), 0);
+				ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), ap.getWeight());
 				int j = actionPropositions.indexOf(actionProposition);
 				if (j == -1)
 					actionPropositions.add(actionProposition);
@@ -129,18 +130,13 @@ public class DeciderImpl implements Decider
 			}
 		}
 		
-		//Collections.sort(actionPropositions);
-
 		// trace weighted actions 
 		Object decisionElmt = null;
 		if (this.tracer != null){
 			decisionElmt = this.tracer.addEventElement("propositions", true);
-			for (ActionProposition a : actionPropositions){
-				String details = " ";
-				for (Primitive primitive : a.getAction().getPrimitives())
-					details += (" " + primitive.getLabel());
-				System.out.println("propose action " + a.getAction().getLabel() + " with weight " + a.getSSWeight());
-				this.tracer.addSubelement(decisionElmt, "Action", a.getAction().getLabel() + " SS weight " + a.getSSWeight() + " Spas weight " + a.getSpasWeight() + " " + details);
+			for (ActionProposition ap : actionPropositions){
+				System.out.println("propose action " + ap.getAction().getLabel() + " with weight " + ap.getSSWeight());
+				this.tracer.addSubelement(decisionElmt, "action", ap.getAction().getLabel() + " weight " + ap.getSSWeight() + " anticipated act " + ap.getAnticipatedAct().getLabel() + " value " + ap.getAnticipatedAct().getPrimitive().getValue());
 			}
 		}
 		

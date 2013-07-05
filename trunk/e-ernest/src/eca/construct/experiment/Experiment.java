@@ -40,5 +40,10 @@ public interface Experiment {
 	public Displacement predictDisplacement();
 	
 	public Appearance predictPostAppearance();
+	
+	/**
+	 * @return True if this experiment has been made. 
+	 */
+	public boolean isTested();
 
 }

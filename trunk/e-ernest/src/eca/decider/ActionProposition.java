@@ -1,6 +1,7 @@
 package eca.decider;
 
 import eca.construct.Action;
+import eca.ss.enaction.Act;
 
 /**
  * A proposition to perform an action. 
@@ -23,17 +24,18 @@ public interface ActionProposition extends Comparable<ActionProposition> {
 	public void addSSWeight(int ssWeight);
 		
 	/**
-	 * @return The proposition's weight according to the Spatial System.
+	 * @return The anticipated act.
 	 */
-	public int getSpasWeight();
-	
+	public Act getAnticipatedAct();
+
 	/**
-	 * @param spasWeight The weight to add to the proposition.
+	 * @param anticipatedAct The anticipated act.
 	 */
-	public void addSpasWeight(int spasWeight);
-		
+	public void setAnticipatedAct(Act anticipatedAct);
+	
 	/**
 	 * Two propositions are equal if they propose the same action. 
 	 */
 	public boolean equals(Object o);	
+	
 }
