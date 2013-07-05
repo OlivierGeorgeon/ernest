@@ -57,8 +57,7 @@ public interface IErnest
 	public int getValue(int i, int j);
 
 	/**
-	 * @param schemaLabel The action label in the environment.
-	 * @param stimuliLabel The stimuli.
+	 * @param label The primitive interaction's label
 	 * @param satisfaction The satisfaction.
 	 * @return The created or already existing act.
 	 */
@@ -72,14 +71,12 @@ public interface IErnest
 	/**
 	 * @return The counter of cognitive cycles.
 	 */
-	public int getCounter();
+	public int getClock();
 	
 	/**
 	 * @return The counter of updates from the spatial system.
 	 */
 	public int getUpdateCount();
-	
-	//public ISpatialMemory getSpatialSimulation();
 	
 	/**
 	 * @return The list of primitive interactions available to Ernest.

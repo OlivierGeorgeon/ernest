@@ -52,5 +52,5 @@ public interface IImos
 	 * The counter of interaction cycles.
 	 * @return The current interaction cycle number.
 	 */
-	public int getCounter();	
+	//public int getCounter();	
 }

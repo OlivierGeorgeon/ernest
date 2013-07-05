@@ -14,11 +14,6 @@ public interface Displacement {
 	public String getLabel();
 	
 	/**
-	 * @param transform3D The 3D transformation
-	 */
-	//public void setTransform3D(Transform3D transform3D);
-	
-	/**
 	 * @return The 3D transformation
 	 */
 	public Transform3D getTransform3D();

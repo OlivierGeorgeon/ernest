@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import tracing.ITracer;
-import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.Appearance;
@@ -56,7 +55,7 @@ public class DeciderImpl implements Decider
 		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
 		List<ActionProposition> actionPropositions = proposeActions(actPropositions, preAppearance);
 		
-		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SPAS) ); // or SPAS
+		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SS) ); // or SPAS
 
 		Action	selectedAction = actionPropositions.get(0).getAction();
 		Act intendedAct = actionPropositions.get(0).getAnticipatedAct();		

@@ -17,33 +17,9 @@ public class DisplacementImpl implements Displacement {
 	private Transform3D transform3D = new Transform3D();
 	
 	/**
-	 * Create or get an action from its label.
-	 * @param label The action's label
-	 * @return The created or retrieved action.
+	 * @param t The transformation that defines this displacement
+	 * @return The displacement
 	 */
-//	public static Displace createOrGet(String label){
-//		if (!TRANSFORMATIONS.containsKey(label))
-//			TRANSFORMATIONS.put(label, new DisplaceImpl(label));			
-//		return TRANSFORMATIONS.get(label);
-//	}
-//	
-//	public static Displace displace(Transform3D t){
-//		Displace transform = IDENTITY;
-//		float angle = ErnestUtils.angle(t);
-//		if (Math.abs(angle) > .1){
-//			if ( angle > 0){		
-//				transform = SHIFT_LEFT;
-//				transform.setTransform3D(t);
-//			}
-//			else{ 		
-//				transform = SHIFT_RIGHT;
-//				transform.setTransform3D(t);
-//			}
-//		}
-//
-//		return transform;
-//	}
-	
 	public static Displacement createOrGet(Transform3D t){
 		String label = createKey(t);
 		if (!TRANSFORMATIONS.containsKey(label))
@@ -78,10 +54,10 @@ public class DisplacementImpl implements Displacement {
 		return label;
 	}
 	
-	public void setTransform3D(Transform3D transform3D){
-		this.transform3D.set(transform3D);
-	}
-	
+//	public void setTransform3D(Transform3D transform3D){
+//		this.transform3D.set(transform3D);
+//	}
+//	
 	public Transform3D getTransform3D(){
 		Transform3D t = this.transform3D;
 		if (this.label.equals("<")) t = new Transform3D();

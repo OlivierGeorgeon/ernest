@@ -43,6 +43,8 @@ public class Ernest implements IErnest
 	/** Ernest's tracing system. */
 	private ITracer m_tracer = null;
 	
+	private static int clock = 0;
+	
 	/** Ernest's decisional Mechanism. */
 	private Decider m_decider = new DeciderImpl(m_imos, m_spas); // Regular decider for Ernest 7.
 	
@@ -74,10 +76,14 @@ public class Ernest implements IErnest
 		
 		// Trace a new interaction cycle.
 		if (m_tracer != null){
-            m_tracer.startNewEvent(m_imos.getCounter());
-			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+            //m_tracer.startNewEvent(m_imos.getCounter());
+			//m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+            m_tracer.startNewEvent(this.clock);
+			m_tracer.addEventElement("clock", this.clock + "");
 			input.trace(m_tracer);		
 		}                
+
+		this.clock++;
 
 		// track the enaction 
 		
@@ -104,10 +110,14 @@ public class Ernest implements IErnest
 		
 		// Trace a new interaction cycle.
 		if (m_tracer != null){
-            m_tracer.startNewEvent(m_imos.getCounter());
-			m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+            //m_tracer.startNewEvent(m_imos.getCounter());
+			//m_tracer.addEventElement("clock", m_imos.getCounter() + "");
+            m_tracer.startNewEvent(this.clock);
+			m_tracer.addEventElement("clock", this.clock + "");
 			//input.trace(m_tracer);		
 		}                
+
+		this.clock++;
 
 		// track the enaction 
 		
@@ -147,27 +157,18 @@ public class Ernest implements IErnest
 		return m_spas.getPlaceList();
 	}
 
-	public int getCounter() 
-	{
-		if (m_imos == null)
-			return 0;
-		else
-			return m_imos.getCounter();
+	public int getClock(){
+		return this.clock;
 	}
 
 	public int getUpdateCount() 
 	{
-		if (m_imos == null)
-			return 0;
-		else
-			return m_imos.getCounter();
-		//return m_spas.getClock();
+//		if (m_imos == null)
+//			return 0;
+//		else
+//			return m_imos.getCounter();
+		return this.clock;
 	}
-
-//	public ISpatialMemory getSpatialSimulation() 
-//	{
-//		return m_spas.getSpatialMemory();
-//	}
 
 	public Collection<Primitive> getPrimitives() 
 	{
