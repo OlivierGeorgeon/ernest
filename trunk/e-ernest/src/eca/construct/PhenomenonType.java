@@ -15,17 +15,17 @@ public interface PhenomenonType {
 	public static PhenomenonType EMPTY = PhenomenonTypeImpl.createOrGet("_");
 	
 	/**
-	 * @return This aspect's label.
+	 * @return This PhenomenonType's label.
 	 */
 	public String getLabel();
 	
 	/**
-	 * @param primitive The primitive interaction to add to this aspect
+	 * @param primitive The primitive interaction to add to this phenomenon type
 	 */
 	public void addPrimitive(Primitive primitive);
 	
 	/**
-	 * @return The list of primitive interactions attached to this aspect
+	 * @return The list of primitive interactions attached to this phenomenon type
 	 */
 	public List<Primitive> getPrimitives();
 }
