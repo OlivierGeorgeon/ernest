@@ -51,7 +51,7 @@ public interface Place extends Cloneable
 	/**
 	 * @return This place's primitive interaction.
 	 */
-	public Primitive getPrimitive();
+	//public Primitive getPrimitive();
 	
 	/**
 	 * Test if this place is at this position.
@@ -100,12 +100,10 @@ public interface Place extends Cloneable
 	 */
 	public float getOrientationAngle();
 	
-	//public PhenomenonType getPhenomenonType();
-	
-	//public void setPhenomenonType(PhenomenonType phenomenonType);
-	
 	public void normalize(float scale);
 	
 	public Area getArea();
+	
+	public String getDisplayLabel();
 	
 }

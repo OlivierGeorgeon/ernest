@@ -5,7 +5,6 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import eca.Primitive;
-import eca.construct.PhenomenonType;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.ss.enaction.Act;
@@ -24,8 +23,6 @@ public class PlaceImpl implements Place
 	private int displayCode;
 	private int clock = 0;
 	
-	//private PhenomenonType phenomenonType = null;
-
 	/**
 	 * Create a new place 
 	 * (The provided position is cloned so the place can be moved without changing the provided position).
@@ -154,7 +151,8 @@ public class PlaceImpl implements Place
 		else
 		{
 			Place other = (Place)o;
-			ret  = (this.getPrimitive().equals(other.getPrimitive()) 
+			//ret  = (this.getPrimitive().equals(other.getPrimitive()) 
+			ret  = (this.getDisplayLabel().equals(other.getDisplayLabel()) 
 					&& this.position.epsilonEquals(other.getPosition(), .1f)
 					&& (this.clock == other.getClock()));
 			//ret = isInCell(other.getPosition()) && other.getClock() == getClock() && other.getType() == getType();
@@ -182,14 +180,6 @@ public class PlaceImpl implements Place
 		return ret;		
 	}
 	
-//	public PhenomenonType getPhenomenonType(){
-//		return this.phenomenonType;
-//	}
-//	
-//	public void setPhenomenonType(PhenomenonType phenomenonType){
-//		this.phenomenonType = phenomenonType;
-//	}
-
 	public void normalize(float scale) {
 		float d = this.position.distance(new Point3f());
 		if (d > 0) this.position.scale(scale / d);
@@ -197,5 +187,9 @@ public class PlaceImpl implements Place
 	
 	public Area getArea(){
 		return AreaImpl.createOrGet(position);
+	}
+	
+	public String getDisplayLabel(){
+		return this.primitive.getLabel();
 	}
 }
