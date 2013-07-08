@@ -2,6 +2,8 @@ package eca.spas.egomem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
@@ -39,6 +41,8 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	/** The Local space structure. */
 	private ArrayList<Place> m_places = new ArrayList<Place>();
 	
+	private List<PhenomenonInstance> phenomenonInstances = new ArrayList<PhenomenonInstance>();
+	
 	/**
 	 * Clone spatial memory to perform simulations
 	 * TODO clone the places 
@@ -64,11 +68,22 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 		m_places.add(place);
 	}
 	
+	public void addPhenomenonInstance(PhenomenonInstance phenomenonInstance){
+		this.phenomenonInstances.add(phenomenonInstance);
+	}
+	
+	public void removePhenomenonInstance(PhenomenonInstance phenomenonInstance){
+		this.phenomenonInstances.remove(phenomenonInstance);
+	}
+	
 	public void transform(Transform3D transform)
 	{
-		if (transform != null)
-			for (Place p : m_places)
-				p.transform(transform);
+		//if (transform != null)
+		for (Place p : m_places)
+			p.transform(transform);
+		
+		for (PhenomenonInstance pi : this.phenomenonInstances)
+			pi.getPlace().transform(transform);
 	}
 	
 	/**
@@ -146,18 +161,5 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 			tracer.addSubelement(localSpace, "position_0", ErnestUtils.hexColor(getDisplayCode(DIRECTION_BEHIND_RIGHT)));
 		}
 	}
-
-//	/**
-//	 * @return The list of places in Local Spave Memory
-//	 */
-//	public ArrayList<Place> getPlaceList()
-//	{
-//		return m_places;
-//	}
-//	
-//	public void setPlaceList(ArrayList<Place> places) 
-//	{
-//		m_places = places;
-//	}
 	
 }

@@ -1,8 +1,10 @@
-package eca.construct;
+package eca.ss;
 
 
 import java.util.HashMap;
 import java.util.Map;
+
+import eca.construct.PhenomenonType;
 import eca.construct.egomem.Area;
 
 /**

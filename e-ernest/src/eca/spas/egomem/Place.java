@@ -3,9 +3,8 @@ package eca.spas.egomem;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-
 import eca.Primitive;
-import eca.construct.PhenomenonType;
+import eca.construct.egomem.Area;
 import eca.ss.enaction.Act;
 
 /**
@@ -106,5 +105,7 @@ public interface Place extends Cloneable
 	//public void setPhenomenonType(PhenomenonType phenomenonType);
 	
 	public void normalize(float scale);
+	
+	public Area getArea();
 	
 }

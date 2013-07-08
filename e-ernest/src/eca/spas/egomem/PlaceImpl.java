@@ -6,6 +6,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import eca.Primitive;
 import eca.construct.PhenomenonType;
+import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
@@ -192,5 +193,9 @@ public class PlaceImpl implements Place
 	public void normalize(float scale) {
 		float d = this.position.distance(new Point3f());
 		if (d > 0) this.position.scale(scale / d);
+	}
+	
+	public Area getArea(){
+		return AreaImpl.createOrGet(position);
 	}
 }

@@ -7,14 +7,16 @@ import java.util.List;
 import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
-import eca.construct.Appearance;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.Spas;
+import eca.spas.egomem.PhenomenonInstance;
 import eca.ss.ActProposition;
+import eca.ss.Appearance;
+import eca.ss.AppearanceImpl;
 import eca.ss.IImos;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.Enaction;
@@ -47,8 +49,9 @@ public class DeciderImpl implements Decider
 	{
 		System.out.println("New decision ================ ");
 
-		Enaction newEnaction = new EnactionImpl();		
-		Appearance preAppearance = enaction.getAppearance();
+		Enaction newEnaction = new EnactionImpl();	
+		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
+		Appearance preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), phenomenonInstance.getPlace().getArea());
 
 		// Choose the next action
 		
@@ -91,7 +94,7 @@ public class DeciderImpl implements Decider
 		
 		// Prepare the new enaction.
 		
-		newEnaction.setAppearance(preAppearance);
+		newEnaction.setPhenomenonInstance(phenomenonInstance);
 		newEnaction.setTopIntendedAct(intendedAct);
 		newEnaction.setTopRemainingAct(intendedAct);
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());

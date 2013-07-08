@@ -1,7 +1,7 @@
 package eca.construct.experiment;
 
-import eca.construct.Appearance;
 import eca.construct.egomem.Displacement;
+import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
 /**
