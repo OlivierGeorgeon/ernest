@@ -53,6 +53,9 @@ public class SpasImpl implements Spas
 		enactedPlace.normalize(3);
 
 		PhenomenonInstance previousPhenomenonInstance = enaction.getPhenomenonInstance();
+		Area previousArea = null;
+		if (previousPhenomenonInstance != null)
+			previousArea = previousPhenomenonInstance.getPlace().getArea();
 		Displacement displacement = enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement();
 		this.transform.set(displacement.getTransform3D());
 		
@@ -64,7 +67,7 @@ public class SpasImpl implements Spas
 		
 		this.spacialMemory.addPlace(enactedPlace);
 
-		// Merge phenomena
+		// Merge phenomena	
 		
 		Area area = enaction.getEnactedPrimitiveAct().getArea();
 		PhenomenonType newPhenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
@@ -76,13 +79,13 @@ public class SpasImpl implements Spas
 		}
 		else{ 
 			if (previousPhenomenonInstance != null){
+				previousPhenomenonInstance.getPlace().transform(transform); // 
 				if (previousPhenomenonInstance.getPlace().getArea().equals(area)){
 					PhenomenonType previousPhenomenonType = previousPhenomenonInstance.getPhenomenonType();
 					if (!previousPhenomenonType.equals(newPhenomenonType)){
 						PhenomenonTypeImpl.merge(newPhenomenonType, previousPhenomenonType);
-						//enactedPlace.setPhenomenonType(previousPhenomenonType);
 						if (m_tracer != null){
-							m_tracer.addEventElement("phenomenon", newPhenomenonType.getLabel() + " merged to " + previousPhenomenonType.getLabel());}
+							m_tracer.addEventElement("phenomenon", newPhenomenonType.getLabel() + " merged to " + previousPhenomenonType.getLabel() + " in area " + area.getLabel());}
 						newPhenomenonType = previousPhenomenonType;
 					}
 				}
@@ -91,7 +94,7 @@ public class SpasImpl implements Spas
 		
 		// Record the experiment
 		if (previousPhenomenonInstance != null){
-			Appearance preAppearance = AppearanceImpl.createOrGet(newPhenomenonType, previousPhenomenonInstance.getPlace().getArea());
+			Appearance preAppearance = AppearanceImpl.createOrGet(newPhenomenonType, previousArea);
 			Appearance postAppearance = AppearanceImpl.createOrGet(newPhenomenonType, area);
 			Experiment newExp = ExperimentImpl.createOrGet(preAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
 			newExp.incActCounter(enaction.getEnactedPrimitiveAct());
