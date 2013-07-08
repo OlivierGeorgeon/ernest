@@ -3,6 +3,7 @@ package eca.construct;
 import java.util.List;
 import eca.Primitive;
 import eca.construct.egomem.Displacement;
+import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
 /**

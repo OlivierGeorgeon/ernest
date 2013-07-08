@@ -12,6 +12,7 @@ import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.ExperimentImpl;
+import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 

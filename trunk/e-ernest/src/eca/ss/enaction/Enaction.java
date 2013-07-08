@@ -7,9 +7,10 @@ import javax.media.j3d.Transform3D;
 
 import tracing.ITracer;
 
-import eca.construct.Appearance;
 import eca.construct.egomem.Displacement;
+import eca.spas.egomem.PhenomenonInstance;
 import eca.spas.egomem.Place;
+import eca.ss.Appearance;
 import ernest.IEffect;
 
 /**
@@ -45,12 +46,12 @@ public interface Enaction
 	/**
 	 * @param appearance The Appearance sensed during this primitive enaction.
 	 */
-	public void setAppearance(Appearance appearance);
+	public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance);
 	
 	/**
 	 * @return The Appearance sensed during this primitive enaction.
 	 */
-	public Appearance getAppearance();
+	public PhenomenonInstance getPhenomenonInstance();
 	
 	/**
 	 * @param act The last primitive intended interaction

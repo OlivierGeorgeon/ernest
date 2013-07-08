@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import eca.construct.Appearance;
-import eca.construct.AppearanceImpl;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Area;
@@ -14,9 +12,13 @@ import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
+import eca.spas.egomem.PhenomenonInstance;
+import eca.spas.egomem.PhenomenonInstanceImpl;
 import eca.spas.egomem.Place;
 import eca.spas.egomem.SpatialMemory;
 import eca.spas.egomem.SpatialMemoryImpl;
+import eca.ss.Appearance;
+import eca.ss.AppearanceImpl;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -36,18 +38,6 @@ public class SpasImpl implements Spas
 	/** The transformation to apply to spatial memory */
 	Transform3D transform = new Transform3D();
 	
-//	private static Spas INSTANCE = null; 
-//	
-//	private Spas() {
-//		// TODO Auto-generated constructor stub
-//	}
-//	
-//	public static Spas instance(){
-//		if (INSTANCE == null)
-//			INSTANCE = new Spas();
-//		return INSTANCE;
-//	}
-
 	public void setTracer(ITracer tracer) {
 		m_tracer = tracer;
 	}
@@ -62,8 +52,7 @@ public class SpasImpl implements Spas
 		Place enactedPlace = enaction.getEnactedPlaces().get(0);	
 		enactedPlace.normalize(3);
 
-		//Appearance previousAppearance = spacialMemory.getLastAppearance();
-		Appearance previousAppearance = enaction.getAppearance();
+		PhenomenonInstance previousPhenomenonInstance = enaction.getPhenomenonInstance();
 		Displacement displacement = enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement();
 		this.transform.set(displacement.getTransform3D());
 		
@@ -79,15 +68,16 @@ public class SpasImpl implements Spas
 		
 		Area area = enaction.getEnactedPrimitiveAct().getArea();
 		PhenomenonType newPhenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
+		
 		if (area.getLabel().equals(AreaImpl.O) && enaction.getIntendedPrimitiveAct() != null){
 			PhenomenonTypeImpl.merge(newPhenomenonType, PhenomenonTypeImpl.EMPTY);
 			if (m_tracer != null && !newPhenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
 				m_tracer.addEventElement("empty", newPhenomenonType.getLabel() + " merged to " + PhenomenonTypeImpl.EMPTY.getLabel());}
 		}
 		else{ 
-			if (previousAppearance != null){
-				if (previousAppearance.getArea().equals(area)){
-					PhenomenonType previousPhenomenonType = previousAppearance.getPhenomenonType();
+			if (previousPhenomenonInstance != null){
+				if (previousPhenomenonInstance.getPlace().getArea().equals(area)){
+					PhenomenonType previousPhenomenonType = previousPhenomenonInstance.getPhenomenonType();
 					if (!previousPhenomenonType.equals(newPhenomenonType)){
 						PhenomenonTypeImpl.merge(newPhenomenonType, previousPhenomenonType);
 						//enactedPlace.setPhenomenonType(previousPhenomenonType);
@@ -100,16 +90,17 @@ public class SpasImpl implements Spas
 		}
 		
 		// Record the experiment
-		Appearance appearance = AppearanceImpl.createOrGet(newPhenomenonType, area);
-		if (previousAppearance != null){
-			Experiment newExp = ExperimentImpl.createOrGet(previousAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
+		if (previousPhenomenonInstance != null){
+			Appearance preAppearance = AppearanceImpl.createOrGet(newPhenomenonType, previousPhenomenonInstance.getPlace().getArea());
+			Appearance postAppearance = AppearanceImpl.createOrGet(newPhenomenonType, area);
+			Experiment newExp = ExperimentImpl.createOrGet(preAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
 			newExp.incActCounter(enaction.getEnactedPrimitiveAct());
 			newExp.incDisplacementCounter(displacement);
-			newExp.incPostAppearanceCounter(appearance);
+			newExp.incPostAppearanceCounter(postAppearance);
 			if (m_tracer != null){
 				m_tracer.addEventElement("experiment", newExp.toString());}
 		}
-		enaction.setAppearance(appearance);
+		enaction.setPhenomenonInstance(new PhenomenonInstanceImpl(newPhenomenonType, enactedPlace.clone()));
 	}
 
 	public int getValue(int i, int j)
@@ -130,17 +121,13 @@ public class SpasImpl implements Spas
 		return this.spacialMemory.getDisplayCode(position);
 	}
 
-	public SpatialMemory getSpatialMemory()
-	{
-		return this.spacialMemory;
-	}
+//	public SpatialMemory getSpatialMemory()
+//	{
+//		return this.spacialMemory;
+//	}
 
 	public Transform3D getTransformToAnim() {
 		return this.transform;
 	}
-
-//	public Appearance getLastAppearance() {
-//		return this.spacialMemory.getLastAppearance();
-//	}
 
 }

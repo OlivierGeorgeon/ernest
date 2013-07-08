@@ -1,5 +1,6 @@
-package eca.construct;
+package eca.ss;
 
+import eca.construct.PhenomenonType;
 import eca.construct.egomem.Area;
 
 /**

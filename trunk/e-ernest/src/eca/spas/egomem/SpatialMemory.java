@@ -17,12 +17,16 @@ public interface SpatialMemory
 	public void tick();
 	
 	/**
-	 * Add a place in this spatial memory
+	 * Add a place in spatial memory
 	 * @param place The place to add in spatial memory.
 	 */
 	public void addPlace(Place place);
 
-	/**
+	public void addPhenomenonInstance(PhenomenonInstance phenomenonInstance);
+	
+	public void removePhenomenonInstance(PhenomenonInstance phenomenonInstance);
+
+		/**
 	 * @return A clone of this spatial memory
 	 */
 	public ArrayList<Place> clonePlaceList();
@@ -48,17 +52,6 @@ public interface SpatialMemory
 	 * @param tracer The tracer
 	 */
 	public void trace(ITracer tracer);
-
-	/**
-	 * @return The list of places in this spatial memory
-	 */
-	//public ArrayList<Place> getPlaceList();
- 	
-	/**
-	 * Set the list of places 
-	 * @param places The list of places
-	 */
-	//public void setPlaceList(ArrayList<Place> places);
 
 	
 }

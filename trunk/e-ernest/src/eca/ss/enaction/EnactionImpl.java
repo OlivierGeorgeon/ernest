@@ -7,11 +7,12 @@ import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
-import eca.construct.Appearance;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
+import eca.spas.egomem.PhenomenonInstance;
 import eca.spas.egomem.Place;
 import eca.spas.egomem.PlaceImpl;
+import eca.ss.Appearance;
 import ernest.IEffect;
 
 /**
@@ -59,7 +60,7 @@ public class EnactionImpl implements Enaction
 
 	private Displacement displacement = null;
 	
-	private Appearance appearance = null;
+	private PhenomenonInstance phenomenonInstance = null;
 	
 	private List<Place> enactedPlaces = new ArrayList<Place>();
 	
@@ -327,12 +328,12 @@ public class EnactionImpl implements Enaction
 		return this.enactedPlaces;
 	}
 
-	public Appearance getAppearance() {
-		return appearance;
+	public PhenomenonInstance getPhenomenonInstance() {
+		return this.phenomenonInstance;
 	}
 
-	public void setAppearance(Appearance appearance) {
-		this.appearance = appearance;
+	public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance) {
+		this.phenomenonInstance = phenomenonInstance;
 	}
 
 }
