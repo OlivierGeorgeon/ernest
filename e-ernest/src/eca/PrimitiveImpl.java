@@ -58,9 +58,9 @@ public class PrimitiveImpl implements Primitive {
 		this.label = label;
 		this.value = value;
 		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet(new Point3f(1,0,0)));
-		this.action = ActionImpl.createNew();
+		this.action = ActionImpl.createNew();//.createOrGet("[a" + label + "]");//
 		this.action.addPrimitive(this);	
-		this.phenomenonType = PhenomenonTypeImpl.createNew();
+		this.phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");//.createNew();//
 		this.phenomenonType.addPrimitive(this);
 	}
 	

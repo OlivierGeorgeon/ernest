@@ -127,14 +127,13 @@ public class Imos implements IImos
 				enaction.setSuccessful(false);	
 				
 				if (!enactedTopInteraction.getPrimitive().getAction().equals(intendedTopInteraction.getPrimitive().getAction())){
-					System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
+					//System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					if (m_tracer != null){
 						m_tracer.addEventElement("action", enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to intended action " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					}
 				}
 				
 				ActionImpl.merge(enactedTopInteraction.getPrimitive().getAction(), intendedTopInteraction.getPrimitive().getAction());
-				//intendedTopInteraction.getPrimitive().getAction().setTransformation(enaction.getTransformation());
 				intendedTopInteraction.getPrimitive().setDisplacement(enaction.getDisplacement());
 			}
 			

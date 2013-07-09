@@ -42,7 +42,7 @@ public class AreaImpl implements Area {
 	
 	private static String createKey(Point3f point) {
 		String key = "";
-		if (point.epsilonEquals(new Point3f(), .1f))
+		if (point.epsilonEquals(new Point3f(), .1f) )//|| point.x < 0)
 			key = O;
 		else if (ErnestUtils.polarAngle(point) > .1f)
 			key = A; 

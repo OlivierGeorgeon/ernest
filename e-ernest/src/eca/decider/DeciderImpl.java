@@ -4,11 +4,15 @@ package eca.decider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.vecmath.Point3f;
+
 import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
+import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
@@ -51,7 +55,8 @@ public class DeciderImpl implements Decider
 
 		Enaction newEnaction = new EnactionImpl();	
 		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
-		Appearance preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), phenomenonInstance.getPlace().getArea());
+		Appearance	preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), phenomenonInstance.getPlace().getArea());
+			
 
 		// Choose the next action
 		

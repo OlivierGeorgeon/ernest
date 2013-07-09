@@ -7,10 +7,13 @@ import eca.construct.PhenomenonType;
  * @author Olivier
  */
 public interface PhenomenonInstance {
+	
 	/**
 	 * @return The primitive interaction
 	 */
 	public PhenomenonType getPhenomenonType();
+	
+	public void setPhenomenonType(PhenomenonType phenomenonType);
 	
 	/**
 	 * @return The place
