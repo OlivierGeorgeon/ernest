@@ -24,4 +24,8 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 		return this.place;
 	}
 
+	public void setPhenomenonType(PhenomenonType phenomenonType) {
+		this.phenomenonType = phenomenonType;
+	}
+
 }
