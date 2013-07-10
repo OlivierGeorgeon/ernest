@@ -49,21 +49,36 @@ public class SpasImpl implements Spas
 	 */
 	public void track(Enaction enaction) 
 	{
+		Object phenomenonInstElemnt = null;
+		if (m_tracer != null)
+			phenomenonInstElemnt = m_tracer.addEventElement("phenomenonInstance", true);
+
 		Place enactedPlace = enaction.getEnactedPlaces().get(0);	
 		enactedPlace.normalize(3);
+		System.out.println("enacted position " + enactedPlace.getPosition().x + "," + enactedPlace.getPosition().y);
 		Displacement displacement = enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement();
 		this.transform.set(displacement.getTransform3D());
 
 		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
+		//Appearance preAppearance = null;
 		Area previousArea = null;
+		Area projectedArea = null;
 		if (phenomenonInstance == null){
 			previousArea = AreaImpl.createOrGet(new Point3f());
 			phenomenonInstance = new PhenomenonInstanceImpl(enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType(), enactedPlace.clone());
 		}
 		else{
 			previousArea = phenomenonInstance.getPlace().getArea();
-			phenomenonInstance.getPlace().transform(this.transform); // 
+			//System.out.println("pre-position " + phenomenonInstance.getPlace().getPosition().x + "," + phenomenonInstance.getPlace().getPosition().y);
+			phenomenonInstance.getPlace().transform(this.transform);
+			//System.out.println("projected position " + phenomenonInstance.getPlace().getPosition().x + "," + phenomenonInstance.getPlace().getPosition().y);
+			projectedArea = phenomenonInstance.getPlace().getArea();
 		}
+		
+		Appearance preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), previousArea);
+
+		Area area = enaction.getEnactedPrimitiveAct().getArea();
+		PhenomenonType phenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
 		
 		// Update spatial memory
 		
@@ -74,42 +89,57 @@ public class SpasImpl implements Spas
 
 		// Merge phenomenon types	
 		
-		Area area = enaction.getEnactedPrimitiveAct().getArea();
-		PhenomenonType phenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
-		
 		if (enaction.getIntendedPrimitiveAct() != null){
 			if (area.getLabel().equals(AreaImpl.O)  ){
 				PhenomenonTypeImpl.merge(phenomenonType, PhenomenonTypeImpl.EMPTY);
 				phenomenonInstance = new PhenomenonInstanceImpl(PhenomenonTypeImpl.EMPTY, enactedPlace.clone());
-				if (m_tracer != null && !phenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
-					m_tracer.addEventElement("empty", phenomenonType.getLabel() + " merged to " + PhenomenonTypeImpl.EMPTY.getLabel());}
+				if (m_tracer != null ){
+					if (!phenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
+						m_tracer.addSubelement(phenomenonInstElemnt, "type", PhenomenonTypeImpl.EMPTY.getLabel());
+						m_tracer.addSubelement(phenomenonInstElemnt, "merge", phenomenonType.getLabel());
+						m_tracer.addSubelement(phenomenonInstElemnt, "area", area.getLabel());
+					}
+					else if (!previousArea.getLabel().equals(AreaImpl.O)){
+						m_tracer.addSubelement(phenomenonInstElemnt, "type", PhenomenonTypeImpl.EMPTY.getLabel());
+						m_tracer.addSubelement(phenomenonInstElemnt, "shift", phenomenonType.getLabel());
+						m_tracer.addSubelement(phenomenonInstElemnt, "area", area.getLabel());
+					}
+				}
 				phenomenonType = PhenomenonTypeImpl.EMPTY;
 			}
-			else if (phenomenonInstance.getPlace().getArea().equals(area)){
+			else if (projectedArea.equals(area)){
 				PhenomenonType previousPhenomenonType = phenomenonInstance.getPhenomenonType();
+				phenomenonInstance.getPlace().setPosition(enactedPlace.getPosition()); //Update the position
 				if (!previousPhenomenonType.equals(phenomenonType)){
 					PhenomenonTypeImpl.merge(phenomenonType, previousPhenomenonType);
 					if (m_tracer != null){
-						m_tracer.addEventElement("phenomenon", phenomenonType.getLabel() + " merged to " + previousPhenomenonType.getLabel() + " in area " + area.getLabel());}
+						m_tracer.addSubelement(phenomenonInstElemnt, "type", previousPhenomenonType.getLabel());
+						m_tracer.addSubelement(phenomenonInstElemnt, "merge", phenomenonType.getLabel());
+						m_tracer.addSubelement(phenomenonInstElemnt, "area", area.getLabel());
+						}
 					phenomenonType = previousPhenomenonType;
+					preAppearance = AppearanceImpl.createOrGet(phenomenonType, previousArea);
 				}
 			}
 			else {
 				phenomenonInstance = new PhenomenonInstanceImpl(phenomenonType, enactedPlace.clone());
+				if (m_tracer != null){
+					m_tracer.addSubelement(phenomenonInstElemnt, "type", phenomenonType.getLabel());
+					m_tracer.addSubelement(phenomenonInstElemnt, "shift", phenomenonType.getLabel());
+					m_tracer.addSubelement(phenomenonInstElemnt, "area", phenomenonInstance.getPlace().getArea().getLabel());
+				}
 			}
 		}
 		
 		// Record the experiment
-		//if (phenomenonInstance != null){
-			Appearance preAppearance = AppearanceImpl.createOrGet(phenomenonType, previousArea);
-			Appearance postAppearance = AppearanceImpl.createOrGet(phenomenonType, area);
-			Experiment newExp = ExperimentImpl.createOrGet(preAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
-			newExp.incActCounter(enaction.getEnactedPrimitiveAct());
-			newExp.incDisplacementCounter(displacement);
-			newExp.incPostAppearanceCounter(postAppearance);
-			if (m_tracer != null){
-				m_tracer.addEventElement("experiment", newExp.toString());}
-		//}
+		Appearance postAppearance = AppearanceImpl.createOrGet(phenomenonType, area);
+		Experiment newExp = ExperimentImpl.createOrGet(preAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
+		newExp.incActCounter(enaction.getEnactedPrimitiveAct());
+		newExp.incDisplacementCounter(displacement);
+		newExp.incPostAppearanceCounter(postAppearance);
+		if (m_tracer != null){
+			m_tracer.addEventElement("experiment", newExp.toString());}
+
 		enaction.setPhenomenonInstance(phenomenonInstance);
 	}
 
