@@ -4,7 +4,7 @@ import eca.ss.enaction.Act;
 
 
 /**
- * A proposition to enact an interaction. 
+ * A proposition to enact an act. 
  * @author ogeorgeon
  */
 public interface ActProposition extends Comparable<ActProposition> 

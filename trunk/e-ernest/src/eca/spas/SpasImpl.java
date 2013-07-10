@@ -60,7 +60,6 @@ public class SpasImpl implements Spas
 		this.transform.set(displacement.getTransform3D());
 
 		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
-		//Appearance preAppearance = null;
 		Area previousArea = null;
 		Area projectedArea = null;
 		if (phenomenonInstance == null){

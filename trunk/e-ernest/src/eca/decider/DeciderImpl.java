@@ -120,15 +120,16 @@ public class DeciderImpl implements Decider
 		}		
 		
 		for (ActProposition ap : actPropositions){
-			if (ap.getAct().getPrimitive() != null){
-				ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), ap.getWeight());
+			if (ap.getAct().getAction() != null){
+				int weight = ap.getWeight() * ap.getAct().getValue();
+				ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), weight);
 				int j = actionPropositions.indexOf(actionProposition);
 				if (j == -1)
 					actionPropositions.add(actionProposition);
 				else
 				{
 					ActionProposition previsousProposition = actionPropositions.get(j);
-					previsousProposition.addSSWeight(actionProposition.getSSWeight());
+					previsousProposition.addSSWeight(weight);//actionProposition.getSSWeight());
 				}
 			}
 		}
@@ -136,7 +137,7 @@ public class DeciderImpl implements Decider
 		// trace weighted actions 
 		Object decisionElmt = null;
 		if (this.tracer != null){
-			decisionElmt = this.tracer.addEventElement("propositions", true);
+			decisionElmt = this.tracer.addEventElement("actionPropositions", true);
 			for (ActionProposition ap : actionPropositions){
 				System.out.println("propose action " + ap.getAction().getLabel() + " with weight " + ap.getSSWeight());
 				this.tracer.addSubelement(decisionElmt, "action", ap.getAction().getLabel() + " weight " + ap.getSSWeight() + " anticipated act " + ap.getAnticipatedAct().getLabel() + " value " + ap.getAnticipatedAct().getPrimitive().getValue());
