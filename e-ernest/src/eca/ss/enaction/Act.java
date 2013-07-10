@@ -121,6 +121,8 @@ public interface Act
 	 */
 	public Action getAction();
 	
+	public void setAction(Action action);
+	
 	/**
 	 * @param color The color used to display this act in sequential and spatial trace.
 	 */
@@ -130,4 +132,6 @@ public interface Act
 	 * @param The color used to display this act in sequential and spatial trace.
 	 */
 	public int getColor();
+	
+	public int getValue();
 }

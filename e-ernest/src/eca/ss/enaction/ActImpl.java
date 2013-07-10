@@ -32,6 +32,8 @@ public class ActImpl implements Act
 	private Area area;
 	private int color;
 	
+	private Action action;
+	
 	/**
 	 * @return The list of all acts known by the agent.
 	 */
@@ -112,7 +114,10 @@ public class ActImpl implements Act
 	}
 	
 	public Action getAction() {
-		return this.primitive.getAction();
+		if (this.isPrimitive())
+			return this.primitive.getAction();
+		else
+			return this.action;
 	}
 
 	public Act getPreAct() 
@@ -282,5 +287,16 @@ public class ActImpl implements Act
 
 	public void setColor(int color) {
 		this.color = color;
+	}
+
+	public void setAction(Action action) {
+		this.action = action;		
+	}
+
+	public int getValue() {
+		if (isPrimitive())
+			return this.primitive.getValue();
+		else 
+			return this.getPreAct().getValue() + this.getPostAct().getValue();
 	}
 }
