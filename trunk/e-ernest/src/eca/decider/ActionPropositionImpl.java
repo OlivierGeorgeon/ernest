@@ -13,6 +13,9 @@ public class ActionPropositionImpl implements ActionProposition {
 	private int ssWeight = 0; 
 	private Act anticipatedAct = null;
 	
+	private Act ssAnticipatedAct = null;
+	private int ssActWeight = 0;
+	
 	/**
 	 * Constructor. 
 	 * @param a The proposed action.
@@ -75,6 +78,22 @@ public class ActionPropositionImpl implements ActionProposition {
 
 	public void setAnticipatedAct(Act anticipatedAct) {
 		this.anticipatedAct = anticipatedAct;
+	}
+
+	public int getSSActWeight() {
+		return ssActWeight;
+	}
+
+	public void setSSActWeight(int ssActWeight) {
+		this.ssActWeight = ssActWeight;
+	}
+
+	public Act getSSAnticipatedAct() {
+		return ssAnticipatedAct;
+	}
+
+	public void setSSAnticipatedAct(Act ssAnticipatedAct) {
+		this.ssAnticipatedAct = ssAnticipatedAct;
 	}
 
 }
