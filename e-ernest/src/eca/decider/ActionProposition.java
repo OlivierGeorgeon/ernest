@@ -38,4 +38,9 @@ public interface ActionProposition extends Comparable<ActionProposition> {
 	 */
 	public boolean equals(Object o);	
 	
+	public void setSSAnticipatedAct(Act ssAnticipatedAct);
+	public Act getSSAnticipatedAct();
+	public void setSSActWeight(int ssActWeight);
+	public int getSSActWeight();
+	
 }
