@@ -61,8 +61,11 @@ public class DeciderImpl implements Decider
 		
 		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SS) ); // or SPAS
 
-		Action	selectedAction = actionPropositions.get(0).getAction();
-		Act intendedAct = actionPropositions.get(0).getAnticipatedAct();		
+		ActionProposition selecteProposition = actionPropositions.get(0);
+		Action	selectedAction = selecteProposition.getAction();
+		Act intendedAct = selecteProposition.getSSAnticipatedAct();	
+		//if (intendedAct == null)
+			intendedAct = selecteProposition.getAnticipatedAct();		
 
 		// Anticipate the consequences
 		
@@ -74,7 +77,15 @@ public class DeciderImpl implements Decider
 		if (this.tracer != null){
 			Object decisionElmt = this.tracer.addEventElement("decision", true);
 			
-			this.tracer.addSubelement(decisionElmt, "selected_action", selectedAction.getLabel());
+			Object apElmnt = this.tracer.addSubelement(decisionElmt, "selected_proposition");
+			this.tracer.addSubelement(apElmnt, "action", selecteProposition.getAction().getLabel());
+			this.tracer.addSubelement(apElmnt, "weight", selecteProposition.getSSWeight() + "");
+			this.tracer.addSubelement(apElmnt, "spas_act", selecteProposition.getAnticipatedAct().getLabel());
+			this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");
+			if (selecteProposition.getSSAnticipatedAct() != null){
+				this.tracer.addSubelement(apElmnt, "ss_act", selecteProposition.getSSAnticipatedAct().getLabel());
+				this.tracer.addSubelement(apElmnt, "ss_value", selecteProposition.getSSAnticipatedAct().getValue() +"");					
+			}				
 
 			Object aspectElmt = this.tracer.addSubelement(decisionElmt, "phenomena");
 			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
@@ -156,8 +167,6 @@ public class DeciderImpl implements Decider
 					this.tracer.addSubelement(apElmnt, "ss_act", ap.getSSAnticipatedAct().getLabel());
 					this.tracer.addSubelement(apElmnt, "ss_value", ap.getSSAnticipatedAct().getValue() +"");					
 				}				
-				//this.tracer.addSubelement(decisionElmt, "action", ap.getAction().getLabel() + " weight " + ap.getSSWeight() + " SPAS anticipated act " + ap.getAnticipatedAct().getLabel() + " value " + ap.getAnticipatedAct().getValue() + 
-				//		ssAct);
 			}
 		}
 		
