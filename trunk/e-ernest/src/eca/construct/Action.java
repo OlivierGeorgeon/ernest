@@ -7,8 +7,12 @@ import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
 /**
- * An Action that can be performed in the external world.
+ * An Action that can be performed on a phenomenon instance.
  * An action conflates primitive interactions based on the fact that they are alternative to each other.
+ * 
+ * Does an Action always results in an interaction that belongs to this Action??
+ *   depends if the resulting action is perfomed on the intended phenomenon instance ??
+ * 
  * @author Olivier
  */
 public interface Action
