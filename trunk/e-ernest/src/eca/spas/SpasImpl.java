@@ -131,13 +131,13 @@ public class SpasImpl implements Spas
 		}
 		
 		// Record the experiment
-		Appearance postAppearance = AppearanceImpl.createOrGet(phenomenonType, area);
-		Experiment newExp = ExperimentImpl.createOrGet(preAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
-		newExp.incActCounter(enaction.getEnactedPrimitiveAct());
-		newExp.incDisplacementCounter(displacement);
-		newExp.incPostAppearanceCounter(postAppearance);
-		if (m_tracer != null){
-			m_tracer.addEventElement("experiment", newExp.toString());}
+//		Appearance postAppearance = AppearanceImpl.createOrGet(phenomenonType, area);
+//		Experiment newExp = ExperimentImpl.createOrGet(preAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
+//		newExp.incActCounter(enaction.getEnactedPrimitiveAct());
+//		newExp.incDisplacementCounter(displacement);
+//		newExp.incPostAppearanceCounter(postAppearance);
+//		if (m_tracer != null){
+//			m_tracer.addEventElement("experiment", newExp.toString());}
 
 		enaction.setPhenomenonInstance(phenomenonInstance);
 	}

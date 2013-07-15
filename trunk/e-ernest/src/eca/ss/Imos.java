@@ -121,14 +121,16 @@ public class Imos implements IImos
 				m_internalState= "!";
 				enaction.setSuccessful(false);	
 				
-				if (!enactedTopInteraction.getPrimitive().getAction().equals(intendedTopInteraction.getPrimitive().getAction())){
+				//if (!enactedTopInteraction.getPrimitive().getAction().equals(intendedTopInteraction.getPrimitive().getAction())){
+				if (!enaction.getIntendedAction().contains(enactedTopInteraction.getPrimitive())){
 					//System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					if (m_tracer != null){
-						m_tracer.addEventElement("action", enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to intended action " + intendedTopInteraction.getPrimitive().getAction().getLabel());
+						m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopInteraction.getPrimitive() );
 					}
 				}
 				
-				ActionImpl.merge(enactedTopInteraction.getPrimitive().getAction(), intendedTopInteraction.getPrimitive().getAction());
+				//ActionImpl.merge(enactedTopInteraction.getPrimitive().getAction(), intendedTopInteraction.getPrimitive().getAction());
+				ActionImpl.merge(enactedTopInteraction.getPrimitive(), enaction.getIntendedAction());
 				intendedTopInteraction.getPrimitive().setDisplacement(enaction.getDisplacement());
 			}
 			
@@ -282,10 +284,10 @@ public class Imos implements IImos
 		}
 		if (this.m_tracer != null){
 			for (ActProposition ap : propositions){
-				String actionLabel = "";
-				if (ap.getAct().getAction() != null)
-					actionLabel = ap.getAct().getAction().getLabel();
-				this.m_tracer.addSubelement(propositionElmt, "act", ap.getAct().getLabel() + " weight " + ap.getWeight() + " action " + actionLabel );
+//				String actionLabel = "";
+//				if (ap.getAct().getAction() != null)
+//					actionLabel = ap.getAct().getAction().getLabel();
+				this.m_tracer.addSubelement(propositionElmt, "act", ap.getAct().getLabel() + " weight " + ap.getWeight()  );
 			}
 		}
 		return propositions;

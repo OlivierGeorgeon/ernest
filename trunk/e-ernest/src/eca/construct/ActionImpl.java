@@ -68,9 +68,22 @@ public class ActionImpl implements Action {
 	 */
 	public static void merge(Action enactedAction, Action intendedAction){
 		if (!enactedAction.equals(intendedAction)){
-			for (Primitive primitive : enactedAction.getPrimitives())
-				primitive.setAction(intendedAction);
+			for (Primitive primitive : enactedAction.getSuccessInteractions())
+				intendedAction.addPrimitive(primitive);
+				//primitive.setAction(intendedAction);
 			ACTIONS.remove(enactedAction.getLabel());
+		}
+	}
+	
+	public static void merge(Primitive primitive, Action intendedAction){
+		if (!intendedAction.contains(primitive)){
+			intendedAction.addPrimitive(primitive);
+			Action action = null;
+			for (Action a : getACTIONS()){
+				if (a.contains(primitive))
+					a = action;
+			}
+			ACTIONS.remove(action);
 		}
 	}
 	
@@ -87,9 +100,14 @@ public class ActionImpl implements Action {
 				this.primitives.add(primitive);
 	}
 	
-	public List<Primitive> getPrimitives(){
+	public List<Primitive> getSuccessInteractions(){
 		return this.primitives;
 	}
+	
+	public boolean contains(Primitive primitive){
+		return this.primitives.contains(primitive);
+	}
+
 	
 	/**
 	 * Actions are equal if they have the same label. 

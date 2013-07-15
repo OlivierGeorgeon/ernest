@@ -111,6 +111,7 @@ public class DeciderImpl implements Decider
 		newEnaction.setTopRemainingAct(intendedAct);
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
+		newEnaction.setIntendedAction(selectedAction);
 		
 		return newEnaction;
 	}
@@ -123,32 +124,34 @@ public class DeciderImpl implements Decider
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		
 		// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
-		for (Action a : ActionImpl.getACTIONS()){
-			Act anticipatedAct = a.predictAct(preAppearance);
-			ActionProposition actionProposition = new ActionPropositionImpl(a, 0);
+		for (Action action : ActionImpl.getACTIONS()){
+			Act anticipatedAct = action.predictAct(preAppearance);
+			ActionProposition actionProposition = new ActionPropositionImpl(action, 0);
 			actionProposition.setAnticipatedAct(anticipatedAct);
 			actionPropositions.add(actionProposition);
-		}		
-		
-		for (ActProposition ap : actPropositions){
-			if (ap.getAct().getAction() != null){
-				//int weight = ap.getWeight() * ap.getAct().getValue();
-				int weight = ap.getWeightedValue();
-				ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), weight);
-				int j = actionPropositions.indexOf(actionProposition);
-				if (j == -1){
-					actionProposition.setSSAnticipatedAct(ap.getAct());
-					actionProposition.setSSActWeight(ap.getWeight());
-					actionPropositions.add(actionProposition);
-				}
-				else
-				{
-					ActionProposition previousProposition = actionPropositions.get(j);
-					if (previousProposition.getSSActWeight() <= ap.getWeight()){
-						previousProposition.setSSAnticipatedAct(ap.getAct());
-						previousProposition.setSSActWeight(ap.getWeight());
+		//}		
+			for (ActProposition ap : actPropositions){
+				if (action.contains(ap.getAct().getPrimitive())){
+				//if (ap.getAct().getAction() != null){
+					//int weight = ap.getWeight() * ap.getAct().getValue();
+					int weight = ap.getWeightedValue();
+					//ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), weight);
+					ActionProposition actionProposition2 = new ActionPropositionImpl(action, weight);
+					int j = actionPropositions.indexOf(actionProposition2);
+					if (j == -1){
+						actionProposition2.setSSAnticipatedAct(ap.getAct());
+						actionProposition2.setSSActWeight(ap.getWeight());
+						actionPropositions.add(actionProposition2);
 					}
-					previousProposition.addSSWeight(weight);//actionProposition.getSSWeight());
+					else
+					{
+						ActionProposition previousProposition = actionPropositions.get(j);
+						if (previousProposition.getSSActWeight() <= ap.getWeight()){
+							previousProposition.setSSAnticipatedAct(ap.getAct());
+							previousProposition.setSSActWeight(ap.getWeight());
+						}
+						previousProposition.addSSWeight(weight);//actionProposition.getSSWeight());
+					}
 				}
 			}
 		}

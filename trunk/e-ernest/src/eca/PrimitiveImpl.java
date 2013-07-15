@@ -24,7 +24,7 @@ public class PrimitiveImpl implements Primitive {
 
 	private String label = "";
 	private int value = 0;
-	private Action action = null; 
+	//private Action action = null; 
 	private PhenomenonType phenomenonType = null; 
 	private Displacement displacement = null;
 
@@ -58,8 +58,8 @@ public class PrimitiveImpl implements Primitive {
 		this.label = label;
 		this.value = value;
 		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet(new Point3f(1,0,0)));
-		this.action = ActionImpl.createNew();//.createOrGet("[a" + label + "]");//
-		this.action.addPrimitive(this);	
+		Action action = ActionImpl.createNew();//.createOrGet("[a" + label + "]");//
+		action.addPrimitive(this);	
 		this.phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");//.createNew();//
 		this.phenomenonType.addPrimitive(this);
 	}
@@ -108,14 +108,14 @@ public class PrimitiveImpl implements Primitive {
 		phenomenonType.addPrimitive(this);
 	}
 
-	public Action getAction() {
-		return action;
-	}
-
-	public void setAction(Action action) {
-		this.action = action;
-		action.addPrimitive(this);
-	}
+//	public Action getAction() {
+//		return action;
+//	}
+//
+//	public void setAction(Action action) {
+//		this.action = action;
+//		action.addPrimitive(this);
+//	}
 
 	public Displacement getDisplacement() {
 		return displacement;

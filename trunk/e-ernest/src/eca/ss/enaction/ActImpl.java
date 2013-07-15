@@ -113,12 +113,12 @@ public class ActImpl implements Act
 		this.area = area;
 	}
 	
-	public Action getAction() {
-		if (this.isPrimitive())
-			return this.primitive.getAction();
-		else
-			return this.action;
-	}
+//	public Action getAction() {
+//		if (this.isPrimitive())
+//			return this.primitive.getAction();
+//		else
+//			return this.action;
+//	}
 
 	public Act getPreAct() 
 	{

@@ -7,6 +7,7 @@ import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
+import eca.construct.Action;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
@@ -24,6 +25,8 @@ import ernest.IEffect;
  */
 public class EnactionImpl implements Enaction 
 {
+	private Action intendedAction;
+	
 	/** The intended primitive interaction */
 	private Act m_intendedPrimitiveAct = null;
 	
@@ -336,6 +339,14 @@ public class EnactionImpl implements Enaction
 
 	public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance) {
 		this.phenomenonInstance = phenomenonInstance;
+	}
+
+	public Action getIntendedAction() {
+		return intendedAction;
+	}
+
+	public void setIntendedAction(Action intendedAction) {
+		this.intendedAction = intendedAction;
 	}
 
 }
