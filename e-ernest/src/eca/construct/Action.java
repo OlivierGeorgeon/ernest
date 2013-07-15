@@ -7,11 +7,14 @@ import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
 /**
- * An Action that can be performed on a phenomenon instance.
- * An action conflates primitive interactions based on the fact that they are alternative to each other.
+ * An Action that can be chosen by the agent.
+ * An action is the atomic grain of decision of the agent
  * 
- * Does an Action always results in an interaction that belongs to this Action??
- *   depends if the resulting action is perfomed on the intended phenomenon instance ??
+ * An action records interactions based on the fact that they  may end up being actually enacted 
+ * when the agent chooses this action.
+ * 
+ * An action maintains the list of interactions that are considered a success of the action
+ * and a list of interactions that are considered a failure of the action.
  * 
  * @author Olivier
  */
@@ -30,7 +33,9 @@ public interface Action
 	/**
 	 * @return The list of primitive interactions that perform this action.
 	 */
-	public List<Primitive> getPrimitives();
+	public List<Primitive> getSuccessInteractions();
+	
+	public boolean contains(Primitive primitive);
 	
 	/**
 	 * Predicts the act that will likely result from performing this action on this appearance based on previous experiments

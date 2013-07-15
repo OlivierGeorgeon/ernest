@@ -119,7 +119,7 @@ public interface Act
 	/**
 	 * @return The action performed by the primitive interaction of this act
 	 */
-	public Action getAction();
+	//public Action getAction();
 	
 	public void setAction(Action action);
 	

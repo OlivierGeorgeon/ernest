@@ -7,6 +7,7 @@ import javax.media.j3d.Transform3D;
 
 import tracing.ITracer;
 
+import eca.construct.Action;
 import eca.construct.egomem.Displacement;
 import eca.spas.egomem.PhenomenonInstance;
 import eca.spas.egomem.Place;
@@ -188,4 +189,7 @@ public interface Enaction
 	 * @return The list of places enacted during the last interaction cycle.
 	 */
 	public List<Place> getEnactedPlaces();
+	
+	public void setIntendedAction(Action action);
+	public Action getIntendedAction();
 }

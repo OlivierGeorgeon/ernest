@@ -22,12 +22,12 @@ public interface Primitive
 	/**
 	 * @return The action performed by this primitive interaction
 	 */
-	public Action getAction();
+	//public Action getAction();
 	
 	/**
 	 * @param action The action performed by this primitive interaction.
 	 */
-	public void setAction(Action action);
+	//public void setAction(Action action);
 	
 	/**
 	 * @return The type of phenomenon observed through this primitive interaction.
