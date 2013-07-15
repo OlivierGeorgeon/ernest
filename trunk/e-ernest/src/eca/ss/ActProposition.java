@@ -23,6 +23,10 @@ public interface ActProposition extends Comparable<ActProposition>
 	 * @param w The weight to add to the proposition.
 	 */
 	public void addWeight(int w);
+	
+	public void setWeightedValue(int weightedValue);
+	public int getWeightedValue();
+		
 		
 	/**
 	 * Two propositions are equal if they propose the same interaction. 

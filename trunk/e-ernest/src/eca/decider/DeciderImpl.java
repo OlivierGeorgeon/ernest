@@ -64,7 +64,7 @@ public class DeciderImpl implements Decider
 		ActionProposition selecteProposition = actionPropositions.get(0);
 		Action	selectedAction = selecteProposition.getAction();
 		Act intendedAct = selecteProposition.getSSAnticipatedAct();	
-		//if (intendedAct == null)
+		if (intendedAct == null)
 			intendedAct = selecteProposition.getAnticipatedAct();		
 
 		// Anticipate the consequences
@@ -132,7 +132,8 @@ public class DeciderImpl implements Decider
 		
 		for (ActProposition ap : actPropositions){
 			if (ap.getAct().getAction() != null){
-				int weight = ap.getWeight() * ap.getAct().getValue();
+				//int weight = ap.getWeight() * ap.getAct().getValue();
+				int weight = ap.getWeightedValue();
 				ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), weight);
 				int j = actionPropositions.indexOf(actionProposition);
 				if (j == -1){

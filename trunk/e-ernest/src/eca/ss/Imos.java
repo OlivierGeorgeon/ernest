@@ -302,8 +302,9 @@ public class Imos implements IImos
 				propositions.add(proposition);
 			else
 			{
-				ActProposition previsousProposition = propositions.get(j);
-				previsousProposition.addWeight(proposition.getWeight());
+				ActProposition previousProposition = propositions.get(j);
+				previousProposition.addWeight(proposition.getWeight());
+				previousProposition.setWeightedValue(proposition.getWeightedValue() + previousProposition.getWeightedValue());
 			}
 		}
 	}
@@ -318,16 +319,19 @@ public class Imos implements IImos
 			if ( proposedAct.isPrimitive()) // so far only propose primitive acts.
 			{
 				proposition = new ActPropositionImpl(proposedAct, w);
+				proposition.setWeightedValue(proposedAct.getValue() * w);
 			}
 			// If the intended act has not passed the threshold  
 			// and if the intention's intention is positive (this is some form of positive anticipation)
 			// Then the propose it with the same action as its pre-act
 			else if (proposedAct.getWeight() <= this.regularityThreshold ){ 
-				if(proposedAct.getPostAct().getEnactionValue() > 0)
+				//if(proposedAct.getPostAct().getEnactionValue() > 0)
+				if(proposedAct.getEnactionValue() > 0)
 				{
 					//proposedAct.setAction(proposedAct.getPreAct().getAction());
 					//proposition = new ActPropositionImpl(proposedAct, w );
-					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w * proposedAct.getValue() / proposedAct.getPreAct().getValue());
+					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w);
+					proposition.setWeightedValue(proposedAct.getValue() * w);
 				}
 			}
 			// TODO propose composite acts?
