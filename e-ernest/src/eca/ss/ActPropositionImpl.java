@@ -9,6 +9,7 @@ import eca.ss.enaction.Act;
 public class ActPropositionImpl implements ActProposition 
 {
 	private Act act;
+	private int weightedValue;
 	private int weight = 0; 
 	
 	/**
@@ -65,6 +66,14 @@ public class ActPropositionImpl implements ActProposition
 	 */
 	public String toString(){
 		return act + " with weight = " + weight/10;
+	}
+
+	public int getWeightedValue() {
+		return weightedValue;
+	}
+
+	public void setWeightedValue(int weightedValue) {
+		this.weightedValue = weightedValue;
 	}
 
 }
