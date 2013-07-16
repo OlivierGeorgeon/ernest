@@ -77,13 +77,18 @@ public class ActionImpl implements Action {
 	
 	public static void merge(Primitive primitive, Action intendedAction){
 		if (!intendedAction.contains(primitive)){
-			intendedAction.addPrimitive(primitive);
 			Action action = null;
 			for (Action a : getACTIONS()){
 				if (a.contains(primitive))
-					a = action;
+					action = a;
 			}
-			ACTIONS.remove(action);
+			// TODO more complex merge of actions.
+			for (Primitive p : action.getSuccessInteractions())
+				intendedAction.addPrimitive(p);
+				
+			ACTIONS.remove(action.getLabel());
+
+			//intendedAction.addPrimitive(primitive);
 		}
 	}
 	
