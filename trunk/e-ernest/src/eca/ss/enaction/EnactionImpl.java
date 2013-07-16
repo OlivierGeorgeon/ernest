@@ -233,7 +233,6 @@ public class EnactionImpl implements Enaction
 	{
 		if (tracer != null && m_intendedPrimitiveAct != null)
 		{
-			//tracer.addEventElement("primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addEventElement("top_level", m_topAct.getLength() + "");
 			tracer.addEventElement("satisfaction", m_enactedPrimitiveAct.getEnactionValue()/10 + "");
 			tracer.addEventElement("primitive_enacted_schema", m_enactedPrimitiveAct.getLabel().substring(0, 1));
@@ -247,6 +246,8 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "transformation", this.displacement.getLabel());
+			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
+			tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());			
 		}
 	}
 

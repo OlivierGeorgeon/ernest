@@ -155,4 +155,11 @@ public class ActionImpl implements Action {
 			postAppearance = preAppearance; 	
 		return postAppearance;
 	}
+	
+	public String toString(){
+		String label = getLabel();
+		for (Primitive primitive : this.primitives)
+			label += " " + primitive.getLabel();
+		return label;
+	}
 }

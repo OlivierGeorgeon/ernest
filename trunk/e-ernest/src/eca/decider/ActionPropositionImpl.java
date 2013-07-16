@@ -68,9 +68,6 @@ public class ActionPropositionImpl implements ActionProposition {
 	 * Generate a textual representation of the proposition for debug.
 	 * @return A string that represents the proposition. 
 	 */
-	public String toString(){
-		return action + " with weight = " + ssWeight/10;
-	}
 
 	public Act getAnticipatedAct() {
 		return anticipatedAct;
@@ -96,4 +93,15 @@ public class ActionPropositionImpl implements ActionProposition {
 		this.ssAnticipatedAct = ssAnticipatedAct;
 	}
 
+	public String toString(){
+		String proposition = "action " + this.getAction().getLabel();
+		proposition += " weight " + this.getSSWeight();
+		proposition += " spas_act " + this.getAnticipatedAct().getLabel();
+		proposition += " spas_value " + this.getAnticipatedAct().getValue();
+		if (this.getSSAnticipatedAct() != null){
+			proposition += " ss_act " + this.getSSAnticipatedAct().getLabel();
+			proposition += " ss_value " + this.getSSAnticipatedAct().getValue();					
+		}				
+		return proposition;
+	}
 }

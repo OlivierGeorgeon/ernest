@@ -323,20 +323,19 @@ public class Imos implements IImos
 				proposition = new ActPropositionImpl(proposedAct, w);
 				proposition.setWeightedValue(proposedAct.getValue() * w);
 			}
-			// If the intended act has not passed the threshold  
-			// and if the intention's intention is positive (this is some form of positive anticipation)
-			// Then the propose it with the same action as its pre-act
 			else if (proposedAct.getWeight() <= this.regularityThreshold ){ 
-				//if(proposedAct.getPostAct().getEnactionValue() > 0)
+				// If the intended act has not passed the threshold  
+				// and if the intention's intention is positive (this is some form of positive anticipation)
 				if(proposedAct.getEnactionValue() > 0)
 				{
-					//proposedAct.setAction(proposedAct.getPreAct().getAction());
-					//proposition = new ActPropositionImpl(proposedAct, w );
 					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w);
 					proposition.setWeightedValue(proposedAct.getValue() * w);
 				}
 			}
-			// TODO propose composite acts?
+			else {
+				// propose acts that passed the threshold as a new action
+				
+			}
 		}
 		return proposition;
 	}
