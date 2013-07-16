@@ -69,8 +69,8 @@ public class DeciderImpl implements Decider
 
 		// Anticipate the consequences
 		
-		Displacement intendedDisplacement = selectedAction.predictDisplacement(preAppearance);
-		Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
+		//Displacement intendedDisplacement = selectedAction.predictDisplacement(preAppearance);
+		//Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
 		
 		// Trace the decision
 		
@@ -102,7 +102,7 @@ public class DeciderImpl implements Decider
 			
 			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
 			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
-			this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
+			//this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
 			//this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
 		}		
 		System.out.println("Select:" + selectedAction.getLabel());
@@ -127,6 +127,19 @@ public class DeciderImpl implements Decider
 		
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		
+		// If a proposed act corresponds to no action then create a new one for it.
+		for (ActProposition actProposition : actPropositions){
+			boolean hasAction = false;
+			for (Action action : ActionImpl.getACTIONS())
+				if (action.contains(actProposition.getAct()))
+					hasAction = true;
+			if (!hasAction){
+				Action a = ActionImpl.createOrGet("[a" + actProposition.getAct().getLabel() + "]");
+				a.addAct(actProposition.getAct());
+			}			
+		}
+		
+		// Generate a proposition for each action
 		for (Action action : ActionImpl.getACTIONS()){
 			// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
 			Act anticipatedAct = action.predictAct(preAppearance);
