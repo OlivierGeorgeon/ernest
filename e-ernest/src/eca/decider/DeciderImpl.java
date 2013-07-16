@@ -130,6 +130,7 @@ public class DeciderImpl implements Decider
 			actionProposition.setAnticipatedAct(anticipatedAct);
 			actionPropositions.add(actionProposition);
 		//}		
+		//for (Action action : ActionImpl.getACTIONS()){
 			for (ActProposition ap : actPropositions){
 				if (action.contains(ap.getAct().getPrimitive())){
 				//if (ap.getAct().getAction() != null){
