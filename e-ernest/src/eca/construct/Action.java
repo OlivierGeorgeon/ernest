@@ -14,7 +14,7 @@ import eca.ss.enaction.Act;
  * when the agent chooses this action.
  * 
  * An action maintains the list of interactions that are considered a success of the action
- * and a list of interactions that are considered a failure of the action.
+ * and a list of interactions that are considered a failure of the action. Success/failure evaluated with regard to some goal?
  * 
  * @author Olivier
  */
@@ -35,6 +35,10 @@ public interface Action
 	 */
 	public List<Primitive> getSuccessInteractions();
 	
+	/**
+	 * @param primitive The primitive to check 
+	 * @return true if this primitive belongs to this action
+	 */
 	public boolean contains(Primitive primitive);
 	
 	/**

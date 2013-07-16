@@ -87,19 +87,23 @@ public class DeciderImpl implements Decider
 				this.tracer.addSubelement(apElmnt, "ss_value", selecteProposition.getSSAnticipatedAct().getValue() +"");					
 			}				
 
-			Object aspectElmt = this.tracer.addSubelement(decisionElmt, "phenomena");
-			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
-				this.tracer.addSubelement(aspectElmt, "phenomenon", phenomenonType.toString());
+			Object actionElmt = this.tracer.addSubelement(decisionElmt, "actions");
+			for (Action action : ActionImpl.getACTIONS())
+				this.tracer.addSubelement(actionElmt, "action", action.toString());
 			
-			Object experimentElmt = this.tracer.addSubelement(decisionElmt, "experiments");
-			for (Experiment a : ExperimentImpl.getExperiments())
-				if (a.isTested())
-					this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
+			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomena");
+			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
+				this.tracer.addSubelement(phenomenonElmt, "phenomenon", phenomenonType.toString());
+			
+			//Object experimentElmt = this.tracer.addSubelement(decisionElmt, "experiments");
+			//for (Experiment a : ExperimentImpl.getExperiments())
+			//	if (a.isTested())
+			//		this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
 			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
 			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
 			this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
-			this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
+			//this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
 		}		
 		System.out.println("Select:" + selectedAction.getLabel());
 		System.out.println("Act " + intendedAct.getLabel());
@@ -123,55 +127,32 @@ public class DeciderImpl implements Decider
 		
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		
-		// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
 		for (Action action : ActionImpl.getACTIONS()){
+			// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
 			Act anticipatedAct = action.predictAct(preAppearance);
 			ActionProposition actionProposition = new ActionPropositionImpl(action, 0);
 			actionProposition.setAnticipatedAct(anticipatedAct);
-			actionPropositions.add(actionProposition);
-		//}		
-		//for (Action action : ActionImpl.getACTIONS()){
-			for (ActProposition ap : actPropositions){
-				if (action.contains(ap.getAct().getPrimitive())){
-				//if (ap.getAct().getAction() != null){
-					//int weight = ap.getWeight() * ap.getAct().getValue();
-					int weight = ap.getWeightedValue();
-					//ActionProposition actionProposition = new ActionPropositionImpl(ap.getAct().getAction(), weight);
-					ActionProposition actionProposition2 = new ActionPropositionImpl(action, weight);
-					int j = actionPropositions.indexOf(actionProposition2);
-					if (j == -1){
-						actionProposition2.setSSAnticipatedAct(ap.getAct());
-						actionProposition2.setSSActWeight(ap.getWeight());
-						actionPropositions.add(actionProposition2);
+
+			// Add weight to this action according that the actPropositions that propose an act whose primitive belongs to this action
+			for (ActProposition actProposition : actPropositions){
+				if (action.contains(actProposition.getAct().getPrimitive())){
+					if (actionProposition.getSSActWeight() <= actProposition.getWeight()){
+						actionProposition.setSSAnticipatedAct(actProposition.getAct());
+						actionProposition.setSSActWeight(actProposition.getWeight());
 					}
-					else
-					{
-						ActionProposition previousProposition = actionPropositions.get(j);
-						if (previousProposition.getSSActWeight() <= ap.getWeight()){
-							previousProposition.setSSAnticipatedAct(ap.getAct());
-							previousProposition.setSSActWeight(ap.getWeight());
-						}
-						previousProposition.addSSWeight(weight);//actionProposition.getSSWeight());
-					}
+					actionProposition.addSSWeight(actProposition.getWeightedValue());
 				}
 			}
+			actionPropositions.add(actionProposition);
 		}
 		
-		// trace weighted actions 
+		// trace action propositions 
 		Object decisionElmt = null;
 		if (this.tracer != null){
 			decisionElmt = this.tracer.addEventElement("actionPropositions", true);
 			for (ActionProposition ap : actionPropositions){
 				System.out.println("propose action " + ap.getAction().getLabel() + " with weight " + ap.getSSWeight());
-				Object apElmnt = this.tracer.addSubelement(decisionElmt, "proposition");
-				this.tracer.addSubelement(apElmnt, "action", ap.getAction().getLabel());
-				this.tracer.addSubelement(apElmnt, "weight", ap.getSSWeight() + "");
-				this.tracer.addSubelement(apElmnt, "spas_act", ap.getAnticipatedAct().getLabel());
-				this.tracer.addSubelement(apElmnt, "spas_value", ap.getAnticipatedAct().getValue() +"");
-				if (ap.getSSAnticipatedAct() != null){
-					this.tracer.addSubelement(apElmnt, "ss_act", ap.getSSAnticipatedAct().getLabel());
-					this.tracer.addSubelement(apElmnt, "ss_value", ap.getSSAnticipatedAct().getValue() +"");					
-				}				
+				this.tracer.addSubelement(decisionElmt, "proposition", ap.toString());
 			}
 		}
 		
