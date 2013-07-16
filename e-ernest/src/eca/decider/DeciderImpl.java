@@ -135,7 +135,8 @@ public class DeciderImpl implements Decider
 
 			// Add weight to this action according that the actPropositions that propose an act whose primitive belongs to this action
 			for (ActProposition actProposition : actPropositions){
-				if (action.contains(actProposition.getAct().getPrimitive())){
+				//if (action.contains(actProposition.getAct().getPrimitive())){
+				if (action.contains(actProposition.getAct())){
 					if (actionProposition.getSSActWeight() <= actProposition.getWeight()){
 						actionProposition.setSSAnticipatedAct(actProposition.getAct());
 						actionProposition.setSSActWeight(actProposition.getWeight());

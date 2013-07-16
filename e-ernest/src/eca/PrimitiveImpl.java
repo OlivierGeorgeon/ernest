@@ -12,6 +12,7 @@ import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
+import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 
 /**
@@ -56,10 +57,11 @@ public class PrimitiveImpl implements Primitive {
 	private PrimitiveImpl(String label, int value){
 		this.label = label;
 		this.value = value;
-		ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet(new Point3f(1,0,0)));
-		Action action = ActionImpl.createNew();//.createOrGet("[a" + label + "]");//
-		//Action action = ActionImpl.createOrGet("[a" + label + "]");
-		action.addPrimitive(this);	
+		Act act = ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet(new Point3f(1,0,0)));
+		//Action action = ActionImpl.createNew();//.createOrGet("[a" + label + "]");//
+		Action action = ActionImpl.createOrGet("[a" + act.getLabel() + "]");
+		//action.addPrimitive(this);
+		action.addPrimitive(act);
 		this.phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");//.createNew();//
 		this.phenomenonType.addPrimitive(this);
 	}

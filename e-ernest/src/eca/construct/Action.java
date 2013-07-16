@@ -28,18 +28,18 @@ public interface Action
 	/**
 	 * @param primitive The primitive interaction to add to this action.
 	 */
-	public void addPrimitive(Primitive primitive);
+	public void addPrimitive(Act primitive);
 
 	/**
 	 * @return The list of primitive interactions that perform this action.
 	 */
-	public List<Primitive> getSuccessInteractions();
+	public List<Act> getSuccessInteractions();
 	
 	/**
 	 * @param primitive The primitive to check 
 	 * @return true if this primitive belongs to this action
 	 */
-	public boolean contains(Primitive primitive);
+	public boolean contains(Act primitive);
 	
 	/**
 	 * Predicts the act that will likely result from performing this action on this appearance based on previous experiments
