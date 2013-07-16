@@ -6,15 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.media.j3d.Transform3D;
-import javax.vecmath.Point3f;
-import eca.Primitive;
-import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.ExperimentImpl;
 import eca.ss.Appearance;
 import eca.ss.enaction.Act;
-import eca.ss.enaction.ActImpl;
 
 /**
  * An Action that can be performed in the external world.
@@ -29,7 +25,7 @@ public class ActionImpl implements Action {
 	private static int index = 0;
 
 	private String label;
-	private List<Act> primitives = new ArrayList<Act>();
+	private List<Act> acts = new ArrayList<Act>();
 
 	/**
 	 * Create or get an action from its label.
@@ -61,34 +57,25 @@ public class ActionImpl implements Action {
 	}
 	
 	/**
-	 * Merge the enacted action into the intended action.
-	 * The interactions attached to the enactedAction are transferred to the intendedAction and the enactedAction is removed
-	 * @param enactedAction The first action from which to merge (removed). 
+	 * Merge the action of the enacted act into the intended action.
+	 * The interactions attached to the enacted act's action are transferred to the intendedAction and the enacted Action is removed
+	 * @param act The act to merge. 
 	 * @param intendedAction The second action to which to merge (kept).
 	 */
-//	public static void merge(Action enactedAction, Action intendedAction){
-//		if (!enactedAction.equals(intendedAction)){
-//			for (Primitive primitive : enactedAction.getSuccessInteractions())
-//				intendedAction.addPrimitive(primitive);
-//				//primitive.setAction(intendedAction);
-//			ACTIONS.remove(enactedAction.getLabel());
-//		}
-//	}
-	
-	public static void merge(Act primitive, Action intendedAction){
-		if (!intendedAction.contains(primitive)){
+	public static void merge(Act act, Action intendedAction){
+		if (!intendedAction.contains(act)){
 			Action action = null;
 			for (Action a : getACTIONS()){
-				if (a.contains(primitive))
+				if (a.contains(act))
 					action = a;
 			}
 			// TODO more complex merge of actions.
 			if (action != null){
-				for (Act p : action.getSuccessInteractions())
-					intendedAction.addPrimitive(p);
+				for (Act p : action.getActs())
+					intendedAction.addAct(p);
 				ACTIONS.remove(action.getLabel());
 			}
-			intendedAction.addPrimitive(primitive);
+			intendedAction.addAct(act);
 
 		}
 	}
@@ -101,17 +88,17 @@ public class ActionImpl implements Action {
 		return this.label;
 	}
 	
-	public void addPrimitive(Act primitive){
-		if (!this.primitives.contains(primitive))
-				this.primitives.add(primitive);
+	public void addAct(Act act){
+		if (!this.acts.contains(act))
+				this.acts.add(act);
 	}
 	
-	public List<Act> getSuccessInteractions(){
-		return this.primitives;
+	public List<Act> getActs(){
+		return this.acts;
 	}
 	
-	public boolean contains(Act primitive){
-		return this.primitives.contains(primitive);
+	public boolean contains(Act act){
+		return this.acts.contains(act);
 	}
 
 	
@@ -140,27 +127,27 @@ public class ActionImpl implements Action {
 		Act predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
 		if (predictAct == null)
 			//predictAct = ActImpl.createOrGetPrimitiveAct(primitives.get(0), AreaImpl.createOrGet(new Point3f()));
-			predictAct = primitives.get(0);
+			predictAct = acts.get(0);
 		return predictAct;
 	}
 
-	public Displacement predictDisplacement(Appearance appearance) {
-		Displacement predictDisplacement = ExperimentImpl.createOrGet(appearance, this).predictDisplacement();
-		if (predictDisplacement == null)
-			predictDisplacement = DisplacementImpl.createOrGet(new Transform3D());
-		return predictDisplacement;
-	}
-
-	public Appearance predictPostAppearance(Appearance preAppearance) {
-		Appearance postAppearance = ExperimentImpl.createOrGet(preAppearance, this).predictPostAppearance();
-		if (postAppearance == null)
-			postAppearance = preAppearance; 	
-		return postAppearance;
-	}
+//	public Displacement predictDisplacement(Appearance appearance) {
+//		Displacement predictDisplacement = ExperimentImpl.createOrGet(appearance, this).predictDisplacement();
+//		if (predictDisplacement == null)
+//			predictDisplacement = DisplacementImpl.createOrGet(new Transform3D());
+//		return predictDisplacement;
+//	}
+//
+//	public Appearance predictPostAppearance(Appearance preAppearance) {
+//		Appearance postAppearance = ExperimentImpl.createOrGet(preAppearance, this).predictPostAppearance();
+//		if (postAppearance == null)
+//			postAppearance = preAppearance; 	
+//		return postAppearance;
+//	}
 	
 	public String toString(){
 		String label = getLabel();
-		for (Act primitive : this.primitives)
+		for (Act primitive : this.acts)
 			label += " " + primitive.getLabel();
 		return label;
 	}

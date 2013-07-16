@@ -64,9 +64,9 @@ public class ActPropositionImpl implements ActProposition
 	 * Generate a textual representation of the proposition for debug.
 	 * @return A string that represents the proposition. 
 	 */
-	public String toString(){
-		return act + " with weight = " + weight/10;
-	}
+//	public String toString(){
+//		return act + " with weight = " + weight/10;
+//	}
 
 	public int getWeightedValue() {
 		return weightedValue;
@@ -74,6 +74,10 @@ public class ActPropositionImpl implements ActProposition
 
 	public void setWeightedValue(int weightedValue) {
 		this.weightedValue = weightedValue;
+	}
+	
+	public String toString(){
+		return "act: " + this.act.getLabel() + " weighted_value: " + this.weightedValue + " proposing_weight: " + this.weight;
 	}
 
 }

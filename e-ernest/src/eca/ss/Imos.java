@@ -125,14 +125,13 @@ public class Imos implements IImos
 				if (!enaction.getIntendedAction().contains(enactedTopInteraction)){
 					//System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					if (m_tracer != null){
-						//m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopInteraction.getPrimitive() );
 						m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopInteraction);
 					}
 				}
 				
-				//ActionImpl.merge(enactedTopInteraction.getPrimitive(), enaction.getIntendedAction());
 				ActionImpl.merge(enactedTopInteraction, enaction.getIntendedAction());
-				intendedTopInteraction.getPrimitive().setDisplacement(enaction.getDisplacement());
+				enaction.getEnactedPrimitiveAct().getPrimitive().setDisplacement(enaction.getDisplacement());
+				//intendedTopInteraction.getPrimitive().setDisplacement(enaction.getDisplacement());
 			}
 			
 			// learn from the  context and the enacted interaction
@@ -284,13 +283,10 @@ public class Imos implements IImos
 			}
 		}
 		if (this.m_tracer != null){
-			for (ActProposition ap : propositions){
-//				String actionLabel = "";
-//				if (ap.getAct().getAction() != null)
-//					actionLabel = ap.getAct().getAction().getLabel();
-				this.m_tracer.addSubelement(propositionElmt, "act", ap.getAct().getLabel() + " weight " + ap.getWeight()  );
-			}
+			for (ActProposition ap : propositions)
+				this.m_tracer.addSubelement(propositionElmt, "act_proposition", ap.toString());
 		}
+		
 		return propositions;
 	}
 	
@@ -327,6 +323,7 @@ public class Imos implements IImos
 			else if (proposedAct.getWeight() <= this.regularityThreshold ){ 
 				// If the intended act has not passed the threshold  
 				// and if the intention's intention is positive (this is some form of positive anticipation)
+				// Then propagate to the intentions's intention
 				if(proposedAct.getEnactionValue() > 0)
 				{
 					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w);
@@ -334,8 +331,9 @@ public class Imos implements IImos
 				}
 			}
 			else {
-				// propose acts that passed the threshold as a new action
-				
+				// propose acts that passed the threshold (they may represent a new Action)
+				proposition = new ActPropositionImpl(proposedAct, w);
+				proposition.setWeightedValue(proposedAct.getValue() * w);				
 			}
 		}
 		return proposition;

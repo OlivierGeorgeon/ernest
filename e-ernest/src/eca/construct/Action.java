@@ -1,7 +1,6 @@
 package eca.construct;
 
 import java.util.List;
-import eca.Primitive;
 import eca.construct.egomem.Displacement;
 import eca.ss.Appearance;
 import eca.ss.enaction.Act;
@@ -28,18 +27,18 @@ public interface Action
 	/**
 	 * @param primitive The primitive interaction to add to this action.
 	 */
-	public void addPrimitive(Act primitive);
+	public void addAct(Act primitive);
 
 	/**
 	 * @return The list of primitive interactions that perform this action.
 	 */
-	public List<Act> getSuccessInteractions();
+	public List<Act> getActs();
 	
 	/**
-	 * @param primitive The primitive to check 
+	 * @param act The primitive to check 
 	 * @return true if this primitive belongs to this action
 	 */
-	public boolean contains(Act primitive);
+	public boolean contains(Act act);
 	
 	/**
 	 * Predicts the act that will likely result from performing this action on this appearance based on previous experiments
@@ -53,12 +52,12 @@ public interface Action
 	 * @param appearance The appearance on which the action is performed.
 	 * @return The Displacement that will likely result from performing this action on this appearance.
 	 */
-	public Displacement predictDisplacement(Appearance appearance);
+	//public Displacement predictDisplacement(Appearance appearance);
 
 	/**
 	 * @param preAppearance The Appearance 
 	 * @return The predicted post-appearance.
 	 */
-	public Appearance predictPostAppearance(Appearance preAppearance);
+	//public Appearance predictPostAppearance(Appearance preAppearance);
 
 }
