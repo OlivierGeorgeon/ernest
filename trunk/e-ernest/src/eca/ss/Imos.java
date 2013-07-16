@@ -121,16 +121,17 @@ public class Imos implements IImos
 				m_internalState= "!";
 				enaction.setSuccessful(false);	
 				
-				//if (!enactedTopInteraction.getPrimitive().getAction().equals(intendedTopInteraction.getPrimitive().getAction())){
-				if (!enaction.getIntendedAction().contains(enactedTopInteraction.getPrimitive())){
+				//if (!enaction.getIntendedAction().contains(enactedTopInteraction.getPrimitive())){
+				if (!enaction.getIntendedAction().contains(enactedTopInteraction)){
 					//System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					if (m_tracer != null){
-						m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopInteraction.getPrimitive() );
+						//m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopInteraction.getPrimitive() );
+						m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopInteraction);
 					}
 				}
 				
-				//ActionImpl.merge(enactedTopInteraction.getPrimitive().getAction(), intendedTopInteraction.getPrimitive().getAction());
-				ActionImpl.merge(enactedTopInteraction.getPrimitive(), enaction.getIntendedAction());
+				//ActionImpl.merge(enactedTopInteraction.getPrimitive(), enaction.getIntendedAction());
+				ActionImpl.merge(enactedTopInteraction, enaction.getIntendedAction());
 				intendedTopInteraction.getPrimitive().setDisplacement(enaction.getDisplacement());
 			}
 			

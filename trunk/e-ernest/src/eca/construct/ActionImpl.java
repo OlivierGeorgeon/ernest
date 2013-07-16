@@ -29,7 +29,7 @@ public class ActionImpl implements Action {
 	private static int index = 0;
 
 	private String label;
-	private List<Primitive> primitives = new ArrayList<Primitive>();
+	private List<Act> primitives = new ArrayList<Act>();
 
 	/**
 	 * Create or get an action from its label.
@@ -66,16 +66,16 @@ public class ActionImpl implements Action {
 	 * @param enactedAction The first action from which to merge (removed). 
 	 * @param intendedAction The second action to which to merge (kept).
 	 */
-	public static void merge(Action enactedAction, Action intendedAction){
-		if (!enactedAction.equals(intendedAction)){
-			for (Primitive primitive : enactedAction.getSuccessInteractions())
-				intendedAction.addPrimitive(primitive);
-				//primitive.setAction(intendedAction);
-			ACTIONS.remove(enactedAction.getLabel());
-		}
-	}
+//	public static void merge(Action enactedAction, Action intendedAction){
+//		if (!enactedAction.equals(intendedAction)){
+//			for (Primitive primitive : enactedAction.getSuccessInteractions())
+//				intendedAction.addPrimitive(primitive);
+//				//primitive.setAction(intendedAction);
+//			ACTIONS.remove(enactedAction.getLabel());
+//		}
+//	}
 	
-	public static void merge(Primitive primitive, Action intendedAction){
+	public static void merge(Act primitive, Action intendedAction){
 		if (!intendedAction.contains(primitive)){
 			Action action = null;
 			for (Action a : getACTIONS()){
@@ -83,12 +83,13 @@ public class ActionImpl implements Action {
 					action = a;
 			}
 			// TODO more complex merge of actions.
-			for (Primitive p : action.getSuccessInteractions())
-				intendedAction.addPrimitive(p);
-				
-			ACTIONS.remove(action.getLabel());
+			if (action != null){
+				for (Act p : action.getSuccessInteractions())
+					intendedAction.addPrimitive(p);
+				ACTIONS.remove(action.getLabel());
+			}
+			intendedAction.addPrimitive(primitive);
 
-			//intendedAction.addPrimitive(primitive);
 		}
 	}
 	
@@ -100,16 +101,16 @@ public class ActionImpl implements Action {
 		return this.label;
 	}
 	
-	public void addPrimitive(Primitive primitive){
+	public void addPrimitive(Act primitive){
 		if (!this.primitives.contains(primitive))
 				this.primitives.add(primitive);
 	}
 	
-	public List<Primitive> getSuccessInteractions(){
+	public List<Act> getSuccessInteractions(){
 		return this.primitives;
 	}
 	
-	public boolean contains(Primitive primitive){
+	public boolean contains(Act primitive){
 		return this.primitives.contains(primitive);
 	}
 
@@ -138,7 +139,8 @@ public class ActionImpl implements Action {
 	public Act predictAct(Appearance appearance) {
 		Act predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
 		if (predictAct == null)
-			predictAct = ActImpl.createOrGetPrimitiveAct(primitives.get(0), AreaImpl.createOrGet(new Point3f()));
+			//predictAct = ActImpl.createOrGetPrimitiveAct(primitives.get(0), AreaImpl.createOrGet(new Point3f()));
+			predictAct = primitives.get(0);
 		return predictAct;
 	}
 
@@ -158,7 +160,7 @@ public class ActionImpl implements Action {
 	
 	public String toString(){
 		String label = getLabel();
-		for (Primitive primitive : this.primitives)
+		for (Act primitive : this.primitives)
 			label += " " + primitive.getLabel();
 		return label;
 	}
