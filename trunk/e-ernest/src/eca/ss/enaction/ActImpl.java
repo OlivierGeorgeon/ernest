@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import eca.Primitive;
 import eca.construct.Action;
-import eca.construct.egomem.Area;
+import eca.construct.Area;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 

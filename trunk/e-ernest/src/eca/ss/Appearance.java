@@ -1,7 +1,7 @@
 package eca.ss;
 
+import eca.construct.Area;
 import eca.construct.PhenomenonType;
-import eca.construct.egomem.Area;
 
 /**
  * An Appearance of a PhenomenonType in an Area.

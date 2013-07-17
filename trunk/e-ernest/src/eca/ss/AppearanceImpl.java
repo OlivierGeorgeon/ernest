@@ -4,8 +4,8 @@ package eca.ss;
 import java.util.HashMap;
 import java.util.Map;
 
+import eca.construct.Area;
 import eca.construct.PhenomenonType;
-import eca.construct.egomem.Area;
 
 /**
  * An Appearance is the observation of an instance of a phenomenonType in an area.
