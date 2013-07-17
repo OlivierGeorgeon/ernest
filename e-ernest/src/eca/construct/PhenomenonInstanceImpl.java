@@ -1,6 +1,6 @@
-package eca.spas.egomem;
+package eca.construct;
 
-import eca.construct.PhenomenonType;
+import eca.spas.egomem.Place;
 
 /**
  * An instance of phenomenon known to be present in the surrounding environment

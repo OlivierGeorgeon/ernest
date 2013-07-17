@@ -3,6 +3,8 @@ package eca.spas.egomem;
 import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
+
+import eca.construct.PhenomenonInstance;
 import tracing.ITracer;
 
 /**

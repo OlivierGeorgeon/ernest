@@ -8,8 +8,8 @@ import javax.media.j3d.Transform3D;
 import tracing.ITracer;
 
 import eca.construct.Action;
+import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
-import eca.spas.egomem.PhenomenonInstance;
 import eca.spas.egomem.Place;
 import eca.ss.Appearance;
 import ernest.IEffect;
