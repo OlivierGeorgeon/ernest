@@ -8,9 +8,9 @@ import javax.vecmath.Point3f;
 
 import eca.construct.Action;
 import eca.construct.ActionImpl;
+import eca.construct.AreaImpl;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
-import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
