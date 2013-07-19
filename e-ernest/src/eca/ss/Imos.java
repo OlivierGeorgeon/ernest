@@ -130,8 +130,8 @@ public class Imos implements IImos
 				}
 				
 				ActionImpl.merge(enactedTopInteraction, enaction.getIntendedAction());
-				enaction.getEnactedPrimitiveAct().getPrimitive().setDisplacement(enaction.getDisplacement());
-				//intendedTopInteraction.getPrimitive().setDisplacement(enaction.getDisplacement());
+				//enaction.getEnactedPrimitiveAct().getPrimitive().setDisplacement(enaction.getDisplacement());
+				enaction.getEnactedPrimitiveAct().setDisplacement(enaction.getDisplacement());
 			}
 			
 			// learn from the  context and the enacted interaction

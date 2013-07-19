@@ -320,14 +320,13 @@ public class EnactionImpl implements Enaction
 		
 		this.enactedPlaces = places;
 		
-		//this.m_enactedPrimitiveAct = ActImpl.createOrGetPrimitiveAct(PrimitiveImpl.get(">_"), AreaImpl.createOrGet(new Point3f()));
-
 		for (Place place : places){
 			this.m_enactedPrimitiveAct = place.getAct();
 			this.m_enactedPrimitiveAct.setColor(place.getValue());
 		}
 		this.displacement = DisplacementImpl.createOrGet(transform);
-		this.m_enactedPrimitiveAct.getPrimitive().setDisplacement(this.displacement);
+		//this.m_enactedPrimitiveAct.getPrimitive().setDisplacement(this.displacement);
+		this.m_enactedPrimitiveAct.setDisplacement(this.displacement);
 	}
 	
 	public List<Place> getEnactedPlaces(){

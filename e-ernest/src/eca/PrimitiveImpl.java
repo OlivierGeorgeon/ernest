@@ -26,7 +26,7 @@ public class PrimitiveImpl implements Primitive {
 	private String label = "";
 	private int value = 0;
 	private PhenomenonType phenomenonType = null; 
-	private Displacement displacement = null;
+	//private Displacement displacement = null;
 
 	/**
 	 * @param label The primitive interaction's label
@@ -109,13 +109,4 @@ public class PrimitiveImpl implements Primitive {
 		this.phenomenonType = phenomenonType;
 		phenomenonType.addPrimitive(this);
 	}
-
-	public Displacement getDisplacement() {
-		return displacement;
-	}
-
-	public void setDisplacement(Displacement displacement) {
-		this.displacement = displacement;
-	}
-	
 }
