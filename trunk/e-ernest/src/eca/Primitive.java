@@ -1,5 +1,6 @@
 package eca;
 
+import eca.construct.Area;
 import eca.construct.PhenomenonType;
 import eca.construct.egomem.Displacement;
 
@@ -26,5 +27,16 @@ public interface Primitive
 	/**
 	 * @param phenomenonType The type of phenomenon observed through this primitive interaction.
 	 */
-	public void setPhenomenonType(PhenomenonType phenomenonType);	
+	public void setPhenomenonType(PhenomenonType phenomenonType);
+	
+	/**
+	 * @param displacement The displacement to record to this experiment
+	 */
+	public void incDisplacementCounter(Displacement displacement);
+	
+	/**
+	 * @return The displacement most probably resulting from this experiment
+	 */
+	public Displacement predictDisplacement(Area area);
+	
 }

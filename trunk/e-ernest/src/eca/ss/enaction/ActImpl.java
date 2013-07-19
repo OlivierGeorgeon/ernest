@@ -36,7 +36,7 @@ public class ActImpl implements Act
 	private Primitive primitive;
 	private Area area;
 	private int color;
-	private Displacement displacement;
+	//private Displacement displacement;
 	
 	/**
 	 * @return The list of all acts known by the agent.
@@ -84,8 +84,8 @@ public class ActImpl implements Act
 
 			// TODO check the intermediary area for consistency
 			// check that the acts apply to the same appearance?
-			Displacement displacement = DisplacementImpl.createOrGet(preAct.getArea(), postAct.getArea());
-			newAct.setDisplacement(displacement);
+//			Displacement displacement = DisplacementImpl.createOrGet(preAct.getArea(), postAct.getArea());
+//			newAct.setDisplacement(displacement);
 			
 			ACTS.put(key, newAct);
 		}
@@ -295,13 +295,13 @@ public class ActImpl implements Act
 			return this.getPreAct().getValue() + this.getPostAct().getValue();
 	}
 	
-	public Displacement getDisplacement() {
-		return displacement;
-	}
+//	public Displacement getDisplacement() {
+//		return displacement;
+//	}
 
-	public void setDisplacement(Displacement displacement) {
-		this.displacement = displacement;
-	}
+//	public void setDisplacement(Displacement displacement) {
+//		this.displacement = displacement;
+//	}
 	
 
 }

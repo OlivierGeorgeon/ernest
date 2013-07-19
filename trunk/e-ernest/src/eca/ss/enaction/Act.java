@@ -120,12 +120,12 @@ public interface Act
 	/**
 	 * @param displacement The displacement associated with this act.
 	 */
-	public void setDisplacement(Displacement displacement);
+	//public void setDisplacement(Displacement displacement);
 	
 	/**
 	 * @return The displacement associated with this act.
 	 */
-	public Displacement getDisplacement();
+	//public Displacement getDisplacement();
 	
 	/**
 	 * @param color The color used to display this act in sequential and spatial trace.
