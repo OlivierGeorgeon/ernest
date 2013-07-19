@@ -58,7 +58,7 @@ public class SpasImpl implements Spas
 		System.out.println("enacted position " + enactedPlace.getPosition().x + "," + enactedPlace.getPosition().y);
 		//Displacement displacement = enaction.getEnactedPrimitiveAct().getPrimitive().getDisplacement();
 		Displacement displacement = enaction.getEnactedPrimitiveAct().getDisplacement();
-		this.transform.set(displacement.getTransform3D());
+		this.transform.set(enaction.getTransform3D());
 
 		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
 		Area previousArea = null;

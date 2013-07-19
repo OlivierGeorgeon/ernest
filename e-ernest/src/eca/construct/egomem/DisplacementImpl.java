@@ -3,6 +3,8 @@ package eca.construct.egomem;
 import java.util.HashMap;
 import java.util.Map;
 import javax.media.j3d.Transform3D;
+
+import eca.construct.Area;
 import utils.ErnestUtils;
 
 /**
@@ -15,18 +17,40 @@ public class DisplacementImpl implements Displacement {
 
 	private String label;
 	private Transform3D transform3D = new Transform3D();
+	private Area preArea = null;
+	private Area postArea = null;
+	
+	/**
+	 * @param preArea The area before displacement
+	 * @param postArea The area after displacement
+	 * @return The displacement
+	 */
+	public static Displacement createOrGet(Area preArea, Area postArea){
+		String label = createKey(preArea, postArea);
+		if (!TRANSFORMATIONS.containsKey(label))
+			TRANSFORMATIONS.put(label, new DisplacementImpl(preArea, postArea));			
+		return TRANSFORMATIONS.get(label);
+	}
+	
+	private static String createKey(Area preArea, Area postArea){
+		return preArea.getLabel() + postArea.getLabel();
+	}
 	
 	/**
 	 * @param t The transformation that defines this displacement
 	 * @return The displacement
 	 */
-	public static Displacement createOrGet(Transform3D t){
-		String label = createKey(t);
-		if (!TRANSFORMATIONS.containsKey(label))
-			TRANSFORMATIONS.put(label, new DisplacementImpl(t));			
-		return TRANSFORMATIONS.get(label);
-	}
+//	public static Displacement createOrGet(Transform3D t){
+//		String label = createKey(t);
+//		if (!TRANSFORMATIONS.containsKey(label))
+//			TRANSFORMATIONS.put(label, new DisplacementImpl(t));			
+//		return TRANSFORMATIONS.get(label);
+//	}
 	
+	/**
+	 * @param t The transformation that defines this displacement
+	 * @return The displacement
+	 */
 	private static String createKey(Transform3D t) {
 		String key = "";
 		float angle = ErnestUtils.angle(t);
@@ -41,8 +65,10 @@ public class DisplacementImpl implements Displacement {
 		return key;
 	}
 
-	private DisplacementImpl(String label){
-		this.label = label;
+	private DisplacementImpl(Area preArea, Area postArea){
+		this.preArea = preArea;
+		this.postArea = postArea;
+		this.label = createKey(preArea, postArea);
 	}
 	
 	private DisplacementImpl(Transform3D t){
@@ -54,10 +80,10 @@ public class DisplacementImpl implements Displacement {
 		return label;
 	}
 	
-//	public void setTransform3D(Transform3D transform3D){
-//		this.transform3D.set(transform3D);
-//	}
-//	
+	public void setTransform3D(Transform3D transform3D){
+		this.transform3D.set(transform3D);
+	}
+	
 	public Transform3D getTransform3D(){
 		Transform3D t = this.transform3D;
 		if (this.label.equals("<")) t = new Transform3D();
@@ -84,6 +110,14 @@ public class DisplacementImpl implements Displacement {
 		}
 		
 		return ret;
+	}
+
+	public Area getPreArea() {
+		return preArea;
+	}
+
+	public Area getPostArea() {
+		return postArea;
 	}
 
 }

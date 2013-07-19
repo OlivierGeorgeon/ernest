@@ -26,8 +26,8 @@ public class ActImpl implements Act
 	
 	private String label = "";
 	private boolean m_primitive = true;
-	private Act m_preInteraction = null;
-	private Act m_postInteraction = null;
+	private Act preAct = null;
+	private Act postAct = null;
 	private int value = 0;
 	private int m_enactionWeight = 0;
 	private int m_length = 1;
@@ -36,8 +36,6 @@ public class ActImpl implements Act
 	private Primitive primitive;
 	private Area area;
 	private int color;
-	
-	private Action action;
 	private Displacement displacement;
 	
 	/**
@@ -80,9 +78,13 @@ public class ActImpl implements Act
 		if (!ACTS.containsKey(key)){
 			Act newAct = new ActImpl(key, false, preAct, postAct, enactionValue, null, null);
 
-			Transform3D newTransform = new Transform3D();
-            newTransform.mul(postAct.getDisplacement().getTransform3D(), preAct.getDisplacement().getTransform3D());
-			Displacement displacement = DisplacementImpl.createOrGet(newTransform);
+//			Transform3D newTransform = new Transform3D();
+//            newTransform.mul(postAct.getDisplacement().getTransform3D(), preAct.getDisplacement().getTransform3D());
+//			Displacement displacement = DisplacementImpl.createOrGet(newTransform);
+
+			// TODO check the intermediary area for consistency
+			// check that the acts apply to the same appearance?
+			Displacement displacement = DisplacementImpl.createOrGet(preAct.getArea(), postAct.getArea());
 			newAct.setDisplacement(displacement);
 			
 			ACTS.put(key, newAct);
@@ -95,29 +97,29 @@ public class ActImpl implements Act
 		return key;
 	}
 	
-	private ActImpl(String label, boolean primitive, Act preInteraction, Act postInteraction, int value, Primitive interaction, Area area)
+	private ActImpl(String label, boolean primitive, Act preAct, Act postAct, int value, Primitive interaction, Area area)
 	{
 		this.label = label;
 		m_primitive = primitive;
 		this.primitive = interaction;
-		m_preInteraction = preInteraction;
-		m_postInteraction = postInteraction;
+		this.preAct = preAct;
+		this.postAct = postAct;
 		this.value = value;
 		if (primitive)
 			m_enactionWeight = PRIMITIVE_WEIGHT;
 		else
-			m_length = preInteraction.getLength() + postInteraction.getLength();
+			m_length = preAct.getLength() + postAct.getLength();
 		this.area = area;
 	}
 	
 	public Act getPreAct() 
 	{
-		return m_preInteraction;
+		return preAct;
 	}
 
 	public Act getPostAct() 
 	{
-		return m_postInteraction;
+		return postAct;
 	}
 
 	public int getEnactionValue() 
@@ -158,7 +160,7 @@ public class ActImpl implements Act
 		if (m_primitive)
 			l = this.label;
 		else
-			l = "(" + m_preInteraction.getLabel() + m_postInteraction.getLabel() + ")";
+			l = "(" + preAct.getLabel() + postAct.getLabel() + ")";
 		return l; 
 	}
 
@@ -244,8 +246,8 @@ public class ActImpl implements Act
 		else
 		{
 			m_step = 0;
-			m_preInteraction.setPrescriber(this);
-			prescribedInteraction = m_preInteraction.prescribe();
+			preAct.setPrescriber(this);
+			prescribedInteraction = preAct.prescribe();
 		}
 		return prescribedInteraction;		
 	}
@@ -256,7 +258,10 @@ public class ActImpl implements Act
 	}
 
 	public Area getArea() {
-		return this.area;
+		if (isPrimitive())
+			return this.area;
+		else
+			return this.getPostAct().getArea();
 	}
 
 	public void setArea(Area area) {
@@ -279,9 +284,9 @@ public class ActImpl implements Act
 		this.color = color;
 	}
 
-	public void setAction(Action action) {
-		this.action = action;		
-	}
+//	public void setAction(Action action) {
+//		this.action = action;		
+//	}
 
 	public int getValue() {
 		if (isPrimitive())

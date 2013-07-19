@@ -8,6 +8,7 @@ import javax.media.j3d.Transform3D;
 import tracing.ITracer;
 
 import eca.construct.Action;
+import eca.construct.Area;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
 import eca.spas.egomem.Place;
@@ -192,4 +193,9 @@ public interface Enaction
 	
 	public void setIntendedAction(Action action);
 	public Action getIntendedAction();
+	
+	public void setArea(Area area);
+	public Area getArea();
+	public Transform3D getTransform3D();
+
 }
