@@ -26,15 +26,5 @@ public interface Primitive
 	/**
 	 * @param phenomenonType The type of phenomenon observed through this primitive interaction.
 	 */
-	public void setPhenomenonType(PhenomenonType phenomenonType);
-	
-	/**
-	 * @param displacement The displacement associated with this interaction.
-	 */
-	public void setDisplacement(Displacement displacement);
-	
-	/**
-	 * @return The displacement associated with this interaction.
-	 */
-	public Displacement getDisplacement();
+	public void setPhenomenonType(PhenomenonType phenomenonType);	
 }

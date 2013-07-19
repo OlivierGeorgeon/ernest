@@ -3,9 +3,14 @@ package eca.ss.enaction;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.media.j3d.Transform3D;
+
 import eca.Primitive;
 import eca.construct.Action;
 import eca.construct.Area;
+import eca.construct.egomem.Displacement;
+import eca.construct.egomem.DisplacementImpl;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -33,6 +38,7 @@ public class ActImpl implements Act
 	private int color;
 	
 	private Action action;
+	private Displacement displacement;
 	
 	/**
 	 * @return The list of all acts known by the agent.
@@ -71,8 +77,16 @@ public class ActImpl implements Act
 	{
 		String key = createCompositeKey(preAct, postAct);
 		int enactionValue = preAct.getEnactionValue() + postAct.getEnactionValue();
-		if (!ACTS.containsKey(key))
-			ACTS.put(key, new ActImpl(key, false, preAct, postAct, enactionValue, null, null));			
+		if (!ACTS.containsKey(key)){
+			Act newAct = new ActImpl(key, false, preAct, postAct, enactionValue, null, null);
+
+			Transform3D newTransform = new Transform3D();
+            newTransform.mul(postAct.getDisplacement().getTransform3D(), preAct.getDisplacement().getTransform3D());
+			Displacement displacement = DisplacementImpl.createOrGet(newTransform);
+			newAct.setDisplacement(displacement);
+			
+			ACTS.put(key, newAct);
+		}
 		return ACTS.get(key);
 	}
 	
@@ -275,4 +289,14 @@ public class ActImpl implements Act
 		else 
 			return this.getPreAct().getValue() + this.getPostAct().getValue();
 	}
+	
+	public Displacement getDisplacement() {
+		return displacement;
+	}
+
+	public void setDisplacement(Displacement displacement) {
+		this.displacement = displacement;
+	}
+	
+
 }

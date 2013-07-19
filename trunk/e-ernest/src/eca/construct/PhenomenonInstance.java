@@ -13,6 +13,9 @@ public interface PhenomenonInstance {
 	 */
 	public PhenomenonType getPhenomenonType();
 	
+	/**
+	 * @param phenomenonType The type of this phenomenon 
+	 */
 	public void setPhenomenonType(PhenomenonType phenomenonType);
 	
 	/**
