@@ -118,13 +118,6 @@ public interface Act
 	public void setArea(Area area);
 	
 	/**
-	 * @return The action performed by the primitive interaction of this act
-	 */
-	//public Action getAction();
-	
-	public void setAction(Action action);
-	
-	/**
 	 * @param displacement The displacement associated with this act.
 	 */
 	public void setDisplacement(Displacement displacement);

@@ -116,6 +116,7 @@ public class DeciderImpl implements Decider
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
+		newEnaction.setArea(enaction.getArea());
 		
 		return newEnaction;
 	}

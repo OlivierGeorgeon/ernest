@@ -8,14 +8,13 @@ import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.Action;
+import eca.construct.Area;
+import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
-import eca.construct.PhenomenonInstanceImpl;
-import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 import eca.spas.egomem.Place;
 import eca.spas.egomem.PlaceImpl;
-import eca.ss.Appearance;
 import ernest.IEffect;
 
 /**
@@ -62,6 +61,10 @@ public class EnactionImpl implements Enaction
 
 	/** final status of this enaction (true correct, false incorrect) */
 	private boolean m_correct = true;
+	
+	private Transform3D transformation = new Transform3D();
+	
+	private Area area = AreaImpl.createOrGet(new Point3f());
 
 	private Displacement displacement = null;
 	
@@ -245,9 +248,10 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "primitive_enacted_interaction", m_enactedPrimitiveAct.getPrimitive().getLabel());
 			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
-			tracer.addSubelement(e, "transformation", this.displacement.getLabel());
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
-			tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());			
+			tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
+			tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
+			
 		}
 	}
 
@@ -319,14 +323,20 @@ public class EnactionImpl implements Enaction
 	public void track(List<Place> places, Transform3D transform){
 		
 		this.enactedPlaces = places;
-		
+
+		// TODO manage several places.
 		for (Place place : places){
 			this.m_enactedPrimitiveAct = place.getAct();
 			this.m_enactedPrimitiveAct.setColor(place.getValue());
 		}
-		this.displacement = DisplacementImpl.createOrGet(transform);
-		//this.m_enactedPrimitiveAct.getPrimitive().setDisplacement(this.displacement);
-		this.m_enactedPrimitiveAct.setDisplacement(this.displacement);
+		
+		this.transformation = transform;
+		
+		this.displacement = DisplacementImpl.createOrGet(this.area, m_enactedPrimitiveAct.getArea());
+		this.area = m_enactedPrimitiveAct.getArea();
+		
+//		this.displacement = DisplacementImpl.createOrGet(transform);
+//		this.m_enactedPrimitiveAct.setDisplacement(this.displacement);
 	}
 	
 	public List<Place> getEnactedPlaces(){
@@ -347,6 +357,18 @@ public class EnactionImpl implements Enaction
 
 	public void setIntendedAction(Action intendedAction) {
 		this.intendedAction = intendedAction;
+	}
+
+	public Area getArea() {
+		return area;
+	}
+
+	public void setArea(Area area) {
+		this.area = area;
+	}
+
+	public Transform3D getTransform3D() {
+		return transformation;
 	}
 
 }
