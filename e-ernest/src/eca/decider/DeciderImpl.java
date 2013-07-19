@@ -68,8 +68,9 @@ public class DeciderImpl implements Decider
 			intendedAct = selecteProposition.getAnticipatedAct();		
 
 		// Anticipate the consequences
-		
-		//Displacement intendedDisplacement = selectedAction.predictDisplacement(preAppearance);
+		Displacement intendedDisplacement = null; 
+		if (intendedAct.isPrimitive())
+			intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(enaction.getArea());
 		//Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
 		
 		// Trace the decision
@@ -102,7 +103,8 @@ public class DeciderImpl implements Decider
 			
 			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
 			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
-			//this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
+			if (intendedDisplacement != null)
+				this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
 			//this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
 		}		
 		System.out.println("Select:" + selectedAction.getLabel());

@@ -8,6 +8,7 @@ import javax.vecmath.Point3f;
 
 import eca.construct.Action;
 import eca.construct.ActionImpl;
+import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
@@ -26,7 +27,8 @@ public class PrimitiveImpl implements Primitive {
 	private String label = "";
 	private int value = 0;
 	private PhenomenonType phenomenonType = null; 
-	//private Displacement displacement = null;
+
+	private Map<Displacement , Integer> displacements = new HashMap<Displacement , Integer>() ;
 
 	/**
 	 * @param label The primitive interaction's label
@@ -108,5 +110,25 @@ public class PrimitiveImpl implements Primitive {
 	public void setPhenomenonType(PhenomenonType phenomenonType) {
 		this.phenomenonType = phenomenonType;
 		phenomenonType.addPrimitive(this);
+	}
+	
+	public void incDisplacementCounter(Displacement displacement){
+		if (displacements.containsKey(displacement))
+			displacements.put(displacement, displacements.get(displacement) + 1);
+		else
+			displacements.put(displacement, 1);
+	}
+
+	public Displacement predictDisplacement(Area area) {
+		int max = 0;
+		Displacement predictDisplacement = null;
+		
+		for (Map.Entry<Displacement, Integer> entry : displacements.entrySet())
+			if (entry.getKey().getPreArea().equals(area) && entry.getValue() > max){
+				predictDisplacement = entry.getKey();
+				max = entry.getValue();
+			}
+		
+		return predictDisplacement;
 	}
 }

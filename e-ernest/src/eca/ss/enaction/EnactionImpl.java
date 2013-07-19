@@ -333,6 +333,8 @@ public class EnactionImpl implements Enaction
 		this.transformation = transform;
 		
 		this.displacement = DisplacementImpl.createOrGet(this.area, m_enactedPrimitiveAct.getArea());
+		m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
+		
 		this.area = m_enactedPrimitiveAct.getArea();
 		
 //		this.displacement = DisplacementImpl.createOrGet(transform);
