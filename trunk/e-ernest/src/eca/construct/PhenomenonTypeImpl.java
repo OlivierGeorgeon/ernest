@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import eca.Primitive;
+import eca.ss.enaction.Act;
 
 /**
  * A PhenomenonType is intended to represent a type of phenomenon that can be observed in the external world.
@@ -50,17 +51,55 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	}
 	
 	/**
+	 * @param primitive
+	 * @return
+	 */
+	public static PhenomenonType evoke(Primitive primitive){
+		PhenomenonType phenomenonType = null;
+		for (PhenomenonType p : getPhenomenonTypes()){
+			if (p.contains(primitive))
+				phenomenonType = p;
+		}		
+		return phenomenonType;
+	}
+	
+	/**
 	 * Merge the new PhenomenonType into the previous PhenomenonType.
 	 * The interactions attached to the new PhenomenonType are added to the previous PhenomenonType 
 	 * The new PhenomenonType is removed from the list of PHENOMENA
 	 * @param newPhenomenonType The first action from which to merge (removed). 
 	 * @param previousPhenomenonType The second action to which to merge (kept).
 	 */
-	public static void merge(PhenomenonType newPhenomenonType, PhenomenonType previousPhenomenonType){
-		if (!newPhenomenonType.equals(previousPhenomenonType)){
-			for (Primitive act : newPhenomenonType.getPrimitives())
-				act.setPhenomenonType(previousPhenomenonType);
-			PHENOMENA.remove(newPhenomenonType.getLabel());
+//	public static void merge(PhenomenonType newPhenomenonType, PhenomenonType previousPhenomenonType){
+//		if (!newPhenomenonType.equals(previousPhenomenonType)){
+//			for (Primitive act : newPhenomenonType.getPrimitives())
+//				act.setPhenomenonType(previousPhenomenonType);
+//			PHENOMENA.remove(newPhenomenonType.getLabel());
+//		}
+//	}
+	
+	/**
+	 * Merge the interactions of the phenomenonType of the enacted interaction
+	 * into the new PhenomenonType.
+	 * The interactions attached to the enacted act's phenomenonType are transferred 
+	 * to the new phenomenonType
+	 * @param primitive The primitive to merge. 
+	 * @param newPhenomenonType The second phenomenonType to which to merge (kept).
+	 */
+	public static void merge(Primitive primitive, PhenomenonType newPhenomenonType){
+		if (!newPhenomenonType.contains(primitive)){
+			PhenomenonType oldPhenomenonType = null;
+			for (PhenomenonType phenomenonType : getPhenomenonTypes()){
+				if (phenomenonType.contains(primitive))
+					oldPhenomenonType = phenomenonType;
+			}
+			// TODO more sophisticated merge of phenomenonType.
+			if (oldPhenomenonType != null){
+				for (Primitive p : oldPhenomenonType.getPrimitives())
+					newPhenomenonType.addPrimitive(p);
+				PHENOMENA.remove(oldPhenomenonType.getLabel());
+			}
+			newPhenomenonType.addPrimitive(primitive);
 		}
 	}
 	
@@ -109,5 +148,10 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 			s += " " + i.getLabel();
 		return s;
 	}
+	
+	public boolean contains(Primitive primitive){
+		return this.primitives.contains(primitive);
+	}
+
 
 }

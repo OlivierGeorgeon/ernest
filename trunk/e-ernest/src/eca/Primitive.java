@@ -22,12 +22,12 @@ public interface Primitive
 	/**
 	 * @return The type of phenomenon observed through this primitive interaction.
 	 */
-	public PhenomenonType getPhenomenonType();
+	//public PhenomenonType getPhenomenonType();
 	
 	/**
 	 * @param phenomenonType The type of phenomenon observed through this primitive interaction.
 	 */
-	public void setPhenomenonType(PhenomenonType phenomenonType);
+	//public void setPhenomenonType(PhenomenonType phenomenonType);
 	
 	/**
 	 * @param displacement The displacement to record to this experiment
@@ -35,6 +35,7 @@ public interface Primitive
 	public void incDisplacementCounter(Displacement displacement);
 	
 	/**
+	 * @param area The area from which we want to predict the displacement
 	 * @return The displacement most probably resulting from this experiment
 	 */
 	public Displacement predictDisplacement(Area area);

@@ -1,9 +1,7 @@
 package eca.ss.enaction;
 
 import eca.Primitive;
-import eca.construct.Action;
 import eca.construct.Area;
-import eca.construct.egomem.Displacement;
 
 /**
  * An Act is an Interaction with spatial information (Area) attached in order to characterize its enaction in space.
@@ -116,16 +114,6 @@ public interface Act
 	 * @param area The area where this act is enacted.
 	 */
 	public void setArea(Area area);
-	
-	/**
-	 * @param displacement The displacement associated with this act.
-	 */
-	//public void setDisplacement(Displacement displacement);
-	
-	/**
-	 * @return The displacement associated with this act.
-	 */
-	//public Displacement getDisplacement();
 	
 	/**
 	 * @param color The color used to display this act in sequential and spatial trace.

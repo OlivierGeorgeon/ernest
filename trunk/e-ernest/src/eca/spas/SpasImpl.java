@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
+import eca.Primitive;
 import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
@@ -61,11 +62,12 @@ public class SpasImpl implements Spas
 		this.transform.set(enaction.getTransform3D());
 
 		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
+		PhenomenonType phenomenonType = PhenomenonTypeImpl.evoke(enaction.getEnactedPrimitiveAct().getPrimitive());
 		Area previousArea = null;
 		Area projectedArea = null;
 		if (phenomenonInstance == null){
 			previousArea = AreaImpl.createOrGet(new Point3f());
-			phenomenonInstance = new PhenomenonInstanceImpl(enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType(), enactedPlace.clone());
+			phenomenonInstance = new PhenomenonInstanceImpl(phenomenonType, enactedPlace.clone());
 		}
 		else{
 			previousArea = phenomenonInstance.getPlace().getArea();
@@ -78,7 +80,8 @@ public class SpasImpl implements Spas
 		Appearance preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), previousArea);
 
 		Area area = enaction.getEnactedPrimitiveAct().getArea();
-		PhenomenonType phenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
+		//PhenomenonType phenomenonType = enaction.getEnactedPrimitiveAct().getPrimitive().getPhenomenonType();
+		Primitive enactedPrimitive = enaction.getEnactedPrimitiveAct().getPrimitive();
 		
 		// Update spatial memory
 		
@@ -91,7 +94,7 @@ public class SpasImpl implements Spas
 		
 		if (enaction.getIntendedPrimitiveAct() != null){
 			if (area.getLabel().equals(AreaImpl.O)  ){
-				PhenomenonTypeImpl.merge(phenomenonType, PhenomenonTypeImpl.EMPTY);
+				PhenomenonTypeImpl.merge(enactedPrimitive, PhenomenonTypeImpl.EMPTY);
 				phenomenonInstance = new PhenomenonInstanceImpl(PhenomenonTypeImpl.EMPTY, enactedPlace.clone());
 				if (m_tracer != null ){
 					if (!phenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
@@ -111,7 +114,8 @@ public class SpasImpl implements Spas
 				PhenomenonType previousPhenomenonType = phenomenonInstance.getPhenomenonType();
 				phenomenonInstance.getPlace().setPosition(enactedPlace.getPosition()); //Update the position
 				if (!previousPhenomenonType.equals(phenomenonType)){
-					PhenomenonTypeImpl.merge(phenomenonType, previousPhenomenonType);
+					//PhenomenonTypeImpl.merge(phenomenonType, previousPhenomenonType);
+					PhenomenonTypeImpl.merge(enactedPrimitive, previousPhenomenonType);
 					if (m_tracer != null){
 						m_tracer.addSubelement(phenomenonInstElemnt, "type", previousPhenomenonType.getLabel());
 						m_tracer.addSubelement(phenomenonInstElemnt, "merge", phenomenonType.getLabel());
