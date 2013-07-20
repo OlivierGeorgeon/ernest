@@ -3,14 +3,8 @@ package eca.ss.enaction;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.media.j3d.Transform3D;
-
 import eca.Primitive;
-import eca.construct.Action;
 import eca.construct.Area;
-import eca.construct.egomem.Displacement;
-import eca.construct.egomem.DisplacementImpl;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -283,10 +277,6 @@ public class ActImpl implements Act
 	public void setColor(int color) {
 		this.color = color;
 	}
-
-//	public void setAction(Action action) {
-//		this.action = action;		
-//	}
 
 	public int getValue() {
 		if (isPrimitive())
