@@ -4,9 +4,7 @@ package eca.decider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.vecmath.Point3f;
-
 import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.ActionImpl;

@@ -29,4 +29,6 @@ public interface Primitive
 	 */
 	public Displacement predictDisplacement(Area area);
 	
+	public String getDisplacementLabels();
+	
 }
