@@ -11,6 +11,7 @@ import eca.construct.ActionImpl;
 import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
+import eca.construct.PhenomenonInstanceImpl;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
@@ -53,11 +54,18 @@ public class DeciderImpl implements Decider
 		System.out.println("New decision ================ ");
 
 		Enaction newEnaction = new EnactionImpl();	
+		
 		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
 		Area preArea = AreaImpl.createOrGet(new Point3f());
-		if (phenomenonInstance != null)
+		Appearance preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
+		
+		if (phenomenonInstance != null){
 			preArea = phenomenonInstance.getPlace().getArea();
-		Appearance	preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
+			preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
+		}
+		else
+			preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
+			
 			
 
 		// Choose the next action
