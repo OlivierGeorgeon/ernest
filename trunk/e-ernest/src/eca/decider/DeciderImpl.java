@@ -4,9 +4,14 @@ package eca.decider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.vecmath.Point3f;
+
 import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
+import eca.construct.Area;
+import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
@@ -51,7 +56,10 @@ public class DeciderImpl implements Decider
 
 		Enaction newEnaction = new EnactionImpl();	
 		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
-		Appearance	preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), phenomenonInstance.getPlace().getArea());
+		Area preArea = AreaImpl.createOrGet(new Point3f());
+		if (phenomenonInstance != null)
+			preArea = phenomenonInstance.getPlace().getArea();
+		Appearance	preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
 			
 
 		// Choose the next action
@@ -68,9 +76,7 @@ public class DeciderImpl implements Decider
 			intendedAct = selecteProposition.getAnticipatedAct();		
 
 		// Anticipate the consequences
-		Displacement intendedDisplacement = null; 
-		if (intendedAct.isPrimitive())
-			intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(enaction.getInitialArea());
+		Displacement intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(preArea);
 		//Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
 		
 		// Trace the decision
@@ -118,7 +124,7 @@ public class DeciderImpl implements Decider
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
-		newEnaction.setInitialArea(enaction.getInitialArea());
+		newEnaction.setInitialArea(preArea);
 		
 		return newEnaction;
 	}

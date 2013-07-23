@@ -127,5 +127,5 @@ public interface Act
 	
 	public int getValue();
 	
-	public void initPrimitive();
+	//public void initPrimitive();
 }
