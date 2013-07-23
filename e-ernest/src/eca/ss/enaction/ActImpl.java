@@ -284,8 +284,8 @@ public class ActImpl implements Act
 			return this.getPreAct().getValue() + this.getPostAct().getValue();
 	}
 	
-	public void initPrimitive(){
-		this.primitive = PrimitiveImpl.createOrGetComposite(preAct.getPrimitive(), postAct.getPrimitive());
-	}
+//	public void initPrimitive(){
+//		this.primitive = PrimitiveImpl.createOrGetComposite(preAct.getPrimitive(), postAct.getPrimitive());
+//	}
 
 }

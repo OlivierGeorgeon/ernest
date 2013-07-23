@@ -66,6 +66,8 @@ public class EnactionImpl implements Enaction
 	
 	private Area initialArea = AreaImpl.createOrGet(new Point3f());
 
+	//private Area currentArea = AreaImpl.createOrGet(new Point3f());
+
 	private Displacement displacement = null;
 	
 	private PhenomenonInstance phenomenonInstance = null;
@@ -337,7 +339,7 @@ public class EnactionImpl implements Enaction
 //		this.displacement = DisplacementImpl.createOrGet(this.initialArea, m_enactedPrimitiveAct.getArea());
 //		m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
 //		
-		this.initialArea = m_enactedPrimitiveAct.getArea();
+		//this.currentArea = m_enactedPrimitiveAct.getArea();
 	}
 	
 	public List<Place> getEnactedPlaces(){
