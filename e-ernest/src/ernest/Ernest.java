@@ -4,9 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.media.j3d.Transform3D;
+import javax.vecmath.Point3f;
+
 import tracing.ITracer;
 import eca.Primitive;
 import eca.PrimitiveImpl;
+import eca.construct.Action;
+import eca.construct.ActionImpl;
+import eca.construct.AreaImpl;
+import eca.construct.PhenomenonType;
+import eca.construct.PhenomenonTypeImpl;
 import eca.decider.DeciderImpl;
 import eca.decider.Decider;
 import eca.spas.Spas;
@@ -15,6 +22,8 @@ import eca.spas.egomem.Place;
 import eca.spas.egomem.SpatialMemory;
 import eca.ss.IImos;
 import eca.ss.Imos;
+import eca.ss.enaction.Act;
+import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
 import eca.ss.enaction.EnactionImpl;
 
@@ -149,7 +158,15 @@ public class Ernest implements IErnest
 	
 	public Primitive addInteraction(String label, int value)
 	{
-		return PrimitiveImpl.createOrGet(label, value * 10);
+		Primitive primitive = PrimitiveImpl.createOrGet(label, value * 10);
+		
+		Act act = ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(new Point3f(1,0,0)));
+		Action action = ActionImpl.createOrGet("[a" + act.getLabel() + "]");
+		action.addAct(act);
+		PhenomenonType phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");
+		phenomenonType.addPrimitive(primitive);	
+
+		return primitive;
 	}
 
 	public ArrayList<Place> getPlaceList()

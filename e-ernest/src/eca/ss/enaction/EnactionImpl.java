@@ -64,7 +64,7 @@ public class EnactionImpl implements Enaction
 	
 	private Transform3D transformation = new Transform3D();
 	
-	private Area area = AreaImpl.createOrGet(new Point3f());
+	private Area initialArea = AreaImpl.createOrGet(new Point3f());
 
 	private Displacement displacement = null;
 	
@@ -250,7 +250,7 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
 			tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
-			tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
+			//tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
 			
 		}
 	}
@@ -290,6 +290,8 @@ public class EnactionImpl implements Enaction
 				tracer.addSubelement(learning, "interaction", i.getLabel());
 
 			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
+			if (this.displacement != null)
+				tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
 		}
 	}
 
@@ -332,13 +334,10 @@ public class EnactionImpl implements Enaction
 		
 		this.transformation = transform;
 		
-		this.displacement = DisplacementImpl.createOrGet(this.area, m_enactedPrimitiveAct.getArea());
-		m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
-		
-		this.area = m_enactedPrimitiveAct.getArea();
-		
-//		this.displacement = DisplacementImpl.createOrGet(transform);
-//		this.m_enactedPrimitiveAct.setDisplacement(this.displacement);
+//		this.displacement = DisplacementImpl.createOrGet(this.initialArea, m_enactedPrimitiveAct.getArea());
+//		m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
+//		
+		this.initialArea = m_enactedPrimitiveAct.getArea();
 	}
 	
 	public List<Place> getEnactedPlaces(){
@@ -361,12 +360,12 @@ public class EnactionImpl implements Enaction
 		this.intendedAction = intendedAction;
 	}
 
-	public Area getArea() {
-		return area;
+	public Area getInitialArea() {
+		return initialArea;
 	}
 
-	public void setArea(Area area) {
-		this.area = area;
+	public void setInitialArea(Area area) {
+		this.initialArea = area;
 	}
 
 	public Transform3D getTransform3D() {

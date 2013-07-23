@@ -13,8 +13,6 @@ import eca.construct.PhenomenonInstanceImpl;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
-import eca.construct.experiment.Experiment;
-import eca.construct.experiment.ExperimentImpl;
 import eca.spas.egomem.Place;
 import eca.spas.egomem.SpatialMemory;
 import eca.spas.egomem.SpatialMemoryImpl;

@@ -26,7 +26,6 @@ public class PrimitiveImpl implements Primitive {
 
 	private String label = "";
 	private int value = 0;
-	//private PhenomenonType phenomenonType = null; 
 
 	private Map<Displacement , Integer> displacements = new HashMap<Displacement , Integer>() ;
 
@@ -36,6 +35,19 @@ public class PrimitiveImpl implements Primitive {
 	 * @return The primitive interaction created or retrieved
 	 */
 	public static Primitive createOrGet(String label, int value){
+		if (!INTERACTIONS.containsKey(label))
+			INTERACTIONS.put(label, new PrimitiveImpl(label, value));			
+		return INTERACTIONS.get(label);
+	}
+	
+	/**
+	 * @param preInteraction The composite interaction's pre-interaction
+	 * @param postInteraction The composite interaction's post-interaction
+	 * @return The primitive interaction created or retrieved
+	 */
+	public static Primitive createOrGetComposite(Primitive preInteraction, Primitive postInteraction){
+		String label = "(" + preInteraction.getLabel() + postInteraction.getLabel() + ")";
+		int value = preInteraction.getValue() + postInteraction.getValue();
 		if (!INTERACTIONS.containsKey(label))
 			INTERACTIONS.put(label, new PrimitiveImpl(label, value));			
 		return INTERACTIONS.get(label);
@@ -59,13 +71,11 @@ public class PrimitiveImpl implements Primitive {
 	private PrimitiveImpl(String label, int value){
 		this.label = label;
 		this.value = value;
-		Act act = ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet(new Point3f(1,0,0)));
-		Action action = ActionImpl.createOrGet("[a" + act.getLabel() + "]");
-		action.addAct(act);
-//		this.phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");
-//		this.phenomenonType.addPrimitive(this);
-		PhenomenonType phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");
-		phenomenonType.addPrimitive(this);	
+//		Act act = ActImpl.createOrGetPrimitiveAct(this, AreaImpl.createOrGet(new Point3f(1,0,0)));
+//		Action action = ActionImpl.createOrGet("[a" + act.getLabel() + "]");
+//		action.addAct(act);
+//		PhenomenonType phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");
+//		phenomenonType.addPrimitive(this);	
 	}
 	
 	public String getLabel(){
@@ -103,15 +113,6 @@ public class PrimitiveImpl implements Primitive {
 		return this.label + "(" + this.value / 10 + ")";
 	}
 
-//	public PhenomenonType getPhenomenonType() {
-//		return this.phenomenonType;
-//	}
-//
-//	public void setPhenomenonType(PhenomenonType phenomenonType) {
-//		this.phenomenonType = phenomenonType;
-//		phenomenonType.addPrimitive(this);
-//	}
-//	
 	public void incDisplacementCounter(Displacement displacement){
 		if (displacements.containsKey(displacement))
 			displacements.put(displacement, displacements.get(displacement) + 1);

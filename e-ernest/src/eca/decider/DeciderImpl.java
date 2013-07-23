@@ -70,7 +70,7 @@ public class DeciderImpl implements Decider
 		// Anticipate the consequences
 		Displacement intendedDisplacement = null; 
 		if (intendedAct.isPrimitive())
-			intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(enaction.getArea());
+			intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(enaction.getInitialArea());
 		//Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
 		
 		// Trace the decision
@@ -118,7 +118,7 @@ public class DeciderImpl implements Decider
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
-		newEnaction.setArea(enaction.getArea());
+		newEnaction.setInitialArea(enaction.getInitialArea());
 		
 		return newEnaction;
 	}
