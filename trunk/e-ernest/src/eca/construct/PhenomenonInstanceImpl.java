@@ -11,9 +11,9 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 	private PhenomenonType phenomenonType = null;
 	private Place place = null;
 	
-	public PhenomenonInstanceImpl(PhenomenonType phenomenonType, Area preArea){
+	public PhenomenonInstanceImpl(PhenomenonType phenomenonType, Place place){
 		this.phenomenonType = phenomenonType;
-		this.place = preArea;
+		this.place = place;
 	}
 	
 	public PhenomenonType getPhenomenonType() {
