@@ -132,4 +132,13 @@ public class PrimitiveImpl implements Primitive {
 		
 		return predictDisplacement;
 	}
+	
+	public String getDisplacementLabels(){
+		String label = "";
+		for (Map.Entry<Displacement, Integer> entry : displacements.entrySet())
+			label += entry.getKey().getLabel() + "(" + entry.getValue() + ") ";
+		
+		return label;
+	}
+
 }

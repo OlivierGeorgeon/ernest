@@ -52,6 +52,10 @@ public class SpasImpl implements Spas
 		if (m_tracer != null)
 			phenomenonInstElemnt = m_tracer.addEventElement("phenomenonInstance", true);
 
+		PhenomenonInstance phenomenonInstance = null;
+		if (enaction.getIntendedPrimitiveAct() != null){
+
+		
 		Place enactedPlace = enaction.getEnactedPlaces().get(0);	
 		enactedPlace.normalize(3);
 		System.out.println("enacted position " + enactedPlace.getPosition().x + "," + enactedPlace.getPosition().y);
@@ -59,7 +63,8 @@ public class SpasImpl implements Spas
 		//Displacement displacement = enaction.getDisplacement();
 		this.transform.set(enaction.getTransform3D());
 
-		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
+		phenomenonInstance = enaction.getPhenomenonInstance();
+		
 		PhenomenonType phenomenonType = PhenomenonTypeImpl.evoke(enaction.getEnactedPrimitiveAct().getPrimitive());
 		Area previousArea = null;
 		Area projectedArea = null;
@@ -89,8 +94,9 @@ public class SpasImpl implements Spas
 		this.spacialMemory.addPlace(enactedPlace);
 
 		// Merge phenomenon types	
+//		if (enaction.getIntendedPrimitiveAct() != null)
+//		{
 		
-		if (enaction.getIntendedPrimitiveAct() != null){
 			if (area.getLabel().equals(AreaImpl.O)  ){
 				PhenomenonTypeImpl.merge(enactedPrimitive, PhenomenonTypeImpl.EMPTY);
 				phenomenonInstance = new PhenomenonInstanceImpl(PhenomenonTypeImpl.EMPTY, enactedPlace.clone());
