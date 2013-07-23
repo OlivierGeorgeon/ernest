@@ -126,4 +126,6 @@ public interface Act
 	public int getColor();
 	
 	public int getValue();
+	
+	public void initPrimitive();
 }

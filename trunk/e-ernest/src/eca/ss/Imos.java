@@ -4,7 +4,10 @@ package eca.ss;
 import java.util.ArrayList;
 import java.util.List;
 import tracing.ITracer;
+import eca.construct.Action;
 import eca.construct.ActionImpl;
+import eca.construct.egomem.Displacement;
+import eca.construct.egomem.DisplacementImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
@@ -107,36 +110,41 @@ public class Imos implements IImos
 	public void terminate(Enaction enaction)
 	{
 
-		Act intendedTopInteraction = enaction.getTopAct();
-		Act enactedTopInteraction  = enaction.getTopEnactedAct();
+		Act intendedTopAct = enaction.getTopAct();
+		Act enactedTopAct  = enaction.getTopEnactedAct();
 		ArrayList<Act> previousLearningContext = enaction.getPreviousLearningContext();
 		ArrayList<Act> initialLearningContext = enaction.getInitialLearningContext();
-
+		
 		// if we are not on startup
-		if (enactedTopInteraction != null)
+		if (enactedTopAct != null)
 		{
+			// The displacement attached to the to enacted interaction
+			Displacement displacement = DisplacementImpl.createOrGet(enaction.getInitialArea(), enaction.getEnactedPrimitiveAct().getArea());
+			enactedTopAct.getPrimitive().incDisplacementCounter(displacement);
+			enaction.setDisplacement(displacement);
+
 			// Surprise if the enacted interaction is not that intended
-			if (intendedTopInteraction != enactedTopInteraction) 
+			if (intendedTopAct != enactedTopAct) 
 			{
 				m_internalState= "!";
 				enaction.setSuccessful(false);	
 				
 				//if (!enaction.getIntendedAction().contains(enactedTopInteraction.getPrimitive())){
-				if (!enaction.getIntendedAction().contains(enactedTopInteraction)){
+				if (!enaction.getIntendedAction().contains(enactedTopAct)){
 					//System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
 					if (m_tracer != null){
-						m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopInteraction);
+						m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopAct);
 					}
 				}
 				
-				ActionImpl.merge(enactedTopInteraction, enaction.getIntendedAction());
+				ActionImpl.merge(enactedTopAct, enaction.getIntendedAction());
 				//enaction.getEnactedPrimitiveAct().setDisplacement(enaction.getDisplacement());
 			}
 			
 			// learn from the  context and the enacted interaction
 			m_nbSchemaLearned = 0;
 			System.out.println("Learn from enacted top interaction");
-			ArrayList<Act> streamContextList = record(initialLearningContext, enactedTopInteraction);
+			ArrayList<Act> streamContextList = record(initialLearningContext, enactedTopAct);
 						
 			// learn from the base context and the stream interaction	
 			 if (streamContextList.size() > 0) // TODO find a better way than relying on the enacted act being on the top of the list
@@ -151,7 +159,7 @@ public class Imos implements IImos
 			 }
 
 			//enaction.setFinalContext(topEnactedAct, performedAct, streamContextList);			
-			enaction.setFinalContext(enactedTopInteraction, enactedTopInteraction, streamContextList);			
+			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);			
 		}
 		//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
 		enaction.setNbActLearned(m_nbSchemaLearned);
@@ -214,11 +222,6 @@ public class Imos implements IImos
 		return newContextList; 
 	}
 
-//	public int getCounter() 
-//	{
-//		return m_imosCycle;
-//	}
-
 	/**
 	 * Recursively construct the current actually enacted act. 
 	 *  (may construct extra intermediary schemas but that's ok because their weight is not incremented)
@@ -270,15 +273,16 @@ public class Imos implements IImos
 			if (!activatedAct.isPrimitive())
 			{
 				// If this act's pre-act belongs to the context then this act is activated 
-				for (Act contextAct : enaction.getFinalActivationContext())
-				{
-					if (activatedAct.getPreAct().equals(contextAct))
-					{
+				if (enaction.getFinalActivationContext().contains(activatedAct.getPreAct()))
+				//for (Act contextAct : enaction.getFinalActivationContext())
+				//{
+					//if (activatedAct.getPreAct().equals(contextAct))
+					//{
 						addProposition(propositions, activatedAct);
 						if (m_tracer != null)
 							m_tracer.addSubelement(activationElmt, "ActivatedAct", activatedAct + " intention " + activatedAct.getPostAct());
-					}
-				}
+					//}
+				//}
 			}
 		}
 		if (this.m_tracer != null){
@@ -330,7 +334,11 @@ public class Imos implements IImos
 				}
 			}
 			else {
-				// propose acts that passed the threshold (they may represent a new Action)
+				// propose acts that passed the threshold represent a new Action
+				//proposedAct.initPrimitive(); // create the new interaction and action if not yet created
+				Action action = ActionImpl.createOrGet("[a" + proposedAct.getLabel() + "]");
+				action.addAct(proposedAct);
+
 				proposition = new ActPropositionImpl(proposedAct, w);
 				proposition.setWeightedValue(proposedAct.getValue() * w);				
 			}

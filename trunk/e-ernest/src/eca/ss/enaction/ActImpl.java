@@ -4,7 +4,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import eca.Primitive;
+import eca.PrimitiveImpl;
 import eca.construct.Area;
+import eca.construct.egomem.Displacement;
+import eca.construct.egomem.DisplacementImpl;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 
@@ -30,7 +33,6 @@ public class ActImpl implements Act
 	private Primitive primitive;
 	private Area area;
 	private int color;
-	//private Displacement displacement;
 	
 	/**
 	 * @return The list of all acts known by the agent.
@@ -70,17 +72,14 @@ public class ActImpl implements Act
 		String key = createCompositeKey(preAct, postAct);
 		int enactionValue = preAct.getEnactionValue() + postAct.getEnactionValue();
 		if (!ACTS.containsKey(key)){
-			Act newAct = new ActImpl(key, false, preAct, postAct, enactionValue, null, null);
-
+			Primitive primitive = PrimitiveImpl.createOrGetComposite(preAct.getPrimitive(), postAct.getPrimitive());
+			Act newAct = new ActImpl(key, false, preAct, postAct, enactionValue, primitive, postAct.getArea());
+			//Act newAct = new ActImpl(key, false, preAct, postAct, enactionValue, null, postAct.getArea());
+			
 //			Transform3D newTransform = new Transform3D();
-//            newTransform.mul(postAct.getDisplacement().getTransform3D(), preAct.getDisplacement().getTransform3D());
+//          newTransform.mul(postAct.getDisplacement().getTransform3D(), preAct.getDisplacement().getTransform3D());
 //			Displacement displacement = DisplacementImpl.createOrGet(newTransform);
 
-			// TODO check the intermediary area for consistency
-			// check that the acts apply to the same appearance?
-//			Displacement displacement = DisplacementImpl.createOrGet(preAct.getArea(), postAct.getArea());
-//			newAct.setDisplacement(displacement);
-			
 			ACTS.put(key, newAct);
 		}
 		return ACTS.get(key);
@@ -285,13 +284,8 @@ public class ActImpl implements Act
 			return this.getPreAct().getValue() + this.getPostAct().getValue();
 	}
 	
-//	public Displacement getDisplacement() {
-//		return displacement;
-//	}
-
-//	public void setDisplacement(Displacement displacement) {
-//		this.displacement = displacement;
-//	}
-	
+	public void initPrimitive(){
+		this.primitive = PrimitiveImpl.createOrGetComposite(preAct.getPrimitive(), postAct.getPrimitive());
+	}
 
 }

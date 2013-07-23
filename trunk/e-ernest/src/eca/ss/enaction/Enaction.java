@@ -2,17 +2,13 @@ package eca.ss.enaction;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.j3d.Transform3D;
-
 import tracing.ITracer;
-
 import eca.construct.Action;
 import eca.construct.Area;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
 import eca.spas.egomem.Place;
-import eca.ss.Appearance;
 import ernest.IEffect;
 
 /**
@@ -194,8 +190,8 @@ public interface Enaction
 	public void setIntendedAction(Action action);
 	public Action getIntendedAction();
 	
-	public void setArea(Area area);
-	public Area getArea();
+	public void setInitialArea(Area area);
+	public Area getInitialArea();
 	public Transform3D getTransform3D();
 
 }
