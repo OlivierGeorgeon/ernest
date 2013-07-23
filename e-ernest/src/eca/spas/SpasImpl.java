@@ -53,6 +53,7 @@ public class SpasImpl implements Spas
 			phenomenonInstElemnt = m_tracer.addEventElement("phenomenonInstance", true);
 
 		PhenomenonInstance phenomenonInstance = null;
+		
 		if (enaction.getIntendedPrimitiveAct() != null){
 
 		
@@ -114,7 +115,7 @@ public class SpasImpl implements Spas
 				}
 				phenomenonType = PhenomenonTypeImpl.EMPTY;
 			}
-			else if (projectedArea.equals(area)){
+			else if (area.equals(projectedArea)){
 				PhenomenonType previousPhenomenonType = phenomenonInstance.getPhenomenonType();
 				phenomenonInstance.getPlace().setPosition(enactedPlace.getPosition()); //Update the position
 				if (!previousPhenomenonType.equals(phenomenonType)){

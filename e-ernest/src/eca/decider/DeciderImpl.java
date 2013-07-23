@@ -57,16 +57,12 @@ public class DeciderImpl implements Decider
 		
 		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
 		Area preArea = AreaImpl.createOrGet(new Point3f());
-		Appearance preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
+		Appearance preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
 		
 		if (phenomenonInstance != null){
 			preArea = phenomenonInstance.getPlace().getArea();
 			preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
 		}
-		else
-			preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
-			
-			
 
 		// Choose the next action
 		
