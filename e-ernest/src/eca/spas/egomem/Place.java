@@ -3,7 +3,8 @@ package eca.spas.egomem;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
-import eca.Primitive;
+
+import tracing.ITracer;
 import eca.construct.Area;
 import eca.ss.enaction.Act;
 
@@ -105,5 +106,7 @@ public interface Place extends Cloneable
 	public Area getArea();
 	
 	public String getDisplayLabel();
+	
+	public void track(ITracer tracer, Object e);
 	
 }
