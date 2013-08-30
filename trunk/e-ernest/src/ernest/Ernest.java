@@ -123,7 +123,11 @@ public class Ernest implements IErnest
 			//m_tracer.addEventElement("clock", m_imos.getCounter() + "");
             m_tracer.startNewEvent(this.clock);
 			m_tracer.addEventElement("clock", this.clock + "");
-			//input.trace(m_tracer);		
+
+			Object ep = m_tracer.addEventElement("enacted_places");
+			for (Place p : places){
+				p.track(m_tracer, ep);
+			}
 		}                
 
 		this.clock++;

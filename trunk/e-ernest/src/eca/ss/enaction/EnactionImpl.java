@@ -252,7 +252,7 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
 			tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
-			//tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
+			//tracer.addSubelement(e, "displacement", this.displacement.getLabel());	
 			
 		}
 	}
@@ -335,11 +335,6 @@ public class EnactionImpl implements Enaction
 		}
 		
 		this.transformation = transform;
-		
-//		this.displacement = DisplacementImpl.createOrGet(this.initialArea, m_enactedPrimitiveAct.getArea());
-//		m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
-//		
-		//this.currentArea = m_enactedPrimitiveAct.getArea();
 	}
 	
 	public List<Place> getEnactedPlaces(){

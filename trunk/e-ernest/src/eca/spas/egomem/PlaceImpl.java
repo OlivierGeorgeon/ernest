@@ -9,6 +9,7 @@ import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
+import tracing.ITracer;
 import utils.ErnestUtils;
 
 /**
@@ -191,5 +192,13 @@ public class PlaceImpl implements Place
 	
 	public String getDisplayLabel(){
 		return this.primitive.getLabel();
+	}
+
+	public void track(ITracer tracer, Object e) {
+		
+		Object p = tracer.addSubelement(e, "place");		
+		tracer.addSubelement(p, "primitive", this.primitive.getLabel());
+		tracer.addSubelement(p, "position", "(" + this.position.x + "," + this.position.y + ")");
+		tracer.addSubelement(p, "display_code", ErnestUtils.hexColor(this.displayCode));
 	}
 }
