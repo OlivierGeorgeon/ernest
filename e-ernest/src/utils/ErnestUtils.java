@@ -48,8 +48,12 @@ public final class ErnestUtils
 	 */
 	public static float polarAngle(Point3f point) 
 	{
-		if (point.y == 0)
-			return 0;
+		if (point.y == 0){
+			if (point.x >= 0)
+				return 0;
+			else
+				return (float)Math.PI;
+		}
 		else
 			return (float)Math.atan2((double)point.y, (double)point.x);
 	}

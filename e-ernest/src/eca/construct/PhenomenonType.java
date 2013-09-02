@@ -2,7 +2,6 @@ package eca.construct;
 
 import java.util.List;
 import eca.Primitive;
-import eca.ss.enaction.Act;
 
 /**
  * A PhenomenonType is intended to represent a type of phenomenon that can be observed in the external world.
@@ -12,13 +11,16 @@ import eca.ss.enaction.Act;
  */
 public interface PhenomenonType {
 	
-	/** Predefined phenomena */
+	/** Predefined phenomenon type */
 	public static PhenomenonType EMPTY = PhenomenonTypeImpl.createOrGet("_");
 	
 	/**
 	 * @return This PhenomenonType's label.
 	 */
 	public String getLabel();
+	
+	public void setAspect(Aspect aspect);
+	public Aspect getAspect();
 	
 	/**
 	 * @param primitive The primitive interaction to add to this phenomenon type
@@ -32,7 +34,7 @@ public interface PhenomenonType {
 	
 	/**
 	 * @param primitive The primitive to check 
-	 * @return true if this primitive belongs to this action
+	 * @return true if this primitive belongs to this phenomenon type.
 	 */
 	public boolean contains(Primitive primitive);
 
