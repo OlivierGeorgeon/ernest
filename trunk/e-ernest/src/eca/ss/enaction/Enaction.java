@@ -194,4 +194,6 @@ public interface Enaction
 	public Area getInitialArea();
 	public Transform3D getTransform3D();
 
+	public Place getSalientPlace();
+
 }

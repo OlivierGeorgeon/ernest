@@ -5,6 +5,7 @@ import java.util.List;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
+import utils.ErnestUtils;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.Action;
@@ -12,7 +13,6 @@ import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
-import eca.construct.egomem.DisplacementImpl;
 import eca.spas.egomem.Place;
 import eca.spas.egomem.PlaceImpl;
 import ernest.IEffect;
@@ -73,6 +73,10 @@ public class EnactionImpl implements Enaction
 	private PhenomenonInstance phenomenonInstance = null;
 	
 	private List<Place> enactedPlaces = new ArrayList<Place>();
+	
+	private Place salientPlace;
+	
+	private int displayCode;
 	
 	public void setIntendedPrimitiveAct(Act act) 
 	{
@@ -252,6 +256,7 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
 			tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
+			tracer.addSubelement(e, "display_code", ErnestUtils.hexColor(this.displayCode));
 			//tracer.addSubelement(e, "displacement", this.displacement.getLabel());	
 			
 		}
@@ -327,14 +332,24 @@ public class EnactionImpl implements Enaction
 	public void track(List<Place> places, Transform3D transform){
 		
 		this.enactedPlaces = places;
-
+		
+		this.salientPlace  = null;
+		float distance = 10000;
+		
 		// TODO manage several places.
-		for (Place place : places){
-			this.m_enactedPrimitiveAct = place.getAct();
-			this.m_enactedPrimitiveAct.setColor(place.getValue());
+		for (Place place : places)
+			if (place.getDistance() < distance){
+				this.salientPlace = place;
+				distance = this.salientPlace.getDistance();
+			}
+		
+		if (this.salientPlace != null){
+			this.m_enactedPrimitiveAct =this.salientPlace.getAct();
+			this.m_enactedPrimitiveAct.setColor(this.salientPlace.getValue());
+			this.displayCode = this.salientPlace.getValue();
 		}
 		
-		this.transformation = transform;
+		this.transformation.set(transform);
 	}
 	
 	public List<Place> getEnactedPlaces(){
@@ -366,7 +381,11 @@ public class EnactionImpl implements Enaction
 	}
 
 	public Transform3D getTransform3D() {
-		return transformation;
+		return this.transformation;
+	}
+
+	public Place getSalientPlace() {
+		return this.salientPlace;
 	}
 
 }
