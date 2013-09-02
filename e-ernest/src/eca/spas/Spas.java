@@ -34,7 +34,7 @@ public interface Spas
 	/**
 	 * @return The transformation of spatial memory to anim.
 	 */
-	public Transform3D getTransformToAnim();
+	//public Transform3D getTransformToAnim();
 	
 	/**
 	 * @param position The position.

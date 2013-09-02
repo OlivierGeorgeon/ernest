@@ -54,6 +54,8 @@ public class Ernest implements IErnest
 	
 	private static int clock = 0;
 	
+	private Transform3D transformToAnim = new Transform3D();
+	
 	/** Ernest's decisional Mechanism. */
 	private Decider m_decider = new DeciderImpl(m_imos, m_spas); // Regular decider for Ernest 7.
 	
@@ -134,6 +136,7 @@ public class Ernest implements IErnest
 
 		// track the enaction 
 		
+		this.transformToAnim.set(transform);
 		m_enaction.track(places, transform);
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
@@ -206,7 +209,9 @@ public class Ernest implements IErnest
 	}
 
 	public Transform3D getTransformToAnim() {
-		return m_spas.getTransformToAnim();
+		//Transform3D transform = new Transform3D(this.m_enaction.getTransform3D());
+		return this.transformToAnim;
+		//return m_spas.getTransformToAnim();
 	}
 		
 }

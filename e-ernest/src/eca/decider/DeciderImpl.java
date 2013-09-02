@@ -88,6 +88,8 @@ public class DeciderImpl implements Decider
 			
 			Object apElmnt = this.tracer.addSubelement(decisionElmt, "selected_proposition");
 			this.tracer.addSubelement(apElmnt, "action", selecteProposition.getAction().getLabel());
+			if (phenomenonInstance != null)
+				this.tracer.addSubelement(apElmnt, "phenomenon_instance", phenomenonInstance.toString());
 			this.tracer.addSubelement(apElmnt, "weight", selecteProposition.getSSWeight() + "");
 			this.tracer.addSubelement(apElmnt, "spas_act", selecteProposition.getAnticipatedAct().getLabel());
 			this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");

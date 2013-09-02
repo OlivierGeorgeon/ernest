@@ -5,6 +5,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import tracing.ITracer;
+import eca.Primitive;
 import eca.construct.Area;
 import eca.ss.enaction.Act;
 
@@ -52,7 +53,7 @@ public interface Place extends Cloneable
 	/**
 	 * @return This place's primitive interaction.
 	 */
-	//public Primitive getPrimitive();
+	public Primitive getPrimitive();
 	
 	/**
 	 * Test if this place is at this position.

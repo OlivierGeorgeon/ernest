@@ -27,5 +27,9 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 	public void setPhenomenonType(PhenomenonType phenomenonType) {
 		this.phenomenonType = phenomenonType;
 	}
+	
+	public String toString(){
+		return ("Type " + this.phenomenonType.getLabel() + " in area " + place.getArea().getLabel()); 
+	}
 
 }
