@@ -12,10 +12,13 @@ import utils.ErnestUtils;
  */
 public class AreaImpl implements Area {
 
-	/** Predefined areas */
+	/** Area to the left */
 	public static String A = "A";
+	/** Area in front */
 	public static String B = "B";
+	/** Area to the right */
 	public static String C = "C";
+	/** Area at the location of the agent */
 	public static String O = "O";
 
 	private static Map<String , Area> AREAS = new HashMap<String , Area>() ;

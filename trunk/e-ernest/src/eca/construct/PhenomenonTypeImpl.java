@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import eca.Primitive;
-import eca.ss.enaction.Act;
 
 /**
  * A PhenomenonType is intended to represent a type of phenomenon that can be observed in the external world.
@@ -21,6 +20,7 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	private static int index = 0;
 	
 	private String label;
+	private Aspect aspect = Aspect.DEFAULT_ASPECT;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
 
 	/**
@@ -51,8 +51,8 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	}
 	
 	/**
-	 * @param primitive
-	 * @return
+	 * @param primitive The primitive that evoke this phenomenon.
+	 * @return The evoked phenimenon.
 	 */
 	public static PhenomenonType evoke(Primitive primitive){
 		PhenomenonType phenomenonType = null;
@@ -121,7 +121,7 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	}
 	
 	/**
-	 * Features are equal if they have the same label. 
+	 * Phenomenon types are equal if they have the same label. 
 	 */
 	public boolean equals(Object o)
 	{
@@ -153,5 +153,12 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 		return this.primitives.contains(primitive);
 	}
 
+	public void setAspect(Aspect aspect) {
+		this.aspect = aspect;
+	}
+
+	public Aspect getAspect() {
+		return this.aspect;
+	}
 
 }
