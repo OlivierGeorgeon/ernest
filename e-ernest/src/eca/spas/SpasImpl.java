@@ -97,12 +97,14 @@ public class SpasImpl implements Spas
 				intendedPhenomenonInstance = new PhenomenonInstanceImpl(PhenomenonTypeImpl.EMPTY, salientPlace.clone());
 				if (m_tracer != null ){
 					if (!actualPhenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
-						m_tracer.addSubelement(phenomenonInstElemnt, "type", PhenomenonTypeImpl.EMPTY.getLabel());
+						//m_tracer.addSubelement(phenomenonInstElemnt, "type", PhenomenonTypeImpl.EMPTY.getLabel());
+						PhenomenonTypeImpl.EMPTY.trace(m_tracer, phenomenonInstElemnt);
 						m_tracer.addSubelement(phenomenonInstElemnt, "merge", actualPhenomenonType.getLabel());
 						m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
 					}
 					else if (!previousArea.getLabel().equals(AreaImpl.O)){
-						m_tracer.addSubelement(phenomenonInstElemnt, "type", PhenomenonTypeImpl.EMPTY.getLabel());
+						//m_tracer.addSubelement(phenomenonInstElemnt, "type", PhenomenonTypeImpl.EMPTY.getLabel());
+						PhenomenonTypeImpl.EMPTY.trace(m_tracer, phenomenonInstElemnt);
 						m_tracer.addSubelement(phenomenonInstElemnt, "shift", actualPhenomenonType.getLabel());
 						m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
 					}
@@ -117,7 +119,8 @@ public class SpasImpl implements Spas
 					if (salientPlace.getModality() == Place.MODALITY_VISION)
 						previousPhenomenonType.setAspect(salientPlace.getAspect());
 					if (m_tracer != null){
-						m_tracer.addSubelement(phenomenonInstElemnt, "type", previousPhenomenonType.getLabel());
+						//m_tracer.addSubelement(phenomenonInstElemnt, "type", previousPhenomenonType.getLabel());
+						previousPhenomenonType.trace(m_tracer, phenomenonInstElemnt);
 						m_tracer.addSubelement(phenomenonInstElemnt, "merge", actualPhenomenonType.getLabel());
 						m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
 						}
@@ -128,7 +131,8 @@ public class SpasImpl implements Spas
 			else {
 				intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.clone());
 				if (m_tracer != null){
-					m_tracer.addSubelement(phenomenonInstElemnt, "type", actualPhenomenonType.getLabel());
+					//m_tracer.addSubelement(phenomenonInstElemnt, "type", actualPhenomenonType.getLabel());
+					actualPhenomenonType.trace(m_tracer, phenomenonInstElemnt);
 					m_tracer.addSubelement(phenomenonInstElemnt, "shift", "");
 					m_tracer.addSubelement(phenomenonInstElemnt, "area", intendedPhenomenonInstance.getPlace().getArea().getLabel());
 				}

@@ -76,7 +76,7 @@ public class EnactionImpl implements Enaction
 	
 	private Place salientPlace;
 	
-	private int displayCode;
+//	private int displayCode;
 	
 	public void setIntendedPrimitiveAct(Act act) 
 	{
@@ -256,9 +256,7 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
 			tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
-			tracer.addSubelement(e, "display_code", ErnestUtils.hexColor(this.displayCode));
-			//tracer.addSubelement(e, "displacement", this.displacement.getLabel());	
-			
+			//tracer.addSubelement(e, "aspect", ErnestUtils.hexColor(this.displayCode));
 		}
 	}
 
@@ -346,7 +344,7 @@ public class EnactionImpl implements Enaction
 		if (this.salientPlace != null){
 			this.m_enactedPrimitiveAct =this.salientPlace.getAct();
 			this.m_enactedPrimitiveAct.setColor(this.salientPlace.getValue());
-			this.displayCode = this.salientPlace.getValue();
+			//this.displayCode = this.salientPlace.getValue();
 		}
 		
 		this.transformation.set(transform);
