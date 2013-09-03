@@ -58,7 +58,6 @@ public class SpasImpl implements Spas
 
 		PhenomenonInstance intendedPhenomenonInstance = enaction.getPhenomenonInstance();
 		
-		//this.transform.set(enaction.getTransform3D());
 		Transform3D transform = enaction.getTransform3D();
 		
 		if (salientPlace != null){
@@ -66,7 +65,6 @@ public class SpasImpl implements Spas
 			Primitive enactedPrimitive = salientPlace.getPrimitive();
 			Area enactedArea = salientPlace.getArea();
 			
-			//PhenomenonType actualPhenomenonType = PhenomenonTypeImpl.evoke(enaction.getEnactedPrimitiveAct().getPrimitive());
 			PhenomenonType actualPhenomenonType = PhenomenonTypeImpl.evoke(salientPlace.getPrimitive());
 			Area previousArea = null;
 			Area projectedArea = null;
@@ -82,11 +80,8 @@ public class SpasImpl implements Spas
 				projectedArea = intendedPhenomenonInstance.getPlace().getArea();
 			}
 			
-			Appearance preAppearance = AppearanceImpl.createOrGet(intendedPhenomenonInstance.getPhenomenonType(), previousArea);
+			//Appearance preAppearance = AppearanceImpl.createOrGet(intendedPhenomenonInstance.getPhenomenonType(), previousArea);
 	
-			//Area area = enaction.getEnactedPrimitiveAct().getArea();
-			//Primitive enactedPrimitive = enaction.getEnactedPrimitiveAct().getPrimitive();
-			
 			// Update spatial memory
 			
 			this.spacialMemory.tick();
@@ -119,13 +114,15 @@ public class SpasImpl implements Spas
 				intendedPhenomenonInstance.getPlace().setPosition(salientPlace.getPosition()); //Update the position
 				if (!previousPhenomenonType.equals(actualPhenomenonType)){
 					PhenomenonTypeImpl.merge(enactedPrimitive, previousPhenomenonType);
+					if (salientPlace.getModality() == Place.MODALITY_VISION)
+						previousPhenomenonType.setAspect(salientPlace.getAspect());
 					if (m_tracer != null){
 						m_tracer.addSubelement(phenomenonInstElemnt, "type", previousPhenomenonType.getLabel());
 						m_tracer.addSubelement(phenomenonInstElemnt, "merge", actualPhenomenonType.getLabel());
 						m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
 						}
 					actualPhenomenonType = previousPhenomenonType;
-					preAppearance = AppearanceImpl.createOrGet(actualPhenomenonType, previousArea);
+					//preAppearance = AppearanceImpl.createOrGet(actualPhenomenonType, previousArea);
 				}
 			}
 			else {

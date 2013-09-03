@@ -1,7 +1,6 @@
 package eca.spas;
 
 import java.util.ArrayList;
-import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
 import eca.spas.egomem.Place;
@@ -30,11 +29,6 @@ public interface Spas
 	 * @return The list of places in Ernest's local space memory.
 	 */
 	public ArrayList<Place> getPlaceList();
-	
-	/**
-	 * @return The transformation of spatial memory to anim.
-	 */
-	//public Transform3D getTransformToAnim();
 	
 	/**
 	 * @param position The position.

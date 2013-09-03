@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 import eca.Primitive;
 import eca.construct.Area;
 import eca.construct.AreaImpl;
+import eca.construct.Aspect;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import tracing.ITracer;
@@ -23,6 +24,8 @@ public class PlaceImpl implements Place
 	private Vector3f orientation = new Vector3f(1,0,0);	
 	private int displayCode;
 	private int clock = 0;
+	private Aspect aspect = Aspect.DEFAULT_ASPECT;
+	private int modality;
 	
 	/**
 	 * Create a new place 
@@ -194,11 +197,29 @@ public class PlaceImpl implements Place
 		return this.primitive.getLabel();
 	}
 
-	public void track(ITracer tracer, Object e) {
+	public void trace(ITracer tracer, Object e) {
 		
 		Object p = tracer.addSubelement(e, "place");		
 		tracer.addSubelement(p, "primitive", this.primitive.getLabel());
 		tracer.addSubelement(p, "position", "(" + this.position.x + "," + this.position.y + ")");
 		tracer.addSubelement(p, "display_code", ErnestUtils.hexColor(this.displayCode));
+		tracer.addSubelement(p, "modality", this.modality + "");
+		tracer.addSubelement(p, "aspect", this.aspect.toString());
+	}
+
+	public Aspect getAspect() {
+		return aspect;
+	}
+
+	public void setAspect(Aspect aspect) {
+		this.aspect = aspect;
+	}
+
+	public int getModality() {
+		return modality;
+	}
+
+	public void setModality(int modality) {
+		this.modality = modality;
 	}
 }
