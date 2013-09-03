@@ -28,7 +28,7 @@ public class AspectImpl implements Aspect {
 		this.displayCode = displayCode;
 	}
 	
-	public int getDisplayCode() {
+	public int getCode() {
 		return displayCode;
 	}
 
@@ -48,7 +48,7 @@ public class AspectImpl implements Aspect {
 		else
 		{
 			Aspect other = (Aspect)o;
-			ret = (other.getDisplayCode() == this.displayCode);
+			ret = (other.getCode() == this.displayCode);
 		}
 		
 		return ret;

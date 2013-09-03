@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 import tracing.ITracer;
 import eca.Primitive;
 import eca.construct.Area;
+import eca.construct.Aspect;
 import eca.ss.enaction.Act;
 
 /**
@@ -15,6 +16,12 @@ import eca.ss.enaction.Act;
  */
 public interface Place extends Cloneable
 {	
+	
+	public static final int MODALITY_MOVE = 0;
+	public static final int MODALITY_BUMP = 1;
+	public static final int MODALITY_VISION = 2;
+	public static final int MODALITY_CONSUME = 3;
+	
 	/**
 	 * @param transform The transformation applied to spatial memory.
 	 */
@@ -108,6 +115,12 @@ public interface Place extends Cloneable
 	
 	public String getDisplayLabel();
 	
-	public void track(ITracer tracer, Object e);
+	public void trace(ITracer tracer, Object e);
 	
+	public Aspect getAspect();
+	public void setAspect(Aspect aspect);
+	
+	public int getModality();
+	public void setModality(int modality);
+
 }

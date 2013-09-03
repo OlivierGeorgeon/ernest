@@ -128,7 +128,7 @@ public class Ernest implements IErnest
 
 			Object ep = m_tracer.addEventElement("enacted_places");
 			for (Place p : places){
-				p.track(m_tracer, ep);
+				p.trace(m_tracer, ep);
 			}
 		}                
 

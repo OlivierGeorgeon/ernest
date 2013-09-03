@@ -143,7 +143,7 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	}
 
 	public String toString(){
-		String s = this.label;
+		String s = this.aspect.toString() + " " + this.label;
 		for (Primitive i : primitives)
 			s += " " + i.getLabel();
 		return s;

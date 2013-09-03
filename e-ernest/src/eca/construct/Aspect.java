@@ -13,5 +13,5 @@ public interface Aspect
 	/**
 	 * @return The area's label
 	 */
-	public int getDisplayCode();	
+	public int getCode();	
 }
