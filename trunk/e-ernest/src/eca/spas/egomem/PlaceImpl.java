@@ -22,9 +22,9 @@ public class PlaceImpl implements Place
 	private Primitive primitive;
 	private Point3f position = new Point3f();
 	private Vector3f orientation = new Vector3f(1,0,0);	
-	private int displayCode;
+	//private int displayCode;
 	private int clock = 0;
-	private Aspect aspect = Aspect.DEFAULT_ASPECT;
+	private Aspect aspect = Aspect.MOVE;
 	private int modality;
 	
 	/**
@@ -113,14 +113,15 @@ public class PlaceImpl implements Place
 		return ErnestUtils.polarAngle(this.orientation);
 	}
 	
-	public void setValue(int value) 
-	{
-		this.displayCode = value;
-	}
+//	public void setValue(int value) 
+//	{
+//		this.displayCode = value;
+//	}
 
 	public int getValue() 
 	{
-		return this.displayCode;
+		return this.aspect.getCode();
+		//return this.displayCode;
 	}
 
 	public void setOrientation(Vector3f orientation) 
@@ -202,7 +203,7 @@ public class PlaceImpl implements Place
 		Object p = tracer.addSubelement(e, "place");		
 		tracer.addSubelement(p, "primitive", this.primitive.getLabel());
 		tracer.addSubelement(p, "position", "(" + this.position.x + "," + this.position.y + ")");
-		tracer.addSubelement(p, "display_code", ErnestUtils.hexColor(this.displayCode));
+		//tracer.addSubelement(p, "display_code", ErnestUtils.hexColor(this.displayCode));
 		tracer.addSubelement(p, "modality", this.modality + "");
 		tracer.addSubelement(p, "aspect", this.aspect.toString());
 	}

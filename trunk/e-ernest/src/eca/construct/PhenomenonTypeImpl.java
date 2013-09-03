@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import tracing.ITracer;
 import eca.Primitive;
 
 /**
@@ -20,7 +22,7 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	private static int index = 0;
 	
 	private String label;
-	private Aspect aspect = Aspect.DEFAULT_ASPECT;
+	private Aspect aspect = Aspect.MOVE;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
 
 	/**
@@ -143,7 +145,7 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	}
 
 	public String toString(){
-		String s = this.aspect.toString() + " " + this.label;
+		String s = "";
 		for (Primitive i : primitives)
 			s += " " + i.getLabel();
 		return s;
@@ -159,6 +161,14 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 
 	public Aspect getAspect() {
 		return this.aspect;
+	}
+	
+	public void trace(ITracer tracer, Object e) {
+		
+		Object p = tracer.addSubelement(e, "phenomenon_type");		
+		tracer.addSubelement(p, "label", this.label);
+		tracer.addSubelement(p, "aspect", this.aspect.toString());
+		tracer.addSubelement(p, "primitives", this.toString());
 	}
 
 }

@@ -82,7 +82,7 @@ public interface Place extends Cloneable
 	/**
 	 * @param value The place's value, corresponds to a color to display.
 	 */
-	public void setValue(int value);
+	//public void setValue(int value);
 	
 	/**
 	 * @return The place's value, corresponds to the color to display.

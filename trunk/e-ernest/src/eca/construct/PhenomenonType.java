@@ -1,6 +1,8 @@
 package eca.construct;
 
 import java.util.List;
+
+import tracing.ITracer;
 import eca.Primitive;
 
 /**
@@ -37,5 +39,7 @@ public interface PhenomenonType {
 	 * @return true if this primitive belongs to this phenomenon type.
 	 */
 	public boolean contains(Primitive primitive);
+	
+	public void trace(ITracer tracer, Object e);
 
 }

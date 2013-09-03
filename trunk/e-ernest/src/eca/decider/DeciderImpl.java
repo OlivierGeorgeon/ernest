@@ -102,9 +102,10 @@ public class DeciderImpl implements Decider
 			for (Action action : ActionImpl.getACTIONS())
 				this.tracer.addSubelement(actionElmt, "action", action.toString());
 			
-			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomena");
+			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomenon_types");
 			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
-				this.tracer.addSubelement(phenomenonElmt, "phenomenon", phenomenonType.toString());
+				phenomenonType.trace(tracer, phenomenonElmt);
+				//this.tracer.addSubelement(phenomenonElmt, "phenomenon", phenomenonType.toString());
 			
 			//Object experimentElmt = this.tracer.addSubelement(decisionElmt, "experiments");
 			//for (Experiment a : ExperimentImpl.getExperiments())
