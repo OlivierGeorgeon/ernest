@@ -11,6 +11,7 @@ import eca.PrimitiveImpl;
 import eca.construct.Action;
 import eca.construct.Area;
 import eca.construct.AreaImpl;
+import eca.construct.Aspect;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
 import eca.spas.egomem.Place;
@@ -76,6 +77,7 @@ public class EnactionImpl implements Enaction
 	
 	private Place salientPlace;
 	
+	//private Aspect aspect;
 //	private int displayCode;
 	
 	public void setIntendedPrimitiveAct(Act act) 
@@ -255,8 +257,9 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
-			tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
-			//tracer.addSubelement(e, "aspect", ErnestUtils.hexColor(this.displayCode));
+			//tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
+			this.phenomenonInstance.getPhenomenonType().trace(tracer, e);
+			tracer.addSubelement(e, "aspect", this.salientPlace.getAspect().toString());
 		}
 	}
 
