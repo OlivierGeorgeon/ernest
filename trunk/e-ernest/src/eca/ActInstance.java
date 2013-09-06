@@ -8,13 +8,14 @@ import tracing.ITracer;
 import eca.construct.Area;
 import eca.construct.Aspect;
 import eca.spas.Place;
+import eca.spas.Placeable;
 import eca.ss.enaction.Act;
 
 /**
- * A place is a location in spatial memory.
+ * An Act Instance is an occurrence of the enaction of an interaction memorized in spatio-temporal memory.
  * @author Olivier
  */
-public interface ActInstance extends Cloneable
+public interface ActInstance extends Cloneable, Placeable
 {	
 	
 	public static final int MODALITY_MOVE = 0;
@@ -22,12 +23,12 @@ public interface ActInstance extends Cloneable
 	public static final int MODALITY_VISION = 2;
 	public static final int MODALITY_CONSUME = 3;
 	
-	public Place getPlace();
+	//public Place getPlace();
 	
 	/**
 	 * @param transform The transformation applied to spatial memory.
 	 */
-	public void transform(Transform3D transform);
+	//public void transform(Transform3D transform);
 
 	/**
 	 * @param clock The timestamp of this place.

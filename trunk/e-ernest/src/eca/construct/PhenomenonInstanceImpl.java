@@ -1,10 +1,10 @@
 package eca.construct;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
-import eca.spas.Place;
 
 /**
  * An instance of phenomenon known to be present in the surrounding environment
@@ -32,6 +32,11 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 		//return this.actInstance;
 		return this.place;
 	}
+	
+	public void transform(Transform3D transform){
+		this.place.transform(transform);
+	}
+	
 
 	public void setPhenomenonType(PhenomenonType phenomenonType) {
 		this.phenomenonType = phenomenonType;
@@ -39,6 +44,14 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 	
 	public String toString(){
 		return ("Type " + this.phenomenonType.getLabel() + " in area " + place.getArea().getLabel()); 
+	}
+
+	public Area getArea() {
+		return this.place.getArea();
+	}
+
+	public void setPosition(Point3f position) {
+		this.place.setPosition(position);
 	}
 
 }

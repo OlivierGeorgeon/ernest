@@ -74,11 +74,11 @@ public class SpasImpl implements Spas
 				intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.getPosition());
 			}
 			else{
-				previousArea = intendedPhenomenonInstance.getPlace().getArea();
-				//System.out.println("pre-position " + phenomenonInstance.getPlace().getPosition().x + "," + phenomenonInstance.getPlace().getPosition().y);
-				intendedPhenomenonInstance.getPlace().transform(transform);
+				//previousArea = intendedPhenomenonInstance.getPlace().getArea();
+				previousArea = intendedPhenomenonInstance.getArea();
+				intendedPhenomenonInstance.transform(transform);
 				//System.out.println("projected position " + phenomenonInstance.getPlace().getPosition().x + "," + phenomenonInstance.getPlace().getPosition().y);
-				projectedArea = intendedPhenomenonInstance.getPlace().getArea();
+				projectedArea = intendedPhenomenonInstance.getArea();
 			}
 			
 			//Appearance preAppearance = AppearanceImpl.createOrGet(intendedPhenomenonInstance.getPhenomenonType(), previousArea);
@@ -113,7 +113,7 @@ public class SpasImpl implements Spas
 			}
 			else if (enactedArea.equals(projectedArea)){
 				PhenomenonType previousPhenomenonType = intendedPhenomenonInstance.getPhenomenonType();
-				intendedPhenomenonInstance.getPlace().setPosition(salientPlace.getPosition()); //Update the position
+				intendedPhenomenonInstance.setPosition(salientPlace.getPosition()); //Update the position
 				if (!previousPhenomenonType.equals(actualPhenomenonType)){
 					PhenomenonTypeImpl.merge(enactedPrimitive, previousPhenomenonType);
 					if (salientPlace.getModality() == ActInstance.MODALITY_VISION)

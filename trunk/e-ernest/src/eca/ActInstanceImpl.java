@@ -5,17 +5,15 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import eca.construct.Area;
-import eca.construct.AreaImpl;
 import eca.construct.Aspect;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import tracing.ITracer;
-import utils.ErnestUtils;
 
 /**
- * A place is a location in the local space that marks something.
+ * An Act Instance is an occurrence of the enaction of an interaction memorized in spatio-temporal memory.
  * @author Olivier
  */
 public class ActInstanceImpl implements ActInstance 

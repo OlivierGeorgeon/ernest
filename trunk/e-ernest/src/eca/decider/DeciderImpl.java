@@ -60,7 +60,8 @@ public class DeciderImpl implements Decider
 		Appearance preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
 		
 		if (phenomenonInstance != null){
-			preArea = phenomenonInstance.getPlace().getArea();
+			//preArea = phenomenonInstance.getPlace().getArea();
+			preArea = phenomenonInstance.getArea();
 			preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
 		}
 
