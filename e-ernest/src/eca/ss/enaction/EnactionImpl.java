@@ -6,6 +6,8 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
 import utils.ErnestUtils;
+import eca.ActInstance;
+import eca.ActInstanceImpl;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.Action;
@@ -14,8 +16,6 @@ import eca.construct.AreaImpl;
 import eca.construct.Aspect;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
-import eca.spas.egomem.ActInstance;
-import eca.spas.egomem.ActInstanceImpl;
 import ernest.IEffect;
 
 /**

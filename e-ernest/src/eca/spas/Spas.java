@@ -3,7 +3,7 @@ package eca.spas;
 import java.util.ArrayList;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import eca.spas.egomem.ActInstance;
+import eca.ActInstance;
 import eca.ss.enaction.Enaction;
 
 /**

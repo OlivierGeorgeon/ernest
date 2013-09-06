@@ -1,6 +1,6 @@
 package eca.construct;
 
-import eca.spas.egomem.ActInstance;
+import eca.ActInstance;
 
 /**
  * An instance of phenomenon known to be present in the surrounding environment
