@@ -5,8 +5,9 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.media.j3d.Transform3D;
+
+import eca.ActInstance;
 import eca.Primitive;
-import eca.spas.egomem.ActInstance;
 import eca.spas.egomem.SpatialMemory;
 import tracing.ITracer;
 

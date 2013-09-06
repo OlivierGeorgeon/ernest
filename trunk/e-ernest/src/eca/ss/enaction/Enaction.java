@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.media.j3d.Transform3D;
 import tracing.ITracer;
+import eca.ActInstance;
 import eca.construct.Action;
 import eca.construct.Area;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
-import eca.spas.egomem.ActInstance;
 import ernest.IEffect;
 
 /**

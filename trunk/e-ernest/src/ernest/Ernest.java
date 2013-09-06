@@ -7,6 +7,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
 import tracing.ITracer;
+import eca.ActInstance;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.Action;
@@ -18,7 +19,6 @@ import eca.decider.DeciderImpl;
 import eca.decider.Decider;
 import eca.spas.Spas;
 import eca.spas.SpasImpl;
-import eca.spas.egomem.ActInstance;
 import eca.spas.egomem.SpatialMemory;
 import eca.ss.IImos;
 import eca.ss.Imos;
