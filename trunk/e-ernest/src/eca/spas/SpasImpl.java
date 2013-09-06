@@ -70,7 +70,8 @@ public class SpasImpl implements Spas
 			Area projectedArea = null;
 			if (intendedPhenomenonInstance == null){
 				previousArea = AreaImpl.createOrGet(new Point3f());
-				intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.clone());
+				//intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.clone());
+				intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.getPosition());
 			}
 			else{
 				previousArea = intendedPhenomenonInstance.getPlace().getArea();
@@ -94,7 +95,8 @@ public class SpasImpl implements Spas
 		
 			if (enactedArea.getLabel().equals(AreaImpl.O)  ){
 				PhenomenonTypeImpl.merge(enactedPrimitive, PhenomenonTypeImpl.EMPTY);
-				intendedPhenomenonInstance = new PhenomenonInstanceImpl(PhenomenonTypeImpl.EMPTY, salientPlace.clone());
+				//intendedPhenomenonInstance = new PhenomenonInstanceImpl(PhenomenonTypeImpl.EMPTY, salientPlace.clone());
+				intendedPhenomenonInstance = new PhenomenonInstanceImpl(PhenomenonTypeImpl.EMPTY, salientPlace.getPosition());
 				if (m_tracer != null ){
 					if (!actualPhenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
 						PhenomenonTypeImpl.EMPTY.trace(m_tracer, phenomenonInstElemnt);
@@ -126,7 +128,8 @@ public class SpasImpl implements Spas
 				}
 			}
 			else {
-				intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.clone());
+				//intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.clone());
+				intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.getPosition());
 				if (m_tracer != null){
 					actualPhenomenonType.setAspect(salientPlace.getAspect());
 					actualPhenomenonType.trace(m_tracer, phenomenonInstElemnt);
