@@ -7,6 +7,8 @@ import javax.vecmath.Vector3f;
 import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.Aspect;
+import eca.spas.Place;
+import eca.spas.PlaceImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import tracing.ITracer;
@@ -19,9 +21,9 @@ import utils.ErnestUtils;
 public class ActInstanceImpl implements ActInstance 
 {
 	private Primitive primitive;
-	private Point3f position = new Point3f();
-	private Vector3f orientation = new Vector3f(1,0,0);	
-	//private int displayCode;
+	//private Point3f position = new Point3f();
+	//private Vector3f orientation = new Vector3f(1,0,0);
+	private Place place;
 	private int clock = 0;
 	private Aspect aspect = Aspect.MOVE;
 	private int modality;
@@ -34,12 +36,13 @@ public class ActInstanceImpl implements ActInstance
 	 */
 	public ActInstanceImpl(Primitive primitive, Point3f position){
 		this.primitive = primitive;
-		this.position.set(position);
-		//this.phenomenonType = primitive.getPhenomenonType();
+		this.place = new PlaceImpl(position);
+		//this.position.set(position);
 	}
 	
 	public Act getAct() {
-		return ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(position));
+		//return ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(position));
+		return ActImpl.createOrGetPrimitiveAct(primitive, this.place.getArea());
 	}
 
 	public Primitive getPrimitive() {
@@ -47,7 +50,8 @@ public class ActInstanceImpl implements ActInstance
 	}
 
 	public Point3f getPosition() {
-		return this.position;
+		return this.place.getPosition();
+//		return this.position;
 	}
 	
 	/**
@@ -64,31 +68,36 @@ public class ActInstanceImpl implements ActInstance
 		}
 
 		// We must clone the objects because they are passed by reference by default
-		clonePlace.setPosition(this.position);
-		clonePlace.setOrientation(this.orientation);
+		clonePlace.place = this.place.clone();
+		//clonePlace.setPosition(this.position);
+		//clonePlace.setOrientation(this.orientation);
 
 		return clonePlace;
 	}
 	
 	public void transform(Transform3D transform)
 	{
-		transform.transform(this.position);
-		transform.transform(this.orientation);
+		this.place.transform(transform);
+		//transform.transform(this.position);
+		//transform.transform(this.orientation);
 	}		
 	
 	public float getDirection() 
 	{
-		return ErnestUtils.polarAngle(new Vector3f(this.position));
+		return this.place.getDirection();
+		//return ErnestUtils.polarAngle(new Vector3f(this.position));
 	}
 
 	public float getDistance() 
 	{
-		return this.position.distance(new Point3f());
+		return this.place.getDistance();
+		//return this.position.distance(new Point3f());
 	}
 	public void setPosition(Point3f position) 
 	{
+		this.place.setPosition(position);
 		// Create a new instance of the vector so it can be used to clone this place.
-		this.position = new Point3f(position);
+		//this.position = new Point3f(position);
 	}
 
 	public void setClock(int clock) 
@@ -100,16 +109,15 @@ public class ActInstanceImpl implements ActInstance
 		return this.clock;
 	}
 
-	public void setOrientation(float orientation) 
-	{
-		//m_orientationAngle = orientation;
-		this.orientation.set((float) Math.cos(orientation), (float) Math.sin(orientation), 0);
-	}
+//	public void setOrientation(float orientation) 
+//	{
+//		this.orientation.set((float) Math.cos(orientation), (float) Math.sin(orientation), 0);
+//	}
 
 	public float getOrientationAngle() 
 	{
-		//return m_orientationAngle;
-		return ErnestUtils.polarAngle(this.orientation);
+		return this.place.getOrientationAngle();
+		//return ErnestUtils.polarAngle(this.orientation);
 	}
 	
 //	public void setValue(int value) 
@@ -125,18 +133,21 @@ public class ActInstanceImpl implements ActInstance
 
 	public void setOrientation(Vector3f orientation) 
 	{
+		this.place.setOrientation(orientation);
 		// Create a new instance of the vector so it can be used to clone this place.
-		this.orientation = new Vector3f(orientation);
+		//this.orientation = new Vector3f(orientation);
 	}
 
 	public Vector3f getOrientation() 
 	{
-		return orientation;
+		return this.getOrientation();
+		//return orientation;
 	}
 
 	public void incClock() 
 	{
-		this.setPosition(new Point3f(this.position.x * 1.1f, this.position.y * 1.1f, 0f));
+		this.place.fade();
+		//this.setPosition(new Point3f(this.position.x * 1.1f, this.position.y * 1.1f, 0f));
 		this.clock++;
 	}
 
@@ -157,7 +168,8 @@ public class ActInstanceImpl implements ActInstance
 			ActInstance other = (ActInstance)o;
 			//ret  = (this.getPrimitive().equals(other.getPrimitive()) 
 			ret  = (this.getDisplayLabel().equals(other.getDisplayLabel()) 
-					&& this.position.epsilonEquals(other.getPosition(), .1f)
+					//&& this.position.epsilonEquals(other.getPosition(), .1f)
+					&& this.place.equals(other.getPlace())
 					&& (this.clock == other.getClock()));
 			//ret = isInCell(other.getPosition()) && other.getClock() == getClock() && other.getType() == getType();
 		}		
@@ -165,9 +177,12 @@ public class ActInstanceImpl implements ActInstance
 	}
 
 	public boolean isInCell(Point3f position){
-		boolean ret;
+		
+		return this.place.isInCell(position);
+		
+//		boolean ret;
 		// Is in the same cell.
-		ret = (Math.round(this.position.x) == Math.round(position.x)) && (Math.round(this.position.y) == Math.round(position.y)); 
+//		ret = (Math.round(this.position.x) == Math.round(position.x)) && (Math.round(this.position.y) == Math.round(position.y)); 
 		
 		// Is in the same cell in egocentric polar referential.
 		
@@ -181,16 +196,20 @@ public class ActInstanceImpl implements ActInstance
 //		else 
 //			ret = false;
 		
-		return ret;		
+//		return ret;		
 	}
 	
 	public void normalize(float scale) {
-		float d = this.position.distance(new Point3f());
-		if (d > 0) this.position.scale(scale / d);
+		
+		this.place.normalize(scale);
+		
+		//float d = this.position.distance(new Point3f());
+		//if (d > 0) this.position.scale(scale / d);
 	}
 	
 	public Area getArea(){
-		return AreaImpl.createOrGet(position);
+		return this.place.getArea();
+		//return AreaImpl.createOrGet(position);
 	}
 	
 	public String getDisplayLabel(){
@@ -201,8 +220,8 @@ public class ActInstanceImpl implements ActInstance
 		
 		Object p = tracer.addSubelement(e, "place");		
 		tracer.addSubelement(p, "primitive", this.primitive.getLabel());
-		tracer.addSubelement(p, "position", "(" + this.position.x + "," + this.position.y + ")");
-		//tracer.addSubelement(p, "display_code", ErnestUtils.hexColor(this.displayCode));
+		tracer.addSubelement(p, "position", "(" + this.place.getPosition().x + "," + this.place.getPosition().y + ")");
+		//tracer.addSubelement(p, "position", "(" + this.position.x + "," + this.position.y + ")");
 		tracer.addSubelement(p, "modality", this.modality + "");
 		tracer.addSubelement(p, "aspect", this.aspect.toString());
 	}
@@ -221,5 +240,9 @@ public class ActInstanceImpl implements ActInstance
 
 	public void setModality(int modality) {
 		this.modality = modality;
+	}
+
+	public Place getPlace() {
+		return this.place;
 	}
 }

@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 import tracing.ITracer;
 import eca.construct.Area;
 import eca.construct.Aspect;
+import eca.spas.Place;
 import eca.ss.enaction.Act;
 
 /**
@@ -20,6 +21,8 @@ public interface ActInstance extends Cloneable
 	public static final int MODALITY_BUMP = 1;
 	public static final int MODALITY_VISION = 2;
 	public static final int MODALITY_CONSUME = 3;
+	
+	public Place getPlace();
 	
 	/**
 	 * @param transform The transformation applied to spatial memory.
@@ -77,11 +80,6 @@ public interface ActInstance extends Cloneable
 	 * @return This place's orientation.
 	 */
 	public Vector3f getOrientation();
-	
-	/**
-	 * @param value The place's value, corresponds to a color to display.
-	 */
-	//public void setValue(int value);
 	
 	/**
 	 * @return The place's value, corresponds to the color to display.
