@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.media.j3d.Transform3D;
 import eca.Primitive;
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 import eca.spas.egomem.SpatialMemory;
 import tracing.ITracer;
 
@@ -47,7 +47,7 @@ public interface IErnest
 	 */
 	public String step(IEffect effect);
 	
-	public String step(List<Place> places, Transform3D transform);
+	public String step(List<ActInstance> actInstances, Transform3D transform);
 	
 	/**
 	 * @param i x coordinate (0 = left, 2 = right)
@@ -66,7 +66,7 @@ public interface IErnest
 	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
-	public ArrayList<Place> getPlaceList();
+	public ArrayList<ActInstance> getPlaceList();
 	
 	/**
 	 * @return The counter of cognitive cycles.

@@ -1,6 +1,6 @@
 package eca.construct;
 
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 
 /**
  * An instance of phenomenon known to be present in the surrounding environment
@@ -21,6 +21,6 @@ public interface PhenomenonInstance {
 	/**
 	 * @return The place
 	 */
-	public Place getPlace();
+	public ActInstance getPlace();
 	
 }

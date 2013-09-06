@@ -13,7 +13,7 @@ import eca.construct.PhenomenonInstanceImpl;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 import eca.spas.egomem.SpatialMemory;
 import eca.spas.egomem.SpatialMemoryImpl;
 import eca.ss.Appearance;
@@ -52,9 +52,9 @@ public class SpasImpl implements Spas
 		if (m_tracer != null)
 			phenomenonInstElemnt = m_tracer.addEventElement("phenomenonInstance", true);
 
-		for (Place p : enaction.getEnactedPlaces())
+		for (ActInstance p : enaction.getEnactedPlaces())
 			p.normalize(3);
-		Place salientPlace = enaction.getSalientPlace();	
+		ActInstance salientPlace = enaction.getSalientPlace();	
 
 		PhenomenonInstance intendedPhenomenonInstance = enaction.getPhenomenonInstance();
 		
@@ -87,7 +87,7 @@ public class SpasImpl implements Spas
 			this.spacialMemory.tick();
 			this.spacialMemory.transform(transform);		
 			this.spacialMemory.forgetOldPlaces();		
-			for (Place p : enaction.getEnactedPlaces())
+			for (ActInstance p : enaction.getEnactedPlaces())
 				this.spacialMemory.addPlace(p);
 	
 			// Merge phenomenon types	
@@ -114,7 +114,7 @@ public class SpasImpl implements Spas
 				intendedPhenomenonInstance.getPlace().setPosition(salientPlace.getPosition()); //Update the position
 				if (!previousPhenomenonType.equals(actualPhenomenonType)){
 					PhenomenonTypeImpl.merge(enactedPrimitive, previousPhenomenonType);
-					if (salientPlace.getModality() == Place.MODALITY_VISION)
+					if (salientPlace.getModality() == ActInstance.MODALITY_VISION)
 						previousPhenomenonType.setAspect(salientPlace.getAspect());
 					if (m_tracer != null){
 						previousPhenomenonType.trace(m_tracer, phenomenonInstElemnt);
@@ -157,7 +157,7 @@ public class SpasImpl implements Spas
 			return 0xFFFFFF;
 	}
 	
-	public ArrayList<Place> getPlaceList()	{
+	public ArrayList<ActInstance> getPlaceList()	{
 		return this.spacialMemory.clonePlaceList();
 	}
 

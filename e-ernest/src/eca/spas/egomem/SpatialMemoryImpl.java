@@ -40,7 +40,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	public static int PERSISTENCE_DURATION = 7;//50;
 	
 	/** The Local space structure. */
-	private ArrayList<Place> m_places = new ArrayList<Place>();
+	private ArrayList<ActInstance> m_places = new ArrayList<ActInstance>();
 	
 	private List<PhenomenonInstance> phenomenonInstances = new ArrayList<PhenomenonInstance>();
 	
@@ -50,23 +50,23 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 * From tutorial here: http://ydisanto.developpez.com/tutoriels/java/cloneable/ 
 	 * @return The cloned spatial memory
 	 */
-	public ArrayList<Place> clonePlaceList() 
+	public ArrayList<ActInstance> clonePlaceList() 
 	{
-		ArrayList<Place> clonePlaces = new ArrayList<Place>();
-		for (Place place : m_places)
-			clonePlaces.add(place.clone());
+		ArrayList<ActInstance> clonePlaces = new ArrayList<ActInstance>();
+		for (ActInstance actInstance : m_places)
+			clonePlaces.add(actInstance.clone());
 		
 		return clonePlaces;
 	}
 
 	public void tick()
 	{
-		for (Place p : m_places)
+		for (ActInstance p : m_places)
 			p.incClock();
 	}
 
-	public void addPlace(Place place){
-		m_places.add(place);
+	public void addPlace(ActInstance actInstance){
+		m_places.add(actInstance);
 	}
 	
 	public void addPhenomenonInstance(PhenomenonInstance phenomenonInstance){
@@ -80,7 +80,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	public void transform(Transform3D transform)
 	{
 		//if (transform != null)
-		for (Place p : m_places)
+		for (ActInstance p : m_places)
 			p.transform(transform);
 		
 		for (PhenomenonInstance pi : this.phenomenonInstances)
@@ -97,7 +97,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	public int getDisplayCode(Point3f position)
 	{
 		int value = Ernest.UNANIMATED_COLOR;
-		for (Place p : m_places)
+		for (ActInstance p : m_places)
 		{
 			if (p.isInCell(position))
 				if (value != 0x73E600 && value != 0x00E6A0)
@@ -112,9 +112,9 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void clearPlace(Point3f position)
 	{
-		for (Iterator<Place> it = m_places.iterator(); it.hasNext();)
+		for (Iterator<ActInstance> it = m_places.iterator(); it.hasNext();)
 		{
-			Place l = (Place)it.next();
+			ActInstance l = (ActInstance)it.next();
 			if (l.isInCell(position))
 				it.remove();
 		}		
@@ -125,9 +125,9 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void clearBackground()
 	{
-		for (Iterator<Place> it = m_places.iterator(); it.hasNext();)
+		for (Iterator<ActInstance> it = m_places.iterator(); it.hasNext();)
 		{
-			Place l = (Place)it.next();
+			ActInstance l = (ActInstance)it.next();
 			if (l.getDistance() > DISTANCE_VISUAL_BACKGROUND - 1)
 				it.remove();
 		}
@@ -138,9 +138,9 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void forgetOldPlaces()
 	{
-		for (Iterator<Place> it = m_places.iterator(); it.hasNext();)
+		for (Iterator<ActInstance> it = m_places.iterator(); it.hasNext();)
 		{
-			Place p = (Place)it.next();
+			ActInstance p = (ActInstance)it.next();
 			if (p.getClock() > PERSISTENCE_DURATION )//|| p.getPosition().x < -.1) 
 				it.remove();
 		}
