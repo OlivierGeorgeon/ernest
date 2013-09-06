@@ -18,7 +18,7 @@ import eca.decider.DeciderImpl;
 import eca.decider.Decider;
 import eca.spas.Spas;
 import eca.spas.SpasImpl;
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 import eca.spas.egomem.SpatialMemory;
 import eca.ss.IImos;
 import eca.ss.Imos;
@@ -117,7 +117,7 @@ public class Ernest implements IErnest
 		return m_enaction.getIntendedPrimitiveAct().getLabel();		
 	}
 	
-	public String step(List<Place> places, Transform3D transform){
+	public String step(List<ActInstance> actInstances, Transform3D transform){
 		
 		// Trace a new interaction cycle.
 		if (m_tracer != null){
@@ -127,7 +127,7 @@ public class Ernest implements IErnest
 			m_tracer.addEventElement("clock", this.clock + "");
 
 			Object ep = m_tracer.addEventElement("enacted_places");
-			for (Place p : places){
+			for (ActInstance p : actInstances){
 				p.trace(m_tracer, ep);
 			}
 		}                
@@ -137,7 +137,7 @@ public class Ernest implements IErnest
 		// track the enaction 
 		
 		this.transformToAnim.set(transform);
-		m_enaction.track(places, transform);
+		m_enaction.track(actInstances, transform);
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
 		m_enaction.traceTrack(m_tracer);
@@ -176,7 +176,7 @@ public class Ernest implements IErnest
 		return primitive;
 	}
 
-	public ArrayList<Place> getPlaceList()
+	public ArrayList<ActInstance> getPlaceList()
 	{
 		return m_spas.getPlaceList();
 	}

@@ -17,7 +17,7 @@ import utils.ErnestUtils;
  * A place is a location in the local space that marks something.
  * @author Olivier
  */
-public class PlaceImpl implements Place 
+public class ActInstanceImpl implements ActInstance 
 {
 	private Primitive primitive;
 	private Point3f position = new Point3f();
@@ -33,7 +33,7 @@ public class PlaceImpl implements Place
 	 * @param primitive The interaction at this place.
 	 * @param position This place's position.
 	 */
-	public PlaceImpl(Primitive primitive, Point3f position){
+	public ActInstanceImpl(Primitive primitive, Point3f position){
 		this.primitive = primitive;
 		this.position.set(position);
 		//this.phenomenonType = primitive.getPhenomenonType();
@@ -56,10 +56,10 @@ public class PlaceImpl implements Place
 	 * Warning: the bundle and act that this place contain are not cloned 
 	 * @return The cloned place
 	 */
-	public Place clone(){
-		PlaceImpl clonePlace = null;
+	public ActInstance clone(){
+		ActInstanceImpl clonePlace = null;
 		try {
-			clonePlace = (PlaceImpl) super.clone();
+			clonePlace = (ActInstanceImpl) super.clone();
 		} catch(CloneNotSupportedException cnse) {
 			cnse.printStackTrace(System.err);
 		}
@@ -155,7 +155,7 @@ public class PlaceImpl implements Place
 			ret = false;
 		else
 		{
-			Place other = (Place)o;
+			ActInstance other = (ActInstance)o;
 			//ret  = (this.getPrimitive().equals(other.getPrimitive()) 
 			ret  = (this.getDisplayLabel().equals(other.getDisplayLabel()) 
 					&& this.position.epsilonEquals(other.getPosition(), .1f)

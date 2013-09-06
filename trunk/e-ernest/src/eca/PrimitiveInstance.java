@@ -1,6 +1,6 @@
 package eca;
 
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 
 /**
  * An instance of Primitive interaction that was enacted
@@ -16,7 +16,7 @@ public interface PrimitiveInstance {
 	/**
 	 * @return The place
 	 */
-	public Place getPlace();
+	public ActInstance getPlace();
 	
 	/**
 	 * @return the age in number of clock ticks.

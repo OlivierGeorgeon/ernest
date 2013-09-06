@@ -14,8 +14,8 @@ import eca.construct.AreaImpl;
 import eca.construct.Aspect;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
-import eca.spas.egomem.Place;
-import eca.spas.egomem.PlaceImpl;
+import eca.spas.egomem.ActInstance;
+import eca.spas.egomem.ActInstanceImpl;
 import ernest.IEffect;
 
 /**
@@ -73,9 +73,9 @@ public class EnactionImpl implements Enaction
 	
 	private PhenomenonInstance phenomenonInstance = null;
 	
-	private List<Place> enactedPlaces = new ArrayList<Place>();
+	private List<ActInstance> enactedPlaces = new ArrayList<ActInstance>();
 	
-	private Place salientPlace;
+	private ActInstance salientPlace;
 	
 	//private Aspect aspect;
 //	private int displayCode;
@@ -324,23 +324,23 @@ public class EnactionImpl implements Enaction
 			l.set(input.getLocation());
 		}
 
-		Place enactedPlace = new PlaceImpl(p, l);
-		List<Place> places =  new ArrayList<Place>(1);
-		places.add(enactedPlace);
-		track(places, t);
+		ActInstance enactedPlace = new ActInstanceImpl(p, l);
+		List<ActInstance> actInstances =  new ArrayList<ActInstance>(1);
+		actInstances.add(enactedPlace);
+		track(actInstances, t);
 	}	
 	
-	public void track(List<Place> places, Transform3D transform){
+	public void track(List<ActInstance> actInstances, Transform3D transform){
 		
-		this.enactedPlaces = places;
+		this.enactedPlaces = actInstances;
 		
 		this.salientPlace  = null;
 		float distance = 10000;
 		
 		// TODO manage several places.
-		for (Place place : places)
-			if (place.getDistance() < distance){
-				this.salientPlace = place;
+		for (ActInstance actInstance : actInstances)
+			if (actInstance.getDistance() < distance){
+				this.salientPlace = actInstance;
 				distance = this.salientPlace.getDistance();
 			}
 		
@@ -353,7 +353,7 @@ public class EnactionImpl implements Enaction
 		this.transformation.set(transform);
 	}
 	
-	public List<Place> getEnactedPlaces(){
+	public List<ActInstance> getEnactedPlaces(){
 		return this.enactedPlaces;
 	}
 
@@ -385,7 +385,7 @@ public class EnactionImpl implements Enaction
 		return this.transformation;
 	}
 
-	public Place getSalientPlace() {
+	public ActInstance getSalientPlace() {
 		return this.salientPlace;
 	}
 

@@ -3,7 +3,7 @@ package eca.spas;
 import java.util.ArrayList;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 import eca.ss.enaction.Enaction;
 
 /**
@@ -28,7 +28,7 @@ public interface Spas
 	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
-	public ArrayList<Place> getPlaceList();
+	public ArrayList<ActInstance> getPlaceList();
 	
 	/**
 	 * @param position The position.

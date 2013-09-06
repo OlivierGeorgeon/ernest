@@ -20,9 +20,9 @@ public interface SpatialMemory
 	
 	/**
 	 * Add a place in spatial memory
-	 * @param place The place to add in spatial memory.
+	 * @param actInstance The place to add in spatial memory.
 	 */
-	public void addPlace(Place place);
+	public void addPlace(ActInstance actInstance);
 
 	public void addPhenomenonInstance(PhenomenonInstance phenomenonInstance);
 	
@@ -31,7 +31,7 @@ public interface SpatialMemory
 		/**
 	 * @return A clone of this spatial memory
 	 */
-	public ArrayList<Place> clonePlaceList();
+	public ArrayList<ActInstance> clonePlaceList();
 	
 	/**
 	 * @param transform The transformation

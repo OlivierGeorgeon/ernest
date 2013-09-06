@@ -14,7 +14,7 @@ import eca.ss.enaction.Act;
  * A place is a location in spatial memory.
  * @author Olivier
  */
-public interface Place extends Cloneable
+public interface ActInstance extends Cloneable
 {	
 	
 	public static final int MODALITY_MOVE = 0;
@@ -40,7 +40,7 @@ public interface Place extends Cloneable
 	/**
 	 * @return A clone of this place
 	 */
-	public Place clone();
+	public ActInstance clone();
 	
 	/**
 	 * @param position The place's position.
