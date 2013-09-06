@@ -1,13 +1,13 @@
 package eca.construct;
 
-import eca.ActInstance;
 import eca.spas.Place;
+import eca.spas.Placeable;
 
 /**
  * An instance of phenomenon known to be present in the surrounding environment
  * @author Olivier
  */
-public interface PhenomenonInstance {
+public interface PhenomenonInstance extends Placeable {
 	
 	/**
 	 * @return The primitive interaction
@@ -22,6 +22,6 @@ public interface PhenomenonInstance {
 	/**
 	 * @return The place
 	 */
-	public Place getPlace();
+	//public Place getPlace();
 	
 }
