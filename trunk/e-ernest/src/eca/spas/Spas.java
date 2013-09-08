@@ -28,7 +28,7 @@ public interface Spas
 	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
-	public ArrayList<ActInstance> getPlaceList();
+	public ArrayList<Placeable> getPlaceList();
 	
 	/**
 	 * @param position The position.

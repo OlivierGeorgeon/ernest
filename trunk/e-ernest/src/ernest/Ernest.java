@@ -17,6 +17,7 @@ import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.decider.DeciderImpl;
 import eca.decider.Decider;
+import eca.spas.Placeable;
 import eca.spas.Spas;
 import eca.spas.SpasImpl;
 import eca.spas.egomem.SpatialMemory;
@@ -176,7 +177,7 @@ public class Ernest implements IErnest
 		return primitive;
 	}
 
-	public ArrayList<ActInstance> getPlaceList()
+	public ArrayList<Placeable> getPlaceList()
 	{
 		return m_spas.getPlaceList();
 	}

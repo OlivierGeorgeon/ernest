@@ -8,6 +8,7 @@ import javax.media.j3d.Transform3D;
 
 import eca.ActInstance;
 import eca.Primitive;
+import eca.spas.Placeable;
 import eca.spas.egomem.SpatialMemory;
 import tracing.ITracer;
 
@@ -67,7 +68,7 @@ public interface IErnest
 	/**
 	 * @return The list of places in Ernest's local space memory.
 	 */
-	public ArrayList<ActInstance> getPlaceList();
+	public ArrayList<Placeable> getPlaceList();
 	
 	/**
 	 * @return The counter of cognitive cycles.

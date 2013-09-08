@@ -3,6 +3,8 @@ package eca.construct;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
+import eca.ActInstance;
+import eca.ActInstanceImpl;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 
@@ -23,6 +25,26 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 		place = new PlaceImpl(position);
 	}
 	
+	/**
+	 * Clone an Act Instance
+	 * @return The cloned Act Instance
+	 */
+	public PhenomenonInstanceImpl clone(){
+		PhenomenonInstanceImpl clonePlace = null;
+		try {
+			clonePlace = (PhenomenonInstanceImpl) super.clone();
+		} catch(CloneNotSupportedException cnse) {
+			cnse.printStackTrace(System.err);
+		}
+
+		// We must clone the objects because they are passed by reference by default
+		clonePlace.place = this.place.clone();
+		//clonePlace.setPosition(this.position);
+		//clonePlace.setOrientation(this.orientation);
+
+		return clonePlace;
+	}
+
 	public PhenomenonType getPhenomenonType() {
 		return this.phenomenonType;
 	}
@@ -52,6 +74,38 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 
 	public void setPosition(Point3f position) {
 		this.place.setPosition(position);
+	}
+
+	public Point3f getPosition() {
+		return this.place.getPosition();
+	}
+
+	public int getDisplayCode() {
+		return this.phenomenonType.getAspect().getCode();
+	}
+
+	public int getClock() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public String getDisplayLabel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public float getOrientationAngle() {
+		return this.place.getOrientationAngle();
+	}
+
+	public void incClock() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isInCell(Point3f position) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -15,7 +15,7 @@ import eca.ss.enaction.Act;
  * An Act Instance is an occurrence of the enaction of an interaction memorized in spatio-temporal memory.
  * @author Olivier
  */
-public interface ActInstance extends Cloneable, Placeable
+public interface ActInstance extends Placeable
 {	
 	
 	public static final int MODALITY_MOVE = 0;
@@ -39,11 +39,6 @@ public interface ActInstance extends Cloneable, Placeable
 	 * @return The timestamp of this place.
 	 */
 	public int getClock();
-	
-	/**
-	 * @return A clone of this place
-	 */
-	public ActInstance clone();
 	
 	/**
 	 * @param position The place's position.

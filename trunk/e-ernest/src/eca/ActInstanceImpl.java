@@ -53,9 +53,8 @@ public class ActInstanceImpl implements ActInstance
 	}
 	
 	/**
-	 * Clone a place
-	 * Warning: the bundle and act that this place contain are not cloned 
-	 * @return The cloned place
+	 * Clone an Act Instance
+	 * @return The cloned Act Instance
 	 */
 	public ActInstance clone(){
 		ActInstanceImpl clonePlace = null;
@@ -150,7 +149,7 @@ public class ActInstanceImpl implements ActInstance
 	}
 
 	/**
-	 * Places are equal if they have the same primitive and location and clock
+	 * Act instances are equal if they have the same primitive and place and clock
 	 */
 	public boolean equals(Object o){
 		boolean ret = false;
@@ -243,4 +242,9 @@ public class ActInstanceImpl implements ActInstance
 	public Place getPlace() {
 		return this.place;
 	}
+
+	public int getDisplayCode() {
+		return this.aspect.getCode();
+	}
+
 }
