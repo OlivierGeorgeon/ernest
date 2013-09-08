@@ -160,7 +160,7 @@ public class SpasImpl implements Spas
 			return 0xFFFFFF;
 	}
 	
-	public ArrayList<ActInstance> getPlaceList()	{
+	public ArrayList<Placeable> getPlaceList()	{
 		return this.spacialMemory.clonePlaceList();
 	}
 

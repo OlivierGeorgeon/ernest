@@ -3,14 +3,20 @@ package eca.spas;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
+import eca.ActInstance;
 import eca.construct.Area;
 
 /**
  * An object that can be placed and tracked in spatial memory
  * @author Olivier
  */
-public interface Placeable {
+public interface Placeable extends Cloneable {
 
+	/**
+	 * @return A clone of this place
+	 */
+	public Placeable clone();
+	
 	/**
 	 * @param position The new position of this object.
 	 */
@@ -27,8 +33,21 @@ public interface Placeable {
 	public void transform(Transform3D transform);
 
 	/**
-	 * @return The area of this obeject
+	 * @return The area of this object
 	 */
 	public Area getArea();
 	
+	public Point3f getPosition();
+	
+	public int getDisplayCode();
+	
+	public int getClock();
+	
+	public String getDisplayLabel();
+	
+	public float getOrientationAngle();
+	
+	public void incClock();
+	
+	public boolean isInCell(Point3f position);
 }

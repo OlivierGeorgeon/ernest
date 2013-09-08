@@ -10,6 +10,7 @@ import tracing.ITracer;
 import utils.ErnestUtils;
 import eca.ActInstance;
 import eca.construct.PhenomenonInstance;
+import eca.spas.Placeable;
 import ernest.Ernest;
 
 
@@ -41,9 +42,9 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	public static int PERSISTENCE_DURATION = 7;//50;
 	
 	/** The Local space structure. */
-	private ArrayList<ActInstance> m_places = new ArrayList<ActInstance>();
+	private ArrayList<Placeable> m_places = new ArrayList<Placeable>();
 	
-	private List<PhenomenonInstance> phenomenonInstances = new ArrayList<PhenomenonInstance>();
+	//private List<PhenomenonInstance> phenomenonInstances = new ArrayList<PhenomenonInstance>();
 	
 	/**
 	 * Clone spatial memory to perform simulations
@@ -51,10 +52,10 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 * From tutorial here: http://ydisanto.developpez.com/tutoriels/java/cloneable/ 
 	 * @return The cloned spatial memory
 	 */
-	public ArrayList<ActInstance> clonePlaceList() 
+	public ArrayList<Placeable> clonePlaceList() 
 	{
-		ArrayList<ActInstance> clonePlaces = new ArrayList<ActInstance>();
-		for (ActInstance actInstance : m_places)
+		ArrayList<Placeable> clonePlaces = new ArrayList<Placeable>();
+		for (Placeable actInstance : m_places)
 			clonePlaces.add(actInstance.clone());
 		
 		return clonePlaces;
@@ -62,7 +63,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 
 	public void tick()
 	{
-		for (ActInstance p : m_places)
+		for (Placeable p : m_places)
 			p.incClock();
 	}
 
@@ -70,22 +71,22 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 		m_places.add(actInstance);
 	}
 	
-	public void addPhenomenonInstance(PhenomenonInstance phenomenonInstance){
-		this.phenomenonInstances.add(phenomenonInstance);
-	}
-	
-	public void removePhenomenonInstance(PhenomenonInstance phenomenonInstance){
-		this.phenomenonInstances.remove(phenomenonInstance);
-	}
+//	public void addPhenomenonInstance(PhenomenonInstance phenomenonInstance){
+//		this.phenomenonInstances.add(phenomenonInstance);
+//	}
+//	
+//	public void removePhenomenonInstance(PhenomenonInstance phenomenonInstance){
+//		this.phenomenonInstances.remove(phenomenonInstance);
+//	}
 	
 	public void transform(Transform3D transform)
 	{
 		//if (transform != null)
-		for (ActInstance p : m_places)
+		for (Placeable p : m_places)
 			p.transform(transform);
 		
-		for (PhenomenonInstance pi : this.phenomenonInstances)
-			pi.getPlace().transform(transform);
+//		for (PhenomenonInstance pi : this.phenomenonInstances)
+//			pi.getPlace().transform(transform);
 	}
 	
 	/**
@@ -98,11 +99,12 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	public int getDisplayCode(Point3f position)
 	{
 		int value = Ernest.UNANIMATED_COLOR;
-		for (ActInstance p : m_places)
+		for (Placeable p : m_places)
 		{
 			if (p.isInCell(position))
 				if (value != 0x73E600 && value != 0x00E6A0)
-				value = p.getValue();
+					//value = p.getValue();
+					value = p.getDisplayCode();
 		}	
 		return value;
 	}
@@ -113,7 +115,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void clearPlace(Point3f position)
 	{
-		for (Iterator<ActInstance> it = m_places.iterator(); it.hasNext();)
+		for (Iterator<Placeable> it = m_places.iterator(); it.hasNext();)
 		{
 			ActInstance l = (ActInstance)it.next();
 			if (l.isInCell(position))
@@ -126,7 +128,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void clearBackground()
 	{
-		for (Iterator<ActInstance> it = m_places.iterator(); it.hasNext();)
+		for (Iterator<Placeable> it = m_places.iterator(); it.hasNext();)
 		{
 			ActInstance l = (ActInstance)it.next();
 			if (l.getDistance() > DISTANCE_VISUAL_BACKGROUND - 1)
@@ -139,7 +141,7 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 */
 	public void forgetOldPlaces()
 	{
-		for (Iterator<ActInstance> it = m_places.iterator(); it.hasNext();)
+		for (Iterator<Placeable> it = m_places.iterator(); it.hasNext();)
 		{
 			ActInstance p = (ActInstance)it.next();
 			if (p.getClock() > PERSISTENCE_DURATION )//|| p.getPosition().x < -.1) 
