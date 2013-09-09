@@ -1,6 +1,6 @@
 package eca.construct;
 
-import eca.spas.Place;
+import tracing.ITracer;
 import eca.spas.Placeable;
 
 /**
@@ -17,11 +17,11 @@ public interface PhenomenonInstance extends Placeable {
 	/**
 	 * @param phenomenonType The type of this phenomenon 
 	 */
-	public void setPhenomenonType(PhenomenonType phenomenonType);
+	public void setPhenomenonType(PhenomenonType phenomenonType);	
 	
 	/**
-	 * @return The place
+	 * @param tracer The tracer
+	 * @param e the xml element that contains the trace of this phenomenon instance
 	 */
-	//public Place getPlace();
-	
+	public void trace(ITracer tracer, Object e);
 }

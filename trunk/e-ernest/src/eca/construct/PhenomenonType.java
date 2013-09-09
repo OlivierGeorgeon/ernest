@@ -21,7 +21,14 @@ public interface PhenomenonType {
 	 */
 	public String getLabel();
 	
+	/**
+	 * @param aspect The visual aspect
+	 */
 	public void setAspect(Aspect aspect);
+	
+	/**
+	 * @return The visual aspect
+	 */
 	public Aspect getAspect();
 	
 	/**
@@ -40,6 +47,11 @@ public interface PhenomenonType {
 	 */
 	public boolean contains(Primitive primitive);
 	
+	/**
+	 * Trace this phenomenon type
+	 * @param tracer The tracer
+	 * @param e The xml tag that contains the trace
+	 */
 	public void trace(ITracer tracer, Object e);
 
 }

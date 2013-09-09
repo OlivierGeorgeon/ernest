@@ -97,10 +97,10 @@ public class ActInstanceImpl implements ActInstance
 		//this.position = new Point3f(position);
 	}
 
-	public void setClock(int clock) 
-	{
-		this.clock = clock;
-	}
+//	public void setClock(int clock) 
+//	{
+//		this.clock = clock;
+//	}
 
 	public int getClock(){
 		return this.clock;

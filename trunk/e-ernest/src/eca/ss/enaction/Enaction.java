@@ -7,7 +7,6 @@ import tracing.ITracer;
 import eca.ActInstance;
 import eca.construct.Action;
 import eca.construct.Area;
-import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
 import ernest.IEffect;
 
@@ -40,16 +39,6 @@ public interface Enaction
 	 * @return The displacement sensed during this primitive enaction.
 	 */
 	public Displacement getDisplacement();
-	
-	/**
-	 * @param appearance The Appearance sensed during this primitive enaction.
-	 */
-	//public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance);
-	
-	/**
-	 * @return The Appearance sensed during this primitive enaction.
-	 */
-	//public PhenomenonInstance getPhenomenonInstance();
 	
 	/**
 	 * @param act The last primitive intended interaction

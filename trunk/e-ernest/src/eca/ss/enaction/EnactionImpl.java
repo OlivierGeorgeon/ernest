@@ -346,7 +346,7 @@ public class EnactionImpl implements Enaction
 		
 		if (this.salientPlace != null){
 			this.m_enactedPrimitiveAct =this.salientPlace.getAct();
-			this.m_enactedPrimitiveAct.setColor(this.salientPlace.getValue());
+			this.m_enactedPrimitiveAct.setColor(this.salientPlace.getDisplayCode());//.getValue());
 			//this.displayCode = this.salientPlace.getValue();
 		}
 		
@@ -356,14 +356,6 @@ public class EnactionImpl implements Enaction
 	public List<ActInstance> getEnactedPlaces(){
 		return this.enactedPlaces;
 	}
-
-//	public PhenomenonInstance getPhenomenonInstance() {
-//		return this.phenomenonInstance;
-//	}
-//
-//	public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance) {
-//		this.phenomenonInstance = phenomenonInstance;
-//	}
 
 	public Action getIntendedAction() {
 		return intendedAction;

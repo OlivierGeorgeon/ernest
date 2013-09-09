@@ -57,32 +57,20 @@ public class SpasImpl implements Spas
 			Area enactedArea = salientPlace.getArea();
 			
 			PhenomenonType actualPhenomenonType = PhenomenonTypeImpl.evoke(salientPlace.getPrimitive());
-			//Area previousArea = null;
-			Area projectedArea = null;
-//			if (intendedPhenomenonInstance == null){
-//				//previousArea = AreaImpl.createOrGet(new Point3f());
-//				intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.getPosition());
-//				this.spacialMemory.addPlaceable(intendedPhenomenonInstance);
-//			}
-//			else{
-//				//previousArea = intendedPhenomenonInstance.getArea();
-//				//intendedPhenomenonInstance.transform(transform);
-//				//projectedArea = intendedPhenomenonInstance.getArea();
-//			}
-			
+			actualPhenomenonType.setAspect(salientPlace.getAspect());
+
 			//Appearance preAppearance = AppearanceImpl.createOrGet(intendedPhenomenonInstance.getPhenomenonType(), previousArea);
 	
 			// Update spatial memory
 			
 			this.spacialMemory.tick();
 			this.spacialMemory.transform(transform);
-			PhenomenonInstance intendedPhenomenonInstance = this.getFocusPhenomenon();
-			if (intendedPhenomenonInstance == null){
-				//previousArea = AreaImpl.createOrGet(new Point3f());
-				intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.getPosition());
-				this.spacialMemory.addPlaceable(intendedPhenomenonInstance);
+			PhenomenonInstance focusPhenomenonInstance = this.getFocusPhenomenon();
+			if (focusPhenomenonInstance == null){
+				focusPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.getPosition());
+				this.spacialMemory.addPlaceable(focusPhenomenonInstance);
 			}
-			projectedArea = intendedPhenomenonInstance.getArea();
+			Area projectedArea = focusPhenomenonInstance.getArea();
 			this.spacialMemory.forgetOldPlaces();		
 			for (ActInstance p : enaction.getEnactedPlaces())
 				this.spacialMemory.addPlaceable(p);
@@ -90,28 +78,28 @@ public class SpasImpl implements Spas
 			// Empty phenomenon instance
 			if (enactedArea.getLabel().equals(AreaImpl.O)  ){
 				PhenomenonTypeImpl.merge(enactedPrimitive, PhenomenonTypeImpl.EMPTY);
-				intendedPhenomenonInstance.setPhenomenonType(PhenomenonTypeImpl.EMPTY);
-				intendedPhenomenonInstance.setPosition(salientPlace.getPosition());
-				//intendedPhenomenonInstance = new PhenomenonInstanceImpl(PhenomenonTypeImpl.EMPTY, salientPlace.getPosition());
-				if (m_tracer != null ){
-					if (!actualPhenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
-						PhenomenonTypeImpl.EMPTY.trace(m_tracer, phenomenonInstElemnt);
-						m_tracer.addSubelement(phenomenonInstElemnt, "merge", actualPhenomenonType.getLabel());
-						m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
-					}
-					else //if (!previousArea.getLabel().equals(AreaImpl.O))
-					{
-						PhenomenonTypeImpl.EMPTY.trace(m_tracer, phenomenonInstElemnt);
-						m_tracer.addSubelement(phenomenonInstElemnt, "shift", actualPhenomenonType.getLabel());
-						m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
+				focusPhenomenonInstance.setPosition(salientPlace.getPosition());
+				if (!focusPhenomenonInstance.getPhenomenonType().equals(PhenomenonTypeImpl.EMPTY)){
+					focusPhenomenonInstance.setPhenomenonType(PhenomenonTypeImpl.EMPTY);
+					if (m_tracer != null ){
+						if (!actualPhenomenonType.equals(PhenomenonTypeImpl.EMPTY)){
+							PhenomenonTypeImpl.EMPTY.trace(m_tracer, phenomenonInstElemnt);
+							m_tracer.addSubelement(phenomenonInstElemnt, "merge", actualPhenomenonType.getLabel());
+							m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
+						}
+						else{
+							PhenomenonTypeImpl.EMPTY.trace(m_tracer, phenomenonInstElemnt);
+							m_tracer.addSubelement(phenomenonInstElemnt, "shift", actualPhenomenonType.getLabel());
+							m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
+						}
 					}
 				}
-				actualPhenomenonType = PhenomenonTypeImpl.EMPTY;
+				//actualPhenomenonType = PhenomenonTypeImpl.EMPTY;
 			}
 			// Follow the phenomenon instance
 			else if (enactedArea.equals(projectedArea)){
-				PhenomenonType previousPhenomenonType = intendedPhenomenonInstance.getPhenomenonType();
-				intendedPhenomenonInstance.setPosition(salientPlace.getPosition()); //Update the position
+				PhenomenonType previousPhenomenonType = focusPhenomenonInstance.getPhenomenonType();
+				focusPhenomenonInstance.setPosition(salientPlace.getPosition()); 
 				if (!previousPhenomenonType.equals(actualPhenomenonType)){
 					PhenomenonTypeImpl.merge(enactedPrimitive, previousPhenomenonType);
 					if (salientPlace.getModality() == ActInstance.MODALITY_VISION)
@@ -121,20 +109,19 @@ public class SpasImpl implements Spas
 						m_tracer.addSubelement(phenomenonInstElemnt, "merge", actualPhenomenonType.getLabel());
 						m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
 						}
-					actualPhenomenonType = previousPhenomenonType;
+					//actualPhenomenonType = previousPhenomenonType;
 					//preAppearance = AppearanceImpl.createOrGet(actualPhenomenonType, previousArea);
 				}
 			}
 			// Shift to another phenomenon instance
 			else {
-				intendedPhenomenonInstance.setPhenomenonType(actualPhenomenonType);
-				intendedPhenomenonInstance.setPosition(salientPlace.getPosition());
-				//intendedPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.getPosition());
+				//actualPhenomenonType.setAspect(salientPlace.getAspect());
+				focusPhenomenonInstance.setPhenomenonType(actualPhenomenonType);
+				focusPhenomenonInstance.setPosition(salientPlace.getPosition());
 				if (m_tracer != null){
-					actualPhenomenonType.setAspect(salientPlace.getAspect());
 					actualPhenomenonType.trace(m_tracer, phenomenonInstElemnt);
 					m_tracer.addSubelement(phenomenonInstElemnt, "shift", "");
-					m_tracer.addSubelement(phenomenonInstElemnt, "area", intendedPhenomenonInstance.getPlace().getArea().getLabel());
+					m_tracer.addSubelement(phenomenonInstElemnt, "area", focusPhenomenonInstance.getPlace().getArea().getLabel());
 				}
 			}
 		}
