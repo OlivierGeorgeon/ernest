@@ -3,12 +3,11 @@ package eca.spas;
 import java.util.ArrayList;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import eca.ActInstance;
+import eca.construct.PhenomenonInstance;
 import eca.ss.enaction.Enaction;
 
 /**
  * The spatial system.
- * Maintains the local space map and the persistence memory.
  * @author Olivier
  */
 public interface Spas 
@@ -44,6 +43,9 @@ public interface Spas
 	 */
 	public int getValue(int i, int j);
 	
-	//public Appearance getLastAppearance();
+	/**
+	 * @return the Phenomenon Instance which get the attention of Ernest 
+	 */
+	public PhenomenonInstance getFocusPhenomenon();
 
 }

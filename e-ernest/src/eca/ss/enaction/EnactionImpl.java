@@ -71,7 +71,7 @@ public class EnactionImpl implements Enaction
 
 	private Displacement displacement = null;
 	
-	private PhenomenonInstance phenomenonInstance = null;
+	//private PhenomenonInstance phenomenonInstance = null;
 	
 	private List<ActInstance> enactedPlaces = new ArrayList<ActInstance>();
 	
@@ -258,7 +258,7 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
 			//tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
-			this.phenomenonInstance.getPhenomenonType().trace(tracer, e);
+			//this.phenomenonInstance.getPhenomenonType().trace(tracer, e);
 			tracer.addSubelement(e, "aspect", this.salientPlace.getAspect().toString());
 		}
 	}
@@ -357,13 +357,13 @@ public class EnactionImpl implements Enaction
 		return this.enactedPlaces;
 	}
 
-	public PhenomenonInstance getPhenomenonInstance() {
-		return this.phenomenonInstance;
-	}
-
-	public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance) {
-		this.phenomenonInstance = phenomenonInstance;
-	}
+//	public PhenomenonInstance getPhenomenonInstance() {
+//		return this.phenomenonInstance;
+//	}
+//
+//	public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance) {
+//		this.phenomenonInstance = phenomenonInstance;
+//	}
 
 	public Action getIntendedAction() {
 		return intendedAction;

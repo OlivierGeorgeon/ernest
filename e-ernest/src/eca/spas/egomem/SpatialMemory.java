@@ -1,9 +1,10 @@
 package eca.spas.egomem;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-import eca.ActInstance;
 import eca.spas.Placeable;
 import tracing.ITracer;
 
@@ -22,17 +23,14 @@ public interface SpatialMemory
 	 * Add a place in spatial memory
 	 * @param actInstance The place to add in spatial memory.
 	 */
-	public void addPlace(ActInstance actInstance);
-
-	//public void addPhenomenonInstance(PhenomenonInstance phenomenonInstance);
-	
-	//public void removePhenomenonInstance(PhenomenonInstance phenomenonInstance);
+	public void addPlaceable(Placeable actInstance);
 
 		/**
 	 * @return A clone of this spatial memory
 	 */
-	//public ArrayList<ActInstance> clonePlaceList();
 	public ArrayList<Placeable> clonePlaceList();
+	
+	public List<Placeable> getPlaceables();
 	
 	/**
 	 * @param transform The transformation
@@ -54,7 +52,5 @@ public interface SpatialMemory
 	 * Trace the content of this spatial memory
 	 * @param tracer The tracer
 	 */
-	public void trace(ITracer tracer);
-
-	
+	public void trace(ITracer tracer);	
 }

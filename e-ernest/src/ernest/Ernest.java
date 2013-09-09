@@ -122,8 +122,6 @@ public class Ernest implements IErnest
 		
 		// Trace a new interaction cycle.
 		if (m_tracer != null){
-            //m_tracer.startNewEvent(m_imos.getCounter());
-			//m_tracer.addEventElement("clock", m_imos.getCounter() + "");
             m_tracer.startNewEvent(this.clock);
 			m_tracer.addEventElement("clock", this.clock + "");
 

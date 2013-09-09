@@ -44,12 +44,12 @@ public interface Enaction
 	/**
 	 * @param appearance The Appearance sensed during this primitive enaction.
 	 */
-	public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance);
+	//public void setPhenomenonInstance(PhenomenonInstance phenomenonInstance);
 	
 	/**
 	 * @return The Appearance sensed during this primitive enaction.
 	 */
-	public PhenomenonInstance getPhenomenonInstance();
+	//public PhenomenonInstance getPhenomenonInstance();
 	
 	/**
 	 * @param act The last primitive intended interaction
