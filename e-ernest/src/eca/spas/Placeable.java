@@ -2,8 +2,6 @@ package eca.spas;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-
-import eca.ActInstance;
 import eca.construct.Area;
 
 /**
@@ -13,7 +11,7 @@ import eca.construct.Area;
 public interface Placeable extends Cloneable {
 
 	/**
-	 * @return A clone of this place
+	 * @return A clone of this Placeable
 	 */
 	public Placeable clone();
 	
@@ -50,4 +48,11 @@ public interface Placeable extends Cloneable {
 	public void incClock();
 	
 	public boolean isInCell(Point3f position);
+	
+	/**
+	 * @return The place's distance.
+	 */
+	public float getDistance();
+	
+
 }

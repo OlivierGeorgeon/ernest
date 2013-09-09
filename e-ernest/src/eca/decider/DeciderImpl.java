@@ -11,12 +11,9 @@ import eca.construct.ActionImpl;
 import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
-import eca.construct.PhenomenonInstanceImpl;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
-import eca.construct.experiment.Experiment;
-import eca.construct.experiment.ExperimentImpl;
 import eca.spas.Spas;
 import eca.ss.ActProposition;
 import eca.ss.Appearance;
@@ -55,15 +52,14 @@ public class DeciderImpl implements Decider
 
 		Enaction newEnaction = new EnactionImpl();	
 		
-		//PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
-		PhenomenonInstance phenomenonInstance = this.spas.getFocusPhenomenon();
+		PhenomenonInstance focusPhenomenonInstance = this.spas.getFocusPhenomenon();
 		
 		Area preArea = AreaImpl.createOrGet(new Point3f());
 		Appearance preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
 		
-		if (phenomenonInstance != null){
-			preArea = phenomenonInstance.getArea();
-			preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
+		if (focusPhenomenonInstance != null){
+			preArea = focusPhenomenonInstance.getArea();
+			preAppearance = AppearanceImpl.createOrGet(focusPhenomenonInstance.getPhenomenonType(), preArea);
 		}
 
 		// Choose the next action
@@ -90,8 +86,8 @@ public class DeciderImpl implements Decider
 			
 			Object apElmnt = this.tracer.addSubelement(decisionElmt, "selected_proposition");
 			this.tracer.addSubelement(apElmnt, "action", selecteProposition.getAction().getLabel());
-			if (phenomenonInstance != null)
-				this.tracer.addSubelement(apElmnt, "phenomenon_instance", phenomenonInstance.toString());
+			if (focusPhenomenonInstance != null)
+				focusPhenomenonInstance.trace(this.tracer, apElmnt);
 			this.tracer.addSubelement(apElmnt, "weight", selecteProposition.getSSWeight() + "");
 			this.tracer.addSubelement(apElmnt, "spas_act", selecteProposition.getAnticipatedAct().getLabel());
 			this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");

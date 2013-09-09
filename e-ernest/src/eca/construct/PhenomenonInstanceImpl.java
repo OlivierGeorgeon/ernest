@@ -2,9 +2,7 @@ package eca.construct;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-
-import eca.ActInstance;
-import eca.ActInstanceImpl;
+import tracing.ITracer;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 
@@ -15,19 +13,20 @@ import eca.spas.PlaceImpl;
 public class PhenomenonInstanceImpl implements PhenomenonInstance {
 
 	private PhenomenonType phenomenonType = null;
-	//private ActInstance actInstance = null;
 	private Place place;
 	
+	/**
+	 * @param phenomenonType The type of this phenomenon instance.
+	 * @param position The position.
+	 */
 	public PhenomenonInstanceImpl(PhenomenonType phenomenonType, Point3f position){
-	//public PhenomenonInstanceImpl(PhenomenonType phenomenonType, ActInstance actInstance){
 		this.phenomenonType = phenomenonType;
-		//this.actInstance = actInstance;
 		place = new PlaceImpl(position);
 	}
 	
 	/**
-	 * Clone an Act Instance
-	 * @return The cloned Act Instance
+	 * Clone A phenomenon Instance
+	 * @return The cloned phenomenon Instance
 	 */
 	public PhenomenonInstanceImpl clone(){
 		PhenomenonInstanceImpl clonePlace = null;
@@ -36,12 +35,8 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 		} catch(CloneNotSupportedException cnse) {
 			cnse.printStackTrace(System.err);
 		}
-
 		// We must clone the objects because they are passed by reference by default
 		clonePlace.place = this.place.clone();
-		//clonePlace.setPosition(this.position);
-		//clonePlace.setOrientation(this.orientation);
-
 		return clonePlace;
 	}
 
@@ -49,9 +44,7 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 		return this.phenomenonType;
 	}
 
-	//public ActInstance getPlace() {
 	public Place getPlace() {
-		//return this.actInstance;
 		return this.place;
 	}
 	
@@ -108,4 +101,15 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 		return false;
 	}
 
+	public float getDistance() 
+	{
+		return this.place.getDistance();
+	}
+	
+	public void trace(ITracer tracer, Object e) {
+		
+		Object p = tracer.addSubelement(e, "phenomenon_instance");		
+		this.phenomenonType.trace(tracer, p);
+		tracer.addSubelement(p, "position", "(" + this.place.getPosition().x + "," + this.place.getPosition().y + ")");
+	}
 }
