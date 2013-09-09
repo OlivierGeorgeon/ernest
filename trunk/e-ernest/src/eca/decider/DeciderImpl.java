@@ -55,12 +55,13 @@ public class DeciderImpl implements Decider
 
 		Enaction newEnaction = new EnactionImpl();	
 		
-		PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
+		//PhenomenonInstance phenomenonInstance = enaction.getPhenomenonInstance();
+		PhenomenonInstance phenomenonInstance = this.spas.getFocusPhenomenon();
+		
 		Area preArea = AreaImpl.createOrGet(new Point3f());
 		Appearance preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
 		
 		if (phenomenonInstance != null){
-			//preArea = phenomenonInstance.getPlace().getArea();
 			preArea = phenomenonInstance.getArea();
 			preAppearance = AppearanceImpl.createOrGet(phenomenonInstance.getPhenomenonType(), preArea);
 		}
@@ -106,7 +107,6 @@ public class DeciderImpl implements Decider
 			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomenon_types");
 			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
 				phenomenonType.trace(tracer, phenomenonElmt);
-				//this.tracer.addSubelement(phenomenonElmt, "phenomenon", phenomenonType.toString());
 			
 			//Object experimentElmt = this.tracer.addSubelement(decisionElmt, "experiments");
 			//for (Experiment a : ExperimentImpl.getExperiments())
@@ -124,7 +124,7 @@ public class DeciderImpl implements Decider
 		
 		// Prepare the new enaction.
 		
-		newEnaction.setPhenomenonInstance(phenomenonInstance);
+		//newEnaction.setPhenomenonInstance(phenomenonInstance);
 		newEnaction.setTopIntendedAct(intendedAct);
 		newEnaction.setTopRemainingAct(intendedAct);
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
