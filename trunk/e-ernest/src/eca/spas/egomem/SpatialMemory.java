@@ -46,11 +46,11 @@ public interface SpatialMemory
 	 * @param position The position.
 	 * @return The value of a place for display.
 	 */
-	public int getDisplayCode(Point3f position);
+	//public int getDisplayCode(Point3f position);
 
 	/**
 	 * Trace the content of this spatial memory
 	 * @param tracer The tracer
 	 */
-	public void trace(ITracer tracer);	
+	//public void trace(ITracer tracer);	
 }

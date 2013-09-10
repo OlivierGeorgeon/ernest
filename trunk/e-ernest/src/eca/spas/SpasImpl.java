@@ -15,6 +15,7 @@ import eca.construct.PhenomenonTypeImpl;
 import eca.spas.egomem.SpatialMemory;
 import eca.spas.egomem.SpatialMemoryImpl;
 import eca.ss.enaction.Enaction;
+import ernest.Ernest;
 
 /**
  * The spatial system.
@@ -44,8 +45,8 @@ public class SpasImpl implements Spas
 		if (m_tracer != null)
 			phenomenonInstElemnt = m_tracer.addEventElement("phenomenonInstance", true);
 
-		for (ActInstance p : enaction.getEnactedPlaces())
-			p.normalize(3);
+		//for (ActInstance p : enaction.getEnactedPlaces())
+			//p.normalize(3);
 		
 		ActInstance salientPlace = enaction.getSalientPlace();	
 		Transform3D transform = enaction.getTransform3D();
@@ -102,7 +103,7 @@ public class SpasImpl implements Spas
 				focusPhenomenonInstance.setPosition(salientPlace.getPosition()); 
 				if (!previousPhenomenonType.equals(actualPhenomenonType)){
 					PhenomenonTypeImpl.merge(enactedPrimitive, previousPhenomenonType);
-					if (salientPlace.getModality() == ActInstance.MODALITY_VISION)
+					//if (salientPlace.getModality() == ActInstance.MODALITY_VISION)
 						previousPhenomenonType.setAspect(salientPlace.getAspect());
 					if (m_tracer != null){
 						previousPhenomenonType.trace(m_tracer, phenomenonInstElemnt);
@@ -136,22 +137,17 @@ public class SpasImpl implements Spas
 		//enaction.setPhenomenonInstance(intendedPhenomenonInstance);
 	}
 
-	public int getValue(int i, int j)
-	{
-		Point3f position = new Point3f(1 - j, 1 - i, 0);
-		if (spacialMemory != null)
-			return spacialMemory.getDisplayCode(position);
-		else
-			return 0xFFFFFF;
-	}
-	
 	public ArrayList<Placeable> getPlaceList()	{
 		return this.spacialMemory.clonePlaceList();
 	}
 
-	public int getValue(Point3f position) 
-	{
-		return this.spacialMemory.getDisplayCode(position);
+	public int getDisplayCode(){
+		int displayCode = Ernest.UNANIMATED_COLOR;
+		PhenomenonInstance forcusPhenomenonInstance = getFocusPhenomenon();
+		if (forcusPhenomenonInstance != null)
+			displayCode = forcusPhenomenonInstance.getPhenomenonType().getAspect().getCode();
+		
+		return displayCode;
 	}
 	
 	public PhenomenonInstance getFocusPhenomenon(){
