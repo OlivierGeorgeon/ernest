@@ -5,6 +5,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import eca.construct.Area;
+import eca.construct.AreaImpl;
 import eca.construct.Aspect;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
@@ -217,8 +218,8 @@ public class ActInstanceImpl implements ActInstance
 		
 		Object p = tracer.addSubelement(e, "place");		
 		tracer.addSubelement(p, "primitive", this.primitive.getLabel());
-		tracer.addSubelement(p, "position", "(" + this.place.getPosition().x + "," + this.place.getPosition().y + ")");
-		//tracer.addSubelement(p, "position", "(" + this.position.x + "," + this.position.y + ")");
+		tracer.addSubelement(p, "position", "(" + this.getPosition().x + "," + this.getPosition().y + ")");
+		tracer.addSubelement(p, "area", AreaImpl.createOrGet(this.getPosition()).getLabel());
 		tracer.addSubelement(p, "modality", this.modality + "");
 		tracer.addSubelement(p, "aspect", this.aspect.toString());
 	}

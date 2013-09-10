@@ -8,7 +8,6 @@ import tracing.ITracer;
 import eca.ActInstance;
 import eca.Primitive;
 import eca.construct.Area;
-import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
 import eca.construct.PhenomenonInstanceImpl;
 import eca.construct.PhenomenonType;
@@ -76,7 +75,9 @@ public class SpasImpl implements Spas
 				this.spacialMemory.addPlaceable(p);
 			
 			// Empty phenomenon instance
-			if (enactedArea.getLabel().equals(AreaImpl.O)  ){
+						
+			//if (enactedArea.getLabel().equals(AreaImpl.O)  ){
+			if (salientPlace.getModality() == ActInstance.MODALITY_MOVE){
 				PhenomenonTypeImpl.merge(enactedPrimitive, PhenomenonTypeImpl.EMPTY);
 				focusPhenomenonInstance.setPosition(salientPlace.getPosition());
 				if (!focusPhenomenonInstance.getPhenomenonType().equals(PhenomenonTypeImpl.EMPTY)){
@@ -94,7 +95,6 @@ public class SpasImpl implements Spas
 						}
 					}
 				}
-				//actualPhenomenonType = PhenomenonTypeImpl.EMPTY;
 			}
 			// Follow the phenomenon instance
 			else if (enactedArea.equals(projectedArea)){
@@ -109,13 +109,11 @@ public class SpasImpl implements Spas
 						m_tracer.addSubelement(phenomenonInstElemnt, "merge", actualPhenomenonType.getLabel());
 						m_tracer.addSubelement(phenomenonInstElemnt, "area", enactedArea.getLabel());
 						}
-					//actualPhenomenonType = previousPhenomenonType;
 					//preAppearance = AppearanceImpl.createOrGet(actualPhenomenonType, previousArea);
 				}
 			}
 			// Shift to another phenomenon instance
 			else {
-				//actualPhenomenonType.setAspect(salientPlace.getAspect());
 				focusPhenomenonInstance.setPhenomenonType(actualPhenomenonType);
 				focusPhenomenonInstance.setPosition(salientPlace.getPosition());
 				if (m_tracer != null){
