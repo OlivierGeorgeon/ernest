@@ -156,11 +156,14 @@ public class Ernest implements IErnest
 		
 	}
 	
-
-	public int getValue(int i, int j)
-	{
-		return m_spas.getValue(i,j);
+	public int getDisplayCode(){
+		return this.m_spas.getDisplayCode();
 	}
+
+//	public int getValue(int i, int j)
+//	{
+//		return m_spas.getValue(i,j);
+//	}
 	
 	public Primitive addInteraction(String label, int value)
 	{

@@ -33,7 +33,7 @@ public interface Spas
 	 * @param position The position.
 	 * @return The value to display at this position
 	 */
-	public int getValue(Point3f position);
+	//public int getValue(Point3f position);
 	
 	/**
 	 * Provide a rgb code to display the local space map in the environment.
@@ -41,7 +41,8 @@ public interface Spas
 	 * @param j y coordinate.
 	 * @return The value of the bundle in this place in local space memory.
 	 */
-	public int getValue(int i, int j);
+//	public int getValue(int i, int j);
+	public int getDisplayCode();
 	
 	/**
 	 * @return the Phenomenon Instance which get the attention of Ernest 

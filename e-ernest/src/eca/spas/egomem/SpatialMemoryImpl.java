@@ -81,18 +81,18 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 * @param position The position of the location.
 	 * @return The bundle.
 	 */
-	public int getDisplayCode(Point3f position)
-	{
-		int value = Ernest.UNANIMATED_COLOR;
-		for (Placeable p : placeables)
-		{
-			if (p.isInCell(position))
-				if (value != 0x73E600 && value != 0x00E6A0)
-					//value = p.getValue();
-					value = p.getDisplayCode();
-		}	
-		return value;
-	}
+//	public int getDisplayCode(Point3f position)
+//	{
+//		int value = Ernest.UNANIMATED_COLOR;
+//		for (Placeable p : placeables)
+//		{
+//			if (p.isInCell(position))
+//				if (value != 0x73E600 && value != 0x00E6A0)
+//					//value = p.getValue();
+//					value = p.getDisplayCode();
+//		}	
+//		return value;
+//	}
 
 	/**
 	 * Clear a position in the local space memory.
@@ -134,22 +134,22 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 		}
 	}
 		
-	public void trace(ITracer tracer)
-	{
-		if (tracer != null && !placeables.isEmpty())
-		{
-			Object localSpace = tracer.addEventElement("local_space");
-			tracer.addSubelement(localSpace, "position_8", ErnestUtils.hexColor(getDisplayCode(DIRECTION_HERE)));
-			tracer.addSubelement(localSpace, "position_7", ErnestUtils.hexColor(getDisplayCode(DIRECTION_BEHIND)));
-			tracer.addSubelement(localSpace, "position_6", ErnestUtils.hexColor(getDisplayCode(DIRECTION_BEHIND_LEFT)));
-			tracer.addSubelement(localSpace, "position_5", ErnestUtils.hexColor(getDisplayCode(DIRECTION_LEFT)));
-			tracer.addSubelement(localSpace, "position_4", ErnestUtils.hexColor(getDisplayCode(DIRECTION_AHEAD_LEFT)));
-			tracer.addSubelement(localSpace, "position_3", ErnestUtils.hexColor(getDisplayCode(DIRECTION_AHEAD)));
-			tracer.addSubelement(localSpace, "position_2", ErnestUtils.hexColor(getDisplayCode(DIRECTION_AHEAD_RIGHT)));
-			tracer.addSubelement(localSpace, "position_1", ErnestUtils.hexColor(getDisplayCode(DIRECTION_RIGHT)));
-			tracer.addSubelement(localSpace, "position_0", ErnestUtils.hexColor(getDisplayCode(DIRECTION_BEHIND_RIGHT)));
-		}
-	}
+//	public void trace(ITracer tracer)
+//	{
+//		if (tracer != null && !placeables.isEmpty())
+//		{
+//			Object localSpace = tracer.addEventElement("local_space");
+//			tracer.addSubelement(localSpace, "position_8", ErnestUtils.hexColor(getDisplayCode(DIRECTION_HERE)));
+//			tracer.addSubelement(localSpace, "position_7", ErnestUtils.hexColor(getDisplayCode(DIRECTION_BEHIND)));
+//			tracer.addSubelement(localSpace, "position_6", ErnestUtils.hexColor(getDisplayCode(DIRECTION_BEHIND_LEFT)));
+//			tracer.addSubelement(localSpace, "position_5", ErnestUtils.hexColor(getDisplayCode(DIRECTION_LEFT)));
+//			tracer.addSubelement(localSpace, "position_4", ErnestUtils.hexColor(getDisplayCode(DIRECTION_AHEAD_LEFT)));
+//			tracer.addSubelement(localSpace, "position_3", ErnestUtils.hexColor(getDisplayCode(DIRECTION_AHEAD)));
+//			tracer.addSubelement(localSpace, "position_2", ErnestUtils.hexColor(getDisplayCode(DIRECTION_AHEAD_RIGHT)));
+//			tracer.addSubelement(localSpace, "position_1", ErnestUtils.hexColor(getDisplayCode(DIRECTION_RIGHT)));
+//			tracer.addSubelement(localSpace, "position_0", ErnestUtils.hexColor(getDisplayCode(DIRECTION_BEHIND_RIGHT)));
+//		}
+//	}
 
 	public List<Placeable> getPlaceables() {
 		return this.placeables;

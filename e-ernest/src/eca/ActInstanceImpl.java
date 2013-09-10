@@ -20,8 +20,6 @@ import tracing.ITracer;
 public class ActInstanceImpl implements ActInstance 
 {
 	private Primitive primitive;
-	//private Point3f position = new Point3f();
-	//private Vector3f orientation = new Vector3f(1,0,0);
 	private Place place;
 	private int clock = 0;
 	private Aspect aspect = Aspect.MOVE;
@@ -36,11 +34,9 @@ public class ActInstanceImpl implements ActInstance
 	public ActInstanceImpl(Primitive primitive, Point3f position){
 		this.primitive = primitive;
 		this.place = new PlaceImpl(position);
-		//this.position.set(position);
 	}
 	
 	public Act getAct() {
-		//return ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(position));
 		return ActImpl.createOrGetPrimitiveAct(primitive, this.place.getArea());
 	}
 
@@ -50,7 +46,6 @@ public class ActInstanceImpl implements ActInstance
 
 	public Point3f getPosition() {
 		return this.place.getPosition();
-//		return this.position;
 	}
 	
 	/**
@@ -76,76 +71,43 @@ public class ActInstanceImpl implements ActInstance
 	public void transform(Transform3D transform)
 	{
 		this.place.transform(transform);
-		//transform.transform(this.position);
-		//transform.transform(this.orientation);
 	}		
 	
-	public float getDirection() 
-	{
-		return this.place.getDirection();
-		//return ErnestUtils.polarAngle(new Vector3f(this.position));
-	}
-
-	public float getDistance() 
-	{
-		return this.place.getDistance();
-		//return this.position.distance(new Point3f());
-	}
-	public void setPosition(Point3f position) 
-	{
-		this.place.setPosition(position);
-		// Create a new instance of the vector so it can be used to clone this place.
-		//this.position = new Point3f(position);
-	}
-
-//	public void setClock(int clock) 
+//	public float getDirection() 
 //	{
-//		this.clock = clock;
+//		return this.place.getDirection();
 //	}
+
+	public float getDistance(){
+		return this.place.getDistance();
+	}
+
+	public void setPosition(Point3f position){
+		this.place.setPosition(position);
+	}
 
 	public int getClock(){
 		return this.clock;
 	}
 
-//	public void setOrientation(float orientation) 
-//	{
-//		this.orientation.set((float) Math.cos(orientation), (float) Math.sin(orientation), 0);
-//	}
-
-	public float getOrientationAngle() 
-	{
+	public float getOrientationAngle(){
 		return this.place.getOrientationAngle();
-		//return ErnestUtils.polarAngle(this.orientation);
 	}
 	
-//	public void setValue(int value) 
-//	{
-//		this.displayCode = value;
+//	public int getValue(){
+//		return this.aspect.getCode();
 //	}
 
-	public int getValue() 
-	{
-		return this.aspect.getCode();
-		//return this.displayCode;
-	}
+//	public void setOrientation(Vector3f orientation){
+//		this.place.setOrientation(orientation);
+//	}
 
-	public void setOrientation(Vector3f orientation) 
-	{
-		this.place.setOrientation(orientation);
-		// Create a new instance of the vector so it can be used to clone this place.
-		//this.orientation = new Vector3f(orientation);
-	}
+//	public Vector3f getOrientation(){
+//		return this.getOrientation();
+//	}
 
-	public Vector3f getOrientation() 
-	{
-		return this.getOrientation();
-		//return orientation;
-	}
-
-	public void incClock() 
-	{
+	public void incClock(){
 		this.place.fade();
-		//this.setPosition(new Point3f(this.position.x * 1.1f, this.position.y * 1.1f, 0f));
 		this.clock++;
 	}
 
@@ -174,40 +136,16 @@ public class ActInstanceImpl implements ActInstance
 		return ret;
 	}
 
-	public boolean isInCell(Point3f position){
-		
+	public boolean isInCell(Point3f position){		
 		return this.place.isInCell(position);
-		
-//		boolean ret;
-		// Is in the same cell.
-//		ret = (Math.round(this.position.x) == Math.round(position.x)) && (Math.round(this.position.y) == Math.round(position.y)); 
-		
-		// Is in the same cell in egocentric polar referential.
-		
-		// Does not work for the cell behind !!
-//		if (m_position.length() < .5f && position.length() < .5f)
-//			ret = true;
-//		else if (Math.round(ErnestUtils.polarAngle(m_position) / (float)Math.PI * 4) ==
-// 			     Math.round(ErnestUtils.polarAngle(  position) / (float)Math.PI * 4) &&
-// 			     (Math.round(m_position.length()) == Math.round(position.length())))
-//			ret = true;
-//		else 
-//			ret = false;
-		
-//		return ret;		
 	}
 	
 	public void normalize(float scale) {
-		
 		this.place.normalize(scale);
-		
-		//float d = this.position.distance(new Point3f());
-		//if (d > 0) this.position.scale(scale / d);
 	}
 	
 	public Area getArea(){
 		return this.place.getArea();
-		//return AreaImpl.createOrGet(position);
 	}
 	
 	public String getDisplayLabel(){
@@ -247,5 +185,4 @@ public class ActInstanceImpl implements ActInstance
 	public int getDisplayCode() {
 		return this.aspect.getCode();
 	}
-
 }

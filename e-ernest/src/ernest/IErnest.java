@@ -3,13 +3,10 @@ package ernest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.media.j3d.Transform3D;
-
 import eca.ActInstance;
 import eca.Primitive;
 import eca.spas.Placeable;
-import eca.spas.egomem.SpatialMemory;
 import tracing.ITracer;
 
 
@@ -56,7 +53,8 @@ public interface IErnest
 	 * @param j y coordinate (0 = ahead, 2 = behind)
 	 * @return The value in the corresponding place in the environment. 
 	 */
-	public int getValue(int i, int j);
+	//public int getValue(int i, int j);
+	public int getDisplayCode();
 
 	/**
 	 * @param label The primitive interaction's label
