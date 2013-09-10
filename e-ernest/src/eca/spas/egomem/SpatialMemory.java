@@ -2,14 +2,15 @@ package eca.spas.egomem;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
+
+import eca.ActInstance;
+import eca.construct.PhenomenonInstance;
 import eca.spas.Placeable;
-import tracing.ITracer;
 
 /**
- * A Spatial Memory is a memory of a spatial configuration
+ * A Spatial Memory is a set of placeable objects to which a general spatial transformation apply.
  * @author Olivier
  */
 public interface SpatialMemory 
@@ -23,13 +24,18 @@ public interface SpatialMemory
 	 * Add a place in spatial memory
 	 * @param actInstance The place to add in spatial memory.
 	 */
-	public void addPlaceable(Placeable actInstance);
+	public void addPlaceable(Placeable placeable);
+	
+	//public void addActInstance(ActInstance actInstance);
 
 		/**
 	 * @return A clone of this spatial memory
 	 */
 	public ArrayList<Placeable> clonePlaceList();
 	
+	/**
+	 * @return The list of Placeable objects.
+	 */
 	public List<Placeable> getPlaceables();
 	
 	/**
@@ -41,16 +47,9 @@ public interface SpatialMemory
 	 * Remove places that are older than the decay laps
 	 */
 	public void forgetOldPlaces();
+	
+	public List<PhenomenonInstance> getPhenomenonInstances();
 
-	/**
-	 * @param position The position.
-	 * @return The value of a place for display.
-	 */
-	//public int getDisplayCode(Point3f position);
+	public PhenomenonInstance getPhenomenonInstance(Point3f position);
 
-	/**
-	 * Trace the content of this spatial memory
-	 * @param tracer The tracer
-	 */
-	//public void trace(ITracer tracer);	
 }

@@ -3,14 +3,14 @@ package eca.spas.egomem;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-import tracing.ITracer;
-import utils.ErnestUtils;
 import eca.ActInstance;
+import eca.construct.PhenomenonInstance;
+import eca.construct.PhenomenonInstanceImpl;
+import eca.construct.PhenomenonType;
+import eca.construct.PhenomenonTypeImpl;
 import eca.spas.Placeable;
-import ernest.Ernest;
 
 
 /**
@@ -64,9 +64,26 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 			p.incClock();
 	}
 
-	public void addPlaceable(Placeable actInstance){
-		placeables.add(actInstance);
+	public void addPlaceable(Placeable placeable){
+		placeables.add(placeable);
 	}
+	
+//	public void addActInstance(ActInstance actInstance){
+//		placeables.add(actInstance);
+//		PhenomenonInstance phenomenonInstance = getPhenomenonInstance(actInstance.getPosition());
+//		if (phenomenonInstance == null){
+//			// create a new phenomenon type with this act
+//			PhenomenonType phenomenonType = PhenomenonTypeImpl.createNew();
+//			phenomenonType.addPrimitive(actInstance.getPrimitive());
+//			// create a new phenomenon instance at this place
+//			phenomenonInstance = new PhenomenonInstanceImpl(phenomenonType, actInstance.getPosition());
+//		}
+//		else{
+//			// add this act to the phenomenon type of this place
+//			PhenomenonType phenomenonType = phenomenonInstance.getPhenomenonType();
+//			phenomenonType.addPrimitive(actInstance.getPrimitive());
+//		}
+//	}
 	
 	public void transform(Transform3D transform)
 	{
@@ -74,26 +91,6 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 			p.transform(transform);
 	}
 	
-	/**
-	 * Get the value at a given position.
-	 * (The last place found in the list of places that match this position)
-	 * (Used to display in the trace)
-	 * @param position The position of the location.
-	 * @return The bundle.
-	 */
-//	public int getDisplayCode(Point3f position)
-//	{
-//		int value = Ernest.UNANIMATED_COLOR;
-//		for (Placeable p : placeables)
-//		{
-//			if (p.isInCell(position))
-//				if (value != 0x73E600 && value != 0x00E6A0)
-//					//value = p.getValue();
-//					value = p.getDisplayCode();
-//		}	
-//		return value;
-//	}
-
 	/**
 	 * Clear a position in the local space memory.
 	 * @param position The position to clear.
@@ -153,6 +150,24 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 
 	public List<Placeable> getPlaceables() {
 		return this.placeables;
+	}
+	
+	public List<PhenomenonInstance> getPhenomenonInstances() {
+		List<PhenomenonInstance> phenomenonInstances = new ArrayList<PhenomenonInstance>();
+		for (Placeable placeable : this.placeables)
+			if (placeable instanceof PhenomenonInstance)
+				phenomenonInstances.add((PhenomenonInstance)placeable);
+		return phenomenonInstances;
+	}
+	
+	public PhenomenonInstance getPhenomenonInstance(Point3f position){
+		PhenomenonInstance phenomenonInstance = null;
+		for (Placeable placeable : this.placeables)
+			if (placeable instanceof PhenomenonInstance)
+				if (placeable.isInCell(position))
+					phenomenonInstance = (PhenomenonInstance)placeable;
+		
+		return phenomenonInstance;
 	}
 	
 }
