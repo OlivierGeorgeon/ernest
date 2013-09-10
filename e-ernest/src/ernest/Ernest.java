@@ -166,7 +166,7 @@ public class Ernest implements IErnest
 	{
 		Primitive primitive = PrimitiveImpl.createOrGet(label, value * 10);
 		
-		Act act = ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(new Point3f(1,0,0)));
+		Act act = ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(new Point3f(0,0,0)));
 		Action action = ActionImpl.createOrGet("[a" + act.getLabel() + "]");
 		action.addAct(act);
 		PhenomenonType phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");

@@ -5,7 +5,6 @@ import java.util.List;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
-import utils.ErnestUtils;
 import eca.ActInstance;
 import eca.ActInstanceImpl;
 import eca.Primitive;
@@ -13,8 +12,6 @@ import eca.PrimitiveImpl;
 import eca.construct.Action;
 import eca.construct.Area;
 import eca.construct.AreaImpl;
-import eca.construct.Aspect;
-import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
 import ernest.IEffect;
 
@@ -67,18 +64,11 @@ public class EnactionImpl implements Enaction
 	
 	private Area initialArea = AreaImpl.createOrGet(new Point3f());
 
-	//private Area currentArea = AreaImpl.createOrGet(new Point3f());
-
 	private Displacement displacement = null;
 	
-	//private PhenomenonInstance phenomenonInstance = null;
-	
-	private List<ActInstance> enactedPlaces = new ArrayList<ActInstance>();
+	private List<ActInstance> actInstances = new ArrayList<ActInstance>();
 	
 	private ActInstance salientPlace;
-	
-	//private Aspect aspect;
-//	private int displayCode;
 	
 	public void setIntendedPrimitiveAct(Act act) 
 	{
@@ -332,29 +322,30 @@ public class EnactionImpl implements Enaction
 	
 	public void track(List<ActInstance> actInstances, Transform3D transform){
 		
-		this.enactedPlaces = actInstances;
+		this.actInstances = actInstances;
 		
 		this.salientPlace  = null;
-		float distance = 10000;
 		
-		// TODO manage several places.
-		for (ActInstance actInstance : actInstances)
-			if (actInstance.getDistance() < distance){
-				this.salientPlace = actInstance;
-				distance = this.salientPlace.getDistance();
-			}
+		if (actInstances.size() > 0){
+			this.salientPlace  = actInstances.get(0);
+			
+			for (ActInstance actInstance : actInstances)
+				if (actInstance.getDistance() < this.salientPlace.getDistance())
+					this.salientPlace = actInstance;
+			// TODO more systematic selection of the silent place.
+			for (ActInstance actInstance : actInstances)
+				if (actInstance.getModality() == ActInstance.MODALITY_CONSUME)
+					this.salientPlace = actInstance;
 		
-		if (this.salientPlace != null){
 			this.m_enactedPrimitiveAct =this.salientPlace.getAct();
-			this.m_enactedPrimitiveAct.setColor(this.salientPlace.getDisplayCode());//.getValue());
-			//this.displayCode = this.salientPlace.getValue();
+			this.m_enactedPrimitiveAct.setColor(this.salientPlace.getDisplayCode());
 		}
 		
 		this.transformation.set(transform);
 	}
 	
 	public List<ActInstance> getEnactedPlaces(){
-		return this.enactedPlaces;
+		return this.actInstances;
 	}
 
 	public Action getIntendedAction() {
