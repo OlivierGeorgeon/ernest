@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-
 import tracing.ITracer;
 import eca.ActInstance;
 import eca.Primitive;
@@ -20,7 +19,6 @@ import eca.decider.Decider;
 import eca.spas.Placeable;
 import eca.spas.Spas;
 import eca.spas.SpasImpl;
-import eca.spas.egomem.SpatialMemory;
 import eca.ss.IImos;
 import eca.ss.Imos;
 import eca.ss.enaction.Act;
@@ -187,12 +185,7 @@ public class Ernest implements IErnest
 		return this.clock;
 	}
 
-	public int getUpdateCount() 
-	{
-//		if (m_imos == null)
-//			return 0;
-//		else
-//			return m_imos.getCounter();
+	public int getUpdateCount(){
 		return this.clock;
 	}
 
@@ -211,9 +204,7 @@ public class Ernest implements IErnest
 	}
 
 	public Transform3D getTransformToAnim() {
-		//Transform3D transform = new Transform3D(this.m_enaction.getTransform3D());
 		return this.transformToAnim;
-		//return m_spas.getTransformToAnim();
 	}
 		
 }

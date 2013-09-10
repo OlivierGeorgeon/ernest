@@ -2,8 +2,7 @@ package eca.spas;
 
 
 import java.util.ArrayList;
-import javax.media.j3d.Transform3D;
-import javax.vecmath.Point3f;
+import java.util.List;
 import tracing.ITracer;
 import eca.ActInstance;
 import eca.Primitive;
@@ -41,6 +40,7 @@ public class SpasImpl implements Spas
 	 */
 	public void track(Enaction enaction) 
 	{
+
 		Object phenomenonInstElemnt = null;
 		if (m_tracer != null)
 			phenomenonInstElemnt = m_tracer.addEventElement("phenomenonInstance", true);
@@ -48,36 +48,91 @@ public class SpasImpl implements Spas
 		//for (ActInstance p : enaction.getEnactedPlaces())
 			//p.normalize(3);
 		
-		ActInstance salientPlace = enaction.getSalientPlace();	
-		Transform3D transform = enaction.getTransform3D();
+		// Update spatial memory
+		
+		this.spacialMemory.tick();
+		this.spacialMemory.transform(enaction.getTransform3D());
+		this.spacialMemory.forgetOldPlaces();		
+		for (ActInstance actInstance : enaction.getEnactedPlaces()){
+			this.spacialMemory.addPlaceable(actInstance);
+		
+			if (actInstance.getModality() != ActInstance.MODALITY_MOVE){
+				PhenomenonInstance phenomenonInstance = this.spacialMemory.getPhenomenonInstance(actInstance.getPosition());
+				if (phenomenonInstance == null){
+					// create a new phenomenon type with this act
+					PhenomenonType phenomenonType = PhenomenonTypeImpl.createNew();
+					phenomenonType.addPrimitive(actInstance.getPrimitive());
+					phenomenonType.setAspect(actInstance.getAspect());
+					// create a new phenomenon instance at this place
+					phenomenonInstance = new PhenomenonInstanceImpl(phenomenonType, actInstance.getPosition());
+					this.spacialMemory.addPlaceable(phenomenonInstance);
+				}
+				else{
+					// add this act to the phenomenon type of this place
+					PhenomenonType phenomenonType = phenomenonInstance.getPhenomenonType();
+					phenomenonType.addPrimitive(actInstance.getPrimitive());
+				}
+				if (m_tracer != null ){
+					phenomenonInstance.trace(m_tracer, phenomenonInstElemnt);
+					m_tracer.addSubelement(phenomenonInstElemnt, "merge", actInstance.getDisplayLabel());
+					m_tracer.addSubelement(phenomenonInstElemnt, "area", actInstance.getArea().getLabel());
+				}
+			}
+		}
+		// Merge phenomenon types
+		
+		//this.mergePhenomenonTypes(enaction.getSalientPlace());
+	}
+
+	public ArrayList<Placeable> getPlaceList()	{
+		return this.spacialMemory.clonePlaceList();
+	}
+
+	public int getDisplayCode(){
+		int displayCode = Ernest.UNANIMATED_COLOR;
+		PhenomenonInstance forcusPhenomenonInstance = getFocusPhenomenonInstance();
+		if (forcusPhenomenonInstance != null)
+			displayCode = forcusPhenomenonInstance.getPhenomenonType().getAspect().getCode();
+		
+		return displayCode;
+	}
+	
+	public PhenomenonInstance getFocusPhenomenonInstance(){
+		
+		List<PhenomenonInstance> phenomenonInstances = this.spacialMemory.getPhenomenonInstances();
+		
+		PhenomenonInstance phenomenonInstance = null;
+		if (phenomenonInstances.size() > 0){
+			phenomenonInstance = phenomenonInstances.get(0);
+			for (PhenomenonInstance p : phenomenonInstances)
+				if (p.getDistance() < phenomenonInstance.getDistance())
+					phenomenonInstance = p;
+		}
+		
+		return phenomenonInstance;
+	}
+	
+	private void mergePhenomenonTypes(ActInstance salientPlace){
 		
 		if (salientPlace != null){
+			
+			Object phenomenonInstElemnt = null;
+			if (m_tracer != null)
+				phenomenonInstElemnt = m_tracer.addEventElement("phenomenonInstance", true);
 	
 			Primitive enactedPrimitive = salientPlace.getPrimitive();
 			Area enactedArea = salientPlace.getArea();
 			
 			PhenomenonType actualPhenomenonType = PhenomenonTypeImpl.evoke(salientPlace.getPrimitive());
 			actualPhenomenonType.setAspect(salientPlace.getAspect());
-
-			//Appearance preAppearance = AppearanceImpl.createOrGet(intendedPhenomenonInstance.getPhenomenonType(), previousArea);
 	
-			// Update spatial memory
-			
-			this.spacialMemory.tick();
-			this.spacialMemory.transform(transform);
-			PhenomenonInstance focusPhenomenonInstance = this.getFocusPhenomenon();
+			PhenomenonInstance focusPhenomenonInstance = this.getFocusPhenomenonInstance();
 			if (focusPhenomenonInstance == null){
 				focusPhenomenonInstance = new PhenomenonInstanceImpl(actualPhenomenonType, salientPlace.getPosition());
 				this.spacialMemory.addPlaceable(focusPhenomenonInstance);
 			}
 			Area projectedArea = focusPhenomenonInstance.getArea();
-			this.spacialMemory.forgetOldPlaces();		
-			for (ActInstance p : enaction.getEnactedPlaces())
-				this.spacialMemory.addPlaceable(p);
-			
-			// Empty phenomenon instance
-						
-			//if (enactedArea.getLabel().equals(AreaImpl.O)  ){
+	
 			if (salientPlace.getModality() == ActInstance.MODALITY_MOVE){
 				PhenomenonTypeImpl.merge(enactedPrimitive, PhenomenonTypeImpl.EMPTY);
 				focusPhenomenonInstance.setPosition(salientPlace.getPosition());
@@ -122,42 +177,7 @@ public class SpasImpl implements Spas
 					m_tracer.addSubelement(phenomenonInstElemnt, "shift", "");
 					m_tracer.addSubelement(phenomenonInstElemnt, "area", focusPhenomenonInstance.getPlace().getArea().getLabel());
 				}
-			}
+			}		
 		}
-		
-		// Record the experiment
-//		Appearance postAppearance = AppearanceImpl.createOrGet(phenomenonType, area);
-//		Experiment newExp = ExperimentImpl.createOrGet(preAppearance, enaction.getEnactedPrimitiveAct().getPrimitive().getAction());
-//		newExp.incActCounter(enaction.getEnactedPrimitiveAct());
-//		newExp.incDisplacementCounter(displacement);
-//		newExp.incPostAppearanceCounter(postAppearance);
-//		if (m_tracer != null){
-//			m_tracer.addEventElement("experiment", newExp.toString());}
-
-		//enaction.setPhenomenonInstance(intendedPhenomenonInstance);
-	}
-
-	public ArrayList<Placeable> getPlaceList()	{
-		return this.spacialMemory.clonePlaceList();
-	}
-
-	public int getDisplayCode(){
-		int displayCode = Ernest.UNANIMATED_COLOR;
-		PhenomenonInstance forcusPhenomenonInstance = getFocusPhenomenon();
-		if (forcusPhenomenonInstance != null)
-			displayCode = forcusPhenomenonInstance.getPhenomenonType().getAspect().getCode();
-		
-		return displayCode;
-	}
-	
-	public PhenomenonInstance getFocusPhenomenon(){
-		PhenomenonInstance phenomenonInstance = null;
-		for (Placeable placeable : this.spacialMemory.getPlaceables()){
-			if (placeable instanceof PhenomenonInstance){
-				phenomenonInstance = (PhenomenonInstance)placeable;
-				break;
-			}
-		}
-		return phenomenonInstance;
 	}
 }

@@ -47,6 +47,6 @@ public interface Spas
 	/**
 	 * @return the Phenomenon Instance which get the attention of Ernest 
 	 */
-	public PhenomenonInstance getFocusPhenomenon();
+	public PhenomenonInstance getFocusPhenomenonInstance();
 
 }

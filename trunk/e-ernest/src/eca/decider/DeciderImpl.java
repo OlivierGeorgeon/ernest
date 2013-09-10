@@ -52,7 +52,7 @@ public class DeciderImpl implements Decider
 
 		Enaction newEnaction = new EnactionImpl();	
 		
-		PhenomenonInstance focusPhenomenonInstance = this.spas.getFocusPhenomenon();
+		PhenomenonInstance focusPhenomenonInstance = this.spas.getFocusPhenomenonInstance();
 		
 		Area preArea = AreaImpl.createOrGet(new Point3f());
 		Appearance preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
