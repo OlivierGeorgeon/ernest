@@ -12,6 +12,7 @@ import eca.PrimitiveImpl;
 import eca.construct.Action;
 import eca.construct.Area;
 import eca.construct.AreaImpl;
+import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
 import ernest.IEffect;
 
@@ -68,7 +69,7 @@ public class EnactionImpl implements Enaction
 	
 	private List<ActInstance> actInstances = new ArrayList<ActInstance>();
 	
-	private ActInstance salientPlace;
+	private ActInstance salientActInstance;
 	
 	public void setIntendedPrimitiveAct(Act act) 
 	{
@@ -249,7 +250,7 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
 			//tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
 			//this.phenomenonInstance.getPhenomenonType().trace(tracer, e);
-			tracer.addSubelement(e, "aspect", this.salientPlace.getAspect().toString());
+			tracer.addSubelement(e, "aspect", this.salientActInstance.getAspect().toString());
 		}
 	}
 
@@ -317,28 +318,32 @@ public class EnactionImpl implements Enaction
 		ActInstance enactedPlace = new ActInstanceImpl(p, l);
 		List<ActInstance> actInstances =  new ArrayList<ActInstance>(1);
 		actInstances.add(enactedPlace);
-		track(actInstances, t);
+		track(actInstances, t, null);
 	}	
 	
-	public void track(List<ActInstance> actInstances, Transform3D transform){
+	public void track(List<ActInstance> actInstances, Transform3D transform, PhenomenonInstance focusPhenomenonInstance){
 		
 		this.actInstances = actInstances;
 		
-		this.salientPlace  = null;
+		this.salientActInstance  = null;
 		
 		if (actInstances.size() > 0){
-			this.salientPlace  = actInstances.get(0);
+			this.salientActInstance  = actInstances.get(0);
 			
-			for (ActInstance actInstance : actInstances)
-				if (actInstance.getDistance() < this.salientPlace.getDistance())
-					this.salientPlace = actInstance;
+			if (focusPhenomenonInstance != null)
+				for (ActInstance actInstance : actInstances)
+					if (actInstance.getPosition().epsilonEquals(focusPhenomenonInstance.getPosition(), .1f))
+						this.salientActInstance = actInstance;
+				
+//				if (actInstance.getDistance() < this.salientPlace.getDistance())
+//					this.salientPlace = actInstance;
 			// TODO more systematic selection of the silent place.
 			for (ActInstance actInstance : actInstances)
 				if (actInstance.getModality() == ActInstance.MODALITY_CONSUME)
-					this.salientPlace = actInstance;
+					this.salientActInstance = actInstance;
 		
-			this.m_enactedPrimitiveAct =this.salientPlace.getAct();
-			this.m_enactedPrimitiveAct.setColor(this.salientPlace.getDisplayCode());
+			this.m_enactedPrimitiveAct =this.salientActInstance.getAct();
+			this.m_enactedPrimitiveAct.setColor(this.salientActInstance.getDisplayCode());
 		}
 		
 		this.transformation.set(transform);
@@ -369,7 +374,7 @@ public class EnactionImpl implements Enaction
 	}
 
 	public ActInstance getSalientPlace() {
-		return this.salientPlace;
+		return this.salientActInstance;
 	}
 
 }

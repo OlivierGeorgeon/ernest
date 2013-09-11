@@ -134,7 +134,7 @@ public class Ernest implements IErnest
 		// track the enaction 
 		
 		this.transformToAnim.set(transform);
-		m_enaction.track(actInstances, transform);
+		m_enaction.track(actInstances, transform, this.m_spas.getFocusPhenomenonInstance());
 		m_imos.track(m_enaction);
 		m_spas.track(m_enaction);			
 		m_enaction.traceTrack(m_tracer);

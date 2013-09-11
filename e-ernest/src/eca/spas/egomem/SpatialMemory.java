@@ -52,4 +52,5 @@ public interface SpatialMemory
 
 	public PhenomenonInstance getPhenomenonInstance(Point3f position);
 
+	public void clearPhenomenonInstanceFront();
 }

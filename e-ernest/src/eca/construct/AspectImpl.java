@@ -12,6 +12,7 @@ public class AspectImpl implements Aspect {
 
 	private static Map<String , Aspect> ASPECTS = new HashMap<String , Aspect>() ;
 	private int displayCode;
+//	private int value;
 
 	/**
 	 * @param displayCode this aspect's label
@@ -57,5 +58,13 @@ public class AspectImpl implements Aspect {
 	public String toString(){
 		return ErnestUtils.hexColor(this.displayCode);
 	}
+
+//	public void setValue(int value) {
+//		this.value = value;
+//	}
+//
+//	public int getValue() {
+//		return this.value;
+//	}
 
 }

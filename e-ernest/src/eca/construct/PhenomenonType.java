@@ -53,5 +53,8 @@ public interface PhenomenonType {
 	 * @param e The xml tag that contains the trace
 	 */
 	public void trace(ITracer tracer, Object e);
+	
+	public void setAttractiveness(int attractiveness);
+	public int getAttractiveness();
 
 }
