@@ -95,15 +95,15 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 * Clear a position in the local space memory.
 	 * @param position The position to clear.
 	 */
-	public void clearPlace(Point3f position)
-	{
-		for (Iterator<Placeable> it = placeables.iterator(); it.hasNext();)
-		{
-			ActInstance l = (ActInstance)it.next();
-			if (l.isInCell(position))
-				it.remove();
-		}		
-	}
+//	public void clearPlace(Point3f position)
+//	{
+//		for (Iterator<Placeable> it = placeables.iterator(); it.hasNext();)
+//		{
+//			ActInstance l = (ActInstance)it.next();
+//			if (l.isInCell(position))
+//				it.remove();
+//		}		
+//	}
 	
 	/**
 	 * Clear the places farther than DISTANCE_VISUAL_BACKGROUND.
@@ -168,6 +168,15 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 					phenomenonInstance = (PhenomenonInstance)placeable;
 		
 		return phenomenonInstance;
+	}
+
+	public void clearPhenomenonInstanceFront() {
+		for (Iterator<Placeable> it = placeables.iterator(); it.hasNext();){
+			Placeable placeable = it.next();
+			if (placeable instanceof PhenomenonInstance)
+				if (placeable.getPlace().getPosition().x > 0)
+					it.remove();					
+		}
 	}
 	
 }

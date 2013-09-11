@@ -24,6 +24,7 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	private String label;
 	private Aspect aspect = Aspect.MOVE;
 	private List<Primitive> primitives = new ArrayList<Primitive>();
+	private int attractiveness = 0;
 
 	/**
 	 * @return The list of all types of phenomenon known by the agent thus far
@@ -54,12 +55,25 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 	
 	/**
 	 * @param primitive The primitive that evoke this phenomenon.
-	 * @return The evoked phenimenon.
+	 * @return The evoked phenomenon.
 	 */
 	public static PhenomenonType evoke(Primitive primitive){
 		PhenomenonType phenomenonType = null;
 		for (PhenomenonType p : getPhenomenonTypes()){
 			if (p.contains(primitive))
+				phenomenonType = p;
+		}		
+		return phenomenonType;
+	}
+	
+	/**
+	 * @param primitive The primitive that evoke this phenomenon.
+	 * @return The evoked phenomenon.
+	 */
+	public static PhenomenonType evoke(Aspect aspect){
+		PhenomenonType phenomenonType = null;
+		for (PhenomenonType p : getPhenomenonTypes()){
+			if (p.getAspect().equals(aspect))
 				phenomenonType = p;
 		}		
 		return phenomenonType;
@@ -169,6 +183,15 @@ public class PhenomenonTypeImpl implements PhenomenonType {
 		tracer.addSubelement(p, "label", this.label);
 		tracer.addSubelement(p, "aspect", this.aspect.toString());
 		tracer.addSubelement(p, "primitives", this.toString());
+		tracer.addSubelement(p, "attractiveness", this.getAttractiveness() + "");
+	}
+
+	public int getAttractiveness() {
+		return attractiveness;
+	}
+
+	public void setAttractiveness(int attractiveness) {
+		this.attractiveness = attractiveness;
 	}
 
 }

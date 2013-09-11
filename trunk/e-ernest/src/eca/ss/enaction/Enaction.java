@@ -7,6 +7,7 @@ import tracing.ITracer;
 import eca.ActInstance;
 import eca.construct.Action;
 import eca.construct.Area;
+import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
 import ernest.IEffect;
 
@@ -28,7 +29,7 @@ public interface Enaction
 	 * @param actInstances The list of places received from the environment
 	 * @param transform The transformation sensed in the environment.
 	 */
-	public void track(List<ActInstance> actInstances, Transform3D transform);
+	public void track(List<ActInstance> actInstances, Transform3D transform, PhenomenonInstance focusPhenomenonInstance);
 	
 	/**
 	 * @param displacement The displacement sensed during this primitive enaction.

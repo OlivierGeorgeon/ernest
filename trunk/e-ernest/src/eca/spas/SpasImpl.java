@@ -59,54 +59,81 @@ public class SpasImpl implements Spas
 			this.spacialMemory.addPlaceable(actInstance);
 		
 			if (actInstance.getModality() == ActInstance.MODALITY_MOVE){
-				if (!this.focusPhenomenonInstance.equals(PhenomenonInstance.EMPTY)){
-					this.focusPhenomenonInstance = PhenomenonInstance.EMPTY;
-					if (m_tracer != null ){
-						this.focusPhenomenonInstance.trace(m_tracer, pie);
-						m_tracer.addSubelement(pie, "shift", "");
-					}
-				}
+				this.spacialMemory.clearPhenomenonInstanceFront();
 			}
 			else{
 				PhenomenonInstance phenomenonInstance = this.spacialMemory.getPhenomenonInstance(actInstance.getPosition());
 				if (phenomenonInstance == null){
 					// create a new phenomenon type with this act
-					PhenomenonType phenomenonType = PhenomenonTypeImpl.createNew();
-					phenomenonType.addPrimitive(actInstance.getPrimitive());
-					phenomenonType.setAspect(actInstance.getAspect());
-					// create a new phenomenon instance at this place
-					phenomenonInstance = new PhenomenonInstanceImpl(phenomenonType, actInstance.getPosition());
-					this.spacialMemory.addPlaceable(phenomenonInstance);
+					PhenomenonType  phenomenonType = PhenomenonTypeImpl.evoke(actInstance.getAspect());
+					if (phenomenonType == null){
+						phenomenonType = PhenomenonTypeImpl.createNew();
+						phenomenonType.setAspect(actInstance.getAspect());
+						phenomenonType.addPrimitive(actInstance.getPrimitive());
+						phenomenonInstance = new PhenomenonInstanceImpl(phenomenonType, actInstance.getPosition());
+						this.spacialMemory.addPlaceable(phenomenonInstance);
+					}
+					else{
+						phenomenonType.addPrimitive(actInstance.getPrimitive());
+						phenomenonInstance = new PhenomenonInstanceImpl(phenomenonType, actInstance.getPosition());
+						this.spacialMemory.addPlaceable(phenomenonInstance);
+					}
 					if (m_tracer != null ){
 						phenomenonInstance.trace(m_tracer, pie);
 						m_tracer.addSubelement(pie, "create", actInstance.getDisplayLabel());
-						m_tracer.addSubelement(pie, "area", actInstance.getArea().getLabel());
 					}
 				}
 				else{
 					phenomenonInstance.setClock(0);
 					// add this act to the phenomenon type of this place
 					PhenomenonType phenomenonType = phenomenonInstance.getPhenomenonType();
-					if (phenomenonType.contains(actInstance.getPrimitive())){
-						if (!phenomenonInstance.equals(this.focusPhenomenonInstance)){
-							if (m_tracer != null ){
-								phenomenonInstance.trace(m_tracer, pie);
-								m_tracer.addSubelement(pie, "shift", "");
-							}
-						}
-					}
-					else{
+					if (!phenomenonType.contains(actInstance.getPrimitive())){
+//						if (!phenomenonInstance.equals(this.focusPhenomenonInstance)){
+//							if (m_tracer != null ){
+//								phenomenonInstance.trace(m_tracer, pie);
+//								m_tracer.addSubelement(pie, "shift", "");
+//							}
+//						}
+//					}
+//					else{
 						phenomenonType.addPrimitive(actInstance.getPrimitive());
 						if (m_tracer != null ){
 							phenomenonInstance.trace(m_tracer, pie);
 							m_tracer.addSubelement(pie, "add", actInstance.getDisplayLabel());
-							m_tracer.addSubelement(pie, "area", actInstance.getArea().getLabel());
 						}
 					}
 				}
-				this.focusPhenomenonInstance = phenomenonInstance;
+				if (actInstance.getModality() == ActInstance.MODALITY_CONSUME || actInstance.getModality() == ActInstance.MODALITY_BUMP)
+					phenomenonInstance.getPhenomenonType().setAttractiveness(actInstance.getPrimitive().getValue());
+				//this.focusPhenomenonInstance = phenomenonInstance;
 			}
 		}
+		
+		// The focus phenomenon is the one that has the highest attractiveness or the closest
+		
+		PhenomenonInstance phenomenonInstance = PhenomenonInstance.EMPTY;
+		float distance = 10000;
+		int attractiveness = -200;
+		for (PhenomenonInstance p : this.spacialMemory.getPhenomenonInstances())
+			if (p.getPhenomenonType().getAttractiveness() > attractiveness){
+				phenomenonInstance = p;
+				distance = phenomenonInstance.getDistance();
+				attractiveness = phenomenonInstance.getPhenomenonType().getAttractiveness();
+			}
+			else if (p.getDistance() < distance){
+				phenomenonInstance = p;
+				distance = phenomenonInstance.getDistance();
+				attractiveness = phenomenonInstance.getPhenomenonType().getAttractiveness();
+			}
+		if (!this.focusPhenomenonInstance.equals(phenomenonInstance)){
+			this.focusPhenomenonInstance = phenomenonInstance;
+			if (m_tracer != null ){
+				phenomenonInstance.trace(m_tracer, pie);
+				m_tracer.addSubelement(pie, "shift", "");
+			}			
+		}
+			
+		
 		// Merge phenomenon types
 		
 		//this.mergePhenomenonTypes(enaction.getSalientPlace());
@@ -126,18 +153,7 @@ public class SpasImpl implements Spas
 	}
 	
 	public PhenomenonInstance getFocusPhenomenonInstance(){
-		
-		List<PhenomenonInstance> phenomenonInstances = this.spacialMemory.getPhenomenonInstances();
-		
-		PhenomenonInstance phenomenonInstance = null;
-		if (phenomenonInstances.size() > 0){
-			phenomenonInstance = phenomenonInstances.get(0);
-			for (PhenomenonInstance p : phenomenonInstances)
-				if (p.getDistance() < phenomenonInstance.getDistance())
-					phenomenonInstance = p;
-		}
-		
-		return phenomenonInstance;
+		return this.focusPhenomenonInstance;
 	}
 	
 	private void mergePhenomenonTypes(ActInstance salientPlace){
