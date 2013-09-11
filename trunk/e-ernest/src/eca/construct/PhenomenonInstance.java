@@ -1,5 +1,7 @@
 package eca.construct;
 
+import javax.vecmath.Point3f;
+
 import tracing.ITracer;
 import eca.spas.Placeable;
 
@@ -8,6 +10,8 @@ import eca.spas.Placeable;
  * @author Olivier
  */
 public interface PhenomenonInstance extends Placeable {
+	
+	public static PhenomenonInstance EMPTY = new PhenomenonInstanceImpl(PhenomenonType.EMPTY, new Point3f());
 	
 	/**
 	 * @return The primitive interaction
@@ -24,4 +28,6 @@ public interface PhenomenonInstance extends Placeable {
 	 * @param e the xml element that contains the trace of this phenomenon instance
 	 */
 	public void trace(ITracer tracer, Object e);
+	
+	public void setClock(int clock);
 }
