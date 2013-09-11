@@ -29,6 +29,8 @@ public class SpasImpl implements Spas
 	/** Ernest's local space memory  */
 	private SpatialMemory spacialMemory = new SpatialMemoryImpl();
 	
+	private PhenomenonInstance focusPhenomenonInstance = PhenomenonInstance.EMPTY;
+	
 	public void setTracer(ITracer tracer) {
 		m_tracer = tracer;
 	}
@@ -41,9 +43,9 @@ public class SpasImpl implements Spas
 	public void track(Enaction enaction) 
 	{
 
-		Object phenomenonInstElemnt = null;
+		Object pie = null;
 		if (m_tracer != null)
-			phenomenonInstElemnt = m_tracer.addEventElement("phenomenonInstance", true);
+			pie = m_tracer.addEventElement("construct", true);
 
 		//for (ActInstance p : enaction.getEnactedPlaces())
 			//p.normalize(3);
@@ -56,7 +58,16 @@ public class SpasImpl implements Spas
 		for (ActInstance actInstance : enaction.getEnactedPlaces()){
 			this.spacialMemory.addPlaceable(actInstance);
 		
-			if (actInstance.getModality() != ActInstance.MODALITY_MOVE){
+			if (actInstance.getModality() == ActInstance.MODALITY_MOVE){
+				if (!this.focusPhenomenonInstance.equals(PhenomenonInstance.EMPTY)){
+					this.focusPhenomenonInstance = PhenomenonInstance.EMPTY;
+					if (m_tracer != null ){
+						this.focusPhenomenonInstance.trace(m_tracer, pie);
+						m_tracer.addSubelement(pie, "shift", "");
+					}
+				}
+			}
+			else{
 				PhenomenonInstance phenomenonInstance = this.spacialMemory.getPhenomenonInstance(actInstance.getPosition());
 				if (phenomenonInstance == null){
 					// create a new phenomenon type with this act
@@ -66,17 +77,34 @@ public class SpasImpl implements Spas
 					// create a new phenomenon instance at this place
 					phenomenonInstance = new PhenomenonInstanceImpl(phenomenonType, actInstance.getPosition());
 					this.spacialMemory.addPlaceable(phenomenonInstance);
+					if (m_tracer != null ){
+						phenomenonInstance.trace(m_tracer, pie);
+						m_tracer.addSubelement(pie, "create", actInstance.getDisplayLabel());
+						m_tracer.addSubelement(pie, "area", actInstance.getArea().getLabel());
+					}
 				}
 				else{
+					phenomenonInstance.setClock(0);
 					// add this act to the phenomenon type of this place
 					PhenomenonType phenomenonType = phenomenonInstance.getPhenomenonType();
-					phenomenonType.addPrimitive(actInstance.getPrimitive());
+					if (phenomenonType.contains(actInstance.getPrimitive())){
+						if (!phenomenonInstance.equals(this.focusPhenomenonInstance)){
+							if (m_tracer != null ){
+								phenomenonInstance.trace(m_tracer, pie);
+								m_tracer.addSubelement(pie, "shift", "");
+							}
+						}
+					}
+					else{
+						phenomenonType.addPrimitive(actInstance.getPrimitive());
+						if (m_tracer != null ){
+							phenomenonInstance.trace(m_tracer, pie);
+							m_tracer.addSubelement(pie, "add", actInstance.getDisplayLabel());
+							m_tracer.addSubelement(pie, "area", actInstance.getArea().getLabel());
+						}
+					}
 				}
-				if (m_tracer != null ){
-					phenomenonInstance.trace(m_tracer, phenomenonInstElemnt);
-					m_tracer.addSubelement(phenomenonInstElemnt, "merge", actInstance.getDisplayLabel());
-					m_tracer.addSubelement(phenomenonInstElemnt, "area", actInstance.getArea().getLabel());
-				}
+				this.focusPhenomenonInstance = phenomenonInstance;
 			}
 		}
 		// Merge phenomenon types

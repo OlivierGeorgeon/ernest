@@ -35,6 +35,12 @@ public interface Placeable extends Cloneable {
 	 */
 	public Area getArea();
 	
+	/**
+	 * @param position
+	 * @return true if this placeable is in the cell designated by this position.
+	 */
+	public boolean isInCell(Point3f position);
+	
 	public Point3f getPosition();
 	
 	public int getDisplayCode();
@@ -46,8 +52,6 @@ public interface Placeable extends Cloneable {
 	public float getOrientationAngle();
 	
 	public void incClock();
-	
-	public boolean isInCell(Point3f position);
 	
 	/**
 	 * @return The place's distance.

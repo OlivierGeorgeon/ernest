@@ -14,7 +14,7 @@ import eca.Primitive;
 public interface PhenomenonType {
 	
 	/** Predefined phenomenon type */
-	public static PhenomenonType EMPTY = PhenomenonTypeImpl.createOrGet("_");
+	public static PhenomenonType EMPTY = PhenomenonTypeImpl.createOrGet("0");
 	
 	/**
 	 * @return This PhenomenonType's label.

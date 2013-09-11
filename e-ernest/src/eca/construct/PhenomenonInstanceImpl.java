@@ -3,6 +3,7 @@ package eca.construct;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
+import utils.ErnestUtils;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 
@@ -14,6 +15,7 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 
 	private PhenomenonType phenomenonType = null;
 	private Place place;
+	private int clock = 0;
 	
 	/**
 	 * @param phenomenonType The type of this phenomenon instance.
@@ -78,8 +80,7 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 	}
 
 	public int getClock() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.clock;
 	}
 
 	public String getDisplayLabel() {
@@ -92,13 +93,11 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 	}
 
 	public void incClock() {
-		// TODO Auto-generated method stub
-		
+		this.clock++;
 	}
 
 	public boolean isInCell(Point3f position) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.place.isInCell(position);
 	}
 
 	public float getDistance() 
@@ -108,8 +107,13 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 	
 	public void trace(ITracer tracer, Object e) {
 		
-		Object p = tracer.addSubelement(e, "phenomenon_instance");		
-		this.phenomenonType.trace(tracer, p);
-		tracer.addSubelement(p, "position", "(" + this.place.getPosition().x + "," + this.place.getPosition().y + ")");
+		Object pe = tracer.addSubelement(e, "phenomenon_instance");		
+		this.phenomenonType.trace(tracer, pe);
+		tracer.addSubelement(pe, "position", "(" + ErnestUtils.format(this.place.getPosition().x, 1) + "," + ErnestUtils.format(this.place.getPosition().y, 1) + ")");
+		tracer.addSubelement(pe, "area", this.place.getArea().getLabel());
+	}
+
+	public void setClock(int clock) {
+		this.clock=clock;
 	}
 }
