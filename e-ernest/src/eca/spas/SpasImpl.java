@@ -109,18 +109,23 @@ public class SpasImpl implements Spas
 			}
 		}
 		
-		// The focus phenomenon is the one that has the highest attractiveness or the closest
+		// The focus phenomenon is the one that has the highest attractiveness or that is the closest or with which there is an interaction
 		
 		PhenomenonInstance phenomenonInstance = PhenomenonInstance.EMPTY;
+		if (enaction.getSalientActInstance() != null){
+			PhenomenonInstance salientPhenomenonInstance = this.spacialMemory.getPhenomenonInstance(enaction.getSalientActInstance().getPosition());
+			if (salientPhenomenonInstance != null)
+				 phenomenonInstance = salientPhenomenonInstance;
+		}
 		float distance = 10000;
 		int attractiveness = -200;
 		for (PhenomenonInstance p : this.spacialMemory.getPhenomenonInstances())
-			if (p.getPhenomenonType().getAttractiveness() > attractiveness){
+			if (p.getPhenomenonType().getAttractiveness() > attractiveness && p.getPosition().x >= 0){
 				phenomenonInstance = p;
 				distance = phenomenonInstance.getDistance();
 				attractiveness = phenomenonInstance.getPhenomenonType().getAttractiveness();
 			}
-			else if (p.getDistance() < distance){
+			else if (p.getDistance() < distance  && p.getPosition().x >= 0){
 				phenomenonInstance = p;
 				distance = phenomenonInstance.getDistance();
 				attractiveness = phenomenonInstance.getPhenomenonType().getAttractiveness();
@@ -139,8 +144,15 @@ public class SpasImpl implements Spas
 		//this.mergePhenomenonTypes(enaction.getSalientPlace());
 	}
 
-	public ArrayList<Placeable> getPlaceList()	{
-		return this.spacialMemory.clonePlaceList();
+	public ArrayList<Placeable> getPlaceableClones(){
+		ArrayList<Placeable> placeableClones = new ArrayList<Placeable>();
+		for (Placeable placeable : this.spacialMemory.getPlaceables()){
+			Placeable placeableClone = placeable.clone();
+			if (placeableClone.getPosition().epsilonEquals(this.getFocusPhenomenonInstance().getPosition(), .1f))
+				placeableClone.setFocus(true);
+			placeableClones.add(placeableClone);
+		}
+		return placeableClones;
 	}
 
 	public int getDisplayCode(){

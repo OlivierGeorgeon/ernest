@@ -158,11 +158,6 @@ public class Ernest implements IErnest
 		return this.m_spas.getDisplayCode();
 	}
 
-//	public int getValue(int i, int j)
-//	{
-//		return m_spas.getValue(i,j);
-//	}
-	
 	public Primitive addInteraction(String label, int value)
 	{
 		Primitive primitive = PrimitiveImpl.createOrGet(label, value * 10);
@@ -170,15 +165,12 @@ public class Ernest implements IErnest
 		Act act = ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(new Point3f(0,0,0)));
 		Action action = ActionImpl.createOrGet("[a" + act.getLabel() + "]");
 		action.addAct(act);
-		//PhenomenonType phenomenonType = PhenomenonTypeImpl.createOrGet("[p" + label +"]");
-		//phenomenonType.addPrimitive(primitive);	
-
 		return primitive;
 	}
 
 	public ArrayList<Placeable> getPlaceList()
 	{
-		return m_spas.getPlaceList();
+		return m_spas.getPlaceableClones();
 	}
 
 	public int getClock(){

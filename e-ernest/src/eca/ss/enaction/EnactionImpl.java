@@ -335,9 +335,6 @@ public class EnactionImpl implements Enaction
 					if (actInstance.getPosition().epsilonEquals(focusPhenomenonInstance.getPosition(), .1f))
 						this.salientActInstance = actInstance;
 				
-//				if (actInstance.getDistance() < this.salientPlace.getDistance())
-//					this.salientPlace = actInstance;
-			// TODO more systematic selection of the silent place.
 			for (ActInstance actInstance : actInstances)
 				if (actInstance.getModality() == ActInstance.MODALITY_CONSUME)
 					this.salientActInstance = actInstance;
@@ -373,7 +370,7 @@ public class EnactionImpl implements Enaction
 		return this.transformation;
 	}
 
-	public ActInstance getSalientPlace() {
+	public ActInstance getSalientActInstance() {
 		return this.salientActInstance;
 	}
 

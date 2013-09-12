@@ -31,7 +31,7 @@ public interface SpatialMemory
 		/**
 	 * @return A clone of this spatial memory
 	 */
-	public ArrayList<Placeable> clonePlaceList();
+	//public ArrayList<Placeable> clonePlaceList();
 	
 	/**
 	 * @return The list of Placeable objects.
