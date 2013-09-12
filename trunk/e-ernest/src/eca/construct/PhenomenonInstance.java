@@ -30,4 +30,5 @@ public interface PhenomenonInstance extends Placeable {
 	public void trace(ITracer tracer, Object e);
 	
 	public void setClock(int clock);
+	
 }

@@ -4,6 +4,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
 import utils.ErnestUtils;
+import eca.ActInstance;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 
@@ -16,6 +17,7 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 	private PhenomenonType phenomenonType = null;
 	private Place place;
 	private int clock = 0;
+	private boolean focus = false;
 	
 	/**
 	 * @param phenomenonType The type of this phenomenon instance.
@@ -116,4 +118,38 @@ public class PhenomenonInstanceImpl implements PhenomenonInstance {
 	public void setClock(int clock) {
 		this.clock=clock;
 	}
+
+	public boolean isFocus() {
+		return focus;
+	}
+
+	public void setFocus(boolean focus) {
+		this.focus = focus;
+	}
+	
+	/**
+	 * Phenomenon instances are equal if they have the same position and the same phenomenon type
+	 */
+	public boolean equals(Object o){
+		boolean ret = false;
+		
+		if (o == this)
+			ret = true;
+		else if (o == null)
+			ret = false;
+		else if (!o.getClass().equals(this.getClass()))
+			ret = false;
+		else
+		{
+			PhenomenonInstance other = (PhenomenonInstance)o;
+//			ret  = (this.getDisplayLabel().equals(other.getDisplayLabel()) 
+//					//&& this.position.epsilonEquals(other.getPosition(), .1f)
+//					&& this.place.equals(other.getPlace())
+//					&& (this.clock == other.getClock()));
+			ret = isInCell(other.getPosition()) && this.phenomenonType.equals(other.getPhenomenonType()) ;
+		}		
+		return ret;
+	}
+
+
 }

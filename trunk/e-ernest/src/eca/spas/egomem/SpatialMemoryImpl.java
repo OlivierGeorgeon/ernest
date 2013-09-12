@@ -49,14 +49,14 @@ public class SpatialMemoryImpl implements SpatialMemory, Cloneable
 	 * From tutorial here: http://ydisanto.developpez.com/tutoriels/java/cloneable/ 
 	 * @return The cloned spatial memory
 	 */
-	public ArrayList<Placeable> clonePlaceList() 
-	{
-		ArrayList<Placeable> clonePlaces = new ArrayList<Placeable>();
-		for (Placeable actInstance : placeables)
-			clonePlaces.add(actInstance.clone());
-		
-		return clonePlaces;
-	}
+//	public ArrayList<Placeable> clonePlaceList() 
+//	{
+//		ArrayList<Placeable> clonePlaces = new ArrayList<Placeable>();
+//		for (Placeable placeable : placeables)
+//			clonePlaces.add(placeable.clone());
+//
+//		return clonePlaces;
+//	}
 
 	public void tick()
 	{

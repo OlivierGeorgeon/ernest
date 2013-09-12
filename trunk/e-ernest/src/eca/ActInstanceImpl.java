@@ -24,6 +24,7 @@ public class ActInstanceImpl implements ActInstance
 	private int clock = 0;
 	private Aspect aspect = Aspect.MOVE;
 	private int modality;
+	private boolean focus = false;
 	
 	/**
 	 * Create a new place 
@@ -185,4 +186,13 @@ public class ActInstanceImpl implements ActInstance
 	public int getDisplayCode() {
 		return this.aspect.getCode();
 	}
+
+	public boolean isFocus() {
+		return focus;
+	}
+
+	public void setFocus(boolean focus) {
+		this.focus = focus;
+	}
+
 }

@@ -58,5 +58,7 @@ public interface Placeable extends Cloneable {
 	 */
 	public float getDistance();
 	
+	public void setFocus(boolean focus);
+	public boolean isFocus();
 
 }
