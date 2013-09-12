@@ -120,12 +120,12 @@ public class SpasImpl implements Spas
 		float distance = 10000;
 		int attractiveness = -200;
 		for (PhenomenonInstance p : this.spacialMemory.getPhenomenonInstances())
-			if (p.getPhenomenonType().getAttractiveness() > attractiveness && p.getPosition().x >= 0){
+			if (p.getPhenomenonType().getAttractiveness() > attractiveness && p.getClock() == 0){
 				phenomenonInstance = p;
 				distance = phenomenonInstance.getDistance();
 				attractiveness = phenomenonInstance.getPhenomenonType().getAttractiveness();
 			}
-			else if (p.getDistance() < distance  && p.getPosition().x >= 0){
+			else if (p.getDistance() < distance  && p.getClock() == 0){
 				phenomenonInstance = p;
 				distance = phenomenonInstance.getDistance();
 				attractiveness = phenomenonInstance.getPhenomenonType().getAttractiveness();

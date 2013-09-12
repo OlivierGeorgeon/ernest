@@ -330,11 +330,13 @@ public class EnactionImpl implements Enaction
 		if (actInstances.size() > 0){
 			this.salientActInstance  = actInstances.get(0);
 			
-			if (focusPhenomenonInstance != null)
+			if (focusPhenomenonInstance != null){
+				Point3f anticipatedPhenomenonInstancePosition = new Point3f(focusPhenomenonInstance.getPosition());
+				transform.transform(anticipatedPhenomenonInstancePosition);
 				for (ActInstance actInstance : actInstances)
-					if (actInstance.getPosition().epsilonEquals(focusPhenomenonInstance.getPosition(), .1f))
+					if (actInstance.getPosition().epsilonEquals(anticipatedPhenomenonInstancePosition, .1f))
 						this.salientActInstance = actInstance;
-				
+			}
 			for (ActInstance actInstance : actInstances)
 				if (actInstance.getModality() == ActInstance.MODALITY_CONSUME)
 					this.salientActInstance = actInstance;
