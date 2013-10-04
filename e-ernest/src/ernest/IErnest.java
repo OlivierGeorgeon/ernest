@@ -46,7 +46,7 @@ public interface IErnest
 	 */
 	public String step(IEffect effect);
 	
-	public String step(List<ActInstance> actInstances, Transform3D transform);
+	public Primitive step(List<ActInstance> actInstances, Transform3D transform);
 	
 	/**
 	 * @param i x coordinate (0 = left, 2 = right)

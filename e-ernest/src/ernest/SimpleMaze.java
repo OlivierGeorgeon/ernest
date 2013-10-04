@@ -1,5 +1,12 @@
 package ernest;
 
+import javax.vecmath.Point3f;
+
+import eca.ActInstance;
+import eca.ActInstanceImpl;
+import eca.Primitive;
+import eca.PrimitiveImpl;
+
 /**
  * This class implements the Small Loop Environment
  *  
@@ -66,6 +73,12 @@ public class SimpleMaze implements IEnvironment
 	 * @param s The string code that represents the primitive schema to enact.
 	 * @return The boolean feedback resulting from the schema enaction.
 	 */
+	public ActInstance enact(Primitive intendedPrimitive){
+		IEffect effect = enact(intendedPrimitive.getLabel());
+		Primitive enactedPrimitive = PrimitiveImpl.createOrGet(intendedPrimitive.getLabel().substring(0,1) + effect.getLabel(), 0);
+		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, new Point3f());
+		return enactedActInstance;
+	}
 
 	public IEffect enact(String intendedInteraction) 
 	{
@@ -158,7 +171,7 @@ public class SimpleMaze implements IEnvironment
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 
-		boolean status = false;
+		//boolean status = false;
 
 		if ((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ' ))
 				{m_y--; effect.setLabel("t"); effect.setColor(0xFFFFFF);}
@@ -172,8 +185,8 @@ public class SimpleMaze implements IEnvironment
 		if ((m_o == ORIENTATION_LEFT) && ( m_x > 0 ) && (m_board[m_y][m_x - 1] == ' ' ))
 				{m_x--; effect.setLabel("t"); effect.setColor(0xFFFFFF);}
 
-		if (!status)
-			System.out.println("Ouch");
+		//if (!status)
+		//	System.out.println("Ouch");
 
 		return effect;
 	}
