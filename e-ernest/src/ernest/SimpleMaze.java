@@ -247,4 +247,5 @@ public class SimpleMaze implements IEnvironment
 
 		return effect;
 	}
+
 }
