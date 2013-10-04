@@ -18,4 +18,5 @@ public interface IEnvironment
 	public IEffect enact(String s);
 	
 	public ActInstance enact(Primitive primitive);
+	
 }

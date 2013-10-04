@@ -85,6 +85,7 @@ public class Main
 		{
 			////////// Insert a breakpoint below to easily follow Ernest in Eclipse debugger. ////// 
 			System.out.println("Step #" + iCycle++);
+			sleep(100);
 			//////////////////////////////////////////////////////////////////////////////////////////
 			
 			//intendedInteracton = ernest.step(effect);
@@ -104,5 +105,16 @@ public class Main
 		}
 
 	}
+	
+	private static void sleep(int t)
+	{
+		try
+		{ 
+			Thread.currentThread().sleep(t);
+		}
+		catch(InterruptedException ie)
+		{}
+	}
+
 
 }

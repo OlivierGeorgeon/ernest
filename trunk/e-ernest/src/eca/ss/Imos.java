@@ -118,7 +118,7 @@ public class Imos implements IImos
 		// if we are not on startup
 		if (enactedTopAct != null)
 		{
-			// The displacement attached to the to enacted interaction
+			// The displacement attached to the enacted interaction
 			Displacement displacement = DisplacementImpl.createOrGet(enaction.getInitialArea(), enaction.getEnactedPrimitiveAct().getArea());
 			enactedTopAct.getPrimitive().incDisplacementCounter(displacement);
 			enaction.setDisplacement(displacement);
