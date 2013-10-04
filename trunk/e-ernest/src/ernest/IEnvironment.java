@@ -1,5 +1,8 @@
 package ernest;
 
+import eca.ActInstance;
+import eca.Primitive;
+
 /**
  * Interface for an Environment suitable to Ernest.
  * @author mcohen
@@ -13,4 +16,6 @@ public interface IEnvironment
 	 * @return The effect that results from the enaction of the primitive schema in the environment.
 	 */
 	public IEffect enact(String s);
+	
+	public ActInstance enact(Primitive primitive);
 }

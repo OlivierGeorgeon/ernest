@@ -1,5 +1,12 @@
 package ernest;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.media.j3d.Transform3D;
+
+import eca.ActInstance;
+import eca.Primitive;
 import tracing.ITracer;
 import tracing.Tracer;
 import tracing.XMLStreamTracer;
@@ -28,7 +35,8 @@ public class Main
 		ITracer tracer = null; 
 		
 		///////////// Uncomment this line to generate traces ///////////////////////////
-        //tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+	    tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
+        // tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
 		// tracer = new Tracer(null);
         ////////////////////////////////////////////////////////////////////////////////
 		
@@ -69,8 +77,9 @@ public class Main
 		// Run in an infinite loop
 		
 		int iCycle = 1;
-		String intendedInteracton ;
-		IEffect effect = new Effect();
+		Primitive intendedInteracton ;
+		//IEffect effect = new Effect();
+		ActInstance enactedActInstance = null;
 		
 		while (true)
 		{
@@ -78,11 +87,18 @@ public class Main
 			System.out.println("Step #" + iCycle++);
 			//////////////////////////////////////////////////////////////////////////////////////////
 			
-			intendedInteracton = ernest.step(effect);
-			effect = environment.enact(intendedInteracton);
+			//intendedInteracton = ernest.step(effect);
+			List<ActInstance> actInstances = new ArrayList<ActInstance>(1);
+			if (enactedActInstance != null)
+				actInstances.add(enactedActInstance);
+			
+			intendedInteracton = ernest.step(actInstances, new Transform3D());
+			//effect = environment.enact(intendedInteracton);
+			enactedActInstance = environment.enact(intendedInteracton);
 						
-			effect.setEnactedInteractionLabel(intendedInteracton.substring(0, 1) + effect.getLabel());
-			System.out.println("Enacted " + effect.getEnactedInteractionLabel());
+			//effect.setEnactedInteractionLabel(intendedInteracton.substring(0, 1) + effect.getLabel());
+			//System.out.println("Enacted " + effect.getEnactedInteractionLabel());
+			System.out.println("Enacted " + enactedActInstance.getAct().getLabel());
 			
 			//tracer.close(); // Needed with the XMLTracer to save the xml file on each interaction cycle.
 		}

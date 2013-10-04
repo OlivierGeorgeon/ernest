@@ -116,7 +116,7 @@ public class Ernest implements IErnest
 		return m_enaction.getIntendedPrimitiveAct().getLabel();		
 	}
 	
-	public String step(List<ActInstance> actInstances, Transform3D transform){
+	public Primitive step(List<ActInstance> actInstances, Transform3D transform){
 		
 		// Trace a new interaction cycle.
 		if (m_tracer != null){
@@ -150,7 +150,7 @@ public class Ernest implements IErnest
 		
 		m_decider.carry(m_enaction);
 		
-		return m_enaction.getIntendedPrimitiveAct().getLabel();		
+		return m_enaction.getIntendedPrimitiveAct().getPrimitive();		
 		
 	}
 	
