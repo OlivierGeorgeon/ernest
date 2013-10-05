@@ -91,7 +91,7 @@ public final class ErnestUtils
 		return s;
 	}
 	
-	private static String formatHex(int i)
+	public static String formatHex(int i)
 	{
 		if (i == 0)
 			return "00";
