@@ -3,6 +3,7 @@ package eca.construct;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.media.j3d.Transform3D;
@@ -21,7 +22,7 @@ import eca.ss.enaction.Act;
  */
 public class ActionImpl implements Action {
 
-	private static Map<String , Action> ACTIONS = new HashMap<String , Action>() ;
+	private static Map<String , Action> ACTIONS = new LinkedHashMap<String , Action>() ;
 	private static int index = 0;
 
 	private String label;
