@@ -19,7 +19,7 @@ public class Main
 	{
 		// Create the environment.
 		
-		IEnvironment environment = new Roesch3(); 
+		IEnvironment environment = new Roesch2(); 
 		
 		// Create an Ernest agent.
 		
