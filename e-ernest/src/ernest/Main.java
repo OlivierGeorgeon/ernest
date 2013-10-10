@@ -26,7 +26,7 @@ public class Main
 	{
 		// Create the environment.
 		
-		IEnvironment environment = new SimpleMaze(); 
+		IEnvironment environment = new Roesch2(); 
 		
 		// Create an Ernest agent.
 		
@@ -34,7 +34,8 @@ public class Main
 		ITracer tracer = null; 
 		
 		///////////// Uncomment this line to generate traces ///////////////////////////
-	    tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
+	    //tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
+	    tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/","l-kHWqeLDlSZT-TdBrLSoXVeBRCRsw");
         // tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
 		// tracer = new Tracer(null);
         ////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +88,7 @@ public class Main
 						
 			//effect.setEnactedInteractionLabel(intendedInteracton.substring(0, 1) + effect.getLabel());
 			//System.out.println("Enacted " + effect.getEnactedInteractionLabel());
-			System.out.println("Enacted " + enactedActInstance.getAct().getLabel());
+			//System.out.println("Enacted " + enactedActInstance.getAct().getLabel());
 			
 			//tracer.close(); // Needed with the XMLTracer to save the xml file on each interaction cycle.
 		}

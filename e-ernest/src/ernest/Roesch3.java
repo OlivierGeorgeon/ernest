@@ -1,7 +1,13 @@
 package ernest;
 
+import javax.vecmath.Point3f;
+
 import eca.ActInstance;
+import eca.ActInstanceImpl;
 import eca.Primitive;
+import eca.PrimitiveImpl;
+import eca.construct.Aspect;
+import eca.construct.AspectImpl;
 import tracing.ITracer;
 import utils.ErnestUtils;
 
@@ -159,8 +165,12 @@ public class Roesch3 implements IEnvironment
 	}
 
 	public ActInstance enact(Primitive primitive) {
-		// TODO Auto-generated method stub
-		return null;
+		IEffect effect = enact(primitive.getLabel().substring(0,1));
+		Primitive enactedPrimitive = PrimitiveImpl.createOrGet(primitive.getLabel().substring(0,1) + effect.getLabel(), 0);
+		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, new Point3f());
+		Aspect aspect = AspectImpl.createOrGet(effect.getColor());
+		enactedActInstance.setAspect(aspect);
+		return enactedActInstance;
 	}
 
 }

@@ -1,7 +1,13 @@
 package ernest;
 
+import javax.vecmath.Point3f;
+
 import eca.ActInstance;
+import eca.ActInstanceImpl;
 import eca.Primitive;
+import eca.PrimitiveImpl;
+import eca.construct.Aspect;
+import eca.construct.AspectImpl;
 import tracing.ITracer;
 import utils.ErnestUtils;
 
@@ -121,12 +127,12 @@ public class Roesch2 implements IEnvironment
 	private void printEnv(){
 		// print the board
 		for (int i = 0; i < WIDTH; i++)
-			System.out.print(ErnestUtils.formatHex(board[i]) + " ");
+			System.out.print(board[i] + " ");
 		System.out.println();
 
 		// print the agent
 		for (int i = 0; i < m_x; i++)
-			System.out.print("   ");
+			System.out.print("  ");
 		System.out.print(">");
 
 		System.out.println();
@@ -145,12 +151,12 @@ public class Roesch2 implements IEnvironment
 		Object e = tracer.addEventElement("environment");
 		String stringBoard = "";
 		for (int i = 0; i < WIDTH; i++)
-			stringBoard += ErnestUtils.formatHex(this.board[i]) + " ";
+			stringBoard += this.board[i] + " ";
 		tracer.addSubelement(e,"board", stringBoard);
 
 		String stringAgent = "";
 		for (int i = 0; i < m_x; i++)
-			stringAgent +="--- ";
+			stringAgent +=".. ";
 		stringAgent += ">";
 		tracer.addSubelement(e,"agent", stringAgent);
 		tracer.addSubelement(e,"position", m_x + "");
@@ -159,8 +165,12 @@ public class Roesch2 implements IEnvironment
 	}
 
 	public ActInstance enact(Primitive primitive) {
-		// TODO Auto-generated method stub
-		return null;
+		IEffect effect = enact(primitive.getLabel().substring(0,1));
+		Primitive enactedPrimitive = PrimitiveImpl.createOrGet(primitive.getLabel().substring(0,1) + effect.getLabel(), 0);
+		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, new Point3f());
+		Aspect aspect = AspectImpl.createOrGet(effect.getColor());
+		enactedActInstance.setAspect(aspect);
+		return enactedActInstance;
 	}
 
 }

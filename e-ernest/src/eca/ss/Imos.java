@@ -273,7 +273,7 @@ public class Imos implements IImos
 			if (!activatedAct.isPrimitive())
 			{
 				// If this act's pre-act belongs to the context then this act is activated 
-				if (enaction.getFinalActivationContext().contains(activatedAct.getPreAct()))
+				if (enaction.getFinalActivationContext().contains(activatedAct.getPreAct())){
 				//for (Act contextAct : enaction.getFinalActivationContext())
 				//{
 					//if (activatedAct.getPreAct().equals(contextAct))
@@ -283,6 +283,7 @@ public class Imos implements IImos
 							m_tracer.addSubelement(activationElmt, "ActivatedAct", activatedAct + " intention " + activatedAct.getPostAct());
 					//}
 				//}
+				}
 			}
 		}
 		if (this.m_tracer != null){
@@ -327,7 +328,8 @@ public class Imos implements IImos
 				// If the intended act has not passed the threshold  
 				// and if the intention's intention is positive (this is some form of positive anticipation)
 				// Then propagate to the intentions's intention
-				if(proposedAct.getEnactionValue() > 0)
+				//if(proposedAct.getEnactionValue() > 0)
+				if(proposedAct.getPostAct().getEnactionValue() > 0)
 				{
 					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w);
 					proposition.setWeightedValue(proposedAct.getValue() * w);
