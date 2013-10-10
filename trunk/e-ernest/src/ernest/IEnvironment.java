@@ -1,5 +1,6 @@
 package ernest;
 
+import tracing.ITracer;
 import eca.ActInstance;
 import eca.Primitive;
 
@@ -19,4 +20,7 @@ public interface IEnvironment
 	
 	public ActInstance enact(Primitive primitive);
 	
+	public void initErnest(IErnest ernest);
+	
+	public void trace(ITracer tracer);
 }

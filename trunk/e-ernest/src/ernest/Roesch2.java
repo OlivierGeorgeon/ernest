@@ -102,29 +102,12 @@ public class Roesch2 implements IEnvironment
 		return effect;		
 	}
 	
-	/**
-	 * Inverts the agent's direction
-	 * @return true 
-	 */
-//	private IEffect uturn(){
-//		IEffect effect = new Effect();
-//		effect.setLabel("t");
-//		if (m_o == ORIENTATION_RIGHT){
-//			m_o = ORIENTATION_LEFT;
-//		}else{
-//			m_o = ORIENTATION_RIGHT;
-//		}
-//		return effect;
-//	}
-	
 	public IEffect enact(String s) 
 	{
 		IEffect effect = null;
 		
 		if (s.equals(">"))
 			effect = step();
-//		else if (s.equals("u"))
-//			effect = uturn();
 		else if (s.equals("-"))
 			effect = test_up();
 		else if (s.equals("i"))
@@ -150,13 +133,12 @@ public class Roesch2 implements IEnvironment
 	}
 
 	public void initErnest(IErnest ernest) {
-//		ernest.addInteraction(">", "t", 4); // step
-//		ernest.addInteraction(">", "f", -10); // step
-//		ernest.addInteraction("-", "t", -4); // Test up
-//		ernest.addInteraction("-", "f", -4); // Test up
-//		//ernest.addInteraction("u", "t", -3); // UTurn
-//		ernest.addInteraction("i", "t", 4); // invert
-//		ernest.addInteraction("i", "f", -10); // invert
+		ernest.addInteraction(">t", 4);   // step up
+		ernest.addInteraction(">f", -10); // step down
+		ernest.addInteraction("-t", -4);  // feel up
+		ernest.addInteraction("-f", -4);  // feel down
+		ernest.addInteraction("it", 4);   // toggle
+		ernest.addInteraction("if", -10); // not toggle
 	}
 
 	public void trace(ITracer tracer) {

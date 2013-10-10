@@ -8,7 +8,6 @@ import javax.media.j3d.Transform3D;
 import eca.ActInstance;
 import eca.Primitive;
 import tracing.ITracer;
-import tracing.Tracer;
 import tracing.XMLStreamTracer;
 
 /**
@@ -47,33 +46,21 @@ public class Main
 
 		// Set Ernest's primitive interactions and motivations.
 		
-		ernest.addInteraction("-t", -2); // Touch wall
-		ernest.addInteraction("-f", -1); // Touch empty
-		ernest.addInteraction("\\t", -2);// Touch right wall
-		ernest.addInteraction("\\f", -1);// Touch right empty
-		ernest.addInteraction("/t", -2); // Touch left wall
-		ernest.addInteraction("/f", -1); // Touch left empty
-		ernest.addInteraction(">t",  5); // Move
-		ernest.addInteraction(">f", -10);// Bump		
-		ernest.addInteraction("vt", -3); // Right toward empty
-		ernest.addInteraction("vf", -3); // Right toward wall		
-		ernest.addInteraction("^t", -3); // Left toward empty
-		ernest.addInteraction("^f", -3); // Left toward wall		
-		
-//		Settings for a nice demo in the Simple Maze Environment
-//		sms.addInteraction(">", "t",  5); // Move
-//		sms.addInteraction(">", "f", -8); // Bump		
-//		sms.addInteraction("^", "t", -2); // Left toward empty
-//		sms.addInteraction("^", "f", -5); // Left toward wall		
-//		sms.addInteraction("v", "t", -2); // Right toward empty
-//		sms.addInteraction("v", "f", -5); // Right toward wall		
-//		sms.addInteraction("-", "t", -1); // Touch wall
-//		sms.addInteraction("-", "f", -1); // Touch empty
-//		sms.addInteraction("\\", "t", -1); // Touch right wall
-//		sms.addInteraction("\\", "f", -1); // Touch right empty
-//		sms.addInteraction("/", "t", -1); // Touch left wall
-//		sms.addInteraction("/", "f", -1); // Touch left empty
+		environment.initErnest(ernest);
 
+//		ernest.addInteraction("-t", -2); // Touch wall
+//		ernest.addInteraction("-f", -1); // Touch empty
+//		ernest.addInteraction("\\t", -2);// Touch right wall
+//		ernest.addInteraction("\\f", -1);// Touch right empty
+//		ernest.addInteraction("/t", -2); // Touch left wall
+//		ernest.addInteraction("/f", -1); // Touch left empty
+//		ernest.addInteraction(">t",  5); // Move
+//		ernest.addInteraction(">f", -10);// Bump		
+//		ernest.addInteraction("vt", -3); // Right toward empty
+//		ernest.addInteraction("vf", -3); // Right toward wall		
+//		ernest.addInteraction("^t", -3); // Left toward empty
+//		ernest.addInteraction("^f", -3); // Left toward wall		
+		
 		// Run in an infinite loop
 		
 		int iCycle = 1;
@@ -95,6 +82,7 @@ public class Main
 			
 			intendedInteracton = ernest.step(actInstances, new Transform3D());
 			//effect = environment.enact(intendedInteracton);
+			environment.trace(tracer);
 			enactedActInstance = environment.enact(intendedInteracton);
 						
 			//effect.setEnactedInteractionLabel(intendedInteracton.substring(0, 1) + effect.getLabel());
