@@ -95,7 +95,7 @@ public class ActionPropositionImpl implements ActionProposition {
 
 	public String toString(){
 		String proposition = "action " + this.getAction().getLabel();
-		proposition += " weight " + this.getSSWeight();
+		proposition += " weight " + this.getSSWeight() / 10;
 		proposition += " spas_act " + this.getAnticipatedAct().getLabel();
 		proposition += " spas_value " + this.getAnticipatedAct().getValue();
 		if (this.getSSAnticipatedAct() != null){
@@ -104,4 +104,5 @@ public class ActionPropositionImpl implements ActionProposition {
 		}				
 		return proposition;
 	}
+
 }

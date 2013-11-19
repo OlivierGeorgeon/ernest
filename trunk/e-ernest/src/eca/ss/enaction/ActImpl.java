@@ -2,6 +2,7 @@ package eca.ss.enaction;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import eca.Primitive;
 import eca.PrimitiveImpl;
@@ -17,7 +18,7 @@ public class ActImpl implements Act
 {
 
 	/** The list of all acts */
-	private static Map<String , Act> ACTS = new HashMap<String , Act>() ;
+	private static Map<String , Act> ACTS = new LinkedHashMap<String , Act>() ;
 	/** Default weight of primitive interactions */
 	private static int PRIMITIVE_WEIGHT = 100;
 	

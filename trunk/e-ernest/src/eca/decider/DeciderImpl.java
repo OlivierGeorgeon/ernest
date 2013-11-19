@@ -71,9 +71,10 @@ public class DeciderImpl implements Decider
 
 		ActionProposition selecteProposition = actionPropositions.get(0);
 		Action	selectedAction = selecteProposition.getAction();
-		Act intendedAct = selecteProposition.getSSAnticipatedAct();	
-		if (intendedAct == null)
-			intendedAct = selecteProposition.getAnticipatedAct();		
+		Act intendedAct = selectedAction.getSucceedingActs().get(0);
+		//Act intendedAct = selecteProposition.getSSAnticipatedAct();	
+		//if (intendedAct == null)
+		//	intendedAct = selecteProposition.getAnticipatedAct();		
 
 		// Anticipate the consequences
 		Displacement intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(preArea);
@@ -138,29 +139,30 @@ public class DeciderImpl implements Decider
 		
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		
-		// If a proposed act corresponds to no action then create a new one for it.
+		// If a proposed act corresponds to no action then create a new action.
 		for (ActProposition actProposition : actPropositions){
 			boolean hasAction = false;
 			for (Action action : ActionImpl.getACTIONS())
-				if (action.contains(actProposition.getAct()))
+				if (action.containsAct(actProposition.getAct()))
 					hasAction = true;
 			if (!hasAction){
 				Action a = ActionImpl.createOrGet("[a" + actProposition.getAct().getLabel() + "]");
-				a.addAct(actProposition.getAct());
+				a.addSucceedingAct(actProposition.getAct());
+				if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
 			}			
 		}
 		
-		// Generate a proposition for each action
+		// Generate an action proposition for each action
 		for (Action action : ActionImpl.getACTIONS()){
 			// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
-			Act anticipatedAct = action.predictAct(preAppearance);
+			Act anticipatedAct = action.predictAct(preAppearance); // proposition based on spatial representation
+			
 			ActionProposition actionProposition = new ActionPropositionImpl(action, 0);
 			actionProposition.setAnticipatedAct(anticipatedAct);
 
 			// Add weight to this action according that the actPropositions that propose an act whose primitive belongs to this action
 			for (ActProposition actProposition : actPropositions){
-				//if (action.contains(actProposition.getAct().getPrimitive())){
-				if (action.contains(actProposition.getAct())){
+				if (action.containsAct(actProposition.getAct())){
 					if (actionProposition.getSSActWeight() <= actProposition.getWeight()){
 						actionProposition.setSSAnticipatedAct(actProposition.getAct());
 						actionProposition.setSSActWeight(actProposition.getWeight());
@@ -168,7 +170,7 @@ public class DeciderImpl implements Decider
 					actionProposition.addSSWeight(actProposition.getWeightedValue());
 				}
 			}
-			actionPropositions.add(actionProposition);
+			actionPropositions.add(actionProposition);			
 		}
 		
 		// trace action propositions 
