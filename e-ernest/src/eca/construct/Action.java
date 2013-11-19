@@ -25,21 +25,23 @@ public interface Action
 	public String getLabel();
 	
 	/**
-	 * @param primitive The primitive interaction to add to this action.
+	 * @param act The act to add to this action.
 	 */
-	public void addAct(Act primitive);
+	public void addSucceedingAct(Act act);
 
 	/**
 	 * @return The list of primitive interactions that perform this action.
 	 */
-	public List<Act> getActs();
+	public List<Act> getSucceedingActs();
 	
 	/**
 	 * @param act The primitive to check 
 	 * @return true if this primitive belongs to this action
 	 */
 	public boolean contains(Act act);
-	
+
+	public boolean containsAct(Act act);
+
 	/**
 	 * Predicts the act that will likely result from performing this action on this appearance based on previous experiments
 	 * if no previous experiment then return the act made of the first primitive of this action in area O.
@@ -48,6 +50,9 @@ public interface Action
 	 */
 	public Act predictAct(Appearance appearance);
 	
+	public void addFailingAct(Act act);
+	
+	public List<Act> getFailingActs();
 	/**
 	 * @param appearance The appearance on which the action is performed.
 	 * @return The Displacement that will likely result from performing this action on this appearance.

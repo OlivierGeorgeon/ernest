@@ -129,15 +129,19 @@ public class Imos implements IImos
 				m_internalState= "!";
 				enaction.setSuccessful(false);	
 				
-				//if (!enaction.getIntendedAction().contains(enactedTopInteraction.getPrimitive())){
-				if (!enaction.getIntendedAction().contains(enactedTopAct)){
-					//System.out.println("Action " + enactedTopInteraction.getPrimitive().getAction().getLabel() + " merged to " + intendedTopInteraction.getPrimitive().getAction().getLabel());
+				if (intendedTopAct.isPrimitive()){
+					ActionImpl.merge(enactedTopAct, enaction.getIntendedAction());
+					if (!enaction.getIntendedAction().contains(enactedTopAct)){					
+						if (m_tracer != null){
+							m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopAct);
+						}
+					}
+				}else{
+					enaction.getIntendedAction().addFailingAct(enactedTopAct);
 					if (m_tracer != null){
-						m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopAct);
+						m_tracer.addEventElement("action_failed", "Intended_action: " + enaction.getIntendedAction().getLabel() + " enacted_act: " + enactedTopAct);
 					}
 				}
-				
-				ActionImpl.merge(enactedTopAct, enaction.getIntendedAction());
 				//enaction.getEnactedPrimitiveAct().setDisplacement(enaction.getDisplacement());
 			}
 			
@@ -338,8 +342,8 @@ public class Imos implements IImos
 			else {
 				// propose acts that passed the threshold represent a new Action
 				//proposedAct.initPrimitive(); // create the new interaction and action if not yet created
-				Action action = ActionImpl.createOrGet("[a" + proposedAct.getLabel() + "]");
-				action.addAct(proposedAct);
+				//Action action = ActionImpl.createOrGet("[a" + proposedAct.getLabel() + "]");
+				//action.addSucceedingAct(proposedAct);
 
 				proposition = new ActPropositionImpl(proposedAct, w);
 				proposition.setWeightedValue(proposedAct.getValue() * w);				

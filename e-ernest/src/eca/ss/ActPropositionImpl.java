@@ -77,7 +77,7 @@ public class ActPropositionImpl implements ActProposition
 	}
 	
 	public String toString(){
-		return "act: " + this.act.getLabel() + " weighted_value: " + this.weightedValue + " proposing_weight: " + this.weight;
+		return "act: " + this.act.getLabel() + " weighted_value: " + this.weightedValue / 10 + " proposing_weight: " + this.weight;
 	}
 
 }

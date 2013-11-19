@@ -23,10 +23,11 @@ import eca.ss.enaction.Act;
 public class ActionImpl implements Action {
 
 	private static Map<String , Action> ACTIONS = new LinkedHashMap<String , Action>() ;
-	private static int index = 0;
+	//private static int index = 0;
 
 	private String label;
-	private List<Act> acts = new ArrayList<Act>();
+	private List<Act> succeedingActs = new ArrayList<Act>();
+	private List<Act> failingActs = new ArrayList<Act>();
 
 	/**
 	 * Create or get an action from its label.
@@ -43,12 +44,12 @@ public class ActionImpl implements Action {
 	 * Creates a new action using an incremental label
 	 * @return The new created action
 	 */
-	public static Action createNew(){
-		index++;
-		String key = index + "";
-		ACTIONS.put(key, new ActionImpl(key));			
-		return ACTIONS.get(key);
-	}
+//	public static Action createNew(){
+//		index++;
+//		String key = index + "";
+//		ACTIONS.put(key, new ActionImpl(key));			
+//		return ACTIONS.get(key);
+//	}
 	
 	/**
 	 * @return The collection of all actions known by the agent.
@@ -72,12 +73,11 @@ public class ActionImpl implements Action {
 			}
 			// TODO more complex merge of actions.
 			if (action != null){
-				for (Act p : action.getActs())
-					intendedAction.addAct(p);
+				for (Act p : action.getSucceedingActs())
+					intendedAction.addSucceedingAct(p);
 				ACTIONS.remove(action.getLabel());
 			}
-			intendedAction.addAct(act);
-
+			intendedAction.addSucceedingAct(act);
 		}
 	}
 	
@@ -89,17 +89,30 @@ public class ActionImpl implements Action {
 		return this.label;
 	}
 	
-	public void addAct(Act act){
-		if (!this.acts.contains(act))
-				this.acts.add(act);
+	public void addSucceedingAct(Act act){
+		if (!this.succeedingActs.contains(act))
+				this.succeedingActs.add(act);
 	}
 	
-	public List<Act> getActs(){
-		return this.acts;
+	public List<Act> getSucceedingActs(){
+		return this.succeedingActs;
+	}
+	
+	public void addFailingAct(Act act){
+		if (!this.failingActs.contains(act))
+				this.failingActs.add(act);
+	}
+	
+	public List<Act> getFailingActs(){
+		return this.failingActs;
 	}
 	
 	public boolean contains(Act act){
-		return this.acts.contains(act);
+		return this.succeedingActs.contains(act);
+	}
+
+	public boolean containsAct(Act act){
+		return this.succeedingActs.contains(act) || this.failingActs.contains(act);
 	}
 
 	
@@ -125,10 +138,10 @@ public class ActionImpl implements Action {
 	}
 
 	public Act predictAct(Appearance appearance) {
-		Act predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
+		Act predictAct = null; 
+		predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
 		if (predictAct == null)
-			//predictAct = ActImpl.createOrGetPrimitiveAct(primitives.get(0), AreaImpl.createOrGet(new Point3f()));
-			predictAct = acts.get(0);
+			predictAct = succeedingActs.get(0);
 		return predictAct;
 	}
 
@@ -148,7 +161,7 @@ public class ActionImpl implements Action {
 	
 	public String toString(){
 		String label = getLabel();
-		for (Act primitive : this.acts)
+		for (Act primitive : this.succeedingActs)
 			label += " " + primitive.getLabel();
 		return label;
 	}
