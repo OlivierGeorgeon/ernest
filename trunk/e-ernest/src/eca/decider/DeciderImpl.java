@@ -160,7 +160,8 @@ public class DeciderImpl implements Decider
 			ActionProposition actionProposition = new ActionPropositionImpl(action, 0);
 			actionProposition.setAnticipatedAct(anticipatedAct);
 
-			// Add weight to this action according that the actPropositions that propose an act whose primitive belongs to this action
+			boolean isProposed = false;
+			// Add weight to this action according to the actPropositions that propose an act whose primitive belongs to this action
 			for (ActProposition actProposition : actPropositions){
 				if (action.containsAct(actProposition.getAct())){
 					if (actionProposition.getSSActWeight() <= actProposition.getWeight()){
@@ -168,9 +169,11 @@ public class DeciderImpl implements Decider
 						actionProposition.setSSActWeight(actProposition.getWeight());
 					}
 					actionProposition.addSSWeight(actProposition.getWeightedValue());
+					isProposed = true;
 				}
 			}
-			actionPropositions.add(actionProposition);			
+			if (action.getSucceedingActs().get(0).isPrimitive() || isProposed)	
+				actionPropositions.add(actionProposition);			
 		}
 		
 		// trace action propositions 
