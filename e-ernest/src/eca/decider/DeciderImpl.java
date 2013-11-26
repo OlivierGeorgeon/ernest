@@ -16,6 +16,7 @@ import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
 import eca.spas.Spas;
 import eca.ss.ActProposition;
+import eca.ss.ActPropositionImpl;
 import eca.ss.Appearance;
 import eca.ss.AppearanceImpl;
 import eca.ss.IImos;
@@ -29,6 +30,12 @@ import eca.ss.enaction.EnactionImpl;
  */
 public class DeciderImpl implements Decider 
 {
+	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
+	private int regularityThreshold = 6;
+	
+	/** The maximal length of acts. */
+	private int maxSchemaLength = 10;
+
 	private IImos imos;
 	private Spas spas;
 	private ITracer tracer;
@@ -44,6 +51,16 @@ public class DeciderImpl implements Decider
 
 	public void setTracer(ITracer tracer){
 		this.tracer = tracer;
+	}
+	
+	public void setRegularityThreshold(int regularityThreshold)
+	{
+		this.regularityThreshold = regularityThreshold;
+	}
+	
+	public void setMaxSchemaLength(int maxSchemaLength)
+	{
+		this.maxSchemaLength = maxSchemaLength;
 	}
 	
 	public Enaction decide(Enaction enaction) 
@@ -138,19 +155,34 @@ public class DeciderImpl implements Decider
 	private List<ActionProposition> proposeActions(List<ActProposition> actPropositions, Appearance preAppearance){
 		
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
+		List<ActProposition> forwardedActPropositions = new ArrayList<ActProposition>();
 		
 		// If a proposed act corresponds to no action then create a new action.
 		for (ActProposition actProposition : actPropositions){
-			boolean hasAction = false;
-			for (Action action : ActionImpl.getACTIONS())
-				if (action.containsAct(actProposition.getAct()))
-					hasAction = true;
-			if (!hasAction){
-				Action a = ActionImpl.createOrGet("[a" + actProposition.getAct().getLabel() + "]");
-				a.addSucceedingAct(actProposition.getAct());
-				if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
-			}			
+			if (actProposition.getAct().getWeight() > this.regularityThreshold){
+				boolean hasAction = false;
+				for (Action action : ActionImpl.getACTIONS())
+					if (action.containsAct(actProposition.getAct()))
+						hasAction = true;
+				if (!hasAction){
+					Action a = ActionImpl.createOrGet("[a" + actProposition.getAct().getLabel() + "]");
+					a.addSucceedingAct(actProposition.getAct());
+					if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
+				}			
+			}
+			else{
+				// add a proposition for the context sub act
+				if(actProposition.getAct().getPostAct().getEnactionValue() > 0)
+				{
+					ActProposition proposition = new ActPropositionImpl(actProposition.getAct().getPreAct(), actProposition.getWeight());
+					proposition.setWeightedValue(actProposition.getAct().getValue() * actProposition.getWeight());
+					forwardedActPropositions.add(proposition);
+				}
+			}
 		}
+		
+		for (ActProposition proposition : forwardedActPropositions)
+			actPropositions.add(proposition);
 		
 		// Generate an action proposition for each action
 		for (Action action : ActionImpl.getACTIONS()){
