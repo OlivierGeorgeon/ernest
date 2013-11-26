@@ -320,34 +320,34 @@ public class Imos implements IImos
 	{
 		ActProposition proposition = null;
 		Act proposedAct = activatedAct.getPostAct();
-		int w = activatedAct.getWeight() ;//* proposedAct.getEnactionValue();
+		int w = activatedAct.getWeight() ;
 		
 		if (proposedAct.getLength() <= this.maxSchemaLength){
-			if ( proposedAct.isPrimitive()) // so far only propose primitive acts.
+			//if ( proposedAct.isPrimitive()) // so far only propose primitive acts.
 			{
 				proposition = new ActPropositionImpl(proposedAct, w);
 				proposition.setWeightedValue(proposedAct.getValue() * w);
 			}
-			else if (proposedAct.getWeight() <= this.regularityThreshold ){ 
-				// If the intended act has not passed the threshold  
-				// and if the intention's intention is positive (this is some form of positive anticipation)
-				// Then propagate to the intentions's intention
-				//if(proposedAct.getEnactionValue() > 0)
-				if(proposedAct.getPostAct().getEnactionValue() > 0)
-				{
-					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w);
-					proposition.setWeightedValue(proposedAct.getValue() * w);
-				}
-			}
-			else {
-				// propose acts that passed the threshold represent a new Action
-				//proposedAct.initPrimitive(); // create the new interaction and action if not yet created
-				//Action action = ActionImpl.createOrGet("[a" + proposedAct.getLabel() + "]");
-				//action.addSucceedingAct(proposedAct);
-
-				proposition = new ActPropositionImpl(proposedAct, w);
-				proposition.setWeightedValue(proposedAct.getValue() * w);				
-			}
+//			else if (proposedAct.getWeight() <= this.regularityThreshold ){ 
+//				// If the intended act has not passed the threshold  
+//				// and if the intention's intention is positive (this is some form of positive anticipation)
+//				// Then propagate to the intentions's intention
+//				//if(proposedAct.getEnactionValue() > 0)
+//				if(proposedAct.getPostAct().getEnactionValue() > 0)
+//				{
+//					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w);
+//					proposition.setWeightedValue(proposedAct.getValue() * w);
+//				}
+//			}
+//			else {
+//				// propose acts that passed the threshold represent a new Action
+//				//proposedAct.initPrimitive(); // create the new interaction and action if not yet created
+//				//Action action = ActionImpl.createOrGet("[a" + proposedAct.getLabel() + "]");
+//				//action.addSucceedingAct(proposedAct);
+//
+//				proposition = new ActPropositionImpl(proposedAct, w);
+//				proposition.setWeightedValue(proposedAct.getValue() * w);				
+//			}
 		}
 		return proposition;
 	}

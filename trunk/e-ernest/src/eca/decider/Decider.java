@@ -18,6 +18,16 @@ public interface Decider
 	public void setTracer(ITracer tracer);
 
 	/**
+	 * @param regularityThreshold The regularity sensibility threshold.
+	 */
+	public void setRegularityThreshold(int regularityThreshold);
+	
+	/**
+	 * @param maxSchemaLength The maximum length of acts
+	 */
+	public void setMaxSchemaLength(int maxSchemaLength);
+
+	/**
 	 * @param enaction The current enaction.
 	 * @return The next enaction.
 	 */

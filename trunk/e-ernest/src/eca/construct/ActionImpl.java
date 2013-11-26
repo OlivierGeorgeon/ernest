@@ -163,6 +163,9 @@ public class ActionImpl implements Action {
 		String label = getLabel();
 		for (Act primitive : this.succeedingActs)
 			label += " " + primitive.getLabel();
+		label += " failing: ";
+		for (Act primitive : this.failingActs)
+			label += " " + primitive.getLabel();
 		return label;
 	}
 }
