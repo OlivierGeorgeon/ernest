@@ -29,7 +29,6 @@ public class ActionImpl implements Action {
 
 	private String label;
 	private List<Act> acts = new ArrayList<Act>();
-	//private List<Act> failingActs = new ArrayList<Act>();
 
 	/**
 	 * Create or get an action from its label.
@@ -117,24 +116,10 @@ public class ActionImpl implements Action {
 		return this.acts;
 	}
 	
-//	public void addFailingAct(Act act){
-//		//if (!this.failingActs.contains(act))
-//		//		this.failingActs.add(act);
-//	}
-	
-//	public List<Act> getFailingActs(){
-//		return this.failingActs;
-//	}
-	
 	public boolean contains(Act act){
 		return this.acts.contains(act);
 	}
 
-//	public boolean containsAct(Act act){
-//		return this.acts.contains(act);// || this.failingActs.contains(act);
-//	}
-
-	
 	/**
 	 * Actions are equal if they have the same label. 
 	 */
