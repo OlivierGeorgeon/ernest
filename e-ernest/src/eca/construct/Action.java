@@ -40,8 +40,6 @@ public interface Action
 	 */
 	public boolean contains(Act act);
 
-	//public boolean containsAct(Act act);
-
 	/**
 	 * Predicts the act that will likely result from performing this action on this appearance based on previous experiments
 	 * if no previous experiment then return the act made of the first primitive of this action in area O.
@@ -49,10 +47,6 @@ public interface Action
 	 * @return The Act that will likely result from performing this action on this appearance.
 	 */
 	public Act predictAct(Appearance appearance);
-	
-	//public void addFailingAct(Act act);
-	
-	//public List<Act> getFailingActs();
 	
 	/**
 	 * @param appearance The appearance on which the action is performed.

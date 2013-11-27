@@ -66,18 +66,20 @@ public class DeciderImpl implements Decider
 	public Enaction decide(Enaction enaction) 
 	{
 		System.out.println("New decision ================ ");
+		
+		Appearance preAppearance = AppearanceImpl.createOrGet("toto");
 
 		Enaction newEnaction = new EnactionImpl();	
 		
-		PhenomenonInstance focusPhenomenonInstance = this.spas.getFocusPhenomenonInstance();
+		//PhenomenonInstance focusPhenomenonInstance = this.spas.getFocusPhenomenonInstance();
 		
-		Area preArea = AreaImpl.createOrGet(new Point3f());
-		Appearance preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
+		//Area preArea = AreaImpl.createOrGet(new Point3f());
+		//preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
 		
-		if (focusPhenomenonInstance != null){
-			preArea = focusPhenomenonInstance.getArea();
-			preAppearance = AppearanceImpl.createOrGet(focusPhenomenonInstance.getPhenomenonType(), preArea);
-		}
+		//if (focusPhenomenonInstance != null){
+		//	preArea = focusPhenomenonInstance.getArea();
+		//	preAppearance = AppearanceImpl.createOrGet(focusPhenomenonInstance.getPhenomenonType(), preArea);
+		//}
 
 		// Choose the next action
 		
@@ -94,7 +96,7 @@ public class DeciderImpl implements Decider
 		//	intendedAct = selecteProposition.getAnticipatedAct();		
 
 		// Anticipate the consequences
-		Displacement intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(preArea);
+		//Displacement intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(preArea);
 		//Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
 		
 		// Trace the decision
@@ -104,8 +106,8 @@ public class DeciderImpl implements Decider
 			
 			Object apElmnt = this.tracer.addSubelement(decisionElmt, "selected_proposition");
 			this.tracer.addSubelement(apElmnt, "action", selecteProposition.getAction().getLabel());
-			if (focusPhenomenonInstance != null)
-				focusPhenomenonInstance.trace(this.tracer, apElmnt);
+			//if (focusPhenomenonInstance != null)
+			//	focusPhenomenonInstance.trace(this.tracer, apElmnt);
 			this.tracer.addSubelement(apElmnt, "weight", selecteProposition.getSSWeight() + "");
 			this.tracer.addSubelement(apElmnt, "spas_act", selecteProposition.getAnticipatedAct().getLabel());
 			this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");
@@ -118,9 +120,14 @@ public class DeciderImpl implements Decider
 			for (Action action : ActionImpl.getACTIONS())
 				this.tracer.addSubelement(actionElmt, "action", action.toString());
 			
-			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomenon_types");
-			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
-				phenomenonType.trace(tracer, phenomenonElmt);
+			Object appearanceElmt = this.tracer.addSubelement(decisionElmt, "appearances");
+			for (Appearance appearance : AppearanceImpl.getAppearances())
+				appearance.trace(tracer, appearanceElmt);
+
+			
+//			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomenon_types");
+//			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
+//				phenomenonType.trace(tracer, phenomenonElmt);
 			
 			//Object experimentElmt = this.tracer.addSubelement(decisionElmt, "experiments");
 			//for (Experiment a : ExperimentImpl.getExperiments())
@@ -129,8 +136,8 @@ public class DeciderImpl implements Decider
 			
 			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
 			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
-			if (intendedDisplacement != null)
-				this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
+			//if (intendedDisplacement != null)
+			//	this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
 			//this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
 		}		
 		System.out.println("Select:" + selectedAction.getLabel());
@@ -144,7 +151,7 @@ public class DeciderImpl implements Decider
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
-		newEnaction.setInitialArea(preArea);
+		//newEnaction.setInitialArea(preArea);
 		
 		return newEnaction;
 	}
