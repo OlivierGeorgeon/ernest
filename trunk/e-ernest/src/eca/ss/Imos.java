@@ -115,19 +115,21 @@ public class Imos implements IImos
 				m_internalState= "!";
 				enaction.setSuccessful(false);	
 				
-				if (intendedTopAct.isPrimitive()){
-					ActionImpl.merge(enactedTopAct, enaction.getIntendedAction());
-					if (!enaction.getIntendedAction().contains(enactedTopAct)){					
-						if (m_tracer != null){
-							m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopAct);
-						}
-					}
-				}else{
-					enaction.getIntendedAction().addFailingAct(enactedTopAct);
-					if (m_tracer != null){
-						m_tracer.addEventElement("action_failed", "Intended_action: " + enaction.getIntendedAction().getLabel() + " enacted_act: " + enactedTopAct);
-					}
-				}
+//				if (intendedTopAct.isPrimitive()){
+//					ActionImpl.merge(enactedTopAct, enaction.getIntendedAction());
+//					if (!enaction.getIntendedAction().contains(enactedTopAct)){					
+//						if (m_tracer != null){
+//							m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopAct);
+//						}
+//					}
+//				}else{
+					enaction.getIntendedAction().addAct(enactedTopAct);
+					//if (m_tracer != null){
+					//	m_tracer.addEventElement("action_failed", "Intended_action: " + enaction.getIntendedAction().getLabel() + " enacted_act: " + enactedTopAct);
+					//}
+				//}
+				// TODO Make sure that alternative primitive actions get merged eventuall. This is currenlty not the case. 	
+				ActionImpl.absorbIdenticalAction(enaction.getIntendedAction(), m_tracer);
 				//enaction.getEnactedPrimitiveAct().setDisplacement(enaction.getDisplacement());
 			}
 			

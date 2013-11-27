@@ -88,7 +88,7 @@ public class DeciderImpl implements Decider
 
 		ActionProposition selecteProposition = actionPropositions.get(0);
 		Action	selectedAction = selecteProposition.getAction();
-		Act intendedAct = selectedAction.getSucceedingActs().get(0);
+		Act intendedAct = selectedAction.getActs().get(0);
 		//Act intendedAct = selecteProposition.getSSAnticipatedAct();	
 		//if (intendedAct == null)
 		//	intendedAct = selecteProposition.getAnticipatedAct();		
@@ -163,11 +163,11 @@ public class DeciderImpl implements Decider
 				actProposition.getAct().getLength() <= this.maxSchemaLength){
 				boolean hasAction = false;
 				for (Action action : ActionImpl.getACTIONS())
-					if (action.containsAct(actProposition.getAct()))
+					if (action.contains(actProposition.getAct()))
 						hasAction = true;
 				if (!hasAction){
 					Action a = ActionImpl.createOrGet("[a" + actProposition.getAct().getLabel() + "]");
-					a.addSucceedingAct(actProposition.getAct());
+					a.addAct(actProposition.getAct());
 					if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
 				}			
 			}
@@ -196,7 +196,7 @@ public class DeciderImpl implements Decider
 			boolean isProposed = false;
 			// Add weight to this action according to the actPropositions that propose an act whose primitive belongs to this action
 			for (ActProposition actProposition : actPropositions){
-				if (action.containsAct(actProposition.getAct())){
+				if (action.contains(actProposition.getAct())){
 					if (actionProposition.getSSActWeight() <= actProposition.getWeight()){
 						actionProposition.setSSAnticipatedAct(actProposition.getAct());
 						actionProposition.setSSActWeight(actProposition.getWeight());
@@ -205,7 +205,7 @@ public class DeciderImpl implements Decider
 					isProposed = true;
 				}
 			}
-			if (action.getSucceedingActs().get(0).isPrimitive() || isProposed)	
+			if (action.getActs().get(0).isPrimitive() || isProposed)	
 				actionPropositions.add(actionProposition);			
 		}
 		

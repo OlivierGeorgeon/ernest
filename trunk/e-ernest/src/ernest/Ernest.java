@@ -165,7 +165,7 @@ public class Ernest implements IErnest
 		
 		Act act = ActImpl.createOrGetPrimitiveAct(primitive, AreaImpl.createOrGet(new Point3f(0,0,0)));
 		Action action = ActionImpl.createOrGet("[a" + act.getLabel() + "]");
-		action.addSucceedingAct(act);
+		action.addAct(act);
 		return primitive;
 	}
 
