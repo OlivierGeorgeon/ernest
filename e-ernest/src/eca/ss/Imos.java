@@ -4,7 +4,6 @@ package eca.ss;
 import java.util.ArrayList;
 import java.util.List;
 import tracing.ITracer;
-import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
@@ -19,18 +18,12 @@ import eca.ss.enaction.Enaction;
 
 public class Imos implements IImos 
 {	
-	/** Default maximum length of a schema (For the schema to be chosen as an intention) */
-	public final int SCHEMA_MAX_LENGTH = 100;
-
 	/** Default Activation threshold (The weight threshold for higher-level learning with the second learning mechanism). */
 	public final int ACTIVATION_THRESH = 1;
 
 	/** Regularity sensibility threshold (The weight threshold for an act to become reliable). */
 	private int regularityThreshold = 6;
 	
-	/** The maximal length of acts. */
-	private int maxSchemaLength = 10;
-
 	/** Counter of learned schemas for tracing */
 	private int m_nbSchemaLearned = 0;
 	
@@ -43,11 +36,6 @@ public class Imos implements IImos
 	public void setRegularityThreshold(int regularityThreshold)
 	{
 		this.regularityThreshold = regularityThreshold;
-	}
-	
-	public void setMaxSchemaLength(int maxSchemaLength)
-	{
-		this.maxSchemaLength = maxSchemaLength;
 	}
 	
 	/**
@@ -75,8 +63,6 @@ public class Imos implements IImos
 	 */
 	public void track(Enaction enaction) 
 	{
-		//m_imosCycle++;		
-		
 		Act intendedPrimitiveAct = enaction.getIntendedPrimitiveAct();
 		Act enactedPrimitiveAct  = enaction.getEnactedPrimitiveAct();
 		Act topEnactedAct        = null;
@@ -262,6 +248,11 @@ public class Imos implements IImos
 		return topEnactedInteraction;
 	}
 	
+	/**
+	 * Construct the list of ActProposition from the final activation context in the current enaction.
+	 * @param enaction The current enaction.
+	 * @return The list of ActProposition.
+	 */
 	public ArrayList<ActProposition> propose(Enaction enaction)
 	{
 		ArrayList<ActProposition> propositions = new ArrayList<ActProposition>();
@@ -276,17 +267,10 @@ public class Imos implements IImos
 		{
 			if (!activatedAct.isPrimitive())
 			{
-				// If this act's pre-act belongs to the context then this act is activated 
 				if (enaction.getFinalActivationContext().contains(activatedAct.getPreAct())){
-				//for (Act contextAct : enaction.getFinalActivationContext())
-				//{
-					//if (activatedAct.getPreAct().equals(contextAct))
-					//{
-						addProposition(propositions, activatedAct);
-						if (m_tracer != null)
-							m_tracer.addSubelement(activationElmt, "ActivatedAct", activatedAct + " intention " + activatedAct.getPostAct());
-					//}
-				//}
+					addProposition(propositions, activatedAct);
+					if (m_tracer != null)
+						m_tracer.addSubelement(activationElmt, "ActivatedAct", activatedAct + " intention " + activatedAct.getPostAct());
 				}
 			}
 		}
@@ -298,57 +282,24 @@ public class Imos implements IImos
 		return propositions;
 	}
 	
+	/**
+	 * Propose the activated act's post-act.
+	 * @param propositions The list of propositions.
+	 * @param activatedAct The activated act.
+	 */
 	private void addProposition(ArrayList<ActProposition> propositions, Act activatedAct)
 	{
-		ActProposition proposition = propose(activatedAct);
-		
-		if (proposition!=null)
-		{
-			int j = propositions.indexOf(proposition);
-			if (j == -1)
-				propositions.add(proposition);
-			else
-			{
-				ActProposition previousProposition = propositions.get(j);
-				previousProposition.addWeight(proposition.getWeight());
-				previousProposition.setWeightedValue(proposition.getWeightedValue() + previousProposition.getWeightedValue());
-			}
-		}
-	}
+		ActProposition proposition = new ActPropositionImpl(activatedAct.getPostAct(), activatedAct.getWeight());
+		proposition.setWeightedValue(activatedAct.getPostAct().getValue() * activatedAct.getWeight());
 	
-	private ActProposition propose(Act activatedAct)
-	{
-		ActProposition proposition = null;
-		Act proposedAct = activatedAct.getPostAct();
-		int w = activatedAct.getWeight() ;
-		
-		if (proposedAct.getLength() <= this.maxSchemaLength){
-			//if ( proposedAct.isPrimitive()) // so far only propose primitive acts.
-			{
-				proposition = new ActPropositionImpl(proposedAct, w);
-				proposition.setWeightedValue(proposedAct.getValue() * w);
-			}
-//			else if (proposedAct.getWeight() <= this.regularityThreshold ){ 
-//				// If the intended act has not passed the threshold  
-//				// and if the intention's intention is positive (this is some form of positive anticipation)
-//				// Then propagate to the intentions's intention
-//				//if(proposedAct.getEnactionValue() > 0)
-//				if(proposedAct.getPostAct().getEnactionValue() > 0)
-//				{
-//					proposition = new ActPropositionImpl(proposedAct.getPreAct(), w);
-//					proposition.setWeightedValue(proposedAct.getValue() * w);
-//				}
-//			}
-//			else {
-//				// propose acts that passed the threshold represent a new Action
-//				//proposedAct.initPrimitive(); // create the new interaction and action if not yet created
-//				//Action action = ActionImpl.createOrGet("[a" + proposedAct.getLabel() + "]");
-//				//action.addSucceedingAct(proposedAct);
-//
-//				proposition = new ActPropositionImpl(proposedAct, w);
-//				proposition.setWeightedValue(proposedAct.getValue() * w);				
-//			}
+		int j = propositions.indexOf(proposition);
+		if (j == -1)
+			propositions.add(proposition);
+		else
+		{
+			ActProposition previousProposition = propositions.get(j);
+			previousProposition.addWeight(proposition.getWeight());
+			previousProposition.setWeightedValue(proposition.getWeightedValue() + previousProposition.getWeightedValue());
 		}
-		return proposition;
 	}
 }

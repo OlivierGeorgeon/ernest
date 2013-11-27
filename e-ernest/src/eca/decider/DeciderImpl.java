@@ -159,7 +159,8 @@ public class DeciderImpl implements Decider
 		
 		// If a proposed act corresponds to no action then create a new action.
 		for (ActProposition actProposition : actPropositions){
-			if (actProposition.getAct().getWeight() > this.regularityThreshold){
+			if (actProposition.getAct().getWeight() > this.regularityThreshold &&
+				actProposition.getAct().getLength() <= this.maxSchemaLength){
 				boolean hasAction = false;
 				for (Action action : ActionImpl.getACTIONS())
 					if (action.containsAct(actProposition.getAct()))
