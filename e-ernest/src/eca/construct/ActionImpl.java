@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.media.j3d.Transform3D;
+
+import tracing.ITracer;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.ExperimentImpl;
@@ -26,8 +28,8 @@ public class ActionImpl implements Action {
 	//private static int index = 0;
 
 	private String label;
-	private List<Act> succeedingActs = new ArrayList<Act>();
-	private List<Act> failingActs = new ArrayList<Act>();
+	private List<Act> acts = new ArrayList<Act>();
+	//private List<Act> failingActs = new ArrayList<Act>();
 
 	/**
 	 * Create or get an action from its label.
@@ -73,12 +75,29 @@ public class ActionImpl implements Action {
 			}
 			// TODO more complex merge of actions.
 			if (action != null){
-				for (Act p : action.getSucceedingActs())
-					intendedAction.addSucceedingAct(p);
+				for (Act p : action.getActs())
+					intendedAction.addAct(p);
 				ACTIONS.remove(action.getLabel());
 			}
-			intendedAction.addSucceedingAct(act);
+			intendedAction.addAct(act);
 		}
+	}
+	
+	public static void absorbIdenticalAction(Action intendedAction, ITracer tracer){
+		Action action = null;
+		for (Action a : getACTIONS()){
+			if (a!=intendedAction)	
+				if (a.getActs().containsAll(intendedAction.getActs()))
+					action = a;				
+		}
+		if (action != null){
+			for (Act p : action.getActs())
+				intendedAction.addAct(p);
+			if (tracer != null){
+				tracer.addEventElement("merge_action", intendedAction.getLabel() + " absorbs " + action.getLabel());
+			}
+			ACTIONS.remove(action.getLabel());
+		}		
 	}
 	
 	private ActionImpl(String label){
@@ -89,31 +108,31 @@ public class ActionImpl implements Action {
 		return this.label;
 	}
 	
-	public void addSucceedingAct(Act act){
-		if (!this.succeedingActs.contains(act))
-				this.succeedingActs.add(act);
+	public void addAct(Act act){
+		if (!this.acts.contains(act))
+				this.acts.add(act);
 	}
 	
-	public List<Act> getSucceedingActs(){
-		return this.succeedingActs;
+	public List<Act> getActs(){
+		return this.acts;
 	}
 	
-	public void addFailingAct(Act act){
-		if (!this.failingActs.contains(act))
-				this.failingActs.add(act);
-	}
+//	public void addFailingAct(Act act){
+//		//if (!this.failingActs.contains(act))
+//		//		this.failingActs.add(act);
+//	}
 	
-	public List<Act> getFailingActs(){
-		return this.failingActs;
-	}
+//	public List<Act> getFailingActs(){
+//		return this.failingActs;
+//	}
 	
 	public boolean contains(Act act){
-		return this.succeedingActs.contains(act);
+		return this.acts.contains(act);
 	}
 
-	public boolean containsAct(Act act){
-		return this.succeedingActs.contains(act) || this.failingActs.contains(act);
-	}
+//	public boolean containsAct(Act act){
+//		return this.acts.contains(act);// || this.failingActs.contains(act);
+//	}
 
 	
 	/**
@@ -141,7 +160,7 @@ public class ActionImpl implements Action {
 		Act predictAct = null; 
 		predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
 		if (predictAct == null)
-			predictAct = succeedingActs.get(0);
+			predictAct = acts.get(0);
 		return predictAct;
 	}
 
@@ -161,11 +180,11 @@ public class ActionImpl implements Action {
 	
 	public String toString(){
 		String label = getLabel();
-		for (Act primitive : this.succeedingActs)
-			label += " " + primitive.getLabel();
-		label += " failing: ";
-		for (Act primitive : this.failingActs)
-			label += " " + primitive.getLabel();
+		for (Act primitive : this.acts)
+			label += ", " + primitive.getLabel();
+//		label += " failing: ";
+//		for (Act primitive : this.failingActs)
+//			label += " " + primitive.getLabel();
 		return label;
 	}
 }

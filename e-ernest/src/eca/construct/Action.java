@@ -27,12 +27,12 @@ public interface Action
 	/**
 	 * @param act The act to add to this action.
 	 */
-	public void addSucceedingAct(Act act);
+	public void addAct(Act act);
 
 	/**
 	 * @return The list of primitive interactions that perform this action.
 	 */
-	public List<Act> getSucceedingActs();
+	public List<Act> getActs();
 	
 	/**
 	 * @param act The primitive to check 
@@ -40,7 +40,7 @@ public interface Action
 	 */
 	public boolean contains(Act act);
 
-	public boolean containsAct(Act act);
+	//public boolean containsAct(Act act);
 
 	/**
 	 * Predicts the act that will likely result from performing this action on this appearance based on previous experiments
@@ -50,9 +50,10 @@ public interface Action
 	 */
 	public Act predictAct(Appearance appearance);
 	
-	public void addFailingAct(Act act);
+	//public void addFailingAct(Act act);
 	
-	public List<Act> getFailingActs();
+	//public List<Act> getFailingActs();
+	
 	/**
 	 * @param appearance The appearance on which the action is performed.
 	 * @return The Displacement that will likely result from performing this action on this appearance.
