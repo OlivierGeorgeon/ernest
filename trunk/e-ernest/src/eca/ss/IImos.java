@@ -17,11 +17,6 @@ public interface IImos
 	 * @param regularityThreshold The regularity sensibility threshold.
 	 */
 	public void setRegularityThreshold(int regularityThreshold);
-	
-	/**
-	 * @param maxSchemaLength The maximum length of acts
-	 */
-	public void setMaxSchemaLength(int maxSchemaLength);
 
 	/**
 	 * @param tracer The tracer used to generate the activity traces
