@@ -105,9 +105,9 @@ public class Imos implements IImos
 		if (enactedTopAct != null)
 		{
 			// The displacement attached to the enacted interaction
-			Displacement displacement = DisplacementImpl.createOrGet(enaction.getInitialArea(), enaction.getEnactedPrimitiveAct().getArea());
-			enactedTopAct.getPrimitive().incDisplacementCounter(displacement);
-			enaction.setDisplacement(displacement);
+			//Displacement displacement = DisplacementImpl.createOrGet(enaction.getInitialArea(), enaction.getEnactedPrimitiveAct().getArea());
+			//enactedTopAct.getPrimitive().incDisplacementCounter(displacement);
+			//enaction.setDisplacement(displacement);
 
 			// Surprise if the enacted interaction is not that intended
 			if (intendedTopAct != enactedTopAct) 
@@ -267,7 +267,10 @@ public class Imos implements IImos
 		}
 		for (Act activatedAct : ActImpl.getACTS())
 		{
-			if (!activatedAct.isPrimitive())
+			if (activatedAct.isPrimitive()){
+				addProposition(propositions, activatedAct, 0);
+			}
+			else//if (!activatedAct.isPrimitive())
 			{
 				if (enaction.getFinalActivationContext().contains(activatedAct.getPreAct())){
 					addProposition(propositions, activatedAct);
@@ -293,6 +296,27 @@ public class Imos implements IImos
 	{
 		ActProposition proposition = new ActPropositionImpl(activatedAct.getPostAct(), activatedAct.getWeight());
 		proposition.setWeightedValue(activatedAct.getPostAct().getValue() * activatedAct.getWeight());
+	
+		int j = propositions.indexOf(proposition);
+		if (j == -1)
+			propositions.add(proposition);
+		else
+		{
+			ActProposition previousProposition = propositions.get(j);
+			previousProposition.addWeight(proposition.getWeight());
+			previousProposition.setWeightedValue(proposition.getWeightedValue() + previousProposition.getWeightedValue());
+		}
+	}
+
+	/**
+	 * Propose the activated act's post-act.
+	 * @param propositions The list of propositions.
+	 * @param activatedAct The activated act.
+	 */
+	private void addProposition(ArrayList<ActProposition> propositions, Act proposededAct, int weight)
+	{
+		ActProposition proposition = new ActPropositionImpl(proposededAct, weight);
+		proposition.setWeightedValue(proposededAct.getValue() * weight);
 	
 		int j = propositions.indexOf(proposition);
 		if (j == -1)

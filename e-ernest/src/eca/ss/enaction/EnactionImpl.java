@@ -14,6 +14,8 @@ import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
+import eca.ss.Appearance;
+import eca.ss.AppearanceImpl;
 import ernest.IEffect;
 
 /**
@@ -63,7 +65,9 @@ public class EnactionImpl implements Enaction
 	
 	private Transform3D transformation = new Transform3D();
 	
-	private Area initialArea = AreaImpl.createOrGet(new Point3f());
+	//private Area initialArea = AreaImpl.createOrGet(new Point3f());
+	
+	private Appearance appearance = AppearanceImpl.createOrGet("toto");
 
 	private Displacement displacement = null;
 	
@@ -294,13 +298,13 @@ public class EnactionImpl implements Enaction
 		}
 	}
 
-	public void setDisplacement(Displacement displacement) {
-		this.displacement = displacement;
-	}
-
-	public Displacement getDisplacement() {
-		return this.displacement;
-	}
+//	public void setDisplacement(Displacement displacement) {
+//		this.displacement = displacement;
+//	}
+//
+//	public Displacement getDisplacement() {
+//		return this.displacement;
+//	}
 
 	public void track(IEffect input) {
 		
@@ -360,12 +364,20 @@ public class EnactionImpl implements Enaction
 		this.intendedAction = intendedAction;
 	}
 
-	public Area getInitialArea() {
-		return initialArea;
+//	public Area getInitialArea() {
+//		return initialArea;
+//	}
+//
+//	public void setInitialArea(Area area) {
+//		this.initialArea = area;
+//	}
+
+	public Appearance getAppearance() {
+		return this.appearance;
 	}
 
-	public void setInitialArea(Area area) {
-		this.initialArea = area;
+	public void setAppearance(Appearance appearance) {
+		this.appearance = appearance;
 	}
 
 	public Transform3D getTransform3D() {

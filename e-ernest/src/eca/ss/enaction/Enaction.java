@@ -9,6 +9,7 @@ import eca.construct.Action;
 import eca.construct.Area;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
+import eca.ss.Appearance;
 import ernest.IEffect;
 
 /**
@@ -34,12 +35,12 @@ public interface Enaction
 	/**
 	 * @param displacement The displacement sensed during this primitive enaction.
 	 */
-	public void setDisplacement(Displacement displacement);
+	//public void setDisplacement(Displacement displacement);
 	
 	/**
 	 * @return The displacement sensed during this primitive enaction.
 	 */
-	public Displacement getDisplacement();
+	//public Displacement getDisplacement();
 	
 	/**
 	 * @param act The last primitive intended interaction
@@ -190,7 +191,10 @@ public interface Enaction
 	public void setIntendedAction(Action action);
 	public Action getIntendedAction();
 	
-	public void setInitialArea(Area area);
-	public Area getInitialArea();
+	//public void setInitialArea(Area area);
+	//public Area getInitialArea();
+	
+	public void setAppearance(Appearance appearance);
+	public Appearance getAppearance();
 	
 }

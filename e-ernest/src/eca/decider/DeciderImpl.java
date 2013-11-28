@@ -67,7 +67,7 @@ public class DeciderImpl implements Decider
 	{
 		System.out.println("New decision ================ ");
 		
-		Appearance preAppearance = AppearanceImpl.createOrGet("toto");
+		Appearance appearance = enaction.getAppearance();
 
 		Enaction newEnaction = new EnactionImpl();	
 		
@@ -84,7 +84,7 @@ public class DeciderImpl implements Decider
 		// Choose the next action
 		
 		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
-		List<ActionProposition> actionPropositions = proposeActions(actPropositions, preAppearance);
+		List<ActionProposition> actionPropositions = proposeActions(actPropositions, appearance);
 		
 		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SS) ); // or SPAS
 
@@ -121,8 +121,8 @@ public class DeciderImpl implements Decider
 				this.tracer.addSubelement(actionElmt, "action", action.toString());
 			
 			Object appearanceElmt = this.tracer.addSubelement(decisionElmt, "appearances");
-			for (Appearance appearance : AppearanceImpl.getAppearances())
-				appearance.trace(tracer, appearanceElmt);
+			for (Appearance app : AppearanceImpl.getAppearances())
+				app.trace(tracer, appearanceElmt);
 
 			
 //			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomenon_types");
@@ -151,6 +151,7 @@ public class DeciderImpl implements Decider
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
+		newEnaction.setAppearance(appearance);
 		//newEnaction.setInitialArea(preArea);
 		
 		return newEnaction;
@@ -164,19 +165,30 @@ public class DeciderImpl implements Decider
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		List<ActProposition> forwardedActPropositions = new ArrayList<ActProposition>();
 		
-		// If a proposed act corresponds to no action then create a new action.
+		// Create action and appearances for the control acts that do not have them yet.
 		for (ActProposition actProposition : actPropositions){
-			if (actProposition.getAct().getWeight() > this.regularityThreshold &&
-				actProposition.getAct().getLength() <= this.maxSchemaLength){
-				boolean hasAction = false;
-				for (Action action : ActionImpl.getACTIONS())
-					if (action.contains(actProposition.getAct()))
-						hasAction = true;
-				if (!hasAction){
-					Action a = ActionImpl.createOrGet("[a" + actProposition.getAct().getLabel() + "]");
-					a.addAct(actProposition.getAct());
-					if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
-				}			
+			if (actProposition.getAct().getWeight() > this.regularityThreshold){
+				if (actProposition.getAct().getLength() <= this.maxSchemaLength){
+					boolean hasAction = false;
+					for (Action action : ActionImpl.getACTIONS())
+						if (action.contains(actProposition.getAct()))
+							hasAction = true;
+					if (!hasAction){
+						Action a = ActionImpl.createOrGet("[a" + actProposition.getAct().getLabel() + "]");
+						a.addAct(actProposition.getAct());
+						if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
+					}			
+					boolean hasAppearance = false;
+					for (Appearance appearance : AppearanceImpl.getAppearances())
+						if (appearance.contains(actProposition.getAct()))
+							hasAppearance = true;
+					if (!hasAppearance){
+						Appearance a = AppearanceImpl.createOrGet("[p" + actProposition.getAct().getLabel() + "]");
+						a.addAct(actProposition.getAct());
+						if (this.tracer != null) this.tracer.addEventElement("new_appearance", a.getLabel());
+					}			
+
+				}
 			}
 			else{
 				// add a proposition for the context sub act

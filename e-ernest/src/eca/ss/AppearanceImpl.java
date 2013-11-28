@@ -119,9 +119,9 @@ public class AppearanceImpl implements Appearance {
 	
 	public void trace(ITracer tracer, Object e) {
 		
-		String actList = getLabel();
+		String actList = "";
 		for (Act act : this.acts)
-			actList += act.getLabel() + ", ";
+			actList += ", " + act.getLabel();
 
 		tracer.addSubelement(e, "appearance", this.label + actList);
 	}
