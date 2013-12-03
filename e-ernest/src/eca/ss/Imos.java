@@ -151,7 +151,9 @@ public class Imos implements IImos
 			 }
 
 			//enaction.setFinalContext(topEnactedAct, performedAct, streamContextList);			
-			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);			
+			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);		
+			Appearance appearance = AppearanceImpl.evoke(enactedTopAct);
+			enaction.setAppearance(appearance);
 		}
 		//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
 		enaction.setNbActLearned(m_nbSchemaLearned);
