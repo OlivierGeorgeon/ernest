@@ -38,12 +38,12 @@ public class AppearanceImpl implements Appearance {
 	 * @param area The observation's area
 	 * @return The new or old observation
 	 */
-	public static Appearance createOrGet(PhenomenonType phenomenonType, Area area){
-		String label = createKey(phenomenonType, area);
-		if (!OBSERVATIONS.containsKey(label))
-			OBSERVATIONS.put(label, new AppearanceImpl(phenomenonType, area));			
-		return OBSERVATIONS.get(label);
-	}
+//	public static Appearance createOrGet(PhenomenonType phenomenonType, Area area){
+//		String label = createKey(phenomenonType, area);
+//		if (!OBSERVATIONS.containsKey(label))
+//			OBSERVATIONS.put(label, new AppearanceImpl(phenomenonType, area));			
+//		return OBSERVATIONS.get(label);
+//	}
 
 	/**
 	 * Create or get an action from its label.
@@ -54,6 +54,15 @@ public class AppearanceImpl implements Appearance {
 		if (!OBSERVATIONS.containsKey(label))
 			OBSERVATIONS.put(label, new AppearanceImpl(label));			
 		return OBSERVATIONS.get(label);
+	}
+	
+	public static Appearance evoke(Act act){
+		Appearance appearance = null;
+		for (Appearance a : OBSERVATIONS.values())
+			if (a.contains(act))
+				appearance = a;
+			
+		return appearance;
 	}
 	
 	private static String createKey(PhenomenonType phenomenonType, Area area) {

@@ -142,8 +142,9 @@ public class ActionImpl implements Action {
 	}
 
 	public Act predictAct(Appearance appearance) {
-		Act predictAct = null; 
-		predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
+		Act predictAct = null;
+		if (appearance != null)
+			predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
 		if (predictAct == null)
 			predictAct = acts.get(0);
 		return predictAct;

@@ -67,7 +67,7 @@ public class EnactionImpl implements Enaction
 	
 	//private Area initialArea = AreaImpl.createOrGet(new Point3f());
 	
-	private Appearance appearance = AppearanceImpl.createOrGet("toto");
+	private Appearance appearance = null;
 
 	private Displacement displacement = null;
 	
@@ -295,6 +295,8 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
 			if (this.displacement != null)
 				tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
+			if (this.appearance != null)
+				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
 		}
 	}
 
@@ -347,6 +349,7 @@ public class EnactionImpl implements Enaction
 		
 			this.m_enactedPrimitiveAct =this.salientActInstance.getAct();
 			this.m_enactedPrimitiveAct.setColor(this.salientActInstance.getDisplayCode());
+			this.appearance = AppearanceImpl.evoke(this.m_enactedPrimitiveAct);
 		}
 		
 		this.transformation.set(transform);
