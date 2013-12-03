@@ -55,6 +55,6 @@ public interface Experiment {
 	
 	public float getConfidence();
 	
-	public void trace(ITracer tracer);
+	public void trace(ITracer tracer, Object e);
 
 }

@@ -9,6 +9,7 @@ import eca.construct.Action;
 import eca.construct.Area;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
+import eca.construct.experiment.Experiment;
 import eca.ss.Appearance;
 import ernest.IEffect;
 
@@ -197,9 +198,7 @@ public interface Enaction
 	public void setAppearance(Appearance appearance);
 	public Appearance getAppearance();
 	
-	public void setAnticipatedAppearance(Appearance appearance);
-	public Appearance getAnticipatedAppearance();
-	public void setConfidence(float confidence);
-	public float getConfidence();
+	public void setExperiment(Experiment experiment);
+	public Experiment getExperiment();
 	
 }

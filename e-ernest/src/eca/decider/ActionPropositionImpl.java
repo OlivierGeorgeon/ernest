@@ -1,6 +1,7 @@
 package eca.decider;
 
 import eca.construct.Action;
+import eca.construct.experiment.Experiment;
 import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
@@ -11,9 +12,10 @@ import eca.ss.enaction.Act;
 public class ActionPropositionImpl implements ActionProposition {
 
 	private Action action;
-	private int ssWeight = 0; 
-	private Appearance anticipatedAppearance = null;
-	private float confidence = 0;
+	private int ssWeight = 0;
+	private Experiment experiment = null;
+	//private Appearance anticipatedAppearance = null;
+	//private float confidence = 0;
 	
 	private Act ssAnticipatedAct = null;
 	private int ssActWeight = 0;
@@ -71,13 +73,13 @@ public class ActionPropositionImpl implements ActionProposition {
 	 * @return A string that represents the proposition. 
 	 */
 
-	public Appearance getAnticipatedAppearance() {
-		return anticipatedAppearance;
-	}
-
-	public void setAnticipatedAppearance(Appearance anticipatedAct) {
-		this.anticipatedAppearance = anticipatedAct;
-	}
+//	public Appearance getAnticipatedAppearance() {
+//		return anticipatedAppearance;
+//	}
+//
+//	public void setAnticipatedAppearance(Appearance anticipatedAct) {
+//		this.anticipatedAppearance = anticipatedAct;
+//	}
 
 	public int getSSActWeight() {
 		return ssActWeight;
@@ -98,7 +100,8 @@ public class ActionPropositionImpl implements ActionProposition {
 	public String toString(){
 		String proposition = "action " + this.getAction().getLabel();
 		proposition += " weight " + this.getSSWeight() / 10;
-		proposition += " anticipated_appearance " + this.anticipatedAppearance.getLabel();
+		if (this.experiment != null)
+			proposition += " exeperiment " + this.experiment.getLabel();
 		if (this.getSSAnticipatedAct() != null){
 			proposition += " ss_act " + this.getSSAnticipatedAct().getLabel();
 			proposition += " ss_value " + this.getSSAnticipatedAct().getValue();					
@@ -106,12 +109,20 @@ public class ActionPropositionImpl implements ActionProposition {
 		return proposition;
 	}
 
-	public float getConfidence() {
-		return confidence;
+//	public float getConfidence() {
+//		return confidence;
+//	}
+//
+//	public void setConfidence(float confidence) {
+//		this.confidence = confidence;
+//	}
+
+	public Experiment getExperiment() {
+		return experiment;
 	}
 
-	public void setConfidence(float confidence) {
-		this.confidence = confidence;
+	public void setExperiment(Experiment experiment) {
+		this.experiment = experiment;
 	}
 
 }

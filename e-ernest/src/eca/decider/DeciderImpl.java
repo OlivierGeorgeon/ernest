@@ -94,15 +94,7 @@ public class DeciderImpl implements Decider
 		ActionProposition selectedProposition = actionPropositions.get(0);
 		Action	selectedAction = selectedProposition.getAction();
 		Act intendedAct = selectedAction.getActs().get(0);
-		//Act intendedAct = selecteProposition.getSSAnticipatedAct();	
-		//if (intendedAct == null)
-		//	intendedAct = selecteProposition.getAnticipatedAct();		
-
-		// Anticipate the consequences
-		Appearance postAppearance = selectedProposition.getAnticipatedAppearance();
-		float confidence = selectedProposition.getConfidence();
-		//Displacement intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(preArea);
-		//Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
+		Experiment experiment = selectedProposition.getExperiment();
 		
 		// Trace the decision
 		
@@ -114,8 +106,6 @@ public class DeciderImpl implements Decider
 			//if (focusPhenomenonInstance != null)
 			//	focusPhenomenonInstance.trace(this.tracer, apElmnt);
 			this.tracer.addSubelement(apElmnt, "weight", selectedProposition.getSSWeight() + "");
-			this.tracer.addSubelement(apElmnt, "anticipated_appearance", postAppearance.getLabel());
-			this.tracer.addSubelement(apElmnt, "confidence", ErnestUtils.format(confidence, 2));
 			//this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");
 			if (selectedProposition.getSSAnticipatedAct() != null){
 				this.tracer.addSubelement(apElmnt, "ss_act", selectedProposition.getSSAnticipatedAct().getLabel());
@@ -139,8 +129,11 @@ public class DeciderImpl implements Decider
 			//	if (a.isTested())
 			//		this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
 			
+
 			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
 			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
+			if (experiment != null)
+				experiment.trace(tracer, predictElmt);
 			//if (intendedDisplacement != null)
 			//	this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
 			//this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
@@ -157,8 +150,7 @@ public class DeciderImpl implements Decider
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
 		newEnaction.setAppearance(appearance);
-		newEnaction.setAnticipatedAppearance(postAppearance);
-		newEnaction.setConfidence(confidence);
+		newEnaction.setExperiment(experiment);
 		//newEnaction.setInitialArea(preArea);
 		
 		return newEnaction;
@@ -216,21 +208,14 @@ public class DeciderImpl implements Decider
 			// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
 			//Appearance anticipatedAppearance = action.predictPostAppearance(preAppearance); // proposition based on spatial representation
 			
-			float confidence = .5f;
-			Appearance anticipatedAppearance = AppearanceImpl.evoke(action.getActs().get(0)); 
-			if (preAppearance != null){
-				Experiment experiment  = ExperimentImpl.createOrGet(preAppearance, action);
-				Appearance aa = experiment.predictPostAppearance();
-				if (aa != null){
-					anticipatedAppearance = experiment.predictPostAppearance();
-					confidence = experiment.getConfidence();
-				}
-			}
+			//Appearance anticipatedAppearance = AppearanceImpl.evoke(action.getActs().get(0)); 
 			
 			ActionProposition actionProposition = new ActionPropositionImpl(action, 0);
-			actionProposition.setAnticipatedAppearance(anticipatedAppearance);
-			actionProposition.setConfidence(confidence);
-
+			//actionProposition.setAnticipatedAppearance(anticipatedAppearance);
+			//actionProposition.setConfidence(confidence);
+			if (preAppearance != null){
+				actionProposition.setExperiment(ExperimentImpl.createOrGet(preAppearance, action));
+			}
 			boolean isProposed = false;
 			// Add weight to this action according to the actPropositions that propose an act whose primitive belongs to this action
 			for (ActProposition actProposition : actPropositions){
