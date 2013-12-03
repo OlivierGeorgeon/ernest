@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.vecmath.Point3f;
 import tracing.ITracer;
+import utils.ErnestUtils;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.Area;
@@ -14,6 +15,8 @@ import eca.construct.PhenomenonInstance;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
+import eca.construct.experiment.Experiment;
+import eca.construct.experiment.ExperimentImpl;
 import eca.spas.Spas;
 import eca.ss.ActProposition;
 import eca.ss.ActPropositionImpl;
@@ -88,14 +91,16 @@ public class DeciderImpl implements Decider
 		
 		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SS) ); // or SPAS
 
-		ActionProposition selecteProposition = actionPropositions.get(0);
-		Action	selectedAction = selecteProposition.getAction();
+		ActionProposition selectedProposition = actionPropositions.get(0);
+		Action	selectedAction = selectedProposition.getAction();
 		Act intendedAct = selectedAction.getActs().get(0);
 		//Act intendedAct = selecteProposition.getSSAnticipatedAct();	
 		//if (intendedAct == null)
 		//	intendedAct = selecteProposition.getAnticipatedAct();		
 
 		// Anticipate the consequences
+		Appearance postAppearance = selectedProposition.getAnticipatedAppearance();
+		float confidence = selectedProposition.getConfidence();
 		//Displacement intendedDisplacement = intendedAct.getPrimitive().predictDisplacement(preArea);
 		//Appearance intendedPostAppearance = selectedAction.predictPostAppearance(preAppearance); 
 		
@@ -105,25 +110,25 @@ public class DeciderImpl implements Decider
 			Object decisionElmt = this.tracer.addEventElement("decision", true);
 			
 			Object apElmnt = this.tracer.addSubelement(decisionElmt, "selected_proposition");
-			this.tracer.addSubelement(apElmnt, "action", selecteProposition.getAction().getLabel());
+			this.tracer.addSubelement(apElmnt, "action", selectedProposition.getAction().getLabel());
 			//if (focusPhenomenonInstance != null)
 			//	focusPhenomenonInstance.trace(this.tracer, apElmnt);
-			this.tracer.addSubelement(apElmnt, "weight", selecteProposition.getSSWeight() + "");
-			this.tracer.addSubelement(apElmnt, "spas_act", selecteProposition.getAnticipatedAct().getLabel());
-			this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");
-			if (selecteProposition.getSSAnticipatedAct() != null){
-				this.tracer.addSubelement(apElmnt, "ss_act", selecteProposition.getSSAnticipatedAct().getLabel());
-				this.tracer.addSubelement(apElmnt, "ss_value", selecteProposition.getSSAnticipatedAct().getValue() +"");					
+			this.tracer.addSubelement(apElmnt, "weight", selectedProposition.getSSWeight() + "");
+			this.tracer.addSubelement(apElmnt, "anticipated_appearance", postAppearance.getLabel());
+			this.tracer.addSubelement(apElmnt, "confidence", ErnestUtils.format(confidence, 2));
+			//this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");
+			if (selectedProposition.getSSAnticipatedAct() != null){
+				this.tracer.addSubelement(apElmnt, "ss_act", selectedProposition.getSSAnticipatedAct().getLabel());
+				this.tracer.addSubelement(apElmnt, "ss_value", selectedProposition.getSSAnticipatedAct().getValue() +"");					
 			}				
 
 			Object actionElmt = this.tracer.addSubelement(decisionElmt, "actions");
 			for (Action action : ActionImpl.getACTIONS())
-				this.tracer.addSubelement(actionElmt, "action", action.toString());
+				action.trace(tracer, actionElmt);
 			
 			Object appearanceElmt = this.tracer.addSubelement(decisionElmt, "appearances");
 			for (Appearance app : AppearanceImpl.getAppearances())
 				app.trace(tracer, appearanceElmt);
-
 			
 //			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomenon_types");
 //			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
@@ -152,6 +157,8 @@ public class DeciderImpl implements Decider
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
 		newEnaction.setAppearance(appearance);
+		newEnaction.setAnticipatedAppearance(postAppearance);
+		newEnaction.setConfidence(confidence);
 		//newEnaction.setInitialArea(preArea);
 		
 		return newEnaction;
@@ -207,10 +214,22 @@ public class DeciderImpl implements Decider
 		// Generate an action proposition for each action
 		for (Action action : ActionImpl.getACTIONS()){
 			// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
-			Act anticipatedAct = action.predictAct(preAppearance); // proposition based on spatial representation
+			//Appearance anticipatedAppearance = action.predictPostAppearance(preAppearance); // proposition based on spatial representation
+			
+			float confidence = .5f;
+			Appearance anticipatedAppearance = AppearanceImpl.evoke(action.getActs().get(0)); 
+			if (preAppearance != null){
+				Experiment experiment  = ExperimentImpl.createOrGet(preAppearance, action);
+				Appearance aa = experiment.predictPostAppearance();
+				if (aa != null){
+					anticipatedAppearance = experiment.predictPostAppearance();
+					confidence = experiment.getConfidence();
+				}
+			}
 			
 			ActionProposition actionProposition = new ActionPropositionImpl(action, 0);
-			actionProposition.setAnticipatedAct(anticipatedAct);
+			actionProposition.setAnticipatedAppearance(anticipatedAppearance);
+			actionProposition.setConfidence(confidence);
 
 			boolean isProposed = false;
 			// Add weight to this action according to the actPropositions that propose an act whose primitive belongs to this action

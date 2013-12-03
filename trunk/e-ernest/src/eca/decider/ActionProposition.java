@@ -1,6 +1,7 @@
 package eca.decider;
 
 import eca.construct.Action;
+import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
 /**
@@ -26,12 +27,15 @@ public interface ActionProposition extends Comparable<ActionProposition> {
 	/**
 	 * @return The anticipated act.
 	 */
-	public Act getAnticipatedAct();
+	public Appearance getAnticipatedAppearance();
 
 	/**
 	 * @param anticipatedAct The anticipated act.
 	 */
-	public void setAnticipatedAct(Act anticipatedAct);
+	public void setAnticipatedAppearance(Appearance appearance);
+	
+	public float getConfidence();
+	public void setConfidence(float confidence);
 	
 	/**
 	 * Two propositions are equal if they propose the same action. 

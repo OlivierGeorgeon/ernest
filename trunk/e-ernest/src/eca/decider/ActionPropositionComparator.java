@@ -25,6 +25,6 @@ public class ActionPropositionComparator implements Comparator<ActionProposition
     	if (this.system == SS)
     		return - Integer.valueOf(p1.getSSWeight()).compareTo(p2.getSSWeight());
     	else
-            return - Integer.valueOf(p1.getAnticipatedAct().getPrimitive().getValue()).compareTo(p2.getAnticipatedAct().getPrimitive().getValue());
+            return 0;//- Integer.valueOf(p1.getAnticipatedAct().getPrimitive().getValue()).compareTo(p2.getAnticipatedAct().getPrimitive().getValue());
     }
 }

@@ -1,6 +1,7 @@
 package eca.decider;
 
 import eca.construct.Action;
+import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
 /**
@@ -11,7 +12,8 @@ public class ActionPropositionImpl implements ActionProposition {
 
 	private Action action;
 	private int ssWeight = 0; 
-	private Act anticipatedAct = null;
+	private Appearance anticipatedAppearance = null;
+	private float confidence = 0;
 	
 	private Act ssAnticipatedAct = null;
 	private int ssActWeight = 0;
@@ -69,12 +71,12 @@ public class ActionPropositionImpl implements ActionProposition {
 	 * @return A string that represents the proposition. 
 	 */
 
-	public Act getAnticipatedAct() {
-		return anticipatedAct;
+	public Appearance getAnticipatedAppearance() {
+		return anticipatedAppearance;
 	}
 
-	public void setAnticipatedAct(Act anticipatedAct) {
-		this.anticipatedAct = anticipatedAct;
+	public void setAnticipatedAppearance(Appearance anticipatedAct) {
+		this.anticipatedAppearance = anticipatedAct;
 	}
 
 	public int getSSActWeight() {
@@ -96,13 +98,20 @@ public class ActionPropositionImpl implements ActionProposition {
 	public String toString(){
 		String proposition = "action " + this.getAction().getLabel();
 		proposition += " weight " + this.getSSWeight() / 10;
-		proposition += " spas_act " + this.getAnticipatedAct().getLabel();
-		proposition += " spas_value " + this.getAnticipatedAct().getValue();
+		proposition += " anticipated_appearance " + this.anticipatedAppearance.getLabel();
 		if (this.getSSAnticipatedAct() != null){
 			proposition += " ss_act " + this.getSSAnticipatedAct().getLabel();
 			proposition += " ss_value " + this.getSSAnticipatedAct().getValue();					
 		}				
 		return proposition;
+	}
+
+	public float getConfidence() {
+		return confidence;
+	}
+
+	public void setConfidence(float confidence) {
+		this.confidence = confidence;
 	}
 
 }

@@ -68,6 +68,8 @@ public class EnactionImpl implements Enaction
 	//private Area initialArea = AreaImpl.createOrGet(new Point3f());
 	
 	private Appearance appearance = null;
+	private Appearance anticipatedAppearance = null;
+	private float confidence = 0.5f;
 
 	private Displacement displacement = null;
 	
@@ -280,8 +282,8 @@ public class EnactionImpl implements Enaction
 		{
 			Object e = tracer.addEventElement("terminate_enaction");
 			
-			if (!m_correct) tracer.addSubelement(e, "incorrect");
-			
+			//if (!m_correct) tracer.addSubelement(e, "incorrect");
+						
 			Object activation = tracer.addSubelement(e, "activation_context");
 			for (Act i : m_finalActivationContext)	
 			{
@@ -295,8 +297,11 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
 			if (this.displacement != null)
 				tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
-			if (this.appearance != null)
+			if (this.appearance != null){
 				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
+				if (!this.appearance.equals(this.anticipatedAppearance) && this.confidence > .7f)
+					tracer.addSubelement(e, "incorrect");
+			}
 		}
 	}
 
@@ -349,7 +354,7 @@ public class EnactionImpl implements Enaction
 		
 			this.m_enactedPrimitiveAct =this.salientActInstance.getAct();
 			this.m_enactedPrimitiveAct.setColor(this.salientActInstance.getDisplayCode());
-			this.appearance = AppearanceImpl.evoke(this.m_enactedPrimitiveAct);
+			//this.appearance = AppearanceImpl.evoke(this.m_enactedPrimitiveAct);
 		}
 		
 		this.transformation.set(transform);
@@ -389,6 +394,22 @@ public class EnactionImpl implements Enaction
 
 	public ActInstance getSalientActInstance() {
 		return this.salientActInstance;
+	}
+
+	public Appearance getAnticipatedAppearance() {
+		return anticipatedAppearance;
+	}
+
+	public void setAnticipatedAppearance(Appearance anticipatedAppearance) {
+		this.anticipatedAppearance = anticipatedAppearance;
+	}
+
+	public float getConfidence() {
+		return confidence;
+	}
+
+	public void setConfidence(float confidence) {
+		this.confidence = confidence;
 	}
 
 }

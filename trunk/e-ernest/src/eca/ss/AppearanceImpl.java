@@ -61,6 +61,9 @@ public class AppearanceImpl implements Appearance {
 		for (Appearance a : OBSERVATIONS.values())
 			if (a.contains(act))
 				appearance = a;
+		
+		if (appearance == null)
+			appearance  = createOrGet("[p" + act.getLabel() + "]");
 			
 		return appearance;
 	}

@@ -1,6 +1,8 @@
 package eca.construct;
 
 import java.util.List;
+
+import tracing.ITracer;
 import eca.construct.egomem.Displacement;
 import eca.ss.Appearance;
 import eca.ss.enaction.Act;
@@ -46,7 +48,10 @@ public interface Action
 	 * @param appearance The appearance on which the action is performed.
 	 * @return The Act that will likely result from performing this action on this appearance.
 	 */
-	public Act predictAct(Appearance appearance);
+	public Appearance predictPostAppearance(Appearance preAppearance);
+	
+	public void trace(ITracer tracer, Object e);
+
 	
 	/**
 	 * @param appearance The appearance on which the action is performed.
