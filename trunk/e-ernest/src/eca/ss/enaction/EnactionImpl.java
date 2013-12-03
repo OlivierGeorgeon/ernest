@@ -14,6 +14,7 @@ import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
+import eca.construct.experiment.Experiment;
 import eca.ss.Appearance;
 import eca.ss.AppearanceImpl;
 import ernest.IEffect;
@@ -68,8 +69,7 @@ public class EnactionImpl implements Enaction
 	//private Area initialArea = AreaImpl.createOrGet(new Point3f());
 	
 	private Appearance appearance = null;
-	private Appearance anticipatedAppearance = null;
-	private float confidence = 0.5f;
+	private Experiment experiment = null;
 
 	private Displacement displacement = null;
 	
@@ -297,10 +297,15 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
 			if (this.displacement != null)
 				tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
+			if (this.experiment != null){
+				this.experiment.trace(tracer, e);
+				Appearance predictedAppearance = this.experiment.predictPostAppearance();
+				float confidence = this.experiment.getConfidence();
+				if (!this.appearance.equals(predictedAppearance) && confidence > .7f)
+					tracer.addSubelement(e, "incorrect");
+			}
 			if (this.appearance != null){
 				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
-				if (!this.appearance.equals(this.anticipatedAppearance) && this.confidence > .7f)
-					tracer.addSubelement(e, "incorrect");
 			}
 		}
 	}
@@ -396,20 +401,13 @@ public class EnactionImpl implements Enaction
 		return this.salientActInstance;
 	}
 
-	public Appearance getAnticipatedAppearance() {
-		return anticipatedAppearance;
+	public Experiment getExperiment() {
+		return experiment;
 	}
 
-	public void setAnticipatedAppearance(Appearance anticipatedAppearance) {
-		this.anticipatedAppearance = anticipatedAppearance;
+	public void setExperiment(Experiment anticipatedAppearance) {
+		this.experiment = anticipatedAppearance;
 	}
 
-	public float getConfidence() {
-		return confidence;
-	}
-
-	public void setConfidence(float confidence) {
-		this.confidence = confidence;
-	}
 
 }

@@ -159,13 +159,13 @@ public class ExperimentImpl implements Experiment {
 		return ! acts.isEmpty();
 	}
 
-	public void trace(ITracer tracer) {
+	public void trace(ITracer tracer, Object e) {
 		
-		Object e = tracer.addEventElement("experiment");
-		tracer.addSubelement(e, "label", this.label);
-		this.appearance.trace(tracer, e);
-		this.action.trace(tracer, e);
-		Object pa = tracer.addSubelement(e, "post_appearances");
+		Object a = tracer.addSubelement(e, "experiment");
+		tracer.addSubelement(a, "label", this.label);
+		this.appearance.trace(tracer, a);
+		this.action.trace(tracer, a);
+		Object pa = tracer.addSubelement(a, "post_appearances");
 		for (Map.Entry<Appearance,Integer> entry : this.postAppearances.entrySet()){
 			tracer.addSubelement(pa, "post_appearance", entry.getKey().getLabel() + " weight: " + entry.getValue().intValue() );
 		}
