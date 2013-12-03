@@ -197,4 +197,9 @@ public interface Enaction
 	public void setAppearance(Appearance appearance);
 	public Appearance getAppearance();
 	
+	public void setAnticipatedAppearance(Appearance appearance);
+	public Appearance getAnticipatedAppearance();
+	public void setConfidence(float confidence);
+	public float getConfidence();
+	
 }

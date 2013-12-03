@@ -4,6 +4,8 @@ package eca.construct.experiment;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.egomem.Displacement;
 import eca.ss.Appearance;
@@ -23,6 +25,8 @@ public class ExperimentImpl implements Experiment {
 	private Map<Act , Integer> acts = new HashMap<Act , Integer>() ;
 	private Map<Displacement , Integer> displacements = new HashMap<Displacement , Integer>() ;
 	private Map<Appearance , Integer> postAppearances = new HashMap<Appearance , Integer>() ;
+	private int count = 0;
+	private float confidence = 0.5f;
 
 	/**
 	 * @param preAppearance The Appearance.
@@ -70,6 +74,12 @@ public class ExperimentImpl implements Experiment {
 			postAppearances.put(appearance, postAppearances.get(appearance) + 1);
 		else
 			postAppearances.put(appearance, 1);
+		this.count++;
+	}
+	
+	public float getConfidence(){
+		
+		return this.confidence;
 	}
 
 	/**
@@ -110,17 +120,17 @@ public class ExperimentImpl implements Experiment {
 		return EXPERIMENTS.values();
 	}
 
-	public Act predictAct() {
-		int max = -1;
-		Act predictAct = null;
-		for (Map.Entry<Act, Integer> entry : acts.entrySet())
-			if (entry.getValue() > max){
-				predictAct = entry.getKey();
-				max = entry.getValue();
-			}
-		
-		return predictAct;
-	}
+//	public Act predictAct() {
+//		int max = -1;
+//		Act predictAct = null;
+//		for (Map.Entry<Act, Integer> entry : acts.entrySet())
+//			if (entry.getValue() > max){
+//				predictAct = entry.getKey();
+//				max = entry.getValue();
+//			}
+//		
+//		return predictAct;
+//	}
 	
 	public Displacement predictDisplacement() {
 		int max = 0;
@@ -141,11 +151,24 @@ public class ExperimentImpl implements Experiment {
 				predictPostAppearance = entry.getKey();
 				max = entry.getValue();
 			}		
+		this.confidence = (float)max / (float)count;
 		return predictPostAppearance;
 	}
 	
 	public boolean isTested(){
 		return ! acts.isEmpty();
+	}
+
+	public void trace(ITracer tracer) {
+		
+		Object e = tracer.addEventElement("experiment");
+		tracer.addSubelement(e, "label", this.label);
+		this.appearance.trace(tracer, e);
+		this.action.trace(tracer, e);
+		Object pa = tracer.addSubelement(e, "post_appearances");
+		for (Map.Entry<Appearance,Integer> entry : this.postAppearances.entrySet()){
+			tracer.addSubelement(pa, "post_appearance", entry.getKey().getLabel() + " weight: " + entry.getValue().intValue() );
+		}
 	}
 
 }

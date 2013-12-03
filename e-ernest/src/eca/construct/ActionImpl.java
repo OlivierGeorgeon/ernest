@@ -13,6 +13,7 @@ import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.ExperimentImpl;
 import eca.ss.Appearance;
+import eca.ss.AppearanceImpl;
 import eca.ss.enaction.Act;
 
 /**
@@ -141,14 +142,24 @@ public class ActionImpl implements Action {
 		return ret;
 	}
 
-	public Act predictAct(Appearance appearance) {
-		Act predictAct = null;
-		if (appearance != null)
-			predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
-		if (predictAct == null)
-			predictAct = acts.get(0);
-		return predictAct;
+	public Appearance predictPostAppearance(Appearance preAppearance) {
+		Appearance postAppearance = null;
+		if (preAppearance != null)
+			postAppearance = ExperimentImpl.createOrGet(preAppearance, this).predictPostAppearance();
+		if (postAppearance == null)
+			postAppearance = AppearanceImpl.evoke(acts.get(0));
+		return postAppearance;
 	}
+
+
+//	public Act predictAct(Appearance appearance) {
+//		Act predictAct = null;
+//		if (appearance != null)
+//			predictAct = ExperimentImpl.createOrGet(appearance, this).predictAct();
+//		if (predictAct == null)
+//			predictAct = acts.get(0);
+//		return predictAct;
+//	}
 
 //	public Displacement predictDisplacement(Appearance appearance) {
 //		Displacement predictDisplacement = ExperimentImpl.createOrGet(appearance, this).predictDisplacement();
@@ -164,6 +175,15 @@ public class ActionImpl implements Action {
 //		return postAppearance;
 //	}
 	
+	public void trace(ITracer tracer, Object e) {
+		
+		String actList = "";
+		for (Act act : this.acts)
+			actList += ", " + act.getLabel();
+
+		tracer.addSubelement(e, "action", this.label + actList);
+	}
+
 	public String toString(){
 		String label = getLabel();
 		for (Act primitive : this.acts)

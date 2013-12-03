@@ -4,9 +4,12 @@ package eca.ss;
 import java.util.ArrayList;
 import java.util.List;
 import tracing.ITracer;
+import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
+import eca.construct.experiment.Experiment;
+import eca.construct.experiment.ExperimentImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
@@ -100,6 +103,8 @@ public class Imos implements IImos
 		Act enactedTopAct  = enaction.getTopEnactedAct();
 		ArrayList<Act> previousLearningContext = enaction.getPreviousLearningContext();
 		ArrayList<Act> initialLearningContext = enaction.getInitialLearningContext();
+		Appearance preAppearance = enaction.getAppearance();
+		Action intendedAction = enaction.getIntendedAction();
 		
 		// if we are not on startup
 		if (enactedTopAct != null)
@@ -128,7 +133,7 @@ public class Imos implements IImos
 					//	m_tracer.addEventElement("action_failed", "Intended_action: " + enaction.getIntendedAction().getLabel() + " enacted_act: " + enactedTopAct);
 					//}
 				//}
-				// TODO Make sure that alternative primitive actions get merged eventuall. This is currenlty not the case. 	
+				// TODO Make sure that alternative primitive actions get merged eventually. This is currently not the case. 	
 				ActionImpl.absorbIdenticalAction(enaction.getIntendedAction(), m_tracer);
 				//enaction.getEnactedPrimitiveAct().setDisplacement(enaction.getDisplacement());
 			}
@@ -152,8 +157,13 @@ public class Imos implements IImos
 
 			//enaction.setFinalContext(topEnactedAct, performedAct, streamContextList);			
 			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);		
-			Appearance appearance = AppearanceImpl.evoke(enactedTopAct);
-			enaction.setAppearance(appearance);
+			Appearance postAppearance = AppearanceImpl.evoke(enactedTopAct);
+			if (preAppearance != null){
+				Experiment experiment = ExperimentImpl.createOrGet(preAppearance, intendedAction);
+				experiment.incPostAppearanceCounter(postAppearance);
+				experiment.trace(m_tracer);
+			}
+			enaction.setAppearance(postAppearance);
 		}
 		//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
 		enaction.setNbActLearned(m_nbSchemaLearned);

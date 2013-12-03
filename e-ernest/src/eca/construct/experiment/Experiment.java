@@ -1,5 +1,6 @@
 package eca.construct.experiment;
 
+import tracing.ITracer;
 import eca.construct.egomem.Displacement;
 import eca.ss.Appearance;
 import eca.ss.enaction.Act;
@@ -35,7 +36,7 @@ public interface Experiment {
 	/**
 	 * @return The act most probably resulting from this experiment.
 	 */
-	public Act predictAct();
+	//public Act predictAct();
 
 	/**
 	 * @return The displacement most probably resulting from this experiment
@@ -51,5 +52,9 @@ public interface Experiment {
 	 * @return True if this experiment has been made. 
 	 */
 	public boolean isTested();
+	
+	public float getConfidence();
+	
+	public void trace(ITracer tracer);
 
 }
