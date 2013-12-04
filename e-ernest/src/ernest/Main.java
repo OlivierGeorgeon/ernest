@@ -82,8 +82,7 @@ public class Main
 			if (enactedActInstance != null)
 				actInstances.add(enactedActInstance);
 			
-			intendedInteracton = ernest.step(actInstances, new Transform3D());
-			//effect = environment.enact(intendedInteracton);
+			intendedInteracton = ernest.step(actInstances, environment.getTransformation());
 			environment.trace(tracer);
 			enactedActInstance = environment.enact(intendedInteracton);
 						

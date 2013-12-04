@@ -13,7 +13,7 @@ import utils.ErnestUtils;
  */
 public class DisplacementImpl implements Displacement {
 
-	private static Map<String , Displacement> TRANSFORMATIONS = new HashMap<String , Displacement>() ;
+	private static Map<String , Displacement> DISPLACEMENTS = new HashMap<String , Displacement>() ;
 
 	private String label;
 	private Transform3D transform3D = new Transform3D();
@@ -27,9 +27,9 @@ public class DisplacementImpl implements Displacement {
 	 */
 	public static Displacement createOrGet(Area preArea, Area postArea){
 		String label = createKey(preArea, postArea);
-		if (!TRANSFORMATIONS.containsKey(label))
-			TRANSFORMATIONS.put(label, new DisplacementImpl(preArea, postArea));			
-		return TRANSFORMATIONS.get(label);
+		if (!DISPLACEMENTS.containsKey(label))
+			DISPLACEMENTS.put(label, new DisplacementImpl(preArea, postArea));			
+		return DISPLACEMENTS.get(label);
 	}
 	
 	private static String createKey(Area preArea, Area postArea){
@@ -40,19 +40,19 @@ public class DisplacementImpl implements Displacement {
 	 * @param t The transformation that defines this displacement
 	 * @return The displacement
 	 */
-//	public static Displacement createOrGet(Transform3D t){
-//		String label = createKey(t);
-//		if (!TRANSFORMATIONS.containsKey(label))
-//			TRANSFORMATIONS.put(label, new DisplacementImpl(t));			
-//		return TRANSFORMATIONS.get(label);
-//	}
+	public static Displacement createOrGet(Transform3D t){
+		String label = createKey(t);
+		if (!DISPLACEMENTS.containsKey(label))
+			DISPLACEMENTS.put(label, new DisplacementImpl(t));			
+		return DISPLACEMENTS.get(label);
+	}
 	
 	/**
 	 * @param t The transformation that defines this displacement
 	 * @return The displacement
 	 */
 	private static String createKey(Transform3D t) {
-		String key = "";
+		String key = "stay";
 		float angle = ErnestUtils.angle(t);
 		if (Math.abs(angle) > .1){
 			if ( angle > 0)	key = "^";
@@ -62,6 +62,13 @@ public class DisplacementImpl implements Displacement {
 			if (ErnestUtils.translationX(t) > .5) key =".";
 			else key = "<";
 		}
+		
+		// Only distinguish between stay and move.
+		if (t.epsilonEquals(new Transform3D(), .1f))
+			key = "stay";
+		else
+			key = "move";
+		
 		return key;
 	}
 

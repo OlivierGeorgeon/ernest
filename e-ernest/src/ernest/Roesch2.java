@@ -1,5 +1,6 @@
 package ernest;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
 import eca.ActInstance;
@@ -22,6 +23,7 @@ public class Roesch2 implements IEnvironment
 {
 	private static final int WIDTH = 10;	
 	private int m_x = 0;
+	private Transform3D transform = new Transform3D();
 	
 	private int[] board = {6, 3, 5, 4, 7, 3, 5, 3, 9, 5};	
 
@@ -179,7 +181,12 @@ public class Roesch2 implements IEnvironment
 		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, new Point3f());
 		Aspect aspect = AspectImpl.createOrGet(effect.getColor());
 		enactedActInstance.setAspect(aspect);
+		this.transform = effect.getTransformation();
 		return enactedActInstance;
+	}
+
+	public Transform3D getTransformation(){
+		return this.transform;
 	}
 
 }

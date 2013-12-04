@@ -164,13 +164,18 @@ public class Imos implements IImos
 //				Experiment experiment = ExperimentImpl.createOrGet(preAppearance, intendedAction);
 //				experiment.incPostAppearanceCounter(postAppearance);
 //			}
-			enaction.setAppearance(postAppearance);
-		//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
-		enaction.setNbActLearned(m_nbSchemaLearned);
-		enaction.traceTerminate(m_tracer);
-		Experiment experiment = enaction.getExperiment();
-		if (experiment != null)
-			experiment.incPostAppearanceCounter(postAppearance);
+			
+			if (enaction.getDisplacement().getLabel().equals("stay"))
+				enaction.setAppearance(postAppearance);
+			else 
+				enaction.setAppearance(null);
+			
+			//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
+			enaction.setNbActLearned(m_nbSchemaLearned);
+			enaction.traceTerminate(m_tracer);
+			Experiment experiment = enaction.getExperiment();
+			if (experiment != null)
+				experiment.incPostAppearanceCounter(postAppearance);
 		}		
 	}
 
