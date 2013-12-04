@@ -37,7 +37,7 @@ public class Roesch2 implements IEnvironment
 	 * @return true if the agent went up
 	 */
 	private IEffect step(){
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 		if (m_x < WIDTH -1){
@@ -60,7 +60,7 @@ public class Roesch2 implements IEnvironment
 	 * @return true if the next item is greater than the current item
 	 */
 	private IEffect test_up(){
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 		if (m_x < WIDTH -1){
@@ -82,7 +82,7 @@ public class Roesch2 implements IEnvironment
 	 * @return true if the next item is greater than the current item
 	 */
 	private IEffect invert(){
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 		int temp = board[m_x];

@@ -11,7 +11,7 @@ import eca.ss.enaction.Act;
 import tracing.ITracer;
 import utils.ErnestUtils;
 
-public class Effect implements IEffect 
+public class EffectImpl implements IEffect 
 {
 	private String m_label = "";
 	private Point3f m_location = new Point3f();
