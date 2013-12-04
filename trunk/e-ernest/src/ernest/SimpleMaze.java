@@ -121,7 +121,7 @@ public class SimpleMaze implements IEnvironment
 	 */
 	private IEffect right()
 	{
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFFFFFF);
 		
@@ -145,7 +145,7 @@ public class SimpleMaze implements IEnvironment
 	 */
 	private IEffect left()
 	{
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFFFFFF);
 		
@@ -169,7 +169,7 @@ public class SimpleMaze implements IEnvironment
 	 */
 	private IEffect move()
 	{
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 
@@ -199,7 +199,7 @@ public class SimpleMaze implements IEnvironment
 	 */
 	private IEffect Touch()
 	{
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("t");
 		effect.setColor(0x008000);
 
@@ -218,7 +218,7 @@ public class SimpleMaze implements IEnvironment
 	 */
 	private IEffect TouchRight()
 	{
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("t");
 		effect.setColor(0x008000);
 
@@ -237,7 +237,7 @@ public class SimpleMaze implements IEnvironment
 	 */
 	private IEffect TouchLeft()
 	{
-		IEffect effect = new Effect();
+		IEffect effect = new EffectImpl();
 		effect.setLabel("t");
 		effect.setColor(0x008000);
 	
