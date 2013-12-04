@@ -10,7 +10,7 @@ import tracing.ITracer;
  * Or an effect expected after simulating a move in spatial memory.
  * @author ogeorgeon
  */
-public interface IEffect 
+public interface Effect 
 {
 	
 	/**

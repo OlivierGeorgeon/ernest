@@ -82,7 +82,7 @@ public class Ernest implements IErnest
 		m_decider.setTracer(m_tracer);
 	}
 
-	public String step(IEffect input) 
+	public String step(Effect input) 
 	{
 		
 		// Trace a new interaction cycle.

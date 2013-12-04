@@ -17,7 +17,7 @@ import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.ss.Appearance;
 import eca.ss.AppearanceImpl;
-import ernest.IEffect;
+import ernest.Effect;
 
 /**
  * A structure used to handle the enaction of an interaction
@@ -318,7 +318,7 @@ public class EnactionImpl implements Enaction
 //		return this.displacement;
 //	}
 
-	public void track(IEffect input) {
+	public void track(Effect input) {
 		
 		Transform3D t = input.getTransformation();
 		Primitive p = PrimitiveImpl.get(">_");

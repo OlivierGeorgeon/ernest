@@ -11,7 +11,7 @@ import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import eca.ss.Appearance;
-import ernest.IEffect;
+import ernest.Effect;
 
 /**
  * A structure used to manage the enaction of a scheme in the real world
@@ -24,7 +24,7 @@ public interface Enaction
 	 * Track the current enaction based on Ernest's input.
 	 * @param input Ernest's input.
 	 */
-	public void track(IEffect input);
+	public void track(Effect input);
 	
 	/**
 	 * Track the current enaction based on the list of places received from the environment
