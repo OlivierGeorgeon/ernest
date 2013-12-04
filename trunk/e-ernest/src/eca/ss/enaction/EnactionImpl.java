@@ -14,6 +14,7 @@ import eca.construct.Area;
 import eca.construct.AreaImpl;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Displacement;
+import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.Experiment;
 import eca.ss.Appearance;
 import eca.ss.AppearanceImpl;
@@ -257,6 +258,7 @@ public class EnactionImpl implements Enaction
 			//tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
 			//this.phenomenonInstance.getPhenomenonType().trace(tracer, e);
 			tracer.addSubelement(e, "aspect", this.salientActInstance.getAspect().toString());
+			tracer.addSubelement(e, "displacement", this.displacement.getLabel());
 		}
 	}
 
@@ -294,19 +296,22 @@ public class EnactionImpl implements Enaction
 			for (Act i : m_finalLearningContext)	
 				tracer.addSubelement(learning, "interaction", i.getLabel());
 
-			tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
-			if (this.displacement != null)
-				tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
-			if (this.experiment != null){
-				this.experiment.trace(tracer, e);
-				Appearance predictedAppearance = this.experiment.predictPostAppearance();
-				float confidence = this.experiment.getConfidence();
-				if (!this.appearance.equals(predictedAppearance) && confidence > .7f)
-					tracer.addSubelement(e, "incorrect");
-			}
-			if (this.appearance != null){
+			//tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
+			
+			if (this.displacement != null && this.displacement.getLabel().equals("stay"))
 				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
-			}
+				
+				//tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
+//			if (this.experiment != null){
+//				this.experiment.trace(tracer, e);
+//				Appearance predictedAppearance = this.experiment.predictPostAppearance();
+//				float confidence = this.experiment.getConfidence();
+//				if (!this.appearance.equals(predictedAppearance) && confidence > .7f)
+//					tracer.addSubelement(e, "incorrect");
+//			}
+//			if (this.appearance != null){
+//				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
+//			}
 		}
 	}
 
@@ -340,6 +345,8 @@ public class EnactionImpl implements Enaction
 	public void track(List<ActInstance> actInstances, Transform3D transform, PhenomenonInstance focusPhenomenonInstance){
 		
 		this.actInstances = actInstances;
+		this.displacement = DisplacementImpl.createOrGet(transform);
+		this.transformation.set(transform);
 		
 		this.salientActInstance  = null;
 		
@@ -359,10 +366,8 @@ public class EnactionImpl implements Enaction
 		
 			this.m_enactedPrimitiveAct =this.salientActInstance.getAct();
 			this.m_enactedPrimitiveAct.setColor(this.salientActInstance.getDisplayCode());
-			//this.appearance = AppearanceImpl.evoke(this.m_enactedPrimitiveAct);
+			this.m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
 		}
-		
-		this.transformation.set(transform);
 	}
 	
 	public List<ActInstance> getEnactedPlaces(){
@@ -407,6 +412,10 @@ public class EnactionImpl implements Enaction
 
 	public void setExperiment(Experiment anticipatedAppearance) {
 		this.experiment = anticipatedAppearance;
+	}
+
+	public Displacement getDisplacement() {
+		return displacement;
 	}
 
 

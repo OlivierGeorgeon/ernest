@@ -1,5 +1,6 @@
 package ernest;
 
+import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
 import tracing.ITracer;
@@ -8,6 +9,7 @@ import eca.ActInstance;
 import eca.ActInstanceImpl;
 import eca.Primitive;
 import eca.PrimitiveImpl;
+import eca.construct.AspectImpl;
 
 /**
  * This class implements the Small Loop Environment
@@ -27,6 +29,8 @@ public class SimpleMaze implements IEnvironment
 	private static final int ORIENTATION_RIGHT = 1;
 	private static final int ORIENTATION_DOWN  = 2;
 	private static final int ORIENTATION_LEFT  = 3;
+	
+	private Transform3D transform = new Transform3D();
 
 	// The Small Loop Environment
 	
@@ -78,7 +82,9 @@ public class SimpleMaze implements IEnvironment
 	public ActInstance enact(Primitive intendedPrimitive){
 		Effect effect = enact(intendedPrimitive.getLabel());
 		Primitive enactedPrimitive = PrimitiveImpl.createOrGet(intendedPrimitive.getLabel().substring(0,1) + effect.getLabel(), 0);
-		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, new Point3f());
+		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, effect.getLocation());
+		enactedActInstance.setAspect(AspectImpl.createOrGet(effect.getColor()));
+		this.transform = effect.getTransformation();
 		return enactedActInstance;
 	}
 
@@ -131,6 +137,7 @@ public class SimpleMaze implements IEnvironment
 
 		effect.setLocation(new Point3f());
 		effect.setTransformation((float)Math.PI/2, 0f);
+		effect.setColor(0xFFFFFF);
 
 		// In the Simple Maze, the effect may vary according to the wall in front after turning
 //		if (((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
@@ -157,6 +164,7 @@ public class SimpleMaze implements IEnvironment
 		
 		effect.setLocation(new Point3f());
 		effect.setTransformation((float)-Math.PI/2, 0f);
+		effect.setColor(0xFFFFFF);
 
 		// In the Simple Maze, the effect may vary according to the wall in front after turning
 //		if (((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
@@ -194,10 +202,12 @@ public class SimpleMaze implements IEnvironment
 		if (effect.getLabel().equals("t")){
 			effect.setLocation(new Point3f());
 			effect.setTransformation(0, -1f);
+			effect.setColor(0xFFFFFF);
 		}
 		else{
 			effect.setLocation(new Point3f(1, 0, 0));
 			effect.setTransformation(0f, 0f);
+			effect.setColor(0xFF0000);
 		}
 		//if (!status)
 		//	System.out.println("Ouch");
@@ -272,14 +282,14 @@ public class SimpleMaze implements IEnvironment
 	}
 
 	public void initErnest(IErnest ernest) {
-		ernest.addInteraction("-t", -2); // Touch wall
-		ernest.addInteraction("-f", -1); // Touch empty
-		ernest.addInteraction("\\t", -2);// Touch right wall
-		ernest.addInteraction("\\f", -1);// Touch right empty
-		ernest.addInteraction("/t", -2); // Touch left wall
-		ernest.addInteraction("/f", -1); // Touch left empty
+		ernest.addInteraction("-tB", -2); // Touch wall
+		ernest.addInteraction("-fB", -1); // Touch empty
+		ernest.addInteraction("\\tC", -2);// Touch right wall
+		ernest.addInteraction("\\fC", -1);// Touch right empty
+		ernest.addInteraction("/tA", -2); // Touch left wall
+		ernest.addInteraction("/fA", -1); // Touch left empty
 		ernest.addInteraction(">t",  5); // Move
-		ernest.addInteraction(">f", -10);// Bump		
+		ernest.addInteraction(">fB", -10);// Bump		
 		ernest.addInteraction("vt", -3); // Right toward empty
 		ernest.addInteraction("vf", -3); // Right toward wall		
 		ernest.addInteraction("^t", -3); // Left toward empty
@@ -304,6 +314,10 @@ public class SimpleMaze implements IEnvironment
 	public void trace(ITracer tracer) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public Transform3D getTransformation(){
+		return this.transform;
 	}
 
 }

@@ -200,5 +200,6 @@ public interface Enaction
 	
 	public void setExperiment(Experiment experiment);
 	public Experiment getExperiment();
-	
+
+	public Displacement getDisplacement();
 }
