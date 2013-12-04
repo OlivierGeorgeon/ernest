@@ -55,7 +55,7 @@ public class Roesch2 implements IEnvironment
 		if (effect.getLabel().equals("t"))
 			effect.setColor(0xFFFFFF);
 		
-		effect.setLocation(new Point3f(0, 0, 0));
+		effect.setLocation(new Point3f(1, 0, 0));
 		effect.setTransformation(0f, -1f);
 
 		return effect;

@@ -46,4 +46,5 @@ public interface Appearance {
 	public Area getArea();
 	
 	public void trace(ITracer tracer, Object e);
+	
 }

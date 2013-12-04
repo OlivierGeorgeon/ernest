@@ -200,7 +200,7 @@ public class SimpleMaze implements IEnvironment
 				{m_x--; effect.setLabel("t"); effect.setColor(0xFFFFFF);}
 
 		if (effect.getLabel().equals("t")){
-			effect.setLocation(new Point3f());
+			effect.setLocation(new Point3f(1, 0, 0));
 			effect.setTransformation(0, -1f);
 			effect.setColor(0xFFFFFF);
 		}
@@ -288,7 +288,7 @@ public class SimpleMaze implements IEnvironment
 		ernest.addInteraction("\\fC", -1);// Touch right empty
 		ernest.addInteraction("/tA", -2); // Touch left wall
 		ernest.addInteraction("/fA", -1); // Touch left empty
-		ernest.addInteraction(">t",  5); // Move
+		ernest.addInteraction(">tB",  5); // Move
 		ernest.addInteraction(">fB", -10);// Bump		
 		ernest.addInteraction("vt", -3); // Right toward empty
 		ernest.addInteraction("vf", -3); // Right toward wall		
