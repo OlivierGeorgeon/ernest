@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import tracing.ITracer;
+import eca.construct.Action;
 import eca.construct.Area;
 import eca.construct.PhenomenonType;
 import eca.ss.enaction.Act;
@@ -66,6 +67,20 @@ public class AppearanceImpl implements Appearance {
 			appearance  = createOrGet("[p" + act.getLabel() + "]");
 			
 		return appearance;
+	}
+	
+	public static void merge(Appearance preAppearance, Appearance postAppearance, ITracer tracer){
+		
+		if (!postAppearance.equals(preAppearance)){
+			for (Act act : preAppearance.getActs())
+				postAppearance.addAct(act);
+			
+			OBSERVATIONS.remove(preAppearance.getLabel());
+	
+			if (tracer != null){
+				tracer.addEventElement("merge_appearance", postAppearance.getLabel() + " absorbs " + preAppearance.getLabel());
+			}
+		}
 	}
 	
 	private static String createKey(PhenomenonType phenomenonType, Area area) {
