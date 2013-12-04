@@ -16,7 +16,7 @@ public interface IEnvironment
 	 * @param s The primitive schema that Ernest has chosen to enact.
 	 * @return The effect that results from the enaction of the primitive schema in the environment.
 	 */
-	public IEffect enact(String s);
+	//public IEffect enact(String s);
 	
 	public ActInstance enact(Primitive primitive);
 	

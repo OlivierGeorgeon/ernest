@@ -3,10 +3,7 @@ package ernest;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-
 import tracing.ITracer;
-
-import eca.ss.enaction.Act;
 
 /**
  * An effect sensed by Ernest after making a move in the environment.
@@ -16,8 +13,16 @@ import eca.ss.enaction.Act;
 public interface IEffect 
 {
 	
+	/**
+	 * @param label The label of the enacted primitive interaction.
+	 */
 	public void setEnactedInteractionLabel(String label); 
+
+	/**
+	 * @return The label of the primitive interaction.
+	 */
 	public String getEnactedInteractionLabel(); 
+	
 	/**
 	 * @param label The elementary effect of the enacted primitive scheme.
 	 */
@@ -37,11 +42,6 @@ public interface IEffect
 	 * @return The location concerned by the enacted scheme.
 	 */
 	public Point3f getLocation();
-	
-	/**
-	 * @param transformation The agent's movement during the scheme enaction.
-	 */
-	//public void setTransformation(Transform3D transformation);
 	
 	/**
 	 * Set the transformation caused by the scheme enaction
