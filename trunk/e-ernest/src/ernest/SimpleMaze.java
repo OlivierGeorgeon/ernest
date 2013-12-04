@@ -82,7 +82,7 @@ public class SimpleMaze implements IEnvironment
 		return enactedActInstance;
 	}
 
-	public IEffect enact(String intendedInteraction) 
+	private IEffect enact(String intendedInteraction) 
 	{
 		IEffect effect = null;
 		String s = intendedInteraction.substring(0,1);
@@ -125,10 +125,12 @@ public class SimpleMaze implements IEnvironment
 		effect.setLabel("f");
 		effect.setColor(0xFFFFFF);
 		
-		m_o++;
-		
+		m_o++;		
 		if (m_o > ORIENTATION_LEFT)
 			m_o = ORIENTATION_UP;
+
+		effect.setLocation(new Point3f());
+		effect.setTransformation((float)Math.PI/2, 0f);
 
 		// In the Simple Maze, the effect may vary according to the wall in front after turning
 //		if (((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
@@ -150,9 +152,11 @@ public class SimpleMaze implements IEnvironment
 		effect.setColor(0xFFFFFF);
 		
 		m_o--;
-		
 		if (m_o < 0)
 			m_o = ORIENTATION_LEFT;
+		
+		effect.setLocation(new Point3f());
+		effect.setTransformation((float)-Math.PI/2, 0f);
 
 		// In the Simple Maze, the effect may vary according to the wall in front after turning
 //		if (((m_o == ORIENTATION_UP) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
@@ -187,6 +191,14 @@ public class SimpleMaze implements IEnvironment
 		if ((m_o == ORIENTATION_LEFT) && ( m_x > 0 ) && (m_board[m_y][m_x - 1] == ' ' ))
 				{m_x--; effect.setLabel("t"); effect.setColor(0xFFFFFF);}
 
+		if (effect.getLabel().equals("t")){
+			effect.setLocation(new Point3f());
+			effect.setTransformation(0, -1f);
+		}
+		else{
+			effect.setLocation(new Point3f(1, 0, 0));
+			effect.setTransformation(0f, 0f);
+		}
 		//if (!status)
 		//	System.out.println("Ouch");
 
@@ -209,6 +221,9 @@ public class SimpleMaze implements IEnvironment
 			((m_o == ORIENTATION_LEFT) && (m_x > 0) && (m_board[m_y][m_x - 1] == ' ')))
 		   	{effect.setLabel("f");effect.setColor(0xFFFFFF);}
 
+		effect.setLocation(new Point3f(1, 0, 0));
+		effect.setTransformation(0f, 0f);
+
 		return effect;
 	}
 	
@@ -228,6 +243,9 @@ public class SimpleMaze implements IEnvironment
 			((m_o == ORIENTATION_LEFT) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')))
 			{effect.setLabel("f");effect.setColor(0xFFFFFF);}
 
+		effect.setLocation(new Point3f(0, -1, 0));
+		effect.setTransformation(0f, 0f);
+
 		return effect;
 	}
 
@@ -246,6 +264,9 @@ public class SimpleMaze implements IEnvironment
 			((m_o == ORIENTATION_RIGHT) && (m_y > 0) && (m_board[m_y - 1][m_x] == ' ')) ||
 			((m_o == ORIENTATION_LEFT) && (m_y < HEIGHT) && (m_board[m_y + 1][m_x] == ' ')))
 			{effect.setLabel("f");effect.setColor(0xFFFFFF);}
+
+		effect.setLocation(new Point3f(0, 1, 0));
+		effect.setTransformation(0f, 0f);
 
 		return effect;
 	}
