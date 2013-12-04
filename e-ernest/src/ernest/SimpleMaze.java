@@ -76,15 +76,15 @@ public class SimpleMaze implements IEnvironment
 	 * @return The boolean feedback resulting from the schema enaction.
 	 */
 	public ActInstance enact(Primitive intendedPrimitive){
-		IEffect effect = enact(intendedPrimitive.getLabel());
+		Effect effect = enact(intendedPrimitive.getLabel());
 		Primitive enactedPrimitive = PrimitiveImpl.createOrGet(intendedPrimitive.getLabel().substring(0,1) + effect.getLabel(), 0);
 		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, new Point3f());
 		return enactedActInstance;
 	}
 
-	private IEffect enact(String intendedInteraction) 
+	private Effect enact(String intendedInteraction) 
 	{
-		IEffect effect = null;
+		Effect effect = null;
 		String s = intendedInteraction.substring(0,1);
 		
 		if (s.equals(">"))
@@ -119,9 +119,9 @@ public class SimpleMaze implements IEnvironment
 	/**
 	 * Turn to the right. 
 	 */
-	private IEffect right()
+	private Effect right()
 	{
-		IEffect effect = new EffectImpl();
+		Effect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFFFFFF);
 		
@@ -145,9 +145,9 @@ public class SimpleMaze implements IEnvironment
 	/**
 	 * Turn to the left. 
 	 */
-	private IEffect left()
+	private Effect left()
 	{
-		IEffect effect = new EffectImpl();
+		Effect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFFFFFF);
 		
@@ -171,9 +171,9 @@ public class SimpleMaze implements IEnvironment
 	/**
 	 * Move forward to the direction of the current orientation.
 	 */
-	private IEffect move()
+	private Effect move()
 	{
-		IEffect effect = new EffectImpl();
+		Effect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 
@@ -209,9 +209,9 @@ public class SimpleMaze implements IEnvironment
 	 * Touch the square forward.
 	 * Succeeds if there is a wall, fails otherwise 
 	 */
-	private IEffect Touch()
+	private Effect Touch()
 	{
-		IEffect effect = new EffectImpl();
+		Effect effect = new EffectImpl();
 		effect.setLabel("t");
 		effect.setColor(0x008000);
 
@@ -231,9 +231,9 @@ public class SimpleMaze implements IEnvironment
 	 * Touch the square to the right.
 	 * Succeeds if there is a wall, fails otherwise. 
 	 */
-	private IEffect TouchRight()
+	private Effect TouchRight()
 	{
-		IEffect effect = new EffectImpl();
+		Effect effect = new EffectImpl();
 		effect.setLabel("t");
 		effect.setColor(0x008000);
 
@@ -253,9 +253,9 @@ public class SimpleMaze implements IEnvironment
 	 * Touch the square forward.
 	 * Succeeds if there is a wall, fails otherwise 
 	 */
-	private IEffect TouchLeft()
+	private Effect TouchLeft()
 	{
-		IEffect effect = new EffectImpl();
+		Effect effect = new EffectImpl();
 		effect.setLabel("t");
 		effect.setColor(0x008000);
 	

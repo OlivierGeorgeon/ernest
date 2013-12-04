@@ -44,7 +44,7 @@ public interface IErnest
 	 * @param effect The effect received from the environment.
 	 * @return The next primitive schema to enact.
 	 */
-	public String step(IEffect effect);
+	public String step(Effect effect);
 	
 	public Primitive step(List<ActInstance> actInstances, Transform3D transform);
 	

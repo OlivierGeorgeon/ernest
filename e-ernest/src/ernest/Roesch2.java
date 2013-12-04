@@ -36,8 +36,8 @@ public class Roesch2 implements IEnvironment
 	 * Step forward
 	 * @return true if the agent went up
 	 */
-	private IEffect step(){
-		IEffect effect = new EffectImpl();
+	private Effect step(){
+		Effect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 		if (m_x < WIDTH -1){
@@ -62,8 +62,8 @@ public class Roesch2 implements IEnvironment
 	/**
 	 * @return true if the next item is greater than the current item
 	 */
-	private IEffect test_up(){
-		IEffect effect = new EffectImpl();
+	private Effect test_up(){
+		Effect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 		if (m_x < WIDTH -1){
@@ -87,8 +87,8 @@ public class Roesch2 implements IEnvironment
 	 * Invert the next item and the current item
 	 * @return true if the next item is greater than the current item
 	 */
-	private IEffect invert(){
-		IEffect effect = new EffectImpl();
+	private Effect invert(){
+		Effect effect = new EffectImpl();
 		effect.setLabel("f");
 		effect.setColor(0xFF0000);
 		int temp = board[m_x];
@@ -117,9 +117,9 @@ public class Roesch2 implements IEnvironment
 		return effect;		
 	}
 	
-	public IEffect enact(String s) 
+	public Effect enact(String s) 
 	{
-		IEffect effect = null;
+		Effect effect = null;
 		
 		if (s.equals(">"))
 			effect = step();
@@ -174,7 +174,7 @@ public class Roesch2 implements IEnvironment
 	}
 
 	public ActInstance enact(Primitive primitive) {
-		IEffect effect = enact(primitive.getLabel().substring(0,1));
+		Effect effect = enact(primitive.getLabel().substring(0,1));
 		Primitive enactedPrimitive = PrimitiveImpl.createOrGet(primitive.getLabel().substring(0,1) + effect.getLabel(), 0);
 		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, new Point3f());
 		Aspect aspect = AspectImpl.createOrGet(effect.getColor());
