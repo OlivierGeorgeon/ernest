@@ -166,7 +166,8 @@ public class Imos implements IImos
 //			}
 			
 			if (preAppearance != null)
-				AppearanceImpl.merge(preAppearance, postAppearance, m_tracer);
+				if (preAppearance.getArea().equals(postAppearance.getArea()))	
+					AppearanceImpl.merge(preAppearance, postAppearance, m_tracer);
 				
 			if (enaction.getDisplacement().getLabel().equals("stay"))
 				enaction.setAppearance(postAppearance);

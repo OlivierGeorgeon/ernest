@@ -25,7 +25,7 @@ public class AppearanceImpl implements Appearance {
 	private String label;
 	private List<Act> acts = new ArrayList<Act>();
 	private PhenomenonType phenomenonType;
-	private Area area;
+	//private Area area;
 	
 	/**
 	 * @return The list of all types of phenomenon known by the agent thus far
@@ -88,11 +88,11 @@ public class AppearanceImpl implements Appearance {
 		return key;
 	}
 	
-	private AppearanceImpl(PhenomenonType phenomenonType, Area area){
-		this.label = phenomenonType.getLabel() + area.getLabel();
-		this.phenomenonType = phenomenonType;
-		this.area = area;
-	}	
+//	private AppearanceImpl(PhenomenonType phenomenonType, Area area){
+//		this.label = phenomenonType.getLabel() + area.getLabel();
+//		this.phenomenonType = phenomenonType;
+//		this.area = area;
+//	}	
 	
 	private AppearanceImpl(String label){
 		this.label = label;
@@ -120,8 +120,13 @@ public class AppearanceImpl implements Appearance {
 	}
 	
 	public Area getArea(){
-		return this.area;
+		return this.acts.get(0).getArea();
+		//return this.area;
 	}
+	
+//	public void setArea(Area area){
+//		this.area = area;
+//	}
 	
 	/**
 	 * Observations are equal if they have the same label. 
@@ -150,7 +155,7 @@ public class AppearanceImpl implements Appearance {
 		for (Act act : this.acts)
 			actList += ", " + act.getLabel();
 
-		tracer.addSubelement(e, "appearance", this.label + actList);
+		tracer.addSubelement(e, "appearance", this.label + ", " + this.getArea().getLabel() + actList);
 	}
 
 }
