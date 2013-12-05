@@ -19,7 +19,7 @@ public class AreaImpl implements Area {
 	/** Area to the right */
 	public static String C = "C";
 	/** Area at the location of the agent */
-	public static String O = "";
+	public static String O = "O";
 
 	/** Area to the rear - right */
 	public static String D = "D";

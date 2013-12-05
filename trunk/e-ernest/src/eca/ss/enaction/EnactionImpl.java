@@ -285,7 +285,7 @@ public class EnactionImpl implements Enaction
 		{
 			Object e = tracer.addEventElement("terminate_enaction");
 			
-			//if (!m_correct) tracer.addSubelement(e, "incorrect");
+			if (!m_correct) tracer.addSubelement(e, "incorrect");
 						
 			Object activation = tracer.addSubelement(e, "activation_context");
 			for (Act i : m_finalActivationContext)	
@@ -297,22 +297,22 @@ public class EnactionImpl implements Enaction
 			for (Act i : m_finalLearningContext)	
 				tracer.addSubelement(learning, "interaction", i.getLabel());
 
-			//tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");
-			
 			if (this.displacement != null && this.displacement.getLabel().equals("stay"))
 				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
 				
-				//tracer.addSubelement(e, "displacement", this.displacement.getLabel());		
-//			if (this.experiment != null){
-//				this.experiment.trace(tracer, e);
-//				Appearance predictedAppearance = this.experiment.predictPostAppearance();
-//				float confidence = this.experiment.getConfidence();
-//				if (!this.appearance.equals(predictedAppearance) && confidence > .7f)
-//					tracer.addSubelement(e, "incorrect");
-//			}
-//			if (this.appearance != null){
+			if (this.experiment != null){
+				this.experiment.trace(tracer, e);
+				Appearance predictedAppearance = this.experiment.predictPostAppearance();
+				float confidence = this.experiment.getConfidence();
+				if (!this.appearance.equals(predictedAppearance) && confidence > .7f)
+					tracer.addSubelement(e, "incorrect");
+			}
+
+			//			if (this.appearance != null){
 //				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
 //			}
+
+			//tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");	
 		}
 	}
 

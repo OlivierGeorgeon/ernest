@@ -2,7 +2,6 @@ package ernest;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-
 import eca.ActInstance;
 import eca.ActInstanceImpl;
 import eca.Primitive;
@@ -10,7 +9,6 @@ import eca.PrimitiveImpl;
 import eca.construct.Aspect;
 import eca.construct.AspectImpl;
 import tracing.ITracer;
-import utils.ErnestUtils;
 
 /**
  * This class implements the environment proposed by Roesch et al. in 
@@ -22,7 +20,7 @@ import utils.ErnestUtils;
 public class Roesch2 implements IEnvironment 
 {
 	private static final int WIDTH = 10;	
-	private int m_x = 0;
+	private int position = 0;
 	private Transform3D transform = new Transform3D();
 	
 	private int[] board = {6, 3, 5, 4, 7, 3, 5, 3, 9, 5};	
@@ -45,15 +43,15 @@ public class Roesch2 implements IEnvironment
 		effect.setLocation(new Point3f(1, 0, 0));
 		effect.setTransformation(0f, -1f);
 
-		if (m_x < WIDTH -1){
-			if (board[m_x] <= board[m_x + 1])
+		if (position < WIDTH -1){
+			if (board[position] <= board[position + 1])
 				effect.setLabel("t");
-			m_x++;
+			position++;
 		}else {
-			if (board[m_x] <= board[0])
+			if (board[position] <= board[0])
 				effect.setLabel("t");
-			m_x = 0;
-			effect.setLocation(new Point3f(0, 0, 0)); // End of Line appears at the agent' position. 
+			position = 0;
+			effect.setLocation(new Point3f(0, 0, 0)); // End of Line is experienced at the agent's position. 
 		}
 		
 		if (effect.getLabel().equals("t"))
@@ -72,13 +70,13 @@ public class Roesch2 implements IEnvironment
 		effect.setLocation(new Point3f(1, 0, 0));
 		effect.setTransformation(0f, 0f);
 		
-		if (m_x < WIDTH -1){
-			if (board[m_x] <= board[m_x +1])
+		if (position < WIDTH -1){
+			if (board[position] <= board[position +1])
 				effect.setLabel("t");
 		}else {
-			if (board[m_x] <= board[0])
+			if (board[position] <= board[0])
 				effect.setLabel("t");
-			effect.setLocation(new Point3f(0, 0, 0)); // End of Line appears at the agent' position. 
+			effect.setLocation(new Point3f(0, 0, 0)); // End of Line is experienced at the agent's position. 
 		}
 
 		if (effect.getLabel().equals("t"))
@@ -97,18 +95,18 @@ public class Roesch2 implements IEnvironment
 		effect.setLocation(new Point3f(1, 0, 0));
 		effect.setTransformation(0f, 0f); // simulates a displacement because the environment changes
 		effect.setColor(0xFF0000);
-		int temp = board[m_x];
-		if (m_x < WIDTH -1){
-			if (board[m_x] > board[m_x +1])
+		int temp = board[position];
+		if (position < WIDTH -1){
+			if (board[position] > board[position +1])
 			{
-				board[m_x] = board[m_x + 1];
-				board[m_x + 1] = temp;
+				board[position] = board[position + 1];
+				board[position + 1] = temp;
 				effect.setLabel("t");
 				effect.setTransformation(0f, -1f); // simulates a displacement because the environment changes
 			}
 		}
 		else {
-			effect.setLocation(new Point3f(0, 0, 0)); // End of Line appears at the agent' position. 
+			effect.setLocation(new Point3f(0, 0, 0)); // End of Line is experienced at the agent's position. 
 //			if (board[m_x] < board[0])
 //			{
 //				board[m_x] = board[0];
@@ -149,7 +147,7 @@ public class Roesch2 implements IEnvironment
 		System.out.println();
 
 		// print the agent
-		for (int i = 0; i < m_x; i++)
+		for (int i = 0; i < position; i++)
 			System.out.print("  ");
 		System.out.print(">");
 
@@ -173,13 +171,13 @@ public class Roesch2 implements IEnvironment
 		tracer.addSubelement(e,"board", stringBoard);
 
 		String stringAgent = "";
-		for (int i = 0; i < m_x; i++)
+		for (int i = 0; i < position; i++)
 			stringAgent +=".. ";
 		stringAgent += ">";
 		tracer.addSubelement(e,"agent", stringAgent);
-		tracer.addSubelement(e,"position", m_x + "");
-		if (m_x < WIDTH - 1)
-			tracer.addSubelement(e,"next", this.board[m_x + 1] + "");
+		tracer.addSubelement(e,"position", position + "");
+		if (position < WIDTH - 1)
+			tracer.addSubelement(e,"next", this.board[position + 1] + "");
 	}
 
 	public ActInstance enact(Primitive primitive) {
