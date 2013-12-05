@@ -63,8 +63,10 @@ public class AppearanceImpl implements Appearance {
 			if (a.contains(act))
 				appearance = a;
 		
-		if (appearance == null)
+		if (appearance == null){
 			appearance  = createOrGet("[p" + act.getLabel() + "]");
+			appearance.addAct(act);
+		}
 			
 		return appearance;
 	}
