@@ -89,11 +89,11 @@ public class ActionPropositionImpl implements ActionProposition {
 		this.ssActWeight = ssActWeight;
 	}
 
-	public Act getSSAnticipatedAct() {
+	public Act getSpatialAnticipatedAct() {
 		return ssAnticipatedAct;
 	}
 
-	public void setSSAnticipatedAct(Act ssAnticipatedAct) {
+	public void setSpatialAnticipatedAct(Act ssAnticipatedAct) {
 		this.ssAnticipatedAct = ssAnticipatedAct;
 	}
 
@@ -102,9 +102,9 @@ public class ActionPropositionImpl implements ActionProposition {
 		proposition += " weight " + this.getSSWeight() / 10;
 		if (this.experiment != null)
 			proposition += " exeperiment " + this.experiment.getLabel();
-		if (this.getSSAnticipatedAct() != null){
-			proposition += " ss_act " + this.getSSAnticipatedAct().getLabel();
-			proposition += " ss_value " + this.getSSAnticipatedAct().getValue();					
+		if (this.getSpatialAnticipatedAct() != null){
+			proposition += " ss_act " + this.getSpatialAnticipatedAct().getLabel();
+			proposition += " ss_value " + this.getSpatialAnticipatedAct().getValue();					
 		}				
 		return proposition;
 	}

@@ -94,7 +94,7 @@ public class DeciderImpl implements Decider
 		ActionProposition selectedProposition = actionPropositions.get(0);
 		Action	selectedAction = selectedProposition.getAction();
 		Act intendedAct = selectedAction.getActs().get(0);
-		Experiment experiment = selectedProposition.getExperiment();
+		//Experiment experiment = selectedProposition.getExperiment();
 		
 		// Trace the decision
 		
@@ -107,9 +107,9 @@ public class DeciderImpl implements Decider
 			//	focusPhenomenonInstance.trace(this.tracer, apElmnt);
 			this.tracer.addSubelement(apElmnt, "weight", selectedProposition.getSSWeight() + "");
 			//this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");
-			if (selectedProposition.getSSAnticipatedAct() != null){
-				this.tracer.addSubelement(apElmnt, "ss_act", selectedProposition.getSSAnticipatedAct().getLabel());
-				this.tracer.addSubelement(apElmnt, "ss_value", selectedProposition.getSSAnticipatedAct().getValue() +"");					
+			if (selectedProposition.getSpatialAnticipatedAct() != null){
+				this.tracer.addSubelement(apElmnt, "ss_act", selectedProposition.getSpatialAnticipatedAct().getLabel());
+				this.tracer.addSubelement(apElmnt, "ss_value", selectedProposition.getSpatialAnticipatedAct().getValue() +"");					
 			}				
 
 			Object actionElmt = this.tracer.addSubelement(decisionElmt, "actions");
@@ -132,8 +132,8 @@ public class DeciderImpl implements Decider
 
 			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
 			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
-			if (experiment != null)
-				experiment.trace(tracer, predictElmt);
+			//if (experiment != null)
+			//	experiment.trace(tracer, predictElmt);
 			//if (intendedDisplacement != null)
 			//	this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
 			//this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
@@ -150,7 +150,7 @@ public class DeciderImpl implements Decider
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
 		newEnaction.setAppearance(appearance);
-		newEnaction.setExperiment(experiment);
+		//newEnaction.setExperiment(experiment);
 		//newEnaction.setInitialArea(preArea);
 		
 		return newEnaction;
@@ -164,7 +164,7 @@ public class DeciderImpl implements Decider
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		List<ActProposition> forwardedActPropositions = new ArrayList<ActProposition>();
 		
-		// Create action and appearances for the control acts that do not have them yet.
+		// Create actions and appearances for the proposed acts that do not have them yet.
 		for (ActProposition actProposition : actPropositions){
 			if (actProposition.getAct().getWeight() > this.regularityThreshold){
 				if (actProposition.getAct().getLength() <= this.maxSchemaLength){
@@ -186,7 +186,6 @@ public class DeciderImpl implements Decider
 						a.addAct(actProposition.getAct());
 						if (this.tracer != null) this.tracer.addEventElement("new_appearance", a.getLabel());
 					}			
-
 				}
 			}
 			else{
@@ -200,10 +199,11 @@ public class DeciderImpl implements Decider
 			}
 		}
 		
+		// Add propositions for the context subacts of acts that did not pass the threshold
 		for (ActProposition proposition : forwardedActPropositions)
 			actPropositions.add(proposition);
 		
-		// Generate an action proposition for each action
+		// For each existing action, propose it according to act propositions coming from IMOS
 		for (Action action : ActionImpl.getACTIONS()){
 			// All Actions are proposed with their anticipated Act predicted on the basis of the preAppearance
 			//Appearance anticipatedAppearance = action.predictPostAppearance(preAppearance); // proposition based on spatial representation
@@ -214,14 +214,17 @@ public class DeciderImpl implements Decider
 			//actionProposition.setAnticipatedAppearance(anticipatedAppearance);
 			//actionProposition.setConfidence(confidence);
 			if (preAppearance != null){
-				actionProposition.setExperiment(ExperimentImpl.createOrGet(preAppearance, action));
+				for (Act act : preAppearance.getActs()){
+					
+				}
+				//actionProposition.setExperiment(ExperimentImpl.createOrGet(preAppearance, action));
 			}
 			boolean isProposed = false;
 			// Add weight to this action according to the actPropositions that propose an act whose primitive belongs to this action
 			for (ActProposition actProposition : actPropositions){
 				if (action.contains(actProposition.getAct())){
 					if (actionProposition.getSSActWeight() <= actProposition.getWeight()){
-						actionProposition.setSSAnticipatedAct(actProposition.getAct());
+						actionProposition.setSpatialAnticipatedAct(actProposition.getAct());
 						actionProposition.setSSActWeight(actProposition.getWeight());
 					}
 					actionProposition.addSSWeight(actProposition.getWeightedValue());

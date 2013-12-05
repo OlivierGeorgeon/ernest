@@ -26,8 +26,8 @@ public interface ActionProposition extends Comparable<ActionProposition> {
 	public void addSSWeight(int ssWeight);
 		
 	
-	public void setExperiment(Experiment experiment);
-	public Experiment getExperiment();
+	//public void setExperiment(Experiment experiment);
+	//public Experiment getExperiment();
 	
 	/**
 	 * @return The anticipated act.
@@ -47,8 +47,9 @@ public interface ActionProposition extends Comparable<ActionProposition> {
 	 */
 	public boolean equals(Object o);	
 	
-	public void setSSAnticipatedAct(Act ssAnticipatedAct);
-	public Act getSSAnticipatedAct();
+	public void setSpatialAnticipatedAct(Act ssAnticipatedAct);
+	public Act getSpatialAnticipatedAct();
+	
 	public void setSSActWeight(int ssActWeight);
 	public int getSSActWeight();
 	
