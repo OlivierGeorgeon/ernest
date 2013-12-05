@@ -26,8 +26,8 @@ public class Main
 	{
 		// Create the environment.
 		
-		//IEnvironment environment = new Roesch2(); 
-		IEnvironment environment = new SimpleMaze(); 
+		IEnvironment environment = new Roesch2(); 
+		//IEnvironment environment = new SimpleMaze(); 
 		
 		// Create an Ernest agent.
 		
@@ -36,8 +36,8 @@ public class Main
 		
 		///////////// Uncomment this line to generate traces ///////////////////////////
 	    //tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk"); // login Ernest131, password: Ernest131, for Vacuum
-	    //tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/","l-kHWqeLDlSZT-TdBrLSoXVeBRCRsw"); // login: roesch, password: roesch, for roesche environment
-         tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ"); // login Ernest120, password: test, for the SLP
+	    tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/","l-kHWqeLDlSZT-TdBrLSoXVeBRCRsw"); // login: roesch, password: roesch, for roesche environment
+        // tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ"); // login Ernest120, password: test, for the SLP
 		// tracer = new Tracer(null);
         ////////////////////////////////////////////////////////////////////////////////
 		
