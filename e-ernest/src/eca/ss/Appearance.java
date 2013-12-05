@@ -44,6 +44,7 @@ public interface Appearance {
 	 * @return The Observation's area
 	 */
 	public Area getArea();
+	//public void setArea(Area area);
 	
 	public void trace(ITracer tracer, Object e);
 	

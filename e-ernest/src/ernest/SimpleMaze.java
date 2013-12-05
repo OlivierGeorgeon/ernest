@@ -82,7 +82,7 @@ public class SimpleMaze implements IEnvironment
 	public ActInstance enact(Primitive intendedPrimitive){
 		Effect effect = enact(intendedPrimitive.getLabel());
 		Primitive enactedPrimitive = PrimitiveImpl.createOrGet(intendedPrimitive.getLabel().substring(0,1) + effect.getLabel(), 0);
-		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, effect.getLocation());
+		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, effect.getLocation());		
 		enactedActInstance.setAspect(AspectImpl.createOrGet(effect.getColor()));
 		this.transform = effect.getTransformation();
 		return enactedActInstance;

@@ -70,6 +70,7 @@ public class EnactionImpl implements Enaction
 	//private Area initialArea = AreaImpl.createOrGet(new Point3f());
 	
 	private Appearance appearance = null;
+	private Area area = null;
 	private Experiment experiment = null;
 
 	private Displacement displacement = null;
@@ -365,6 +366,8 @@ public class EnactionImpl implements Enaction
 					this.salientActInstance = actInstance;
 		
 			this.m_enactedPrimitiveAct =this.salientActInstance.getAct();
+			this.area = this.salientActInstance.getArea();
+			this.m_enactedPrimitiveAct.setArea(this.area);
 			this.m_enactedPrimitiveAct.setColor(this.salientActInstance.getDisplayCode());
 			this.m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
 		}
