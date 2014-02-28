@@ -182,7 +182,8 @@ public class DeciderImpl implements Decider
 						if (appearance.contains(actProposition.getAct()))
 							hasAppearance = true;
 					if (!hasAppearance){
-						Appearance a = AppearanceImpl.createOrGet("[p" + actProposition.getAct().getLabel() + "]");
+						//Appearance a = AppearanceImpl.createOrGet("[p" + actProposition.getAct().getLabel() + "]");
+						Appearance a = AppearanceImpl.createOrGet(actProposition.getAct());
 						a.addAct(actProposition.getAct());
 						if (this.tracer != null) this.tracer.addEventElement("new_appearance", a.getLabel());
 					}			
