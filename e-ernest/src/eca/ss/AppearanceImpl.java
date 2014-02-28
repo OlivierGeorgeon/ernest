@@ -6,8 +6,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.vecmath.Point3f;
+
 import tracing.ITracer;
-import eca.construct.Action;
+import utils.ErnestUtils;
 import eca.construct.Area;
 import eca.construct.PhenomenonType;
 import eca.ss.enaction.Act;
@@ -19,8 +22,14 @@ import eca.ss.enaction.Act;
  */
 public class AppearanceImpl implements Appearance {
 	
-	private static Map<String , Appearance> OBSERVATIONS = new HashMap<String , Appearance>() ;
-	private static int index = 0;
+	/** Appearance UP */
+	public static String OBSERVATION_LABEL_UP = "Up";
+	/** Appearance DOWN */
+	public static String OBSERVATION_LABEL_DOWN = "Down";
+	/** Appearance END */
+	public static String OBSERVATION_LABEL_END = "End";
+
+    private static Map<String , Appearance> OBSERVATIONS = new HashMap<String , Appearance>() ;
 
 	private String label;
 	private List<Act> acts = new ArrayList<Act>();
@@ -28,33 +37,22 @@ public class AppearanceImpl implements Appearance {
 	//private Area area;
 	
 	/**
-	 * @return The list of all types of phenomenon known by the agent thus far
+	 * @return The list of all the appearances known by the agent thus far
 	 */
 	public static Collection<Appearance> getAppearances() {
 		return OBSERVATIONS.values();
 	}
 	
 	/**
-	 * @param phenomenonType The observation's aspect
-	 * @param area The observation's area
-	 * @return The new or old observation
-	 */
-//	public static Appearance createOrGet(PhenomenonType phenomenonType, Area area){
-//		String label = createKey(phenomenonType, area);
-//		if (!OBSERVATIONS.containsKey(label))
-//			OBSERVATIONS.put(label, new AppearanceImpl(phenomenonType, area));			
-//		return OBSERVATIONS.get(label);
-//	}
-
-	/**
-	 * Create or get an action from its label.
+	 * Create or get an appearance from its label.
 	 * @param label The action's label
 	 * @return The created or retrieved action.
 	 */
-	public static Appearance createOrGet(String label){
-		if (!OBSERVATIONS.containsKey(label))
-			OBSERVATIONS.put(label, new AppearanceImpl(label));			
-		return OBSERVATIONS.get(label);
+	public static Appearance createOrGet(Act act){
+		String key = createKey(act);
+		if (!OBSERVATIONS.containsKey(key))
+			OBSERVATIONS.put(key, new AppearanceImpl(key));			
+		return OBSERVATIONS.get(key);
 	}
 	
 	public static Appearance evoke(Act act){
@@ -64,13 +62,24 @@ public class AppearanceImpl implements Appearance {
 				appearance = a;
 		
 		if (appearance == null){
-			appearance  = createOrGet("[p" + act.getLabel() + "]");
+			appearance  = createOrGet(act);
 			appearance.addAct(act);
 		}
 			
 		return appearance;
 	}
 	
+	private static String createKey(Act act) {
+		String key = "[p" + act.getLabel() + "]";
+		
+		if (act.getLabel().equals("-tO"))
+			key = OBSERVATION_LABEL_UP;
+		else if (act.getLabel().equals("-fO"))
+			key = OBSERVATION_LABEL_DOWN;
+		
+		return key;
+	}
+
 	public static void merge(Appearance preAppearance, Appearance postAppearance, ITracer tracer){
 		
 		if (!postAppearance.equals(preAppearance)){
@@ -89,12 +98,6 @@ public class AppearanceImpl implements Appearance {
 		String key = phenomenonType.getLabel() + area.getLabel();
 		return key;
 	}
-	
-//	private AppearanceImpl(PhenomenonType phenomenonType, Area area){
-//		this.label = phenomenonType.getLabel() + area.getLabel();
-//		this.phenomenonType = phenomenonType;
-//		this.area = area;
-//	}	
 	
 	private AppearanceImpl(String label){
 		this.label = label;
@@ -157,7 +160,7 @@ public class AppearanceImpl implements Appearance {
 		for (Act act : this.acts)
 			actList += ", " + act.getLabel();
 
-		tracer.addSubelement(e, "appearance", this.label + ", " + this.getArea().getLabel() + actList);
+		tracer.addSubelement(e, "appearance", this.label + actList);
 	}
 
 }
