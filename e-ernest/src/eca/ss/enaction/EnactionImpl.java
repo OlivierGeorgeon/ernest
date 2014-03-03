@@ -297,7 +297,7 @@ public class EnactionImpl implements Enaction
 			for (Act i : m_finalLearningContext)	
 				tracer.addSubelement(learning, "interaction", i.getLabel());
 
-			if (this.displacement != null && this.displacement.getLabel().equals("stay"))
+			if (this.appearance != null )
 				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
 				
 			if (this.experiment != null){

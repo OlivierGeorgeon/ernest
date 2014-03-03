@@ -183,7 +183,8 @@ public class Roesch2 implements IEnvironment
 	public ActInstance enact(Primitive primitive) {
 		Effect effect = enact(primitive.getLabel().substring(0,1));
 		Primitive enactedPrimitive = PrimitiveImpl.createOrGet(primitive.getLabel().substring(0,1) + effect.getLabel(), 0);
-		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, effect.getLocation());
+		//ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, effect.getLocation());
+		ActInstance enactedActInstance = new ActInstanceImpl(enactedPrimitive, new Point3f());
 		Aspect aspect = AspectImpl.createOrGet(effect.getColor());
 		enactedActInstance.setAspect(aspect);
 		this.transform = effect.getTransformation();

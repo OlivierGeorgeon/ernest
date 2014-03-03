@@ -104,38 +104,17 @@ public class Imos implements IImos
 		ArrayList<Act> previousLearningContext = enaction.getPreviousLearningContext();
 		ArrayList<Act> initialLearningContext = enaction.getInitialLearningContext();
 		Appearance preAppearance = enaction.getAppearance();
-		Action intendedAction = enaction.getIntendedAction();
 		
 		// if we are not on startup
 		if (enactedTopAct != null)
 		{
-			// The displacement attached to the enacted interaction
-			//Displacement displacement = DisplacementImpl.createOrGet(enaction.getInitialArea(), enaction.getEnactedPrimitiveAct().getArea());
-			//enactedTopAct.getPrimitive().incDisplacementCounter(displacement);
-			//enaction.setDisplacement(displacement);
-
 			// Surprise if the enacted interaction is not that intended
 			if (intendedTopAct != enactedTopAct) 
 			{
 				m_internalState= "!";
-				enaction.setSuccessful(false);	
-				
-//				if (intendedTopAct.isPrimitive()){
-//					ActionImpl.merge(enactedTopAct, enaction.getIntendedAction());
-//					if (!enaction.getIntendedAction().contains(enactedTopAct)){					
-//						if (m_tracer != null){
-//							m_tracer.addEventElement("action", " intended " + enaction.getIntendedAction().getLabel() + " merges " + enactedTopAct);
-//						}
-//					}
-//				}else{
-					enaction.getIntendedAction().addAct(enactedTopAct);
-					//if (m_tracer != null){
-					//	m_tracer.addEventElement("action_failed", "Intended_action: " + enaction.getIntendedAction().getLabel() + " enacted_act: " + enactedTopAct);
-					//}
-				//}
-				// TODO Make sure that alternative primitive actions get merged eventually. This is currently not the case. 	
+				enaction.setSuccessful(false);					
+				enaction.getIntendedAction().addAct(enactedTopAct);
 				ActionImpl.absorbIdenticalAction(enaction.getIntendedAction(), m_tracer);
-				//enaction.getEnactedPrimitiveAct().setDisplacement(enaction.getDisplacement());
 			}
 			
 			// learn from the  context and the enacted interaction
@@ -155,24 +134,17 @@ public class Imos implements IImos
 				 }
 			 }
 
-			//enaction.setFinalContext(topEnactedAct, performedAct, streamContextList);			
 			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);		
 			Appearance postAppearance = AppearanceImpl.evoke(enactedTopAct);
-			//Experiment experiment = enaction.getExperiment();
 			
-//			if (preAppearance != null){
-//				Experiment experiment = ExperimentImpl.createOrGet(preAppearance, intendedAction);
-//				experiment.incPostAppearanceCounter(postAppearance);
-//			}
-			
-			if (preAppearance != null)
-				if (preAppearance.getArea().equals(postAppearance.getArea()))	
-					AppearanceImpl.merge(preAppearance, postAppearance, m_tracer);
-				
-			if (enaction.getDisplacement().getLabel().equals("stay"))
-				enaction.setAppearance(postAppearance);
-			else 
-				enaction.setAppearance(null);
+//			if (preAppearance != null)
+//				if (preAppearance.getArea().equals(postAppearance.getArea()))	
+//					AppearanceImpl.merge(preAppearance, postAppearance, m_tracer);
+//				
+//			if (enaction.getDisplacement().getLabel().equals("stay"))
+//				enaction.setAppearance(postAppearance);
+//			else 
+//				enaction.setAppearance(null);
 			
 			//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
 			enaction.setNbActLearned(m_nbSchemaLearned);
