@@ -6,11 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.vecmath.Point3f;
-
 import tracing.ITracer;
-import utils.ErnestUtils;
 import eca.construct.Area;
 import eca.construct.PhenomenonType;
 import eca.ss.enaction.Act;
@@ -44,8 +40,8 @@ public class AppearanceImpl implements Appearance {
 	}
 	
 	/**
-	 * Create or get an appearance from its label.
-	 * @param label The action's label
+	 * Create or get an appearance from its act.
+	 * @param act The appearance's act
 	 * @return The created or retrieved action.
 	 */
 	public static Appearance createOrGet(Act act){
@@ -72,14 +68,20 @@ public class AppearanceImpl implements Appearance {
 	private static String createKey(Act act) {
 		String key = "[p" + act.getLabel() + "]";
 		
-		if (act.getLabel().equals("-tO"))
+		if (act.getLabel().equals("-t"))
 			key = OBSERVATION_LABEL_UP;
-		else if (act.getLabel().equals("-fO"))
+		else if (act.getLabel().equals("-f"))
 			key = OBSERVATION_LABEL_DOWN;
 		
 		return key;
 	}
 
+	/**
+	 * Merges two appearances
+	 * @param preAppearance The appearance before
+	 * @param postAppearance The appearance after
+	 * @param tracer The tracer
+	 */
 	public static void merge(Appearance preAppearance, Appearance postAppearance, ITracer tracer){
 		
 		if (!postAppearance.equals(preAppearance)){

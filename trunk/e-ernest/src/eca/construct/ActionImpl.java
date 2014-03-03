@@ -2,15 +2,10 @@ package eca.construct;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.media.j3d.Transform3D;
-
 import tracing.ITracer;
-import eca.construct.egomem.Displacement;
-import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.ExperimentImpl;
 import eca.ss.Appearance;
 import eca.ss.AppearanceImpl;
@@ -25,6 +20,13 @@ import eca.ss.enaction.Act;
  */
 public class ActionImpl implements Action {
 
+	/** Action Feel */
+	public static String ACTION_FEEL = "Feel";
+	/** Action Step */
+	public static String ACTION_STEP = "Step";
+	/** Action Swap */
+	public static String ACTION_SWAP = "Swap";
+
 	private static Map<String , Action> ACTIONS = new LinkedHashMap<String , Action>() ;
 	//private static int index = 0;
 
@@ -32,27 +34,30 @@ public class ActionImpl implements Action {
 	private List<Act> acts = new ArrayList<Act>();
 
 	/**
-	 * Create or get an action from its label.
-	 * @param label The action's label
+	 * Create or get an action from its act.
+	 * @param act The action's act
 	 * @return The created or retrieved action.
 	 */
-	public static Action createOrGet(String label){
-		if (!ACTIONS.containsKey(label))
-			ACTIONS.put(label, new ActionImpl(label));			
-		return ACTIONS.get(label);
+	public static Action createOrGet(Act act){
+		String key = createKey(act);
+		if (!ACTIONS.containsKey(key))
+			ACTIONS.put(key, new ActionImpl(key));			
+		return ACTIONS.get(key);
 	}
 	
-	/**
-	 * Creates a new action using an incremental label
-	 * @return The new created action
-	 */
-//	public static Action createNew(){
-//		index++;
-//		String key = index + "";
-//		ACTIONS.put(key, new ActionImpl(key));			
-//		return ACTIONS.get(key);
-//	}
-	
+	private static String createKey(Act act) {
+		String key = "[a" + act.getLabel() + "]";
+		
+		if (act.getLabel().equals(">t"))
+			key = ACTION_STEP;
+		else if (act.getLabel().equals("-t"))
+			key = ACTION_FEEL;
+		else if (act.getLabel().equals("it"))
+			key = ACTION_SWAP;
+		
+		return key;
+	}
+
 	/**
 	 * @return The collection of all actions known by the agent.
 	 */
@@ -83,11 +88,17 @@ public class ActionImpl implements Action {
 		}
 	}
 	
+	/**
+	 * The intendedAction absorbs the other action that contains the same acts.
+	 * @param intendedAction The intended action
+	 * @param tracer The tracer
+	 */
 	public static void absorbIdenticalAction(Action intendedAction, ITracer tracer){
 		Action action = null;
 		for (Action a : getACTIONS()){
 			if (a!=intendedAction)	
-				if (a.getActs().containsAll(intendedAction.getActs()))
+				//if (a.getActs().containsAll(intendedAction.getActs()))
+				if (intendedAction.getActs().containsAll(a.getActs()))
 					action = a;				
 		}
 		if (action != null){

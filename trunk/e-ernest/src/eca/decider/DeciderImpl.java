@@ -173,7 +173,7 @@ public class DeciderImpl implements Decider
 						if (action.contains(actProposition.getAct()))
 							hasAction = true;
 					if (!hasAction){
-						Action a = ActionImpl.createOrGet("[a" + actProposition.getAct().getLabel() + "]");
+						Action a = ActionImpl.createOrGet(actProposition.getAct());
 						a.addAct(actProposition.getAct());
 						if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
 					}			
