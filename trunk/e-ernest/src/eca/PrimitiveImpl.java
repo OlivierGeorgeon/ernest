@@ -3,18 +3,7 @@ package eca;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.vecmath.Point3f;
-
-import eca.construct.Action;
-import eca.construct.ActionImpl;
-import eca.construct.Area;
-import eca.construct.AreaImpl;
-import eca.construct.PhenomenonType;
-import eca.construct.PhenomenonTypeImpl;
-import eca.construct.egomem.Displacement;
-import eca.ss.enaction.Act;
-import eca.ss.enaction.ActImpl;
+import eca.ss.Appearance;
 
 /**
  * A primitive interaction.
@@ -27,7 +16,8 @@ public class PrimitiveImpl implements Primitive {
 	private String label = "";
 	private int value = 0;
 
-	private Map<Displacement , Integer> displacements = new HashMap<Displacement , Integer>() ;
+	private Map<Appearance , Appearance> transforms = new HashMap<Appearance , Appearance>() ;
+	//private Map<Displacement , Integer> displacements = new HashMap<Displacement , Integer>() ;
 
 	/**
 	 * @param label The primitive interaction's label
@@ -112,33 +102,41 @@ public class PrimitiveImpl implements Primitive {
 	{
 		return this.label + "(" + this.value / 10 + ")";
 	}
-
-	public void incDisplacementCounter(Displacement displacement){
-		if (displacements.containsKey(displacement))
-			displacements.put(displacement, displacements.get(displacement) + 1);
-		else
-			displacements.put(displacement, 1);
-	}
-
-	public Displacement predictDisplacement(Area area) {
-		int max = 0;
-		Displacement predictDisplacement = null;
-		
-		for (Map.Entry<Displacement, Integer> entry : displacements.entrySet())
-			if (entry.getKey().getPreArea().equals(area) && entry.getValue() > max){
-				predictDisplacement = entry.getKey();
-				max = entry.getValue();
-			}
-		
-		return predictDisplacement;
-	}
 	
-	public String getDisplacementLabels(){
-		String label = "";
-		for (Map.Entry<Displacement, Integer> entry : displacements.entrySet())
-			label += entry.getKey().getLabel() + "(" + entry.getValue() + ") ";
-		
-		return label;
+	public void recordTransfomr(Appearance preAppearance, Appearance postAppearance){
+		transforms.put(preAppearance, postAppearance);
 	}
+
+	public Appearance transform(Appearance appearance){
+		return transforms.get(appearance);
+	}
+
+//	public void incDisplacementCounter(Displacement displacement){
+//		if (displacements.containsKey(displacement))
+//			displacements.put(displacement, displacements.get(displacement) + 1);
+//		else
+//			displacements.put(displacement, 1);
+//	}
+//
+//	public Displacement predictDisplacement(Area area) {
+//		int max = 0;
+//		Displacement predictDisplacement = null;
+//		
+//		for (Map.Entry<Displacement, Integer> entry : displacements.entrySet())
+//			if (entry.getKey().getPreArea().equals(area) && entry.getValue() > max){
+//				predictDisplacement = entry.getKey();
+//				max = entry.getValue();
+//			}
+//		
+//		return predictDisplacement;
+//	}
+//	
+//	public String getDisplacementLabels(){
+//		String label = "";
+//		for (Map.Entry<Displacement, Integer> entry : displacements.entrySet())
+//			label += entry.getKey().getLabel() + "(" + entry.getValue() + ") ";
+//		
+//		return label;
+//	}
 
 }

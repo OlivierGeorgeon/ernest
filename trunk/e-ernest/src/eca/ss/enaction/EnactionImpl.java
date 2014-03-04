@@ -308,10 +308,6 @@ public class EnactionImpl implements Enaction
 					tracer.addSubelement(e, "incorrect");
 			}
 
-			//			if (this.appearance != null){
-//				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
-//			}
-
 			//tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");	
 		}
 	}
@@ -369,7 +365,7 @@ public class EnactionImpl implements Enaction
 			this.area = this.salientActInstance.getArea();
 			this.m_enactedPrimitiveAct.setArea(this.area);
 			this.m_enactedPrimitiveAct.setColor(this.salientActInstance.getDisplayCode());
-			this.m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
+			//this.m_enactedPrimitiveAct.getPrimitive().incDisplacementCounter(displacement);
 		}
 	}
 	
