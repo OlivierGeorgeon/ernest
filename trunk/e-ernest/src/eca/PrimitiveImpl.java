@@ -3,6 +3,9 @@ package eca;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import eca.construct.egomem.Displacement;
+import eca.construct.egomem.DisplacementImpl;
 import eca.ss.Appearance;
 
 /**
@@ -15,6 +18,8 @@ public class PrimitiveImpl implements Primitive {
 
 	private String label = "";
 	private int value = 0;
+	
+	private Displacement displacement = DisplacementImpl.DISPLACEMENT_CLEAR;
 
 	private Map<Appearance , Appearance> transforms = new HashMap<Appearance , Appearance>() ;
 	//private Map<Displacement , Integer> displacements = new HashMap<Displacement , Integer>() ;
@@ -109,6 +114,14 @@ public class PrimitiveImpl implements Primitive {
 
 	public Appearance transform(Appearance appearance){
 		return transforms.get(appearance);
+	}
+
+	public Displacement getDisplacement() {
+		return displacement;
+	}
+
+	public void setDisplacement(Displacement displacement) {
+		this.displacement = displacement;
 	}
 
 //	public void incDisplacementCounter(Displacement displacement){

@@ -5,13 +5,13 @@ import javax.media.j3d.Transform3D;
 import eca.construct.Area;
 
 /**
- * A transformation in spatial memory
+ * A displacement in spatial memory
  * @author Olivier
  */
 public interface Displacement {
 
 	/**
-	 * @return The transformation's label.
+	 * @return The displacement's label.
 	 */
 	public String getLabel();
 	

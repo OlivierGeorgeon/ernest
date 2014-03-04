@@ -15,6 +15,7 @@ import eca.construct.PhenomenonInstance;
 import eca.construct.PhenomenonType;
 import eca.construct.PhenomenonTypeImpl;
 import eca.construct.egomem.Displacement;
+import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.Experiment;
 import eca.construct.experiment.ExperimentImpl;
 import eca.spas.Spas;
@@ -24,6 +25,7 @@ import eca.ss.Appearance;
 import eca.ss.AppearanceImpl;
 import eca.ss.IImos;
 import eca.ss.enaction.Act;
+import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
 import eca.ss.enaction.EnactionImpl;
 
@@ -167,26 +169,51 @@ public class DeciderImpl implements Decider
 		// Create actions and appearances for the proposed acts that do not have them yet.
 		for (ActProposition actProposition : actPropositions){
 			if (actProposition.getAct().getWeight() > this.regularityThreshold){
-				if (actProposition.getAct().getLength() <= this.maxSchemaLength){
+				Act proposedAct = actProposition.getAct();
+				if (proposedAct.getLength() <= this.maxSchemaLength){
 					boolean hasAction = false;
 					for (Action action : ActionImpl.getACTIONS())
-						if (action.contains(actProposition.getAct()))
+						if (action.contains(proposedAct))
 							hasAction = true;
 					if (!hasAction){
-						Action a = ActionImpl.createOrGet(actProposition.getAct());
-						a.addAct(actProposition.getAct());
+						Action a = ActionImpl.createOrGet(proposedAct);
+						a.addAct(proposedAct);
 						if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
+						
+						// create an appearance for this action
+						if (!proposedAct.isPrimitive()){
+							// Check the coherence of this appearance and action
+							boolean coherent = true;
+							for (Act act : ActImpl.getACTS())
+								if (proposedAct.getPreAct().equals(act.getPreAct())){
+									// check consistency based on the same postAction
+										if (proposedAct.getPostAct().isPrimitive() && act.getPostAct().isPrimitive() && !proposedAct.getPostAct().equals(act.getPostAct())){
+											coherent = false;
+											if (this.tracer != null) this.tracer.addEventElement("inconsistent_action", a.getLabel() + " due to " + act.getLabel());
+									}
+								}
+							
+							if (coherent){
+								if (proposedAct.getPreAct().isPrimitive())
+									proposedAct.getPreAct().getPrimitive().setDisplacement(DisplacementImpl.DISPLACEMENT_KEEP);
+								Appearance appearance = AppearanceImpl.createOrGet(proposedAct);
+								appearance.addAct(proposedAct);
+								appearance.addAct(proposedAct.getPreAct());
+								appearance.addAct(proposedAct.getPostAct());
+								if (this.tracer != null) this.tracer.addEventElement("new_appearance", appearance.getLabel());
+							}
+						}
+						
 					}			
-					boolean hasAppearance = false;
-					for (Appearance appearance : AppearanceImpl.getAppearances())
-						if (appearance.contains(actProposition.getAct()))
-							hasAppearance = true;
-					if (!hasAppearance){
-						//Appearance a = AppearanceImpl.createOrGet("[p" + actProposition.getAct().getLabel() + "]");
-						Appearance a = AppearanceImpl.createOrGet(actProposition.getAct());
-						a.addAct(actProposition.getAct());
-						if (this.tracer != null) this.tracer.addEventElement("new_appearance", a.getLabel());
-					}			
+//					boolean hasAppearance = false;
+//					for (Appearance appearance : AppearanceImpl.getAppearances())
+//						if (appearance.contains(actProposition.getAct()))
+//							hasAppearance = true;
+//					if (!hasAppearance){
+//						Appearance a = AppearanceImpl.createOrGet(actProposition.getAct());
+//						a.addAct(actProposition.getAct());
+//						if (this.tracer != null) this.tracer.addEventElement("new_appearance", a.getLabel());
+//					}			
 				}
 			}
 			else{

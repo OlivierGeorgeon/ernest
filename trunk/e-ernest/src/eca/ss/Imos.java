@@ -135,7 +135,7 @@ public class Imos implements IImos
 			 }
 
 			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);		
-			Appearance postAppearance = AppearanceImpl.evoke(enactedTopAct);
+			//Appearance postAppearance = AppearanceImpl.evoke(enactedTopAct);
 			
 //			if (preAppearance != null)
 //				if (preAppearance.getArea().equals(postAppearance.getArea()))	
@@ -149,9 +149,9 @@ public class Imos implements IImos
 			//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
 			enaction.setNbActLearned(m_nbSchemaLearned);
 			enaction.traceTerminate(m_tracer);
-			Experiment experiment = enaction.getExperiment();
-			if (experiment != null)
-				experiment.incPostAppearanceCounter(postAppearance);
+			//Experiment experiment = enaction.getExperiment();
+			//if (experiment != null)
+			//	experiment.incPostAppearanceCounter(postAppearance);
 		}		
 	}
 

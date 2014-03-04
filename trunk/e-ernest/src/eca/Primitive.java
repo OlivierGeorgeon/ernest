@@ -14,12 +14,23 @@ public interface Primitive
 	 * @return The primitive interaction's label
 	 */
 	public String getLabel();
+	
 	/**
 	 * @return The primitive interaction's value (multiplied by 10)
 	 */
 	public int getValue();
 	
 	/**
+	 * @return the displacement.
+	 */
+	public Displacement getDisplacement();
+
+	/**
+	 * @param displacement The displacement.
+	 */
+	public void setDisplacement(Displacement displacement);
+
+		/**
 	 * Records the transformation of the preAppearance into the postAppearance.
 	 * @param preAppearance The preAppearance.
 	 * @param postAppearance The postAppearance.

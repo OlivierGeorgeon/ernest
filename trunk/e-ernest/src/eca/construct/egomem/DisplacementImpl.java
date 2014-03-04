@@ -15,10 +15,29 @@ public class DisplacementImpl implements Displacement {
 
 	private static Map<String , Displacement> DISPLACEMENTS = new HashMap<String , Displacement>() ;
 
+	/** Appearance UP */
+	public static String DISPLACEMENT_LABEL_KEEP = "K";
+	/** Appearance DOWN */
+	public static String DISPLACEMENT_LABEL_CLEAR = "C";
+
+	public static Displacement DISPLACEMENT_CLEAR = new DisplacementImpl(DISPLACEMENT_LABEL_CLEAR);
+	public static Displacement DISPLACEMENT_KEEP = new DisplacementImpl(DISPLACEMENT_LABEL_KEEP);
+	
 	private String label;
+	
 	private Transform3D transform3D = new Transform3D();
 	private Area preArea = null;
 	private Area postArea = null;
+	
+	/**
+	 * @param label The displacement's label
+	 * @return The displacement
+	 */
+	public static Displacement createOrGet(String label){
+		if (!DISPLACEMENTS.containsKey(label))
+			DISPLACEMENTS.put(label, new DisplacementImpl(label));			
+		return DISPLACEMENTS.get(label);
+	}
 	
 	/**
 	 * @param preArea The area before displacement
@@ -76,6 +95,10 @@ public class DisplacementImpl implements Displacement {
 		this.preArea = preArea;
 		this.postArea = postArea;
 		this.label = createKey(preArea, postArea);
+	}
+	
+	private DisplacementImpl(String label){
+		this.label = label;
 	}
 	
 	private DisplacementImpl(Transform3D t){
