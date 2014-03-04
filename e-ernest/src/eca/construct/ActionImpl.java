@@ -21,11 +21,11 @@ import eca.ss.enaction.Act;
 public class ActionImpl implements Action {
 
 	/** Action Feel */
-	public static String ACTION_FEEL = "Feel";
+	public static String ACTION_FEEL = "-";
 	/** Action Step */
-	public static String ACTION_STEP = "Step";
+	public static String ACTION_STEP = ">";
 	/** Action Swap */
-	public static String ACTION_SWAP = "Swap";
+	public static String ACTION_SWAP = "s";
 
 	private static Map<String , Action> ACTIONS = new LinkedHashMap<String , Action>() ;
 	//private static int index = 0;
@@ -153,14 +153,14 @@ public class ActionImpl implements Action {
 		return ret;
 	}
 
-	public Appearance predictPostAppearance(Appearance preAppearance) {
-		Appearance postAppearance = null;
-		if (preAppearance != null)
-			postAppearance = ExperimentImpl.createOrGet(preAppearance, this).predictPostAppearance();
-		if (postAppearance == null)
-			postAppearance = AppearanceImpl.evoke(acts.get(0));
-		return postAppearance;
-	}
+//	public Appearance predictPostAppearance(Appearance preAppearance) {
+//		Appearance postAppearance = null;
+//		if (preAppearance != null)
+//			postAppearance = ExperimentImpl.createOrGet(preAppearance, this).predictPostAppearance();
+//		if (postAppearance == null)
+//			postAppearance = AppearanceImpl.evoke(acts.get(0));
+//		return postAppearance;
+//	}
 
 
 //	public Act predictAct(Appearance appearance) {

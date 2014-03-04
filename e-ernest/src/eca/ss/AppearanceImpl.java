@@ -66,7 +66,7 @@ public class AppearanceImpl implements Appearance {
 	}
 	
 	private static String createKey(Act act) {
-		String key = "[p" + act.getLabel() + "]";
+		String key = "[obs" + act.getLabel() + "]";
 		
 		if (act.getLabel().equals("-t"))
 			key = OBSERVATION_LABEL_UP;
