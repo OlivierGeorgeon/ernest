@@ -1,4 +1,4 @@
-package eca.construct;
+package eca.construct.egomem;
 
 import javax.vecmath.Point3f;
 

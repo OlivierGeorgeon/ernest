@@ -6,7 +6,7 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 
 import eca.ActInstance;
-import eca.construct.PhenomenonInstance;
+import eca.construct.egomem.PhenomenonInstance;
 import eca.spas.Placeable;
 
 /**
