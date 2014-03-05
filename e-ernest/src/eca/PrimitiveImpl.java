@@ -4,9 +4,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import eca.construct.Appearance;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
-import eca.ss.Appearance;
 
 /**
  * A primitive interaction.

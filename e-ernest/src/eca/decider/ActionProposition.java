@@ -1,8 +1,8 @@
 package eca.decider;
 
 import eca.construct.Action;
+import eca.construct.Appearance;
 import eca.construct.experiment.Experiment;
-import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
 /**

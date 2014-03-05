@@ -6,6 +6,7 @@ import java.util.List;
 import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
+import eca.construct.Appearance;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.Experiment;
