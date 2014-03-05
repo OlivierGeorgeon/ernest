@@ -5,6 +5,7 @@ import javax.vecmath.Point3f;
 import tracing.ITracer;
 import utils.ErnestUtils;
 import eca.ActInstance;
+import eca.construct.egomem.Area;
 import eca.spas.Place;
 import eca.spas.PlaceImpl;
 

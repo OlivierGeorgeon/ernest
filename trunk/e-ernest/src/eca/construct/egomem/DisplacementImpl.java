@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.media.j3d.Transform3D;
 
-import eca.construct.Area;
 import utils.ErnestUtils;
 
 /**

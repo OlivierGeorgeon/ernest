@@ -2,7 +2,6 @@ package eca.construct.egomem;
 
 import javax.media.j3d.Transform3D;
 
-import eca.construct.Area;
 
 /**
  * A displacement in spatial memory

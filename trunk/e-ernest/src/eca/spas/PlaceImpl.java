@@ -4,8 +4,8 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 import utils.ErnestUtils;
-import eca.construct.Area;
-import eca.construct.AreaImpl;
+import eca.construct.egomem.Area;
+import eca.construct.egomem.AreaImpl;
 
 /**
  * A place in egocentric spatial memory where an ActInstance or a PhenomenonInstance is located.

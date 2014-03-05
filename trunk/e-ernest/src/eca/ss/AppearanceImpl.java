@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import tracing.ITracer;
-import eca.construct.Area;
 import eca.construct.PhenomenonType;
+import eca.construct.egomem.Area;
 import eca.ss.enaction.Act;
 
 /**

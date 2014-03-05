@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import eca.Primitive;
 import eca.PrimitiveImpl;
-import eca.construct.Area;
+import eca.construct.egomem.Area;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 

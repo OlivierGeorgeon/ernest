@@ -2,7 +2,8 @@ package eca.spas;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-import eca.construct.Area;
+
+import eca.construct.egomem.Area;
 
 /**
  * An object that can be placed and tracked in spatial memory
