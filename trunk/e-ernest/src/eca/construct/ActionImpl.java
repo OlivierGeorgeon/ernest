@@ -56,6 +56,17 @@ public class ActionImpl implements Action {
 	}
 
 	/**
+	 * @param act The act whose action we are searching for
+	 * @return The first action found that contains act or null
+	 */
+	public static Action getAction(Act act){
+		for (Action action : ActionImpl.getACTIONS())
+			if (action.contains(act))
+				return action;
+		return null;
+	}
+	
+	/**
 	 * @return The collection of all actions known by the agent.
 	 */
 	public static Collection<Action> getACTIONS(){

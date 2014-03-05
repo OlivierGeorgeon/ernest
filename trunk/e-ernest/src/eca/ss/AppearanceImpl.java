@@ -19,11 +19,11 @@ import eca.ss.enaction.Act;
 public class AppearanceImpl implements Appearance {
 	
 	/** Appearance UP */
-	public static String OBSERVATION_LABEL_UP = "Up";
+	public static String OBSERVATION_LABEL_UP = "UP";
 	/** Appearance DOWN */
-	public static String OBSERVATION_LABEL_DOWN = "Down";
+	public static String OBSERVATION_LABEL_DOWN = "DOWN";
 	/** Appearance END */
-	public static String OBSERVATION_LABEL_END = "End";
+	public static String OBSERVATION_LABEL_END = "END";
 
     private static Map<String , Appearance> OBSERVATIONS = new HashMap<String , Appearance>() ;
 
