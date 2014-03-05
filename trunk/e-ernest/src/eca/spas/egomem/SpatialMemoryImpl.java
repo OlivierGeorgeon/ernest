@@ -6,10 +6,10 @@ import java.util.List;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import eca.ActInstance;
-import eca.construct.PhenomenonInstance;
-import eca.construct.PhenomenonInstanceImpl;
-import eca.construct.PhenomenonType;
-import eca.construct.PhenomenonTypeImpl;
+import eca.construct.egomem.PhenomenonInstance;
+import eca.construct.egomem.PhenomenonInstanceImpl;
+import eca.construct.egomem.PhenomenonType;
+import eca.construct.egomem.PhenomenonTypeImpl;
 import eca.spas.Placeable;
 
 
