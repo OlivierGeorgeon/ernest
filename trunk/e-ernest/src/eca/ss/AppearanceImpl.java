@@ -66,7 +66,7 @@ public class AppearanceImpl implements Appearance {
 	}
 	
 	private static String createKey(Act act) {
-		String key = "[obs" + act.getLabel() + "]";
+		String key = act.getLabel();
 		
 		if (act.getLabel().equals("-t"))
 			key = OBSERVATION_LABEL_UP;
@@ -160,9 +160,9 @@ public class AppearanceImpl implements Appearance {
 		
 		String actList = "";
 		for (Act act : this.acts)
-			actList += ", " + act.getLabel();
+			actList +=  act.getLabel() + ", ";
 
-		tracer.addSubelement(e, "appearance", this.label + actList);
+		tracer.addSubelement(e, "observation", this.label + " / " + actList);
 	}
 
 }

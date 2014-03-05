@@ -6,9 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import tracing.ITracer;
-import eca.construct.experiment.ExperimentImpl;
-import eca.ss.Appearance;
-import eca.ss.AppearanceImpl;
 import eca.ss.enaction.Act;
 
 /**
@@ -46,7 +43,7 @@ public class ActionImpl implements Action {
 	}
 	
 	private static String createKey(Act act) {
-		String key = "[a" + act.getLabel() + "]";
+		String key = act.getLabel();
 		
 		if (act.getLabel().equals(">t"))
 			key = ACTION_STEP;
@@ -105,7 +102,7 @@ public class ActionImpl implements Action {
 			for (Act p : action.getActs())
 				intendedAction.addAct(p);
 			if (tracer != null){
-				tracer.addEventElement("merge_action", intendedAction.getLabel() + " absorbs " + action.getLabel());
+				tracer.addEventElement("merge_action", intendedAction.getLabel());
 			}
 			ACTIONS.remove(action.getLabel());
 		}		
@@ -188,17 +185,13 @@ public class ActionImpl implements Action {
 	
 	public void trace(ITracer tracer, Object e) {
 		
-		String actList = "";
-		for (Act act : this.acts)
-			actList += ", " + act.getLabel();
-
-		tracer.addSubelement(e, "action", this.label + actList);
+		tracer.addSubelement(e, "action", this.toString());
 	}
 
 	public String toString(){
-		String label = getLabel();
+		String label = getLabel() + " / ";
 		for (Act primitive : this.acts)
-			label += ", " + primitive.getLabel();
+			label +=  primitive.getLabel() + ", ";
 //		label += " failing: ";
 //		for (Act primitive : this.failingActs)
 //			label += " " + primitive.getLabel();
