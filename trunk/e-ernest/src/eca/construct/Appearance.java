@@ -35,15 +35,24 @@ public interface Appearance {
 	 * @return true if this primitive belongs to this action
 	 */
 	public boolean contains(Act act);
+	
+	public Act getStillAct();
+
+	public void setStillAct(Act stillAct);
+
+	public Action getDiscriminentAction();
+
+	public void setDiscriminentAction(Action discriminentAction);
+
 	/**
 	 * @return The observation's phenomenon
 	 */
-	public PhenomenonType getPhenomenonType();	
+	//public PhenomenonType getPhenomenonType();	
 
 	/**
 	 * @return The Observation's area
 	 */
-	public Area getArea();
+	//public Area getArea();
 	//public void setArea(Area area);
 	
 	public void trace(ITracer tracer, Object e);
