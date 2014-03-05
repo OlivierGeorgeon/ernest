@@ -168,14 +168,10 @@ public class DeciderImpl implements Decider
 		
 		// Create actions and appearances for the proposed acts that do not have them yet.
 		for (ActProposition actProposition : actPropositions){
-			if (actProposition.getAct().getWeight() > this.regularityThreshold){
-				Act proposedAct = actProposition.getAct();
+			Act proposedAct = actProposition.getAct();
+			if (proposedAct.getWeight() > this.regularityThreshold){
 				if (proposedAct.getLength() <= this.maxSchemaLength){
-					boolean hasAction = false;
-					for (Action action : ActionImpl.getACTIONS())
-						if (action.contains(proposedAct))
-							hasAction = true;
-					if (!hasAction){
+					if (ActionImpl.getAction(proposedAct) == null){
 						if (proposedAct.isPrimitive()){
 							Action a = ActionImpl.createOrGet(proposedAct);
 							a.addAct(proposedAct);
@@ -186,12 +182,12 @@ public class DeciderImpl implements Decider
 							boolean reliable = true;
 							for (Act act : ActImpl.getACTS())
 								if (proposedAct.getPreAct().equals(act.getPreAct()))
-									// TODO check consistency based on the same postAction
-									if (proposedAct.getPostAct().isPrimitive() && act.getPostAct().isPrimitive() && 
-											!proposedAct.getPostAct().equals(act.getPostAct())){
-										reliable = false;
-										if (this.tracer != null) this.tracer.addEventElement("inconsistent_sequence", proposedAct.getLabel() + " due to " + act.getLabel());
-									}
+									if (ActionImpl.getAction(proposedAct.getPostAct()).equals(ActionImpl.getAction(act.getPostAct())))
+									//if (proposedAct.getPostAct().isPrimitive() && act.getPostAct().isPrimitive()) 
+										if(!proposedAct.getPostAct().equals(act.getPostAct())){
+											reliable = false;
+											if (this.tracer != null) this.tracer.addEventElement("inconsistent_sequence", proposedAct.getLabel() + " due to " + act.getLabel());
+										}
 								
 							if (reliable){
 								// Create the action
@@ -202,8 +198,8 @@ public class DeciderImpl implements Decider
 								// Create the appearance
 								if (proposedAct.getPreAct().isPrimitive())
 									proposedAct.getPreAct().getPrimitive().setDisplacement(DisplacementImpl.DISPLACEMENT_STILL);
-								Appearance appearance = AppearanceImpl.createOrGet(proposedAct);
-								appearance.addAct(proposedAct);
+								Appearance appearance = AppearanceImpl.createOrGet(proposedAct.getPreAct());
+								//appearance.addAct(proposedAct);
 								appearance.addAct(proposedAct.getPreAct());
 								if (this.tracer != null) this.tracer.addEventElement("new_appearance", appearance.getLabel());							
 							}
@@ -213,10 +209,10 @@ public class DeciderImpl implements Decider
 			}
 			else{
 				// add a proposition for the context sub act
-				if(actProposition.getAct().getPostAct().getEnactionValue() > 0)
+				if(proposedAct.getPostAct().getEnactionValue() > 0)
 				{
-					ActProposition proposition = new ActPropositionImpl(actProposition.getAct().getPreAct(), actProposition.getWeight());
-					proposition.setWeightedValue(actProposition.getAct().getValue() * actProposition.getWeight());
+					ActProposition proposition = new ActPropositionImpl(proposedAct.getPreAct(), actProposition.getWeight());
+					proposition.setWeightedValue(proposedAct.getValue() * actProposition.getWeight());
 					forwardedActPropositions.add(proposition);
 				}
 			}
