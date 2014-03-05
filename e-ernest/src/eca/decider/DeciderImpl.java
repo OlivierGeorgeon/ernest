@@ -4,22 +4,12 @@ package eca.decider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.vecmath.Point3f;
 import tracing.ITracer;
-import utils.ErnestUtils;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.Appearance;
 import eca.construct.AppearanceImpl;
-import eca.construct.Displacement;
 import eca.construct.DisplacementImpl;
-import eca.construct.egomem.Area;
-import eca.construct.egomem.AreaImpl;
-import eca.construct.egomem.PhenomenonInstance;
-import eca.construct.egomem.PhenomenonType;
-import eca.construct.egomem.PhenomenonTypeImpl;
-import eca.construct.experiment.Experiment;
-import eca.construct.experiment.ExperimentImpl;
 import eca.spas.Spas;
 import eca.ss.ActProposition;
 import eca.ss.ActPropositionImpl;
@@ -42,7 +32,6 @@ public class DeciderImpl implements Decider
 	private int maxSchemaLength = 10;
 
 	private IImos imos;
-	private Spas spas;
 	private ITracer tracer;
 
 	/**
@@ -51,7 +40,6 @@ public class DeciderImpl implements Decider
 	 */
 	public DeciderImpl(IImos imos, Spas spas){
 		this.imos = imos;
-		this.spas = spas;
 	}
 
 	public void setTracer(ITracer tracer){
@@ -73,87 +61,27 @@ public class DeciderImpl implements Decider
 		System.out.println("New decision ================ ");
 		
 		Appearance appearance = enaction.getAppearance();
-
 		Enaction newEnaction = new EnactionImpl();	
 		
-		//PhenomenonInstance focusPhenomenonInstance = this.spas.getFocusPhenomenonInstance();
-		
-		//Area preArea = AreaImpl.createOrGet(new Point3f());
-		//preAppearance = AppearanceImpl.createOrGet(PhenomenonType.EMPTY, preArea);
-		
-		//if (focusPhenomenonInstance != null){
-		//	preArea = focusPhenomenonInstance.getArea();
-		//	preAppearance = AppearanceImpl.createOrGet(focusPhenomenonInstance.getPhenomenonType(), preArea);
-		//}
-
 		// Choose the next action
-		
 		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
 		List<ActionProposition> actionPropositions = proposeActions(actPropositions, appearance);
-		
 		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SS) ); // or SPAS
-
+		
 		ActionProposition selectedProposition = actionPropositions.get(0);
 		Action	selectedAction = selectedProposition.getAction();
 		Act intendedAct = selectedAction.getActs().get(0);
-		//Experiment experiment = selectedProposition.getExperiment();
 		
 		// Trace the decision
+		trace(selectedProposition);
 		
-		if (this.tracer != null){
-			Object decisionElmt = this.tracer.addEventElement("decision", true);
-			
-			Object apElmnt = this.tracer.addSubelement(decisionElmt, "selected_proposition");
-			this.tracer.addSubelement(apElmnt, "action", selectedProposition.getAction().getLabel());
-			//if (focusPhenomenonInstance != null)
-			//	focusPhenomenonInstance.trace(this.tracer, apElmnt);
-			this.tracer.addSubelement(apElmnt, "weight", selectedProposition.getSSWeight() + "");
-			//this.tracer.addSubelement(apElmnt, "spas_value", selecteProposition.getAnticipatedAct().getValue() +"");
-			if (selectedProposition.getSpatialAnticipatedAct() != null){
-				this.tracer.addSubelement(apElmnt, "ss_act", selectedProposition.getSpatialAnticipatedAct().getLabel());
-				this.tracer.addSubelement(apElmnt, "ss_value", selectedProposition.getSpatialAnticipatedAct().getValue() +"");					
-			}				
-
-			Object actionElmt = this.tracer.addSubelement(decisionElmt, "actions");
-			for (Action action : ActionImpl.getACTIONS())
-				action.trace(tracer, actionElmt);
-			
-			Object appearanceElmt = this.tracer.addSubelement(decisionElmt, "observations");
-			for (Appearance app : AppearanceImpl.getAppearances())
-				app.trace(tracer, appearanceElmt);
-			
-//			Object phenomenonElmt = this.tracer.addSubelement(decisionElmt, "phenomenon_types");
-//			for (PhenomenonType phenomenonType : PhenomenonTypeImpl.getPhenomenonTypes())
-//				phenomenonType.trace(tracer, phenomenonElmt);
-			
-			//Object experimentElmt = this.tracer.addSubelement(decisionElmt, "experiments");
-			//for (Experiment a : ExperimentImpl.getExperiments())
-			//	if (a.isTested())
-			//		this.tracer.addSubelement(experimentElmt, "experiment", a.toString());
-			
-
-			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
-			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
-			//if (experiment != null)
-			//	experiment.trace(tracer, predictElmt);
-			//if (intendedDisplacement != null)
-			//	this.tracer.addSubelement(predictElmt, "displacement", intendedDisplacement.getLabel());
-			//this.tracer.addSubelement(predictElmt, "postAppearance", intendedPostAppearance.getLabel());
-		}		
-		System.out.println("Select:" + selectedAction.getLabel());
-		System.out.println("Act " + intendedAct.getLabel());
-		
-		// Prepare the new enaction.
-		
-		//newEnaction.setPhenomenonInstance(phenomenonInstance);
+		// Prepare the new enaction.		
 		newEnaction.setTopIntendedAct(intendedAct);
 		newEnaction.setTopRemainingAct(intendedAct);
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
 		newEnaction.setAppearance(appearance);
-		//newEnaction.setExperiment(experiment);
-		//newEnaction.setInitialArea(preArea);
 		
 		return newEnaction;
 	}
@@ -186,7 +114,7 @@ public class DeciderImpl implements Decider
 									//if (proposedAct.getPostAct().isPrimitive() && act.getPostAct().isPrimitive()) 
 										if(!proposedAct.getPostAct().equals(act.getPostAct())){
 											reliable = false;
-											if (this.tracer != null) this.tracer.addEventElement("inconsistent_sequence", proposedAct.getLabel() + " due to " + act.getLabel());
+											if (this.tracer != null) this.tracer.addEventElement("unreliable_sequence", proposedAct.getLabel() + " due to " + act.getLabel());
 										}
 								
 							if (reliable){
@@ -199,8 +127,12 @@ public class DeciderImpl implements Decider
 								if (proposedAct.getPreAct().isPrimitive())
 									proposedAct.getPreAct().getPrimitive().setDisplacement(DisplacementImpl.DISPLACEMENT_STILL);
 								Appearance appearance = AppearanceImpl.createOrGet(proposedAct.getPreAct());
-								//appearance.addAct(proposedAct);
 								appearance.addAct(proposedAct.getPreAct());
+								appearance.setStillAct(proposedAct.getPreAct());
+								appearance.addAct(proposedAct);
+								appearance.addAct(proposedAct.getPostAct());
+								if (!proposedAct.getPostAct().isPrimitive())
+									appearance.addAct(proposedAct.getPostAct().getPreAct()); // TODO recursive?									
 								if (this.tracer != null) this.tracer.addEventElement("new_appearance", appearance.getLabel());							
 							}
 						}
@@ -273,5 +205,34 @@ public class DeciderImpl implements Decider
 		enaction.setIntendedPrimitiveAct(intendedPrimitiveInteraction);
 		enaction.setStep(enaction.getStep() + 1);
 		enaction.traceCarry(this.tracer);
+	}
+	
+	private void trace(ActionProposition selectedProposition){
+	
+		Action	selectedAction = selectedProposition.getAction();
+		Act intendedAct = selectedAction.getActs().get(0);
+		if (this.tracer != null){
+			Object decisionElmt = this.tracer.addEventElement("decision", true);
+			
+			Object apElmnt = this.tracer.addSubelement(decisionElmt, "selected_proposition");
+			this.tracer.addSubelement(apElmnt, "action", selectedProposition.getAction().getLabel());
+			this.tracer.addSubelement(apElmnt, "weight", selectedProposition.getSSWeight() + "");
+			if (selectedProposition.getSpatialAnticipatedAct() != null){
+				this.tracer.addSubelement(apElmnt, "ss_act", selectedProposition.getSpatialAnticipatedAct().getLabel());
+				this.tracer.addSubelement(apElmnt, "ss_value", selectedProposition.getSpatialAnticipatedAct().getValue() +"");					
+			}				
+			Object actionElmt = this.tracer.addSubelement(decisionElmt, "actions");
+			for (Action action : ActionImpl.getACTIONS())
+				action.trace(tracer, actionElmt);
+			
+			Object appearanceElmt = this.tracer.addSubelement(decisionElmt, "observations");
+			for (Appearance app : AppearanceImpl.getAppearances())
+				app.trace(tracer, appearanceElmt);
+			
+			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
+			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
+		}		
+		System.out.println("Select:" + selectedAction.getLabel());
+		System.out.println("Act " + intendedAct.getLabel());
 	}
 }

@@ -258,6 +258,8 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
 			tracer.addSubelement(e, "aspect", this.salientActInstance.getAspect().toString());
 			tracer.addSubelement(e, "displacement", m_enactedPrimitiveAct.getPrimitive().getDisplacement().getLabel());
+			if (appearance != null)
+				appearance.trace(tracer, e);
 		}
 	}
 
@@ -295,16 +297,8 @@ public class EnactionImpl implements Enaction
 			for (Act i : m_finalLearningContext)	
 				tracer.addSubelement(learning, "interaction", i.getLabel());
 
-			if (this.appearance != null )
-				tracer.addSubelement(e, "apperance", this.appearance.getLabel());
-				
-			if (this.experiment != null){
-				this.experiment.trace(tracer, e);
-				Appearance predictedAppearance = this.experiment.predictPostAppearance();
-				float confidence = this.experiment.getConfidence();
-				if (!this.appearance.equals(predictedAppearance) && confidence > .7f)
-					tracer.addSubelement(e, "incorrect");
-			}
+			if(this.appearance != null)
+				this.appearance.trace(tracer,e);
 
 			//tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");	
 		}

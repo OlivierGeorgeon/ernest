@@ -29,7 +29,11 @@ public class AppearanceImpl implements Appearance {
 
 	private String label;
 	private List<Act> acts = new ArrayList<Act>();
-	private PhenomenonType phenomenonType;
+	
+	private Act stillAct = null;
+	private Action discriminentAction = null; 
+	
+	//private PhenomenonType phenomenonType;
 	//private Area area;
 	
 	/**
@@ -77,6 +81,17 @@ public class AppearanceImpl implements Appearance {
 	}
 
 	/**
+	 * @param act The act whose appearance we are searching for
+	 * @return The first appearance found that contains act. Null if no appearance found.
+	 */
+	public static Appearance getAppeareance(Act act){
+		for (Appearance appearance : OBSERVATIONS.values())
+			if (appearance.contains(act))
+				return appearance;
+		return null;
+	}
+	
+	/**
 	 * Merges two appearances
 	 * @param preAppearance The appearance before
 	 * @param postAppearance The appearance after
@@ -122,14 +137,14 @@ public class AppearanceImpl implements Appearance {
 		return this.acts.contains(act);
 	}
 
-	public PhenomenonType getPhenomenonType(){
-		return this.phenomenonType;
-	}
+//	public PhenomenonType getPhenomenonType(){
+//		return this.phenomenonType;
+//	}
 	
-	public Area getArea(){
-		return this.acts.get(0).getArea();
-		//return this.area;
-	}
+//	public Area getArea(){
+//		return this.acts.get(0).getArea();
+//		//return this.area;
+//	}
 	
 //	public void setArea(Area area){
 //		this.area = area;
@@ -163,6 +178,22 @@ public class AppearanceImpl implements Appearance {
 			actList +=  act.getLabel() + ", ";
 
 		tracer.addSubelement(e, "observation", this.label + " / " + actList);
+	}
+
+	public Act getStillAct() {
+		return stillAct;
+	}
+
+	public void setStillAct(Act stillAct) {
+		this.stillAct = stillAct;
+	}
+
+	public Action getDiscriminentAction() {
+		return discriminentAction;
+	}
+
+	public void setDiscriminentAction(Action discriminentAction) {
+		this.discriminentAction = discriminentAction;
 	}
 
 }

@@ -57,7 +57,7 @@ public class ActionImpl implements Action {
 
 	/**
 	 * @param act The act whose action we are searching for
-	 * @return The first action found that contains act or null
+	 * @return The first action found that contains act. Null if no action found.
 	 */
 	public static Action getAction(Act act){
 		for (Action action : ActionImpl.getACTIONS())

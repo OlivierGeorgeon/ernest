@@ -7,6 +7,7 @@ import tracing.ITracer;
 import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.Appearance;
+import eca.construct.AppearanceImpl;
 import eca.construct.Displacement;
 import eca.construct.DisplacementImpl;
 import eca.construct.experiment.Experiment;
@@ -88,6 +89,7 @@ public class Imos implements IImos
 		
 		enaction.setTopEnactedAct(topEnactedAct);
 		enaction.setTopRemainingAct(topRemainingAct);
+		
 	}
 	
 	/**
@@ -135,24 +137,36 @@ public class Imos implements IImos
 				 }
 			 }
 
-			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);		
-			//Appearance postAppearance = AppearanceImpl.evoke(enactedTopAct);
+			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);	
 			
-//			if (preAppearance != null)
-//				if (preAppearance.getArea().equals(postAppearance.getArea()))	
-//					AppearanceImpl.merge(preAppearance, postAppearance, m_tracer);
-//				
-//			if (enaction.getDisplacement().getLabel().equals("stay"))
-//				enaction.setAppearance(postAppearance);
-//			else 
-//				enaction.setAppearance(null);
+			// Add the enacted act to the pre-appearance
+			if (preAppearance != null){
+				// check the consistency with the existing appearance
+				boolean consistent = true;
+				for (Act act : preAppearance.getActs())
+					if (ActionImpl.getAction(enactedTopAct).equals(ActionImpl.getAction(act)))
+						if(!enactedTopAct.equals(act)){
+							consistent = false;
+							if (m_tracer != null) this.m_tracer.addEventElement("split_observation", preAppearance.getLabel() + " due to " + act.getLabel());
+						}
+				if (consistent)
+					preAppearance.addAct(enactedTopAct);
+				else{
+					Appearance splittedAppearance  = AppearanceImpl.createOrGet(enactedTopAct);
+					splittedAppearance.addAct(enactedTopAct);
+					splittedAppearance.addAct(preAppearance.getStillAct());
+					splittedAppearance.setStillAct(preAppearance.getStillAct());
+				}
+			}
 			
-			//enaction.setNbActLearned(m_episodicMemory.getLearnCount());
+			// If the enacted act is STILL then keep the appearance
+			if (enactedTopAct.isPrimitive() && enactedTopAct.getPrimitive().getDisplacement().equals(DisplacementImpl.DISPLACEMENT_STILL))
+				enaction.setAppearance(AppearanceImpl.getAppeareance(enactedTopAct));
+			else
+				enaction.setAppearance(null);
+			
 			enaction.setNbActLearned(m_nbSchemaLearned);
 			enaction.traceTerminate(m_tracer);
-			//Experiment experiment = enaction.getExperiment();
-			//if (experiment != null)
-			//	experiment.incPostAppearanceCounter(postAppearance);
 		}		
 	}
 
@@ -267,7 +281,7 @@ public class Imos implements IImos
 			if (activatedAct.isPrimitive()){
 				addProposition(propositions, activatedAct, 0);
 			}
-			else//if (!activatedAct.isPrimitive())
+			else
 			{
 				if (enaction.getFinalActivationContext().contains(activatedAct.getPreAct())){
 					addProposition(propositions, activatedAct);
