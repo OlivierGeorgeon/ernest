@@ -1,4 +1,4 @@
-package eca.spas.egomem;
+package eca.spas;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,6 @@ import javax.vecmath.Point3f;
 
 import eca.ActInstance;
 import eca.construct.egomem.PhenomenonInstance;
-import eca.spas.Placeable;
 
 /**
  * A Spatial Memory is a set of placeable objects to which a general spatial transformation apply.

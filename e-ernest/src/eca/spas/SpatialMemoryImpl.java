@@ -1,4 +1,4 @@
-package eca.spas.egomem;
+package eca.spas;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +10,6 @@ import eca.construct.egomem.PhenomenonInstance;
 import eca.construct.egomem.PhenomenonInstanceImpl;
 import eca.construct.egomem.PhenomenonType;
 import eca.construct.egomem.PhenomenonTypeImpl;
-import eca.spas.Placeable;
 
 
 /**
