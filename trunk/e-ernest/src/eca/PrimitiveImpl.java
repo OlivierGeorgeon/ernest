@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eca.construct.Appearance;
-import eca.construct.egomem.Displacement;
-import eca.construct.egomem.DisplacementImpl;
+import eca.construct.Displacement;
+import eca.construct.DisplacementImpl;
 
 /**
  * A primitive interaction.

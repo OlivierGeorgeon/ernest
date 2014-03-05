@@ -7,9 +7,9 @@ import tracing.ITracer;
 import eca.ActInstance;
 import eca.construct.Action;
 import eca.construct.Appearance;
+import eca.construct.Displacement;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Area;
-import eca.construct.egomem.Displacement;
 import eca.construct.experiment.Experiment;
 import ernest.Effect;
 

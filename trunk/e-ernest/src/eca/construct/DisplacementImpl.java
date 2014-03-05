@@ -1,8 +1,10 @@
-package eca.construct.egomem;
+package eca.construct;
 
 import java.util.HashMap;
 import java.util.Map;
 import javax.media.j3d.Transform3D;
+
+import eca.construct.egomem.Area;
 
 import utils.ErnestUtils;
 

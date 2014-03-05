@@ -1,8 +1,8 @@
 package eca;
 
 import eca.construct.Appearance;
+import eca.construct.Displacement;
 import eca.construct.egomem.Area;
-import eca.construct.egomem.Displacement;
 
 /**
  * A primitive interaction.
