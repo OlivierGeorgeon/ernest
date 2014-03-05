@@ -6,9 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import eca.Primitive;
 import eca.PrimitiveImpl;
+import eca.construct.Displacement;
+import eca.construct.DisplacementImpl;
 import eca.construct.egomem.Area;
-import eca.construct.egomem.Displacement;
-import eca.construct.egomem.DisplacementImpl;
 
 /**
  * A sensorimotor pattern of interaction of Ernest with its environment 

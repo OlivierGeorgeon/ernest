@@ -1,6 +1,8 @@
-package eca.construct.egomem;
+package eca.construct;
 
 import javax.media.j3d.Transform3D;
+
+import eca.construct.egomem.Area;
 
 
 /**
