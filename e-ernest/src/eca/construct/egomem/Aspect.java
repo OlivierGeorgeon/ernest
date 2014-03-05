@@ -1,4 +1,4 @@
-package eca.construct;
+package eca.construct.egomem;
 
 /**
  * A visual aspect of a phenomenon type.

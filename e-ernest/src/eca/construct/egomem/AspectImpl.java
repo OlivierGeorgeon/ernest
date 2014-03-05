@@ -1,4 +1,4 @@
-package eca.construct;
+package eca.construct.egomem;
 
 import java.util.HashMap;
 import java.util.Map;
