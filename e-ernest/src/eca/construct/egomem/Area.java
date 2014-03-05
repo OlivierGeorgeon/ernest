@@ -1,4 +1,4 @@
-package eca.construct;
+package eca.construct.egomem;
 
 /**
  * An area of the agent's surrounding space.

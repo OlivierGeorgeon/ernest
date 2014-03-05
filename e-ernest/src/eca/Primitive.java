@@ -1,6 +1,6 @@
 package eca;
 
-import eca.construct.Area;
+import eca.construct.egomem.Area;
 import eca.construct.egomem.Displacement;
 import eca.ss.Appearance;
 

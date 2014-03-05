@@ -1,7 +1,7 @@
 package eca.ss.enaction;
 
 import eca.Primitive;
-import eca.construct.Area;
+import eca.construct.egomem.Area;
 
 /**
  * An Act is an Interaction with spatial information (Area) attached in order to characterize its enaction in space.

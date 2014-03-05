@@ -4,8 +4,8 @@ import java.util.List;
 
 import tracing.ITracer;
 
-import eca.construct.Area;
 import eca.construct.PhenomenonType;
+import eca.construct.egomem.Area;
 import eca.ss.enaction.Act;
 
 /**
