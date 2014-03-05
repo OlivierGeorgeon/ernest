@@ -256,10 +256,8 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "primitive_enacted_act", m_enactedPrimitiveAct.getLabel());
 			tracer.addSubelement(e, "area", m_enactedPrimitiveAct.getArea().getLabel());
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
-			//tracer.addSubelement(e, "phenomenon_type", this.phenomenonInstance.getPhenomenonType().getLabel());		
-			//this.phenomenonInstance.getPhenomenonType().trace(tracer, e);
 			tracer.addSubelement(e, "aspect", this.salientActInstance.getAspect().toString());
-			tracer.addSubelement(e, "displacement", this.displacement.getLabel());
+			tracer.addSubelement(e, "displacement", m_enactedPrimitiveAct.getPrimitive().getDisplacement().getLabel());
 		}
 	}
 

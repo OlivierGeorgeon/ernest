@@ -16,9 +16,9 @@ public class DisplacementImpl implements Displacement {
 	private static Map<String , Displacement> DISPLACEMENTS = new HashMap<String , Displacement>() ;
 
 	/** Appearance DOWN */
-	public static String DISPLACEMENT_LABEL_CHANGE = "C";
+	public static String DISPLACEMENT_LABEL_CHANGE = "CHANGE";
 	/** Appearance UP */
-	public static String DISPLACEMENT_LABEL_STILL = "K";
+	public static String DISPLACEMENT_LABEL_STILL = "STILL";
 
 	public static Displacement DISPLACEMENT_CHANGE = new DisplacementImpl(DISPLACEMENT_LABEL_CHANGE);
 	public static Displacement DISPLACEMENT_STILL = new DisplacementImpl(DISPLACEMENT_LABEL_STILL);
