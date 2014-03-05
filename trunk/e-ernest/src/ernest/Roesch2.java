@@ -6,8 +6,8 @@ import eca.ActInstance;
 import eca.ActInstanceImpl;
 import eca.Primitive;
 import eca.PrimitiveImpl;
-import eca.construct.Aspect;
-import eca.construct.AspectImpl;
+import eca.construct.egomem.Aspect;
+import eca.construct.egomem.AspectImpl;
 import tracing.ITracer;
 
 /**

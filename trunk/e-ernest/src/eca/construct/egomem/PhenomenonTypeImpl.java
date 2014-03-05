@@ -9,7 +9,6 @@ import java.util.Map;
 
 import tracing.ITracer;
 import eca.Primitive;
-import eca.construct.Aspect;
 
 /**
  * A PhenomenonType is intended to represent a type of phenomenon that can be observed in the external world.

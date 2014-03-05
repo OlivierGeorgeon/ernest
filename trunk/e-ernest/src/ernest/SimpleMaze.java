@@ -9,7 +9,7 @@ import eca.ActInstance;
 import eca.ActInstanceImpl;
 import eca.Primitive;
 import eca.PrimitiveImpl;
-import eca.construct.AspectImpl;
+import eca.construct.egomem.AspectImpl;
 
 /**
  * This class implements the Small Loop Environment

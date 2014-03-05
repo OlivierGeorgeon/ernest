@@ -1,7 +1,7 @@
 package eca;
 
 import tracing.ITracer;
-import eca.construct.Aspect;
+import eca.construct.egomem.Aspect;
 import eca.spas.Placeable;
 import eca.ss.enaction.Act;
 
