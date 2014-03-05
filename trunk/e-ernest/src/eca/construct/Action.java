@@ -4,7 +4,6 @@ import java.util.List;
 
 import tracing.ITracer;
 import eca.construct.egomem.Displacement;
-import eca.ss.Appearance;
 import eca.ss.enaction.Act;
 
 /**

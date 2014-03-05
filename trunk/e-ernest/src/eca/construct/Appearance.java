@@ -1,10 +1,9 @@
-package eca.ss;
+package eca.construct;
 
 import java.util.List;
 
 import tracing.ITracer;
 
-import eca.construct.PhenomenonType;
 import eca.construct.egomem.Area;
 import eca.ss.enaction.Act;
 

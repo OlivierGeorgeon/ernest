@@ -10,14 +10,14 @@ import eca.ActInstanceImpl;
 import eca.Primitive;
 import eca.PrimitiveImpl;
 import eca.construct.Action;
+import eca.construct.Appearance;
+import eca.construct.AppearanceImpl;
 import eca.construct.PhenomenonInstance;
 import eca.construct.egomem.Area;
 import eca.construct.egomem.AreaImpl;
 import eca.construct.egomem.Displacement;
 import eca.construct.egomem.DisplacementImpl;
 import eca.construct.experiment.Experiment;
-import eca.ss.Appearance;
-import eca.ss.AppearanceImpl;
 import ernest.Effect;
 
 /**
