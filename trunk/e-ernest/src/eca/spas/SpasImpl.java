@@ -11,8 +11,6 @@ import eca.construct.egomem.PhenomenonInstance;
 import eca.construct.egomem.PhenomenonInstanceImpl;
 import eca.construct.egomem.PhenomenonType;
 import eca.construct.egomem.PhenomenonTypeImpl;
-import eca.spas.egomem.SpatialMemory;
-import eca.spas.egomem.SpatialMemoryImpl;
 import eca.ss.enaction.Enaction;
 import ernest.Ernest;
 
