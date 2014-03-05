@@ -19,7 +19,7 @@ public class PrimitiveImpl implements Primitive {
 	private String label = "";
 	private int value = 0;
 	
-	private Displacement displacement = DisplacementImpl.DISPLACEMENT_CLEAR;
+	private Displacement displacement = DisplacementImpl.DISPLACEMENT_CHANGE;
 
 	private Map<Appearance , Appearance> transforms = new HashMap<Appearance , Appearance>() ;
 	//private Map<Displacement , Integer> displacements = new HashMap<Displacement , Integer>() ;

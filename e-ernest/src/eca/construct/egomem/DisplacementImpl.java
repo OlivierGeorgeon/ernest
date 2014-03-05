@@ -15,13 +15,13 @@ public class DisplacementImpl implements Displacement {
 
 	private static Map<String , Displacement> DISPLACEMENTS = new HashMap<String , Displacement>() ;
 
-	/** Appearance UP */
-	public static String DISPLACEMENT_LABEL_KEEP = "K";
 	/** Appearance DOWN */
-	public static String DISPLACEMENT_LABEL_CLEAR = "C";
+	public static String DISPLACEMENT_LABEL_CHANGE = "C";
+	/** Appearance UP */
+	public static String DISPLACEMENT_LABEL_STILL = "K";
 
-	public static Displacement DISPLACEMENT_CLEAR = new DisplacementImpl(DISPLACEMENT_LABEL_CLEAR);
-	public static Displacement DISPLACEMENT_KEEP = new DisplacementImpl(DISPLACEMENT_LABEL_KEEP);
+	public static Displacement DISPLACEMENT_CHANGE = new DisplacementImpl(DISPLACEMENT_LABEL_CHANGE);
+	public static Displacement DISPLACEMENT_STILL = new DisplacementImpl(DISPLACEMENT_LABEL_STILL);
 	
 	private String label;
 	

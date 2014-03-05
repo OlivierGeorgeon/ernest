@@ -118,7 +118,7 @@ public class DeciderImpl implements Decider
 			for (Action action : ActionImpl.getACTIONS())
 				action.trace(tracer, actionElmt);
 			
-			Object appearanceElmt = this.tracer.addSubelement(decisionElmt, "appearances");
+			Object appearanceElmt = this.tracer.addSubelement(decisionElmt, "observations");
 			for (Appearance app : AppearanceImpl.getAppearances())
 				app.trace(tracer, appearanceElmt);
 			
@@ -176,44 +176,39 @@ public class DeciderImpl implements Decider
 						if (action.contains(proposedAct))
 							hasAction = true;
 					if (!hasAction){
-						Action a = ActionImpl.createOrGet(proposedAct);
-						a.addAct(proposedAct);
-						if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
-						
-						// create an appearance for this action
-						if (!proposedAct.isPrimitive()){
-							// Check the coherence of this appearance and action
-							boolean coherent = true;
+						if (proposedAct.isPrimitive()){
+							Action a = ActionImpl.createOrGet(proposedAct);
+							a.addAct(proposedAct);
+							if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());							
+						}
+						else{
+							// Check the reliability of this sequence
+							boolean reliable = true;
 							for (Act act : ActImpl.getACTS())
-								if (proposedAct.getPreAct().equals(act.getPreAct())){
-									// check consistency based on the same postAction
-										if (proposedAct.getPostAct().isPrimitive() && act.getPostAct().isPrimitive() && !proposedAct.getPostAct().equals(act.getPostAct())){
-											coherent = false;
-											if (this.tracer != null) this.tracer.addEventElement("inconsistent_action", a.getLabel() + " due to " + act.getLabel());
+								if (proposedAct.getPreAct().equals(act.getPreAct()))
+									// TODO check consistency based on the same postAction
+									if (proposedAct.getPostAct().isPrimitive() && act.getPostAct().isPrimitive() && 
+											!proposedAct.getPostAct().equals(act.getPostAct())){
+										reliable = false;
+										if (this.tracer != null) this.tracer.addEventElement("inconsistent_sequence", proposedAct.getLabel() + " due to " + act.getLabel());
 									}
-								}
+								
+							if (reliable){
+								// Create the action
+								Action a = ActionImpl.createOrGet(proposedAct);
+								a.addAct(proposedAct);
+								if (this.tracer != null) this.tracer.addEventElement("new_action", a.getLabel());
 							
-							if (coherent){
+								// Create the appearance
 								if (proposedAct.getPreAct().isPrimitive())
-									proposedAct.getPreAct().getPrimitive().setDisplacement(DisplacementImpl.DISPLACEMENT_KEEP);
+									proposedAct.getPreAct().getPrimitive().setDisplacement(DisplacementImpl.DISPLACEMENT_STILL);
 								Appearance appearance = AppearanceImpl.createOrGet(proposedAct);
 								appearance.addAct(proposedAct);
 								appearance.addAct(proposedAct.getPreAct());
-								appearance.addAct(proposedAct.getPostAct());
-								if (this.tracer != null) this.tracer.addEventElement("new_appearance", appearance.getLabel());
+								if (this.tracer != null) this.tracer.addEventElement("new_appearance", appearance.getLabel());							
 							}
 						}
-						
 					}			
-//					boolean hasAppearance = false;
-//					for (Appearance appearance : AppearanceImpl.getAppearances())
-//						if (appearance.contains(actProposition.getAct()))
-//							hasAppearance = true;
-//					if (!hasAppearance){
-//						Appearance a = AppearanceImpl.createOrGet(actProposition.getAct());
-//						a.addAct(actProposition.getAct());
-//						if (this.tracer != null) this.tracer.addEventElement("new_appearance", a.getLabel());
-//					}			
 				}
 			}
 			else{
@@ -227,7 +222,7 @@ public class DeciderImpl implements Decider
 			}
 		}
 		
-		// Add propositions for the context subacts of acts that did not pass the threshold
+		// Add propositions for the context sub-acts of acts that did not pass the threshold
 		for (ActProposition proposition : forwardedActPropositions)
 			actPropositions.add(proposition);
 		
