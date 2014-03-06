@@ -195,8 +195,8 @@ public interface Enaction
 	//public void setInitialArea(Area area);
 	//public Area getInitialArea();
 	
-	public void setAppearance(Appearance appearance);
-	public Appearance getAppearance();
+	public void setAppearances(List<Appearance> appearances);
+	public List<Appearance> getAppearances();
 	
 	public void setExperiment(Experiment experiment);
 	public Experiment getExperiment();

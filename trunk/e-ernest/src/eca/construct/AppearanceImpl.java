@@ -84,11 +84,12 @@ public class AppearanceImpl implements Appearance {
 	 * @param act The act whose appearance we are searching for
 	 * @return The first appearance found that contains act. Null if no appearance found.
 	 */
-	public static Appearance getAppeareance(Act act){
+	public static List<Appearance> getAppeareances(Act act){
+		List<Appearance> appearances = new ArrayList<Appearance>(2);
 		for (Appearance appearance : OBSERVATIONS.values())
 			if (appearance.contains(act))
-				return appearance;
-		return null;
+				appearances.add(appearance);
+		return appearances;
 	}
 	
 	/**
