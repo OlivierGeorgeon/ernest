@@ -69,7 +69,7 @@ public class EnactionImpl implements Enaction
 	
 	//private Area initialArea = AreaImpl.createOrGet(new Point3f());
 	
-	private Appearance appearance = null;
+	private List<Appearance> appearances = new ArrayList<Appearance>(0);
 	private Area area = null;
 	private Experiment experiment = null;
 
@@ -258,8 +258,9 @@ public class EnactionImpl implements Enaction
 			tracer.addSubelement(e, "intended_action", this.intendedAction.getLabel());
 			tracer.addSubelement(e, "aspect", this.salientActInstance.getAspect().toString());
 			tracer.addSubelement(e, "displacement", m_enactedPrimitiveAct.getPrimitive().getDisplacement().getLabel());
-			if (appearance != null)
-				appearance.trace(tracer, e);
+			if (!this.appearances.isEmpty())
+				for (Appearance appearance : this.appearances)
+					appearance.trace(tracer, e);
 		}
 	}
 
@@ -297,8 +298,10 @@ public class EnactionImpl implements Enaction
 			for (Act i : m_finalLearningContext)	
 				tracer.addSubelement(learning, "interaction", i.getLabel());
 
-			if(this.appearance != null)
-				this.appearance.trace(tracer,e);
+			if (!this.appearances.isEmpty())
+				for (Appearance appearance : this.appearances)
+					tracer.addSubelement(e, "observation", appearance.getLabel());
+					//appearance.trace(tracer, e);
 
 			//tracer.addSubelement(e, "nb_schema_learned", m_nbSchemaLearned + "");	
 		}
@@ -381,12 +384,12 @@ public class EnactionImpl implements Enaction
 //		this.initialArea = area;
 //	}
 
-	public Appearance getAppearance() {
-		return this.appearance;
+	public List<Appearance> getAppearances() {
+		return this.appearances;
 	}
 
-	public void setAppearance(Appearance appearance) {
-		this.appearance = appearance;
+	public void setAppearances(List<Appearance> appearances) {
+		this.appearances = appearances;
 	}
 
 	public Transform3D getTransform3D() {

@@ -4,14 +4,10 @@ package eca.ss;
 import java.util.ArrayList;
 import java.util.List;
 import tracing.ITracer;
-import eca.construct.Action;
 import eca.construct.ActionImpl;
 import eca.construct.Appearance;
 import eca.construct.AppearanceImpl;
-import eca.construct.Displacement;
 import eca.construct.DisplacementImpl;
-import eca.construct.experiment.Experiment;
-import eca.construct.experiment.ExperimentImpl;
 import eca.ss.enaction.Act;
 import eca.ss.enaction.ActImpl;
 import eca.ss.enaction.Enaction;
@@ -106,7 +102,7 @@ public class Imos implements IImos
 		Act enactedTopAct  = enaction.getTopEnactedAct();
 		ArrayList<Act> previousLearningContext = enaction.getPreviousLearningContext();
 		ArrayList<Act> initialLearningContext = enaction.getInitialLearningContext();
-		Appearance preAppearance = enaction.getAppearance();
+		List<Appearance> preAppearances = enaction.getAppearances();
 		
 		// if we are not on startup
 		if (enactedTopAct != null)
@@ -140,30 +136,33 @@ public class Imos implements IImos
 			enaction.setFinalContext(enactedTopAct, enactedTopAct, streamContextList);	
 			
 			// Add the enacted act to the pre-appearance
-			if (preAppearance != null){
-				// check the consistency with the existing appearance
-				boolean consistent = true;
-				for (Act act : preAppearance.getActs())
-					if (ActionImpl.getAction(enactedTopAct).equals(ActionImpl.getAction(act)))
-						if(!enactedTopAct.equals(act)){
-							consistent = false;
-							if (m_tracer != null) this.m_tracer.addEventElement("split_observation", preAppearance.getLabel() + " due to " + act.getLabel());
-						}
-				if (consistent)
-					preAppearance.addAct(enactedTopAct);
-				else{
-					Appearance splittedAppearance  = AppearanceImpl.createOrGet(enactedTopAct);
-					splittedAppearance.addAct(enactedTopAct);
-					splittedAppearance.addAct(preAppearance.getStillAct());
-					splittedAppearance.setStillAct(preAppearance.getStillAct());
+			if (preAppearances.size()==1){
+				Appearance preAppearance = preAppearances.get(0);
+				if (preAppearance != null){
+					// check the consistency with the existing appearance
+					boolean consistent = true;
+					for (Act act : preAppearance.getActs())
+						if (ActionImpl.getAction(enactedTopAct).equals(ActionImpl.getAction(act)))
+							if(!enactedTopAct.equals(act))
+								consistent = false;
+							
+					if (consistent)
+						preAppearance.addAct(enactedTopAct);
+					else{
+						Appearance splittedAppearance  = AppearanceImpl.createOrGet(enactedTopAct);
+						splittedAppearance.addAct(enactedTopAct);
+						splittedAppearance.addAct(preAppearance.getStillAct());
+						splittedAppearance.setStillAct(preAppearance.getStillAct());
+						if (m_tracer != null) this.m_tracer.addEventElement("new_appearance", splittedAppearance.getLabel());
+					}
 				}
 			}
 			
 			// If the enacted act is STILL then keep the appearance
 			if (enactedTopAct.isPrimitive() && enactedTopAct.getPrimitive().getDisplacement().equals(DisplacementImpl.DISPLACEMENT_STILL))
-				enaction.setAppearance(AppearanceImpl.getAppeareance(enactedTopAct));
+				enaction.setAppearances(AppearanceImpl.getAppeareances(enactedTopAct));
 			else
-				enaction.setAppearance(null);
+				enaction.setAppearances(new ArrayList<Appearance>(0));
 			
 			enaction.setNbActLearned(m_nbSchemaLearned);
 			enaction.traceTerminate(m_tracer);

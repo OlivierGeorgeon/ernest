@@ -60,12 +60,11 @@ public class DeciderImpl implements Decider
 	{
 		System.out.println("New decision ================ ");
 		
-		Appearance appearance = enaction.getAppearance();
-		Enaction newEnaction = new EnactionImpl();	
+		List<Appearance> preAppearances = enaction.getAppearances();
 		
 		// Choose the next action
 		ArrayList<ActProposition> actPropositions = this.imos.propose(enaction);	
-		List<ActionProposition> actionPropositions = proposeActions(actPropositions, appearance);
+		List<ActionProposition> actionPropositions = proposeActions(actPropositions, preAppearances);
 		Collections.sort(actionPropositions, new ActionPropositionComparator(ActionPropositionComparator.SS) ); // or SPAS
 		
 		ActionProposition selectedProposition = actionPropositions.get(0);
@@ -76,12 +75,13 @@ public class DeciderImpl implements Decider
 		trace(selectedProposition);
 		
 		// Prepare the new enaction.		
+		Enaction newEnaction = new EnactionImpl();	
 		newEnaction.setTopIntendedAct(intendedAct);
 		newEnaction.setTopRemainingAct(intendedAct);
 		newEnaction.setPreviousLearningContext(enaction.getInitialLearningContext());
 		newEnaction.setInitialLearningContext(enaction.getFinalLearningContext());
 		newEnaction.setIntendedAction(selectedAction);
-		newEnaction.setAppearance(appearance);
+		newEnaction.setAppearances(preAppearances);
 		
 		return newEnaction;
 	}
@@ -89,7 +89,7 @@ public class DeciderImpl implements Decider
 	/**
 	 * Weight the actions according to the proposed interactions
 	 */
-	private List<ActionProposition> proposeActions(List<ActProposition> actPropositions, Appearance preAppearance){
+	private List<ActionProposition> proposeActions(List<ActProposition> actPropositions, List<Appearance> preAppearances){
 		
 		List<ActionProposition> actionPropositions = new ArrayList<ActionProposition>();
 		List<ActProposition> forwardedActPropositions = new ArrayList<ActProposition>();
@@ -164,12 +164,13 @@ public class DeciderImpl implements Decider
 			ActionProposition actionProposition = new ActionPropositionImpl(action, 0);
 			//actionProposition.setAnticipatedAppearance(anticipatedAppearance);
 			//actionProposition.setConfidence(confidence);
-			if (preAppearance != null){
-				for (Act act : preAppearance.getActs()){
-					
-				}
-				//actionProposition.setExperiment(ExperimentImpl.createOrGet(preAppearance, action));
-			}
+//			if (preAppearance != null){
+//				for (Act act : preAppearance.getActs()){
+//					
+//				}
+//				//actionProposition.setExperiment(ExperimentImpl.createOrGet(preAppearance, action));
+//			}
+			
 			boolean isProposed = false;
 			// Add weight to this action according to the actPropositions that propose an act whose primitive belongs to this action
 			for (ActProposition actProposition : actPropositions){
@@ -221,6 +222,12 @@ public class DeciderImpl implements Decider
 				this.tracer.addSubelement(apElmnt, "ss_act", selectedProposition.getSpatialAnticipatedAct().getLabel());
 				this.tracer.addSubelement(apElmnt, "ss_value", selectedProposition.getSpatialAnticipatedAct().getValue() +"");					
 			}				
+			
+			List<Appearance> postAppearances = AppearanceImpl.getAppeareances(intendedAct);
+			if (!postAppearances.isEmpty())
+				for (Appearance appearance : postAppearances)
+					this.tracer.addSubelement(decisionElmt, "appearance", appearance.getLabel());
+			
 			Object actionElmt = this.tracer.addSubelement(decisionElmt, "actions");
 			for (Action action : ActionImpl.getACTIONS())
 				action.trace(tracer, actionElmt);
@@ -231,6 +238,7 @@ public class DeciderImpl implements Decider
 			
 			Object predictElmt = this.tracer.addSubelement(decisionElmt, "predict");
 			this.tracer.addSubelement(predictElmt, "act", intendedAct.getLabel());
+			
 		}		
 		System.out.println("Select:" + selectedAction.getLabel());
 		System.out.println("Act " + intendedAct.getLabel());
