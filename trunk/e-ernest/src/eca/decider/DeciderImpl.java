@@ -132,7 +132,7 @@ public class DeciderImpl implements Decider
 								appearance.setFlowAct(proposedAct);
 								appearance.addAffordedAct(proposedAct.getPostAct());
 								if (!proposedAct.getPostAct().isPrimitive())
-									appearance.addAct(proposedAct.getPostAct().getPreAct()); // TODO recursive?									
+									appearance.addAffordedAct(proposedAct.getPostAct().getPreAct()); // TODO recursive?									
 								if (this.tracer != null) this.tracer.addEventElement("new_appearance", appearance.getLabel());							
 							}
 						}
