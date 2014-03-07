@@ -28,8 +28,10 @@ public class AppearanceImpl implements Appearance {
     private static Map<String , Appearance> OBSERVATIONS = new HashMap<String , Appearance>() ;
 
 	private String label;
-	private List<Act> acts = new ArrayList<Act>();
-	
+	private Act flowAct;
+	private List<Act> evokingActs = new ArrayList<Act>();
+	private List<Act> affordedActs = new ArrayList<Act>();
+
 	private Act stillAct = null;
 	private Action discriminentAction = null; 
 	
@@ -55,19 +57,19 @@ public class AppearanceImpl implements Appearance {
 		return OBSERVATIONS.get(key);
 	}
 	
-	public static Appearance evoke(Act act){
-		Appearance appearance = null;
-		for (Appearance a : OBSERVATIONS.values())
-			if (a.contains(act))
-				appearance = a;
-		
-		if (appearance == null){
-			appearance  = createOrGet(act);
-			appearance.addAct(act);
-		}
-			
-		return appearance;
-	}
+//	public static Appearance evoke(Act act){
+//		Appearance appearance = null;
+//		for (Appearance a : OBSERVATIONS.values())
+//			if (a.contains(act))
+//				appearance = a;
+//		
+//		if (appearance == null){
+//			appearance  = createOrGet(act);
+//			appearance.addAct(act);
+//		}
+//			
+//		return appearance;
+//	}
 	
 	private static String createKey(Act act) {
 		String key = act.getLabel();
@@ -84,10 +86,22 @@ public class AppearanceImpl implements Appearance {
 	 * @param act The act whose appearance we are searching for
 	 * @return The first appearance found that contains act. Null if no appearance found.
 	 */
-	public static List<Appearance> getAppeareances(Act act){
+	public static List<Appearance> getEvokedAppeareances(Act act){
 		List<Appearance> appearances = new ArrayList<Appearance>(2);
 		for (Appearance appearance : OBSERVATIONS.values())
-			if (appearance.contains(act))
+			if (appearance.isEvokedBy(act))
+				appearances.add(appearance);
+		return appearances;
+	}
+	
+	/**
+	 * @param act The act whose appearance we are searching for
+	 * @return The first appearance found that contains act. Null if no appearance found.
+	 */
+	public static List<Appearance> getFlowAppeareances(Act act){
+		List<Appearance> appearances = new ArrayList<Appearance>(2);
+		for (Appearance appearance : OBSERVATIONS.values())
+			if (act.equals(appearance.getFlowAct()))
 				appearances.add(appearance);
 		return appearances;
 	}
@@ -126,16 +140,16 @@ public class AppearanceImpl implements Appearance {
 	}
 	
 	public void addAct(Act act){
-		if (!this.acts.contains(act))
-				this.acts.add(act);
+		if (!this.evokingActs.contains(act))
+				this.evokingActs.add(act);
 	}
 	
 	public List<Act> getActs(){
-		return this.acts;
+		return this.evokingActs;
 	}
 	
-	public boolean contains(Act act){
-		return this.acts.contains(act);
+	public boolean isEvokedBy(Act act){
+		return this.evokingActs.contains(act);
 	}
 
 //	public PhenomenonType getPhenomenonType(){
@@ -174,11 +188,14 @@ public class AppearanceImpl implements Appearance {
 	
 	public void trace(ITracer tracer, Object e) {
 		
-		String actList = "";
-		for (Act act : this.acts)
-			actList +=  act.getLabel() + ", ";
+		String evokingActsList = "";
+		for (Act act : this.evokingActs)
+			evokingActsList +=  act.getLabel() + ", ";
+		String affordedActList = "";
+		for (Act act : this.affordedActs)
+			affordedActList +=  act.getLabel() + ", ";
 
-		tracer.addSubelement(e, "observation", this.label + " / " + actList);
+		tracer.addSubelement(e, "observation", this.label + " / flows as: " + flowAct.getLabel() + " evoked by: "+ evokingActsList + " affords: " + affordedActList);
 	}
 
 	public Act getStillAct() {
@@ -195,6 +212,23 @@ public class AppearanceImpl implements Appearance {
 
 	public void setDiscriminentAction(Action discriminentAction) {
 		this.discriminentAction = discriminentAction;
+	}
+
+	public List<Act> getAffordedActs() {
+		return this.affordedActs;
+	}
+
+	public void addAffordedAct(Act act) {
+		if (!this.affordedActs.contains(act))
+			this.affordedActs.add(act);
+	}
+
+	public Act getFlowAct() {
+		return flowAct;
+	}
+
+	public void setFlowAct(Act flowAct) {
+		this.flowAct = flowAct;
 	}
 
 }

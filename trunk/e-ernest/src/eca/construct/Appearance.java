@@ -34,11 +34,19 @@ public interface Appearance {
 	 * @param act The primitive to check 
 	 * @return true if this primitive belongs to this action
 	 */
-	public boolean contains(Act act);
+	public boolean isEvokedBy(Act act);
 	
 	public Act getStillAct();
 
 	public void setStillAct(Act stillAct);
+	
+	public List<Act> getAffordedActs();
+	
+	public void addAffordedAct(Act act);
+
+	public Act getFlowAct();
+
+	public void setFlowAct(Act flowAct);
 
 	public Action getDiscriminentAction();
 

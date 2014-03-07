@@ -129,8 +129,8 @@ public class DeciderImpl implements Decider
 								Appearance appearance = AppearanceImpl.createOrGet(proposedAct.getPreAct());
 								appearance.addAct(proposedAct.getPreAct());
 								appearance.setStillAct(proposedAct.getPreAct());
-								appearance.addAct(proposedAct);
-								appearance.addAct(proposedAct.getPostAct());
+								appearance.setFlowAct(proposedAct);
+								appearance.addAffordedAct(proposedAct.getPostAct());
 								if (!proposedAct.getPostAct().isPrimitive())
 									appearance.addAct(proposedAct.getPostAct().getPreAct()); // TODO recursive?									
 								if (this.tracer != null) this.tracer.addEventElement("new_appearance", appearance.getLabel());							
@@ -223,9 +223,9 @@ public class DeciderImpl implements Decider
 				this.tracer.addSubelement(apElmnt, "ss_value", selectedProposition.getSpatialAnticipatedAct().getValue() +"");					
 			}				
 			
-			List<Appearance> postAppearances = AppearanceImpl.getAppeareances(intendedAct);
-			if (!postAppearances.isEmpty())
-				for (Appearance appearance : postAppearances)
+			List<Appearance> flowAppearances = AppearanceImpl.getFlowAppeareances(intendedAct);
+			if (!flowAppearances.isEmpty())
+				for (Appearance appearance : flowAppearances)
 					this.tracer.addSubelement(decisionElmt, "appearance", appearance.getLabel());
 			
 			Object actionElmt = this.tracer.addSubelement(decisionElmt, "actions");

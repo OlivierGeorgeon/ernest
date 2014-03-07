@@ -138,7 +138,7 @@ public class Imos implements IImos
 			// Add the enacted act to the pre-appearance
 			if (preAppearances.size()==1){
 				Appearance preAppearance = preAppearances.get(0);
-				if (preAppearance != null){
+				//if (preAppearance != null){
 					// check the consistency with the existing appearance
 					boolean consistent = true;
 					for (Act act : preAppearance.getActs())
@@ -147,20 +147,22 @@ public class Imos implements IImos
 								consistent = false;
 							
 					if (consistent)
-						preAppearance.addAct(enactedTopAct);
+						preAppearance.addAffordedAct(enactedTopAct);
+						//preAppearance.addAct(enactedTopAct);
 					else{
-						Appearance splittedAppearance  = AppearanceImpl.createOrGet(enactedTopAct);
-						splittedAppearance.addAct(enactedTopAct);
-						splittedAppearance.addAct(preAppearance.getStillAct());
-						splittedAppearance.setStillAct(preAppearance.getStillAct());
-						if (m_tracer != null) this.m_tracer.addEventElement("new_appearance", splittedAppearance.getLabel());
+						Appearance newAppearance  = AppearanceImpl.createOrGet(enactedTopAct);
+						newAppearance.addAffordedAct(enactedTopAct);
+						newAppearance.addAct(preAppearance.getStillAct());
+						newAppearance.setStillAct(preAppearance.getStillAct());
+						newAppearance.setFlowAct(ActImpl.createOrGetCompositeAct(preAppearance.getStillAct(), enactedTopAct));
+						if (m_tracer != null) this.m_tracer.addEventElement("new_appearance", newAppearance.getLabel());
 					}
-				}
+				//}
 			}
 			
 			// If the enacted act is STILL then keep the appearance
 			if (enactedTopAct.isPrimitive() && enactedTopAct.getPrimitive().getDisplacement().equals(DisplacementImpl.DISPLACEMENT_STILL))
-				enaction.setAppearances(AppearanceImpl.getAppeareances(enactedTopAct));
+				enaction.setAppearances(AppearanceImpl.getEvokedAppeareances(enactedTopAct));
 			else
 				enaction.setAppearances(new ArrayList<Appearance>(0));
 			
