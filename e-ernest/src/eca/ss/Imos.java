@@ -141,7 +141,7 @@ public class Imos implements IImos
 				//if (preAppearance != null){
 					// check the consistency with the existing appearance
 					boolean consistent = true;
-					for (Act act : preAppearance.getActs())
+					for (Act act : preAppearance.getAffordedActs())
 						if (ActionImpl.getAction(enactedTopAct).equals(ActionImpl.getAction(act)))
 							if(!enactedTopAct.equals(act))
 								consistent = false;

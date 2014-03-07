@@ -195,7 +195,7 @@ public class AppearanceImpl implements Appearance {
 		for (Act act : this.affordedActs)
 			affordedActList +=  act.getLabel() + ", ";
 
-		tracer.addSubelement(e, "observation", this.label + " / flows as: " + flowAct.getLabel() + " evoked by: "+ evokingActsList + " affords: " + affordedActList);
+		tracer.addSubelement(e, "observation", this.label + " / flows as: " + flowAct.getLabel() + " / evoked by: "+ evokingActsList + " / affords: " + affordedActList);
 	}
 
 	public Act getStillAct() {
